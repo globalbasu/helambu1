@@ -505,6 +505,8 @@
       max-height: 90dvh;
       animation: modalSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
+    .modal-card.modal-lg { max-width: 760px; }
+    .modal-card.modal-xl { max-width: 880px; }
     @keyframes modalSlide { from { opacity: 0; transform: translateY(16px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
     .modal-header {
@@ -1048,63 +1050,73 @@
       </div>
 
       <div class="sidebar-nav">
-        <div class="nav-group-title">Operations</div>
-        <button class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
+        <!-- SaaS MASTER CONTROLS (SUPER ADMIN ONLY) -->
+        <div class="nav-group-title saas-only" style="display: none;">SaaS Platform HQ</div>
+        <button class="nav-item saas-only active" id="navItemTenants" data-view="tenants" onclick="switchView('tenants')" style="display: none; background: #0f172a; color: #fbbf24; font-weight: 700; border: 1px solid #334155;">
+          <span class="icon">👑</span> Palika Tenants (SaaS HQ)
+        </button>
+        <button class="nav-item saas-only" id="navItemSaasTimeline" data-view="timeline" onclick="switchView('timeline')" style="display: none;">
+          <span class="icon">⏱️</span> Platform Audit Trail
+        </button>
+        <button class="nav-item saas-only" id="navItemSaasReports" data-view="reports" onclick="switchView('reports')" style="display: none;">
+          <span class="icon">📈</span> SaaS Metrics & Growth
+        </button>
+        <button class="nav-item saas-only" id="navItemSettings" data-view="settings" onclick="switchView('settings')" style="display: none;">
+          <span class="icon">⚙️</span> Settings & Supabase
+        </button>
+
+        <!-- PALIKA LOCAL FIELD OPERATIONS (PALIKA ADMIN & WORKERS ONLY) -->
+        <div class="nav-group-title palika-only">Operations</div>
+        <button class="nav-item palika-only active" data-view="dashboard" onclick="switchView('dashboard')">
           <span class="icon">📊</span> Overview
         </button>
-        <button class="nav-item" data-view="voters" onclick="switchView('voters')">
+        <button class="nav-item palika-only" data-view="voters" onclick="switchView('voters')">
           <span class="icon">👥</span> Voters & Contacts
           <span class="nav-badge" id="voterCountBadge">0</span>
         </button>
-        <button class="nav-item" data-view="households" onclick="switchView('households')">
+        <button class="nav-item palika-only" data-view="households" onclick="switchView('households')">
           <span class="icon">🏠</span> Households Layer
         </button>
-        <button class="nav-item" data-view="visits" onclick="switchView('visits')">
+        <button class="nav-item palika-only" data-view="visits" onclick="switchView('visits')">
           <span class="icon">📋</span> Field Visits
         </button>
-        <button class="nav-item" data-view="followups" onclick="switchView('followups')">
+        <button class="nav-item palika-only" data-view="followups" onclick="switchView('followups')">
           <span class="icon">📅</span> Follow-ups
           <span class="nav-badge urgent" id="pendingFollowBadge">0</span>
         </button>
 
-        <div class="nav-group-title">Structure & Field</div>
-        <button class="nav-item" data-view="areas" onclick="switchView('areas')">
+        <div class="nav-group-title palika-only">Structure & Field</div>
+        <button class="nav-item palika-only" data-view="areas" onclick="switchView('areas')">
           <span class="icon">🗺️</span> Areas & Booths
         </button>
-        <button class="nav-item" data-view="team" onclick="switchView('team')">
+        <button class="nav-item palika-only" data-view="team" onclick="switchView('team')">
           <span class="icon">🤝</span> Team & Workers
         </button>
-        <button class="nav-item" data-view="issues" onclick="switchView('issues')">
+        <button class="nav-item palika-only" data-view="issues" onclick="switchView('issues')">
           <span class="icon">⚠️</span> Issues / Incidents
           <span class="nav-badge" id="issuesBadge">0</span>
         </button>
-        <button class="nav-item" data-view="publicSubs" onclick="switchView('publicSubs')">
+        <button class="nav-item palika-only" data-view="publicSubs" onclick="switchView('publicSubs')">
           <span class="icon">📥</span> Public Submissions
           <span class="nav-badge" id="publicBadge">0</span>
         </button>
 
-        <div class="nav-group-title">Coordination</div>
-        <button class="nav-item" data-view="electionDay" onclick="switchView('electionDay')">
+        <div class="nav-group-title palika-only">Coordination</div>
+        <button class="nav-item palika-only" data-view="electionDay" onclick="switchView('electionDay')">
           <span class="icon">🗳️</span> Election Day Mode
         </button>
-        <button class="nav-item" data-view="notices" onclick="switchView('notices')">
+        <button class="nav-item palika-only" data-view="notices" onclick="switchView('notices')">
           <span class="icon">📢</span> Notices & Alerts
         </button>
-        <button class="nav-item" data-view="messages" onclick="switchView('messages')">
+        <button class="nav-item palika-only" data-view="messages" onclick="switchView('messages')">
           <span class="icon">💬</span> Internal Messaging
         </button>
-        <button class="nav-item" data-view="timeline" onclick="switchView('timeline')">
+        <button class="nav-item palika-only" data-view="timeline" onclick="switchView('timeline')">
           <span class="icon">⏱️</span> Activity Timeline
           <span class="nav-badge" id="timelineCountBadge">0</span>
         </button>
-        <button class="nav-item" data-view="reports" onclick="switchView('reports')">
+        <button class="nav-item palika-only" data-view="reports" onclick="switchView('reports')">
           <span class="icon">📈</span> Operational Reports
-        </button>
-        <button class="nav-item" id="navItemTenants" data-view="tenants" onclick="switchView('tenants')" style="background: #0f172a; color: #fbbf24; font-weight: 700; border: 1px solid #334155;">
-          <span class="icon">👑</span> Super Admin (SaaS HQ)
-        </button>
-        <button class="nav-item" id="navItemSettings" data-view="settings" onclick="switchView('settings')">
-          <span class="icon">⚙️</span> Settings & Supabase
         </button>
       </div>
 
@@ -1893,11 +1905,13 @@
         { HouseholdID: 'HHD_002', WardNo: 5, Tole: 'Nayabasti', BlockCluster: 'Block B', HouseNo: '205', Address: 'Nayabasti Marg', PrimaryContactName: 'Hari Prasad Adhikari', PrimaryPhone: '9841000003', VerificationStatus: 'Pending' }
       ],
       voters: [
-        { VoterID: 'VOT_001', Name: 'Ram Bahadur Thapa', Phone: '9841000001', Gender: 'Male', AgeGroup: '41-60', DOB: '1985-10-09', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '101', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Support', PartyLeaning: 'UML', RecordSource: 'Import' },
-        { VoterID: 'VOT_002', Name: 'Sita Maya Lama', Phone: '9841000002', Gender: 'Female', AgeGroup: '26-40', DOB: '1995-04-12', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '102', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Undecided', PartyLeaning: 'Undecided', RecordSource: 'Import' },
-        { VoterID: 'VOT_003', Name: 'Hari Prasad Adhikari', Phone: '9841000003', Gender: 'Male', AgeGroup: '60+', DOB: '1962-10-09', Ward: 5, Tole: 'Nayabasti', HouseholdID: 'HHD_002', HouseNo: '205', PollingLocationID: 'LOC_W5_1', BoothNo: 'B', VoterSerial: '201', ContactStatus: 'Not Contacted', VerificationStatus: 'Pending', SelfReportedResponse: 'Not Support', PartyLeaning: 'Congress', RecordSource: 'Field Collection' },
-        { VoterID: 'VOT_004', Name: 'Gita Karki', Phone: '9841000004', Gender: 'Female', AgeGroup: '18-25', DOB: '2002-08-20', Ward: 3, Tole: 'Sundarijal', HouseholdID: '', HouseNo: '12', PollingLocationID: 'LOC_W3_1', BoothNo: 'A', VoterSerial: '301', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Support', PartyLeaning: 'UML', RecordSource: 'Manual' },
-        { VoterID: 'VOT_005', Name: 'Bikash Shrestha', Phone: '9841000005', Gender: 'Male', AgeGroup: '26-40', DOB: '1992-03-15', Ward: 1, Tole: 'Gokarna', HouseholdID: '', HouseNo: '45', PollingLocationID: '', BoothNo: 'A', VoterSerial: '501', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Support', PartyLeaning: 'RSP', RecordSource: 'Manual' }
+        { VoterID: 'VOT_001', Name: 'रामबहादुर थापा (Ram Bahadur)', Phone: '9841000001', Gender: 'Male', AgeGroup: '41-60', DOB: '1985-10-09', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '101', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Support', PartyLeaning: 'UML', FamilyRelation: 'घरमुली', RecordSource: 'Import' },
+        { VoterID: 'VOT_002', Name: 'सीतामाया लामा (Sita Maya)', Phone: '9841000002', Gender: 'Female', AgeGroup: '26-40', DOB: '1995-04-12', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '102', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Undecided', PartyLeaning: 'Undecided', FamilyRelation: 'पति / पत्नी', RecordSource: 'Import' },
+        { VoterID: 'VOT_006', Name: 'सुमन थापा (Suman Thapa)', Phone: '9841000006', Gender: 'Male', AgeGroup: '18-25', DOB: '2004-06-15', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '103', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Support', PartyLeaning: 'UML', FamilyRelation: 'छोरा', RecordSource: 'Field Collection' },
+        { VoterID: 'VOT_007', Name: 'पूजा थापा (Puja Thapa)', Phone: '9841000007', Gender: 'Female', AgeGroup: '18-25', DOB: '2006-02-18', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '104', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Undecided', PartyLeaning: 'RSP', FamilyRelation: 'छोरी', RecordSource: 'Field Collection' },
+        { VoterID: 'VOT_003', Name: 'हरिप्रसाद अधिकारी (Hari Prasad)', Phone: '9841000003', Gender: 'Male', AgeGroup: '60+', DOB: '1962-10-09', Ward: 5, Tole: 'Nayabasti', HouseholdID: 'HHD_002', HouseNo: '205', PollingLocationID: 'LOC_W5_1', BoothNo: 'B', VoterSerial: '201', ContactStatus: 'Not Contacted', VerificationStatus: 'Pending', SelfReportedResponse: 'Not Support', PartyLeaning: 'Congress', FamilyRelation: 'घरमुली', RecordSource: 'Field Collection' },
+        { VoterID: 'VOT_004', Name: 'गीता कार्की (Gita Karki)', Phone: '9841000004', Gender: 'Female', AgeGroup: '18-25', DOB: '2002-08-20', Ward: 3, Tole: 'Sundarijal', HouseholdID: '', HouseNo: '12', PollingLocationID: 'LOC_W3_1', BoothNo: 'A', VoterSerial: '301', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Support', PartyLeaning: 'UML', FamilyRelation: 'घरमुली', RecordSource: 'Manual' },
+        { VoterID: 'VOT_005', Name: 'बिकेश श्रेष्ठ (Bikash Shrestha)', Phone: '9841000005', Gender: 'Male', AgeGroup: '26-40', DOB: '1992-03-15', Ward: 1, Tole: 'Gokarna', HouseholdID: '', HouseNo: '45', PollingLocationID: '', BoothNo: 'A', VoterSerial: '501', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Support', PartyLeaning: 'RSP', FamilyRelation: 'घरमुली', RecordSource: 'Manual' }
       ],
       visits: [
         { VisitID: 'VIS_001', VoterID: 'VOT_001', Date: new Date().toISOString().slice(0,10), VisitOutcome: 'Met', ContactStatus: 'Contacted', SelfReportedResponse: 'Support', FollowUpRequired: 'No', Notes: 'Supportive household' }
@@ -2006,6 +2020,19 @@
               t.Slug = t.TenantID === 'TNT_HELAMBU' ? 'helambu' : (t.TenantID === 'TNT_GOKARNESHWOR' ? 'gokarneshwor' : (t.PalikaName ? t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') : t.TenantID.toLowerCase()));
             }
           });
+          // Ensure family relations and seed relatives exist
+          if (state.voters) {
+            const v1 = state.voters.find(x => x.VoterID === 'VOT_001');
+            if (v1 && !v1.FamilyRelation) v1.FamilyRelation = 'घरमुली';
+            const v2 = state.voters.find(x => x.VoterID === 'VOT_002');
+            if (v2 && !v2.FamilyRelation) v2.FamilyRelation = 'पति / पत्नी';
+            if (!state.voters.find(x => x.VoterID === 'VOT_006')) {
+              state.voters.push({ VoterID: 'VOT_006', Name: 'सुमन थापा (Suman Thapa)', Phone: '9841000006', Gender: 'Male', AgeGroup: '18-25', DOB: '2004-06-15', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '103', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Support', PartyLeaning: 'UML', FamilyRelation: 'छोरा', RecordSource: 'Field Collection' });
+            }
+            if (!state.voters.find(x => x.VoterID === 'VOT_007')) {
+              state.voters.push({ VoterID: 'VOT_007', Name: 'पूजा थापा (Puja Thapa)', Phone: '9841000007', Gender: 'Female', AgeGroup: '18-25', DOB: '2006-02-18', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '104', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Undecided', PartyLeaning: 'RSP', FamilyRelation: 'छोरी', RecordSource: 'Field Collection' });
+            }
+          }
         } catch (e) { 
           console.error('Error loading state:', e); 
         }
@@ -2740,10 +2767,11 @@
       document.getElementById('sbUserRole').textContent = currentUser.Role;
       document.getElementById('sbAvatar').textContent = currentUser.Name.charAt(0).toUpperCase();
 
+      const isSuper = currentUser.Role === 'Super Admin';
       const muniLabel = document.getElementById('sbMuniTitle');
       if (muniLabel) {
-        if (currentUser.Role === 'Super Admin') {
-          muniLabel.textContent = (state.settings.MUNICIPALITY || 'Helambu') + ' (Master HQ)';
+        if (isSuper) {
+          muniLabel.textContent = 'SaaS Master HQ';
         } else if (currentUser.Ward && currentUser.Ward !== 'All') {
           muniLabel.textContent = `Ward ${currentUser.Ward} Workspace`;
         } else {
@@ -2751,14 +2779,13 @@
         }
       }
 
-      // Hide admin-only sections for regular field workers
-      const isSuper = currentUser.Role === 'Super Admin';
-      const isWardAdmin = currentUser.Role.includes('Coordinator') || isSuper || currentUser.Role === 'Palika Admin';
-      const settingsNav = document.getElementById('navItemSettings');
-      if (settingsNav) settingsNav.style.display = isSuper ? 'flex' : 'none';
-
-      const tenantsNav = document.getElementById('navItemTenants');
-      if (tenantsNav) tenantsNav.style.display = isSuper ? 'flex' : 'none';
+      // Role-Based Sidebar Navigation Scoping
+      document.querySelectorAll('.saas-only').forEach(el => {
+        el.style.display = isSuper ? (el.classList.contains('nav-group-title') ? 'block' : 'flex') : 'none';
+      });
+      document.querySelectorAll('.palika-only').forEach(el => {
+        el.style.display = isSuper ? 'none' : (el.classList.contains('nav-group-title') ? 'block' : 'flex');
+      });
 
       populateWardDropdowns();
       refreshDashboardMetrics();
@@ -2776,6 +2803,13 @@
       renderActivityTimeline();
       if (isSuper) renderTenantsManagement();
       renderReportsView();
+
+      // Auto route to appropriate landing view
+      if (isSuper) {
+        switchView('tenants');
+      } else {
+        switchView('dashboard');
+      }
     }
 
     function logout() {
@@ -2991,48 +3025,54 @@
       tbody.innerHTML = list.map(v => `
         <tr>
           <td>
-            <div style="font-weight: 700; color: var(--slate-900);">${esc(v.Name)}</div>
+            <div style="font-weight: 700; color: var(--navy-900); cursor: pointer;" onclick="viewVoterProfile('${v.VoterID}')" title="प्रोफाइल हेर्न क्लिक गर्नुहोस्">
+              👉 ${esc(v.Name)}
+            </div>
             <div style="font-size: 12.5px; color: var(--slate-600); display: flex; align-items: center; gap: 6px; margin-top: 3px;">
               <span>${esc(v.Phone || 'No Phone')}</span>
               ${v.Phone ? `
                 <a href="tel:${cleanPhone(v.Phone)}" title="Call Now" style="text-decoration: none; font-size: 14px;">📞</a>
-                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" title="WhatsApp Message" style="text-decoration: none; font-size: 14px;">🟢</a>
+                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" title="WhatsApp Message" style="text-decoration: none; font-size: 14px;" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">🟢</a>
                 <a href="javascript:void(0)" onclick="openCustomMessageModal('${v.VoterID}')" title="Custom Personalized Message" style="text-decoration: none; font-size: 14px;">💬</a>
               ` : ''}
-              ${isTodayBirthday(v.DOB) ? `<span title="Today is Birthday! (${calculateAge(v.DOB)} yrs)" style="cursor: pointer; font-size: 14px;" onclick="openBirthdayWishModal('${v.VoterID}')">🎂</span>` : ''}
+              ${isTodayBirthday(v.DOB) ? `<span title="आज जन्मदिन! (${calculateAge(v.DOB)} वर्ष)" style="cursor: pointer; font-size: 14px;" onclick="openBirthdayWishModal('${v.VoterID}')">🎂</span>` : ''}
               <span>• ${esc(v.Gender || '-')}</span>
             </div>
           </td>
           <td>
-            <div>Ward ${v.Ward}</div>
-            <div style="font-size: 12px; color: var(--slate-600);">${esc(v.Tole || '-')}</div>
+            <div style="cursor: pointer;" onclick="filterByWard(${v.Ward})" title="वडा ${v.Ward} अनुसार फिल्टर गर्न क्लिक गर्नुहोस्">
+              <span class="badge" style="background: #e0e7ff; color: #3730a3; font-weight: 700;">वडा ${v.Ward} 🔍</span>
+            </div>
+            <div style="font-size: 12px; color: var(--slate-600); cursor: pointer; text-decoration: underline dotted; margin-top: 3px;" onclick="filterByTole('${esc(v.Tole)}')" title="टोल खोज्न क्लिक गर्नुहोस्">
+              ${esc(v.Tole || '-')}
+            </div>
           </td>
           <td>
             <div>Booth ${esc(v.BoothNo || '-')}</div>
-            <div style="font-size: 12px; color: var(--slate-600);">Serial: ${esc(v.VoterSerial || '-')}</div>
+            <div style="font-size: 12px; color: var(--slate-600);">क्र.सं: ${esc(v.VoterSerial || '-')}</div>
           </td>
           <td>
             <span class="badge ${v.ContactStatus === 'Contacted' ? 'badge-contacted' : 'badge-notcontacted'}">
               ${v.ContactStatus || 'Not Contacted'}
             </span>
           </td>
-          <td>${v.SelfReportedResponse ? `<span class="badge badge-verified">${v.SelfReportedResponse}</span>` : '-'}</td>
+          <td>
+            <div style="cursor: pointer;" onclick="quickCycleParty('${v.VoterID}')" title="क्लिक गरी पार्टी झुकाव परिवर्तन गर्नुहोस्">
+              ${getPartyLabel(v.PartyLeaning)} 🔄
+            </div>
+          </td>
           <td>
             <span class="badge ${v.VerificationStatus === 'Verified' ? 'badge-verified' : 'badge-pending'}" 
                   style="cursor: pointer;" 
-                  title="Click to toggle Verified / Pending"
+                  title="क्लिक गरी Verified / Pending बदल्नुहोस्"
                   onclick="toggleVoterVerification('${v.VoterID}')">
-              ${v.VerificationStatus === 'Verified' ? '✓ Verified' : '⏳ Pending'}
+              ${v.VerificationStatus === 'Verified' ? '✓ Verified' : '⏳ Pending'} 🔄
             </span>
           </td>
           <td>
             <div style="display: flex; gap: 6px;">
-              ${v.VerificationStatus !== 'Verified' ? 
-                `<button class="btn btn-sm btn-success" onclick="quickVerifyVoter('${v.VoterID}')" title="Mark Verified">✓ Verify</button>` : 
-                `<button class="btn btn-sm btn-secondary" onclick="quickTogglePending('${v.VoterID}')" title="Change to Pending">Undo</button>`
-              }
-              <button class="btn btn-sm btn-secondary" onclick="viewVoterProfile('${v.VoterID}')">Profile</button>
-              <button class="btn btn-sm btn-secondary" onclick="printVoterSlip('${v.VoterID}')" title="Print Voter Slip (मतदाता पर्चा)">🖨️ पर्चा</button>
+              <button class="btn btn-sm btn-secondary" onclick="viewVoterProfile('${v.VoterID}')" style="font-weight: 700;">Profile</button>
+              <button class="btn btn-sm btn-secondary" onclick="printVoterSlip('${v.VoterID}')" title="मतदाता पर्चा">🖨️ पर्चा</button>
               <button class="btn btn-sm btn-primary" onclick="openRecordVisitModal('${v.VoterID}')">Visit</button>
             </div>
           </td>
@@ -3051,34 +3091,39 @@
         <div class="voter-card">
           <div class="voter-card-top">
             <div>
-              <div class="voter-card-title">${esc(v.Name)}</div>
+              <div class="voter-card-title" style="cursor: pointer;" onclick="viewVoterProfile('${v.VoterID}')" title="प्रोफाइल हेर्न क्लिक गर्नुहोस्">
+                👉 ${esc(v.Name)}
+              </div>
               <div class="voter-card-phone" style="display: flex; align-items: center; gap: 8px;">
                 <span>📞 ${esc(v.Phone || 'No Phone')}</span>
                 ${v.Phone ? `
                   <a href="tel:${cleanPhone(v.Phone)}" title="Call" style="text-decoration: none; font-size: 14px;">📞</a>
-                  <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" title="WhatsApp" style="text-decoration: none; font-size: 14px;">🟢</a>
+                  <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" title="WhatsApp" style="text-decoration: none; font-size: 14px;" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">🟢</a>
                   <a href="javascript:void(0)" onclick="openCustomMessageModal('${v.VoterID}')" title="Custom Message" style="text-decoration: none; font-size: 14px;">💬</a>
                 ` : ''}
-                ${isTodayBirthday(v.DOB) ? `<span title="Birthday Today!" style="cursor: pointer; font-size: 14px;" onclick="openBirthdayWishModal('${v.VoterID}')">🎂</span>` : ''}
+                ${isTodayBirthday(v.DOB) ? `<span title="आज जन्मदिन!" style="cursor: pointer; font-size: 14px;" onclick="openBirthdayWishModal('${v.VoterID}')">🎂</span>` : ''}
               </div>
             </div>
             <span class="badge ${v.VerificationStatus === 'Verified' ? 'badge-verified' : 'badge-pending'}"
                   style="cursor: pointer;"
-                  title="Click to toggle Verified / Pending"
+                  title="क्लिक गरी Verified / Pending बदल्नुहोस्"
                   onclick="toggleVoterVerification('${v.VoterID}')">
-              ${v.VerificationStatus === 'Verified' ? '✓ Verified' : '⏳ Pending'}
+              ${v.VerificationStatus === 'Verified' ? '✓ Verified' : '⏳ Pending'} 🔄
             </span>
           </div>
-          <div style="font-size: 13px; color: var(--slate-600); margin-bottom: 12px;">
-            <div>Ward ${v.Ward} • ${esc(v.Tole || 'Area')}</div>
+          <div style="font-size: 13px; color: var(--slate-600); margin-bottom: 8px;">
+            <div>
+              <span style="cursor: pointer; font-weight: 700; color: var(--indigo-600);" onclick="filterByWard(${v.Ward})">वडा ${v.Ward} 🔍</span> • 
+              <span style="cursor: pointer; text-decoration: underline dotted;" onclick="filterByTole('${esc(v.Tole)}')">${esc(v.Tole || 'Area')}</span>
+            </div>
             <div>Booth ${esc(v.BoothNo || '-')} • Serial: ${esc(v.VoterSerial || '-')}</div>
+          </div>
+          <div style="margin-bottom: 10px; cursor: pointer;" onclick="quickCycleParty('${v.VoterID}')" title="क्लिक गरी पार्टी बदल्नुहोस्">
+            ${getPartyLabel(v.PartyLeaning)} 🔄
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; pt-2; border-top: 1px solid var(--slate-200); padding-top: 10px;">
             <span class="badge ${v.ContactStatus === 'Contacted' ? 'badge-contacted' : 'badge-notcontacted'}">${v.ContactStatus}</span>
             <div style="display: flex; gap: 6px;">
-              ${v.VerificationStatus !== 'Verified' ? 
-                `<button class="btn btn-sm btn-success" onclick="quickVerifyVoter('${v.VoterID}')">✓ Verify</button>` : ''
-              }
               <button class="btn btn-sm btn-secondary" onclick="viewVoterProfile('${v.VoterID}')">View</button>
               <button class="btn btn-sm btn-secondary" onclick="printVoterSlip('${v.VoterID}')" title="Print Slip">🖨️ पर्चा</button>
               <button class="btn btn-sm btn-primary" onclick="openRecordVisitModal('${v.VoterID}')">Visit</button>
@@ -3097,142 +3142,807 @@
     }
 
     // ==========================================
-    // 7. VOTER PROFILE MODAL (TABS)
+    // CLICKABLE FILTER & QUICK HELPERS
     // ==========================================
-    function viewVoterProfile(id) {
+    function filterByWard(wardNo) {
+      switchView('voters');
+      const sel = document.getElementById('voterWardFilter');
+      if (sel) {
+        sel.value = String(wardNo);
+        renderVotersList();
+        showToast(`वडा ${wardNo} का मतदाताहरू फिल्टर गरियो।`, 'info');
+      }
+    }
+
+    function filterByTole(toleName) {
+      if (!toleName || toleName === '-') return;
+      switchView('voters');
+      const search = document.getElementById('voterSearch');
+      if (search) {
+        search.value = toleName;
+        renderVotersList();
+        showToast(`टोल "${toleName}" का मतदाताहरू खोजियो।`, 'info');
+      }
+    }
+
+    function quickCycleParty(voterId, activeTab = '') {
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+      const parties = ['UML', 'Congress', 'RSP', 'Maoist', 'RPP', 'Independent', 'Undecided'];
+      const curIdx = parties.indexOf(v.PartyLeaning);
+      const nextIdx = (curIdx + 1) % parties.length;
+      v.PartyLeaning = parties[nextIdx];
+      saveState();
+      refreshDashboardMetrics();
+      renderVotersList();
+      showToast(`${v.Name} को पार्टी झुकाव: ${getPartyLabel(v.PartyLeaning)} मा सेट भयो।`, 'success');
+      
+      const modal = document.getElementById('modalOverlay');
+      if (modal && modal.classList.contains('active')) {
+        viewVoterProfile(voterId, activeTab || 'overview');
+      }
+    }
+
+    function copyTextToClipboard(text) {
+      navigator.clipboard.writeText(text);
+      showToast('सन्देश क्लिपबोर्डमा प्रतिलिपि (Copy) भयो!', 'success');
+    }
+
+    function getRelationBadge(relation) {
+      const rel = relation || 'परिवार सदस्य';
+      let icon = '👥';
+      let bg = '#f1f5f9';
+      let color = '#334155';
+      if (rel.includes('घरमुली')) { icon = '👑'; bg = '#fef3c7'; color = '#92400e'; }
+      else if (rel.includes('बुबा')) { icon = '👨'; bg = '#e0e7ff'; color = '#3730a3'; }
+      else if (rel.includes('आमा')) { icon = '👩'; bg = '#fce7f3'; color = '#9d174d'; }
+      else if (rel.includes('पति') || rel.includes('पत्नी')) { icon = '💍'; bg = '#fdf2f8'; color = '#be185d'; }
+      else if (rel.includes('छोरा')) { icon = '👦'; bg = '#e0f2fe'; color = '#0369a1'; }
+      else if (rel.includes('छोरी')) { icon = '👧'; bg = '#fce7f3'; color = '#be185d'; }
+      else if (rel.includes('दाजु') || rel.includes('भाइ')) { icon = '👬'; bg = '#f0fdf4'; color = '#15803d'; }
+      else if (rel.includes('दिदी') || rel.includes('बहिनी')) { icon = '👭'; bg = '#faf5ff'; color = '#7e22ce'; }
+      else if (rel.includes('नाति')) { icon = '👶'; bg = '#fef9c3'; color = '#854d0e'; }
+      return `<span class="badge" style="background: ${bg}; color: ${color}; font-weight: 700; border: 1px solid rgba(0,0,0,0.08);">${icon} ${esc(rel)}</span>`;
+    }
+
+    function getFamilyMembers(voter) {
+      if (!voter) return [];
+      const list = [];
+      const hh = voter.HouseholdID ? state.households.find(h => h.HouseholdID === voter.HouseholdID) : null;
+      const headName = hh ? hh.PrimaryContactName : '';
+
+      // 1. Current voter
+      list.push({
+        ...voter,
+        isCurrent: true,
+        isRegisteredVoter: true,
+        relation: voter.FamilyRelation || (headName === voter.Name ? 'घरमुली' : 'सदस्य')
+      });
+
+      // 2. Matching other voters in same household or house number
+      const others = state.voters.filter(x => {
+        if (x.VoterID === voter.VoterID) return false;
+        if (voter.HouseholdID && x.HouseholdID === voter.HouseholdID) return true;
+        if (voter.HouseNo && x.HouseNo && voter.HouseNo === x.HouseNo && voter.Ward == x.Ward) return true;
+        return false;
+      });
+
+      others.forEach(x => {
+        list.push({
+          ...x,
+          isCurrent: false,
+          isRegisteredVoter: true,
+          relation: x.FamilyRelation || (headName === x.Name ? 'घरमुली' : 'परिवार सदस्य')
+        });
+      });
+
+      // 3. Custom family members (minors or non-registered relatives)
+      if (Array.isArray(voter.CustomFamily)) {
+        voter.CustomFamily.forEach((cf, idx) => {
+          list.push({
+            VoterID: 'CUSTOM_' + idx,
+            Name: cf.Name,
+            Phone: cf.Phone || '',
+            Gender: cf.Gender || '',
+            DOB: cf.DOB || '',
+            Age: cf.Age || '',
+            PartyLeaning: cf.PartyLeaning || 'Undecided',
+            relation: cf.Relation || 'परिवार सदस्य',
+            isCurrent: false,
+            isRegisteredVoter: false,
+            customIdx: idx
+          });
+        });
+      }
+
+      return list;
+    }
+
+    function getFamilyConsensus(members) {
+      const tally = { UML: 0, Congress: 0, RSP: 0, Maoist: 0, RPP: 0, Independent: 0, Undecided: 0 };
+      members.forEach(m => {
+        const p = m.PartyLeaning || 'Undecided';
+        if (tally[p] !== undefined) tally[p]++;
+        else tally.Undecided++;
+      });
+      return tally;
+    }
+
+    // ==========================================
+    // 7. MODERN 4-TAB VOTER PROFILE MODAL
+    // ==========================================
+    function viewVoterProfile(id, activeTab = 'overview') {
       const v = state.voters.find(x => x.VoterID === id);
       if (!v) return;
 
       const visits = state.visits.filter(x => x.VoterID === id);
       const followups = state.followups.filter(x => x.VoterID === id);
-      const household = v.HouseholdID ? state.households.find(h => h.HouseholdID === v.HouseholdID) : null;
+      const household = v.HouseholdID ? state.households.find(h => h.HouseholdID === v.HouseholdID) : 
+        (v.HouseNo ? state.households.find(h => h.HouseNo === v.HouseNo && h.WardNo == v.Ward) : null);
+      const booth = state.booths.find(b => b.BoothCode === v.BoothNo && b.WardNo == v.Ward);
+      const familyMembers = getFamilyMembers(v);
+      const daysToBday = getDaysUntilBirthday(v.DOB);
+
+      const bdayBadge = daysToBday === 0 ? 
+        `<span class="badge" style="background: #fef08a; color: #854d0e; font-weight: 700; cursor: pointer;" onclick="openBirthdayWishModal('${v.VoterID}')">🎂 आज जन्मदिन! 🎉</span>` :
+        (daysToBday !== null && daysToBday <= 7 ? `<span class="badge" style="background: #fef9c3; color: #a16207; font-weight: 600;">🎂 जन्मदिन ${daysToBday} दिनमा</span>` : '');
+
+      const initial = (v.Name || 'V').trim().charAt(0).toUpperCase();
 
       openModal(
-        `Contact Profile: ${v.Name}`,
+        `मतदाता प्रोफाइल: ${v.Name}`,
         `
-        <div style="display: flex; gap: 8px; border-bottom: 1px solid var(--slate-200); margin-bottom: 18px; padding-bottom: 10px; flex-wrap: wrap;">
-          <button class="btn btn-sm btn-secondary active">Overview</button>
-          ${v.VerificationStatus !== 'Verified' ? 
-            `<button class="btn btn-sm btn-success" onclick="quickVerifyVoter('${v.VoterID}'); viewVoterProfile('${v.VoterID}');">✓ Mark as Verified</button>` : 
-            `<button class="btn btn-sm btn-secondary" onclick="quickTogglePending('${v.VoterID}'); viewVoterProfile('${v.VoterID}');">Set as Pending</button>`
-          }
-          <button class="btn btn-sm btn-secondary" onclick="openRecordVisitModal('${v.VoterID}')">+ Add Visit</button>
-          <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')">✏️ Edit / Social Links</button>
+        <!-- TOP PROFILE HEADER CARD -->
+        <div style="background: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px; border: 1px solid var(--slate-200);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 14px; align-items: center;">
+              <div style="width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); color: white; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);">
+                ${initial}
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <h2 style="margin: 0; font-size: 19px; font-weight: 800; color: var(--navy-900);">${esc(v.Name)}</h2>
+                  <span style="font-size: 12px; color: var(--slate-500); font-weight: 600;">(${esc(v.VoterID)})</span>
+                  ${bdayBadge}
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap;">
+                  <!-- Clickable Ward Badge -->
+                  <span class="badge" style="cursor: pointer; background: #e0e7ff; color: #3730a3; font-weight: 700;" onclick="closeModal(); filterByWard(${v.Ward});" title="वडा ${v.Ward} का मतदाता फिल्टर गर्न क्लिक गर्नुहोस्">
+                    🏛️ वडा ${v.Ward} 🔍
+                  </span>
+                  <!-- Clickable Tole Badge -->
+                  ${v.Tole ? `
+                    <span class="badge" style="cursor: pointer; background: #f1f5f9; color: #334155; font-weight: 600;" onclick="closeModal(); filterByTole('${esc(v.Tole)}');" title="टोल खोज्न क्लिक गर्नुहोस्">
+                      📍 ${esc(v.Tole)} 🔍
+                    </span>
+                  ` : ''}
+                  <!-- Booth & Serial -->
+                  <span class="badge" style="background: #f8fafc; border: 1px solid var(--slate-300); color: var(--slate-700);">
+                    🗳️ बुथ ${esc(v.BoothNo || '-')} • क्र.सं. ${esc(v.VoterSerial || '-')}
+                  </span>
+                  <!-- Clickable Party Leaning Badge (Cycles party on click) -->
+                  <span class="badge" style="cursor: pointer; background: white; border: 1.5px solid #94a3b8; font-weight: 700;" onclick="quickCycleParty('${v.VoterID}', '${activeTab}');" title="क्लिक गरी पार्टी झुकाव परिवर्तन गर्नुहोस्">
+                    ${getPartyLabel(v.PartyLeaning)} 🔄
+                  </span>
+                  <!-- Clickable Verification Badge -->
+                  <span class="badge ${v.VerificationStatus === 'Verified' ? 'badge-verified' : 'badge-pending'}" style="cursor: pointer;" onclick="toggleVoterVerification('${v.VoterID}'); viewVoterProfile('${v.VoterID}', '${activeTab}');" title="क्लिक गरी स्थिति बदल्नुहोस्">
+                    ${v.VerificationStatus === 'Verified' ? '✓ प्रमाणित (Verified)' : '⏳ बाँकी (Pending)'} 🔄
+                  </span>
+                </div>
+              </div>
+            </div>
+            <!-- Quick Action Buttons -->
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              ${v.Phone ? `
+                <a href="tel:${cleanPhone(v.Phone)}" class="btn btn-sm btn-primary" style="text-decoration: none; background: #059669; border-color: #059669; font-size: 12px; padding: 6px 10px;" title="सिधा फोन गर्नुहोस्">
+                  📞 फोन
+                </a>
+                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" class="btn btn-sm btn-success" style="text-decoration: none; background: #25D366; border-color: #25D366; color: white; font-size: 12px; padding: 6px 10px;" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">
+                  🟢 WhatsApp
+                </a>
+              ` : ''}
+              <button class="btn btn-sm btn-secondary" onclick="printVoterSlip('${v.VoterID}')" style="font-weight: 700; font-size: 12px; padding: 6px 10px;">
+                🖨️ पर्चा
+              </button>
+              <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; padding: 6px 10px;">
+                ✏️ Edit
+              </button>
+            </div>
+          </div>
         </div>
 
-        <!-- DIRECT COMMUNICATION ACTIONS (Direct Call, WhatsApp, SMS, Facebook, TikTok) -->
-        <div style="background: var(--slate-100); border: 1px solid var(--slate-200); padding: 14px; border-radius: var(--radius-md); margin-bottom: 20px;">
-          <div style="font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--slate-600); margin-bottom: 10px;">
-            ⚡ Quick Direct Communication & Social (सिधा सम्पर्क र सामाजिक सञ्जाल)
+        <!-- 4-TAB NAVIGATION STRIP -->
+        <div style="display: flex; gap: 8px; border-bottom: 2px solid var(--slate-200); margin-bottom: 16px; overflow-x: auto; padding-bottom: 6px;">
+          <button class="btn btn-sm ${activeTab === 'overview' ? 'btn-primary' : 'btn-secondary'}" onclick="viewVoterProfile('${v.VoterID}', 'overview')" style="font-weight: 700;">
+            📋 व्यक्तिगत विवरण (Bio)
+          </button>
+          <button class="btn btn-sm ${activeTab === 'family' ? 'btn-primary' : 'btn-secondary'}" onclick="viewVoterProfile('${v.VoterID}', 'family')" style="font-weight: 700;">
+            🌳 पारिवारिक संरचना (${familyMembers.length})
+          </button>
+          <button class="btn btn-sm ${activeTab === 'timeline' ? 'btn-primary' : 'btn-secondary'}" onclick="viewVoterProfile('${v.VoterID}', 'timeline')" style="font-weight: 700;">
+            🕒 मतदाता टाइमलाइन (${visits.length + followups.length})
+          </button>
+          <button class="btn btn-sm ${activeTab === 'comm' ? 'btn-primary' : 'btn-secondary'}" onclick="viewVoterProfile('${v.VoterID}', 'comm')" style="font-weight: 700;">
+            💬 सञ्चार र पर्चा (Outreach)
+          </button>
+        </div>
+
+        <!-- TAB BODY CONTENT -->
+        <div id="voterTabContent">
+          ${activeTab === 'overview' ? renderVoterOverviewTab(v, booth, household) : ''}
+          ${activeTab === 'family' ? renderVoterFamilyTab(v, familyMembers, household) : ''}
+          ${activeTab === 'timeline' ? renderVoterTimelineTab(v, visits, followups) : ''}
+          ${activeTab === 'comm' ? renderVoterCommTab(v, booth) : ''}
+        </div>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस् (Close)</button>`,
+        'modal-xl'
+      );
+    }
+
+    // TAB 1: OVERVIEW & BIO
+    function renderVoterOverviewTab(v, booth, household) {
+      const age = calculateAge(v.DOB);
+      return `
+        <div class="form-grid" style="margin-bottom: 18px;">
+          <div class="form-group">
+            <span class="form-label">पूरा नाम (Full Name)</span>
+            <b style="font-size: 15px; color: var(--navy-900);">${esc(v.Name)}</b>
           </div>
-            <button onclick="printVoterSlip('${v.VoterID}')" class="btn btn-sm btn-secondary" style="background: white; border: 1.5px solid var(--navy-900); font-weight: 700;">
-              🖨️ मतदाता पर्चा प्रिन्ट (Print Slip)
-            </button>
-            ${v.Phone ? `
-              <button onclick="openCustomMessageModal('${v.VoterID}')" class="btn btn-sm btn-primary" style="background: #4f46e5; border-color: #4f46e5;">
-                💬 Custom Message (व्यक्तिगत सन्देश)
-              </button>
-              <a href="tel:${cleanPhone(v.Phone)}" class="btn btn-sm btn-primary" style="text-decoration: none; background: #059669; border-color: #059669;">
-                📞 Direct Call
-              </a>
-              <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" class="btn btn-sm btn-success" style="text-decoration: none; background: #25D366; border-color: #25D366; color: white;" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp सन्देश पठाइयो।')">
-                🟢 WhatsApp
-              </a>
-              <a href="sms:${cleanPhone(v.Phone)}?body=${encodeURIComponent(getSmsTemplate(v))}" class="btn btn-sm btn-secondary" style="text-decoration: none;" onclick="logActivity('message', '${esc(v.Name)} लाई SMS पठाइयो।')">
-                💬 Native SMS
-              </a>
-            ` : ''}
+          <div class="form-group">
+            <span class="form-label">सम्पर्क फोन (Phone Number)</span>
+            <div>
+              ${v.Phone ? `
+                <a href="tel:${cleanPhone(v.Phone)}" style="color: #059669; font-weight: 700; text-decoration: none; font-size: 15px;">📞 ${esc(v.Phone)}</a>
+                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" style="margin-left: 6px; text-decoration: none;">🟢 WhatsApp</a>
+              ` : '<span style="color: var(--slate-500);">फोन उपलब्ध छैन</span>'}
+            </div>
+          </div>
+          <div class="form-group">
+            <span class="form-label">🎂 जन्म मिति / उमेर (DOB & Age)</span>
+            <b>${v.DOB ? `${v.DOB} (${age ? `${age} वर्ष` : ''})` : (v.AgeGroup || '-')}</b>
+          </div>
+          <div class="form-group">
+            <span class="form-label">लिंग (Gender)</span>
+            <b>${esc(v.Gender || '-')}</b>
+          </div>
+          <div class="form-group">
+            <span class="form-label">स्थानीय ठेगाना (Ward, Tole, House)</span>
+            <b>वडा नं. ${v.Ward} • ${esc(v.Tole || '-')} • घर नं: ${esc(v.HouseNo || (household ? household.HouseNo : '-'))}</b>
+          </div>
+          <div class="form-group">
+            <span class="form-label">मतदान केन्द्र र बुथ (Booth & Serial)</span>
+            <b>बुथ ${esc(v.BoothNo || '-')} (${booth ? esc(booth.BoothName) : 'केन्द्र'}) • क्र.सं. ${esc(v.VoterSerial || '-')}</b>
+          </div>
+          <div class="form-group">
+            <span class="form-label">🚩 पार्टी झुकाव (Party Leaning)</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <b>${getPartyLabel(v.PartyLeaning)}</b>
+              <button class="btn btn-sm btn-secondary" onclick="quickCycleParty('${v.VoterID}', 'overview')" style="padding: 2px 8px; font-size: 11px;">🔄 बदल्नुहोस्</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <span class="form-label">स्व-घोषित अवस्था (Self-Reported Sentiment)</span>
+            <b>${esc(v.SelfReportedResponse || 'कुनै दर्ता नभएको')}</b>
+          </div>
+          <div class="form-group">
+            <span class="form-label">🏠 जोडिएको घरधुरी (Linked Household)</span>
+            <div>
+              ${household ? `
+                <a href="javascript:void(0)" onclick="viewVoterProfile('${v.VoterID}', 'family')" style="font-weight: 700; color: var(--indigo-600); text-decoration: underline;">
+                  🏠 ${esc(household.HouseholdID)} (घर नं: ${esc(household.HouseNo || '-')})
+                </a>
+              ` : `
+                <button class="btn btn-sm btn-secondary" onclick="openLinkFamilyModal('${v.VoterID}')">+ घरधुरी / परिवार जोड्नुहोस्</button>
+              `}
+            </div>
+          </div>
+          <div class="form-group">
+            <span class="form-label">सम्पर्क स्थिति (Field Contact)</span>
+            <div><span class="badge ${v.ContactStatus === 'Contacted' ? 'badge-contacted' : 'badge-notcontacted'}">${v.ContactStatus || 'Not Contacted'}</span></div>
+          </div>
+        </div>
+
+        <!-- Social Media Cards -->
+        <div style="background: var(--slate-100); border: 1px solid var(--slate-200); padding: 14px; border-radius: var(--radius-sm); margin-top: 10px;">
+          <div style="font-size: 12px; font-weight: 700; color: var(--slate-700); text-transform: uppercase; margin-bottom: 8px;">
+            🌐 सामाजिक सञ्जाल प्रोफाइल (Social Presence)
+          </div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
             ${v.FacebookUrl ? `
-              <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" class="btn btn-sm btn-secondary" style="text-decoration: none; color: #1877F2; font-weight: 700;">
+              <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" class="btn btn-sm btn-secondary" style="color: #1877F2; font-weight: 700; text-decoration: none;">
                 📘 Facebook Profile
               </a>
             ` : (v.Phone ? `
-              <a href="https://www.facebook.com/search/top/?q=${encodeURIComponent(cleanPhone(v.Phone))}" target="_blank" class="btn btn-sm btn-secondary" style="text-decoration: none; color: #1877F2;">
-                🌐 Facebook Search
+              <a href="https://www.facebook.com/search/top/?q=${encodeURIComponent(cleanPhone(v.Phone))}" target="_blank" class="btn btn-sm btn-secondary" style="color: #1877F2; text-decoration: none;">
+                🌐 Facebook Search (${v.Phone})
               </a>
-            ` : '')}
+            ` : '<span style="color: var(--slate-500); font-size: 12px;">Facebook लिङ्क छैन</span>')}
             ${v.TiktokUrl ? `
-              <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" class="btn btn-sm btn-secondary" style="text-decoration: none; color: #000; font-weight: 700; background: white; border-color: #cbd5e1;">
+              <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" class="btn btn-sm btn-secondary" style="color: #000; font-weight: 700; text-decoration: none;">
                 🎵 TikTok Profile
               </a>
-            ` : ''}
-            ${!v.FacebookUrl || !v.TiktokUrl ? `
-              <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')">+ Add FB/TikTok</button>
-            ` : ''}
+            ` : '<span style="color: var(--slate-500); font-size: 12px;">TikTok लिङ्क छैन</span>'}
+            <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')">+ सम्पादन / थप</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // TAB 2: FAMILY TREE & HOUSEHOLD LAYER
+    function renderVoterFamilyTab(v, familyMembers, household) {
+      const tally = getFamilyConsensus(familyMembers);
+      const badges = [];
+      if (tally.UML > 0) badges.push(`<span class="badge" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; font-weight:700;">🔴 एमाले: ${tally.UML} जना</span>`);
+      if (tally.Congress > 0) badges.push(`<span class="badge" style="background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; font-weight:700;">🔵 कांग्रेस: ${tally.Congress} जना</span>`);
+      if (tally.RSP > 0) badges.push(`<span class="badge" style="background:#f0f9ff; color:#0369a1; border:1px solid #bae6fd; font-weight:700;">🔔 रास्वपा: ${tally.RSP} जना</span>`);
+      if (tally.Maoist > 0) badges.push(`<span class="badge" style="background:#fef2f2; color:#991b1b; border:1px solid #fecaca; font-weight:700;">🔴 माओवादी: ${tally.Maoist} जना</span>`);
+      if (tally.RPP > 0) badges.push(`<span class="badge" style="background:#fffbeb; color:#b45309; border:1px solid #fde68a; font-weight:700;">🟡 राप्रपा: ${tally.RPP} जना</span>`);
+      if (tally.Independent > 0) badges.push(`<span class="badge" style="background:#f8fafc; color:#475569; border:1px solid #cbd5e1; font-weight:700;">⚪ स्वतन्त्र: ${tally.Independent} जना</span>`);
+      if (tally.Undecided > 0) badges.push(`<span class="badge" style="background:#fffbeb; color:#d97706; border:1px solid #fde68a; font-weight:700;">❓ अनिर्णित: ${tally.Undecided} जना</span>`);
+
+      const headName = household ? household.PrimaryContactName : (v.FamilyRelation === 'घरमुली' ? v.Name : 'अनिर्दिष्ट');
+
+      return `
+        <!-- HOUSEHOLD METADATA BANNER -->
+        <div style="background: linear-gradient(135deg, #f0fdf4 0%, #e6f7ec 100%); border: 1.5px solid #bbf7d0; border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <div style="font-size: 16px; font-weight: 800; color: #166534; display: flex; align-items: center; gap: 8px;">
+                🏠 घरधुरी संरचना (Household Layer): घर नं. ${esc(v.HouseNo || (household ? household.HouseNo : 'तोकिएको छैन'))}
+              </div>
+              <div style="font-size: 13px; color: #15803d; margin-top: 4px;">
+                👑 घरमुली: <b>${esc(headName)}</b> • वडा नं. ${v.Ward}, टोल: ${esc(v.Tole || '-')} • जम्मा परिवार सदस्य: <b>${familyMembers.length} जना</b>
+              </div>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="openLinkFamilyModal('${v.VoterID}')" style="background: #166534; border-color: #166534; font-weight: 700;">
+              ➕ नाता / परिवार सदस्य जोड्नुहोस्
+            </button>
           </div>
         </div>
 
-        <div class="form-grid">
-          <div class="form-group">
-            <span class="form-label">Full Name</span>
-            <b>${esc(v.Name)}</b>
+        <!-- FAMILY POLITICAL CONSENSUS SUMMARY BAR -->
+        <div style="background: white; border: 1px solid var(--slate-200); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 18px; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--slate-600); margin-bottom: 8px;">
+            📊 परिवारको राजनीतिक झुकाव विश्लेषण (Family Vote Breakdown):
           </div>
-          <div class="form-group">
-            <span class="form-label">Phone</span>
-            <b>${esc(v.Phone || '-')}</b>
-          </div>
-          <div class="form-group">
-            <span class="form-label">🎂 Date of Birth / Age</span>
-            <b>${v.DOB ? `${v.DOB} (${calculateAge(v.DOB)} वर्ष)` : (v.AgeGroup || '-')}</b>
-          </div>
-          <div class="form-group">
-            <span class="form-label">Ward & Tole</span>
-            <b>Ward ${v.Ward} • ${esc(v.Tole || '-')}</b>
-          </div>
-          <div class="form-group">
-            <span class="form-label">Booth & Serial</span>
-            <b>Booth ${esc(v.BoothNo || '-')} • Serial: ${esc(v.VoterSerial || '-')}</b>
-          </div>
-          <div class="form-group">
-            <span class="form-label">Verification</span>
-            <span class="badge ${v.VerificationStatus === 'Verified' ? 'badge-verified' : 'badge-pending'}">${v.VerificationStatus}</span>
-          </div>
-          <div class="form-group">
-            <span class="form-label">Self-reported Response</span>
-            <b>${esc(v.SelfReportedResponse || 'None Recorded')}</b>
-          </div>
-          <div class="form-group">
-            <span class="form-label">🚩 Party Leaning (पार्टी झुकाव)</span>
-            <b>${getPartyLabel(v.PartyLeaning)}</b>
-          </div>
-          <div class="form-group">
-            <span class="form-label">Facebook Profile</span>
-            <div>${v.FacebookUrl ? `<a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" style="color: #1877F2; text-decoration: none; font-weight: 700;">📘 ${esc(v.FacebookUrl)}</a>` : '<span style="color: var(--slate-600);">-</span>'}</div>
-          </div>
-          <div class="form-group">
-            <span class="form-label">TikTok Profile</span>
-            <div>${v.TiktokUrl ? `<a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" style="color: #000; text-decoration: none; font-weight: 700;">🎵 ${esc(v.TiktokUrl)}</a>` : '<span style="color: var(--slate-600);">-</span>'}</div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+            <span class="badge" style="background: var(--navy-900); color: white; font-weight: 800;">👥 जम्मा: ${familyMembers.length} जना</span>
+            ${badges.join(' ')}
           </div>
         </div>
 
-        ${household ? `
-          <div style="background: var(--slate-100); padding: 14px; border-radius: var(--radius-sm); margin: 16px 0;">
-            <div style="font-weight: 700; font-size: 13.5px; margin-bottom: 4px;">🏠 Linked Household (${household.HouseholdID})</div>
-            <div style="font-size: 13px; color: var(--slate-700);">Primary: ${esc(household.PrimaryContactName)} • House No: ${esc(household.HouseNo || '-')}</div>
-          </div>
-        ` : ''}
-
-        <h4 style="margin: 20px 0 10px;">Visit History (${visits.length})</h4>
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr><th>Date</th><th>Outcome</th><th>Self-reported</th><th>Notes</th></tr>
-            </thead>
-            <tbody>
-              ${visits.map(vt => `
-                <tr>
-                  <td>${vt.Date}</td>
-                  <td>${esc(vt.VisitOutcome)}</td>
-                  <td>${esc(vt.SelfReportedResponse || '-')}</td>
-                  <td>${esc(vt.Notes || '-')}</td>
-                </tr>
-              `).join('') || '<tr><td colspan="4" style="color: var(--slate-600);">No visits logged yet.</td></tr>'}
-            </tbody>
-          </table>
+        <!-- FAMILY MEMBERS TREE GRID -->
+        <div style="font-size: 14px; font-weight: 700; color: var(--slate-800); margin-bottom: 10px;">
+          🌳 परिवारका सदस्यहरूको विवरण (Family Tree Nodes):
         </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;">
+          ${familyMembers.map(m => {
+            const isSelf = m.VoterID === v.VoterID;
+            const mAge = m.DOB ? calculateAge(m.DOB) : (m.Age || '');
+            return `
+              <div style="background: ${isSelf ? '#f0fdf4' : 'white'}; border: ${isSelf ? '2px solid #22c55e' : '1px solid var(--slate-300)'}; border-radius: var(--radius-md); padding: 14px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    ${getRelationBadge(m.relation)}
+                    ${isSelf ? '<span class="badge badge-verified" style="font-size: 10.5px;">यो प्रोफाइल (Current)</span>' : ''}
+                  </div>
+                  <div>
+                    ${m.isRegisteredVoter ? `
+                      <a href="javascript:void(0)" onclick="viewVoterProfile('${m.VoterID}', 'family')" style="font-size: 15px; font-weight: 800; color: var(--navy-900); text-decoration: none;" title="यिनको प्रोफाइल खोल्नुहोस्">
+                        👉 ${esc(m.Name)}
+                      </a>
+                    ` : `
+                      <b style="font-size: 15px; color: var(--slate-800);">${esc(m.Name)}</b>
+                      <span style="font-size: 11px; color: var(--slate-500);">(नाबालक / अन्य)</span>
+                    `}
+                  </div>
+                  <div style="font-size: 12.5px; color: var(--slate-600); margin-top: 4px;">
+                    ${mAge ? `उमेर: <b>${mAge} वर्ष</b> • ` : ''} लिंग: ${esc(m.Gender || '-')}
+                  </div>
+                  <div style="font-size: 12.5px; margin-top: 4px;">
+                    ${m.Phone ? `
+                      <a href="tel:${cleanPhone(m.Phone)}" style="color: #059669; text-decoration: none; font-weight: 600;">📞 ${esc(m.Phone)}</a>
+                      <a href="https://wa.me/977${cleanPhone(m.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(m))}" target="_blank" style="text-decoration: none; margin-left: 4px;">🟢</a>
+                    ` : '<span style="color: var(--slate-400);">सम्पर्क फोन छैन</span>'}
+                  </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--slate-200); padding-top: 8px;">
+                  <div style="cursor: pointer;" onclick="${m.isRegisteredVoter ? `quickCycleParty('${m.VoterID}', 'family')` : ''}" title="पार्टी झुकाव">
+                    ${getPartyLabel(m.PartyLeaning)}
+                  </div>
+                  ${!isSelf ? `
+                    <button class="btn btn-sm btn-secondary" onclick="unlinkFamilyMember('${v.VoterID}', '${m.VoterID}', ${m.customIdx ?? 'null'})" style="font-size: 11px; padding: 2px 8px; color: #dc2626;" title="परिवारबाट हटाउनुहोस्">
+                      ✕ हटाउनुहोस्
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    // TAB 3: TIMELINE & VISITS
+    function renderVoterTimelineTab(v, visits, followups) {
+      const logs = state.activities.filter(a => a.Description && (a.Description.includes(v.Name) || a.Description.includes(v.VoterID)));
+      return `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h4 style="margin: 0; font-size: 15px;">🕒 मतदाता भेटघाट र अद्यावधिक इतिहास</h4>
+          <button class="btn btn-sm btn-primary" onclick="openRecordVisitModal('${v.VoterID}')">+ नयाँ भेटघाट दर्ता गर्नुहोस्</button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          ${visits.length ? visits.map(vt => `
+            <div style="background: white; border-left: 4px solid #4f46e5; border-top: 1px solid var(--slate-200); border-right: 1px solid var(--slate-200); border-bottom: 1px solid var(--slate-200); border-radius: var(--radius-sm); padding: 12px 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <b style="color: var(--indigo-600); font-size: 13px;">🏠 घरदैलो भेटघाट सम्पन्न (${vt.Date})</b>
+                <span class="badge badge-contacted">${esc(vt.VisitOutcome || 'Met')}</span>
+              </div>
+              <div style="font-size: 13px; color: var(--slate-700); margin-top: 4px;">
+                प्रतिक्रिया: <b>${esc(vt.SelfReportedResponse || '-')}</b> • फलो-अप: ${esc(vt.FollowUpRequired || 'No')}
+              </div>
+              ${vt.Notes ? `<div style="font-size: 12.5px; color: var(--slate-600); margin-top: 4px; font-style: italic;">"${esc(vt.Notes)}"</div>` : ''}
+            </div>
+          `).join('') : ''}
+
+          ${followups.length ? followups.map(fp => `
+            <div style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: var(--radius-sm); padding: 12px 14px; border: 1px solid #fef3c7;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <b style="color: #b45309; font-size: 13px;">📅 फलो-अप कार्य (Follow-up)</b>
+                <span class="badge ${fp.Status === 'Completed' ? 'badge-verified' : 'badge-pending'}">${fp.Status}</span>
+              </div>
+              <div style="font-size: 13px; color: #78350f; margin-top: 4px;">
+                कारण: <b>${esc(fp.Reason || '-')}</b> • तोकिएको मिति: ${fp.DueDate}
+              </div>
+              ${fp.Notes ? `<div style="font-size: 12px; color: #92400e; margin-top: 3px;">"${esc(fp.Notes)}"</div>` : ''}
+            </div>
+          `).join('') : ''}
+
+          ${logs.length ? logs.map(l => `
+            <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12.5px; color: var(--slate-700);">
+              <span style="font-weight: 700; color: var(--slate-900);">${esc(l.UserName)} (${esc(l.Role)}):</span> ${esc(l.Description)}
+              <div style="font-size: 11px; color: var(--slate-500); margin-top: 3px;">${new Date(l.Timestamp).toLocaleString()}</div>
+            </div>
+          `).join('') : ''}
+
+          ${(!visits.length && !followups.length && !logs.length) ? `
+            <div style="text-align: center; padding: 30px; color: var(--slate-500); background: var(--slate-50); border-radius: var(--radius-sm);">
+              कुनै भेटघाट वा टाइमलाइन विवरण दर्ता भएको छैन। माथिको "+ नयाँ भेटघाट दर्ता गर्नुहोस्" बटन थिच्नुहोस्।
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    // TAB 4: SLIP & COMMUNICATION OUTREACH
+    function renderVoterCommTab(v, booth) {
+      const bdayWish = `आदरणीय ${v.Name} ज्यु, नमस्कार! तपाईंको शुभ जन्मदिनको सुखद अवसरमा सुस्वास्थ्य, दीर्घायु तथा उत्तरोत्तर प्रगतिको हार्दिक मंगलमय शुभकामना व्यक्त गर्दछौं! 💐🎂 - ${state.settings.MUNICIPALITY || 'हेलम्बु'} निर्वाचन परिचालन टिम`;
+      const campaignAppeal = `आदरणीय ${v.Name} ज्यु, नमस्कार! आगामी निर्वाचनमा हाम्रो वडा नं. ${v.Ward} को समग्र विकास र जनहितका लागि हाम्रो पक्षमा अमूल्य मतदान गरी विजयी गराउनुहुन हार्दिक अनुरोध गर्दछौं। धन्यवाद!`;
+      const boothNotice = `आदरणीय ${v.Name} ज्यु, तपाईंको मतदान केन्द्र: ${booth ? booth.BoothName : 'तोकिएको केन्द्र'}, बुथ नं: ${v.BoothNo || 'A'}, मतदाता क्रम संख्या: ${v.VoterSerial || 'N/A'} रहेको छ। मतदानको दिन आफ्नो परिचयपत्र अनिवार्य साथमा लैजानुहोला।`;
+      const thankYouMsg = `आदरणीय ${v.Name} ज्यु, आज हाम्रो चुनावी घरदैलो टोलीसँग भएको सौहार्दपूर्ण भेटघाट र सकारात्मक सल्लाहका लागि हार्दिक धन्यवाद व्यक्त गर्दछौं।`;
+
+      return `
+        <!-- OFFICIAL VOTER SLIP CARD PREVIEW -->
+        <div style="background: #f8fafc; border: 2px dashed #94a3b8; border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <div style="font-size: 15px; font-weight: 800; color: var(--navy-900);">🇳🇵 मतदाता परिचय पर्चा (Official Voter Slip)</div>
+              <div style="font-size: 12px; color: var(--slate-600);">${state.settings.MUNICIPALITY || 'हेलम्बु गाउँपालिका'} • वडा नं. ${v.Ward}</div>
+            </div>
+            <button class="btn btn-primary" onclick="printVoterSlip('${v.VoterID}')" style="font-weight: 800;">
+              🖨️ मतदाता पर्चा प्रिन्ट (Print Slip)
+            </button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; font-size: 13px;">
+            <div>मतदाताको नाम: <b>${esc(v.Name)}</b></div>
+            <div>क्रम संख्या: <b style="color: #dc2626; font-size: 15px;"># ${esc(v.VoterSerial || '-')}</b></div>
+            <div>बुथ नं: <b style="color: #4f46e5;">बुथ ${esc(v.BoothNo || '-')}</b></div>
+            <div>टोल / गाउँ: <b>${esc(v.Tole || '-')}</b></div>
+            <div>उमेर / लिंग: <b>${v.DOB ? `${calculateAge(v.DOB)} वर्ष` : (v.AgeGroup || '-')} • ${esc(v.Gender || '-')}</b></div>
+            <div>फोन: <b>${esc(v.Phone || 'छैन')}</b></div>
+          </div>
+        </div>
+
+        <!-- PRE-DRAFTED OUTREACH TEMPLATES (1-CLICK SEND) -->
+        <div style="font-size: 14px; font-weight: 700; color: var(--slate-800); margin-bottom: 12px;">
+          ⚡ तत्काल सन्देश प्रवाह (Pre-drafted 1-Click WhatsApp & SMS Outreach)
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+          <!-- 1. Birthday Wish -->
+          <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: var(--radius-sm); padding: 12px 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <b style="color: #92400e;">🎂 जन्मदिन शुभकामना सन्देश (Birthday Wish)</b>
+              <div style="display: flex; gap: 6px;">
+                ${v.Phone ? `
+                  <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(bdayWish)}" target="_blank" class="btn btn-sm btn-success" style="text-decoration: none; background: #25D366; border-color: #25D366; font-size: 12px;" onclick="logActivity('message', '${esc(v.Name)} लाई जन्मदिन सन्देश पठाइयो।')">
+                    🟢 WhatsApp
+                  </a>
+                ` : ''}
+                <button class="btn btn-sm btn-secondary" onclick="copyTextToClipboard('${esc(bdayWish)}')" style="font-size: 12px;">📋 Copy</button>
+              </div>
+            </div>
+            <div style="font-size: 12.5px; color: #78350f; line-height: 1.4;">${esc(bdayWish)}</div>
+          </div>
+
+          <!-- 2. Campaign Appeal -->
+          <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-sm); padding: 12px 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <b style="color: #1e40af;">📢 चुनावी अपिल र मतदान अनुरोध (Campaign Appeal)</b>
+              <div style="display: flex; gap: 6px;">
+                ${v.Phone ? `
+                  <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(campaignAppeal)}" target="_blank" class="btn btn-sm btn-success" style="text-decoration: none; background: #25D366; border-color: #25D366; font-size: 12px;" onclick="logActivity('message', '${esc(v.Name)} लाई चुनावी अपिल पठाइयो।')">
+                    🟢 WhatsApp
+                  </a>
+                ` : ''}
+                <button class="btn btn-sm btn-secondary" onclick="copyTextToClipboard('${esc(campaignAppeal)}')" style="font-size: 12px;">📋 Copy</button>
+              </div>
+            </div>
+            <div style="font-size: 12.5px; color: #1e3a8a; line-height: 1.4;">${esc(campaignAppeal)}</div>
+          </div>
+
+          <!-- 3. Booth Notice -->
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 12px 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <b style="color: #166534;">🗳️ मतदान केन्द्र र बुथ जानकारी (Booth Guide)</b>
+              <div style="display: flex; gap: 6px;">
+                ${v.Phone ? `
+                  <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(boothNotice)}" target="_blank" class="btn btn-sm btn-success" style="text-decoration: none; background: #25D366; border-color: #25D366; font-size: 12px;" onclick="logActivity('message', '${esc(v.Name)} लाई बुथ जानकारी पठाइयो।')">
+                    🟢 WhatsApp
+                  </a>
+                ` : ''}
+                <button class="btn btn-sm btn-secondary" onclick="copyTextToClipboard('${esc(boothNotice)}')" style="font-size: 12px;">📋 Copy</button>
+              </div>
+            </div>
+            <div style="font-size: 12.5px; color: #14532d; line-height: 1.4;">${esc(boothNotice)}</div>
+          </div>
+
+          <!-- 4. Post-Visit Thanks -->
+          <div style="background: #faf5ff; border: 1px solid #e9d5ff; border-radius: var(--radius-sm); padding: 12px 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <b style="color: #6b21a8;">🤝 घरदैलो भेटघाट धन्यवाद सन्देश (Visit Thank You)</b>
+              <div style="display: flex; gap: 6px;">
+                ${v.Phone ? `
+                  <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(thankYouMsg)}" target="_blank" class="btn btn-sm btn-success" style="text-decoration: none; background: #25D366; border-color: #25D366; font-size: 12px;" onclick="logActivity('message', '${esc(v.Name)} लाई धन्यवाद पठाइयो।')">
+                    🟢 WhatsApp
+                  </a>
+                ` : ''}
+                <button class="btn btn-sm btn-secondary" onclick="copyTextToClipboard('${esc(thankYouMsg)}')" style="font-size: 12px;">📋 Copy</button>
+              </div>
+            </div>
+            <div style="font-size: 12.5px; color: #581c87; line-height: 1.4;">${esc(thankYouMsg)}</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; text-align: center;">
+          <button class="btn btn-primary" onclick="openCustomMessageModal('${v.VoterID}')" style="background: #4f46e5; border-color: #4f46e5; font-weight: 700;">
+            💬 नयाँ व्यक्तिगत सन्देश लेख्नुहोस् (Compose Custom Message)
+          </button>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // FAMILY TREE LINKING & MODAL ENGINE
+    // ==========================================
+    function openLinkFamilyModal(voterId) {
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+
+      const currentMembers = getFamilyMembers(v);
+      const currentIds = new Set(currentMembers.filter(m => m.isRegisteredVoter).map(m => m.VoterID));
+      const availableVoters = state.voters.filter(x => !currentIds.has(x.VoterID) && (x.Ward == v.Ward || !x.Ward));
+
+      openModal(
+        `नाता / परिवार सदस्य जोड्नुहोस्: ${v.Name}`,
+        `
+        <div style="background: var(--slate-100); padding: 12px 14px; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 13px;">
+          🏠 <b>घरधुरी:</b> ${esc(v.Name)} (वडा नं. ${v.Ward}, टोल: ${esc(v.Tole || '-')}, घर नं: ${esc(v.HouseNo || 'तोकिएको छैन')})
+        </div>
+
+        <!-- Mode Toggle -->
+        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+          <button type="button" id="btnLinkModeExisting" class="btn btn-sm btn-primary" onclick="toggleLinkMode('existing')">
+            👥 अवस्थित मतदाता छान्नुहोस्
+          </button>
+          <button type="button" id="btnLinkModeNew" class="btn btn-sm btn-secondary" onclick="toggleLinkMode('new')">
+            ➕ नयाँ सदस्य / नाबालक थप्नुहोस्
+          </button>
+        </div>
+
+        <!-- FORM A: LINK EXISTING VOTER -->
+        <form id="formLinkExisting" onsubmit="saveLinkExistingFamily(event, '${v.VoterID}')">
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label">मतदाता छान्नुहोस् (वडा नं. ${v.Ward} का मतदाता) *</label>
+            <select id="linkSelectVoterId" required class="form-control" style="font-weight: 600;">
+              <option value="">-- मतदाता छान्नुहोस् --</option>
+              ${availableVoters.map(av => `<option value="${av.VoterID}">${esc(av.Name)} (क्र.सं: ${esc(av.VoterSerial || '-')}, फोन: ${esc(av.Phone || 'छैन')})</option>`).join('')}
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label">नाता / सम्बन्ध (Relation to ${esc(v.Name)}) *</label>
+            <select id="linkRelationExisting" required class="form-control" style="font-weight: 600;">
+              <option value="घरमुली">👑 घरमुली (Head of Household)</option>
+              <option value="बुबा">👨 बुबा (Father)</option>
+              <option value="आमा">👩 आमा (Mother)</option>
+              <option value="पति / पत्नी" selected>💍 पति / पत्नी (Spouse)</option>
+              <option value="छोरा">👦 छोरा (Son)</option>
+              <option value="छोरी">👧 छोरी (Daughter)</option>
+              <option value="दाजु / भाइ">👬 दाजु / भाइ (Brother)</option>
+              <option value="दिदी / बहिनी">👭 दिदी / बहिनी (Sister)</option>
+              <option value="बुहारी">👰 बुहारी (Daughter-in-law)</option>
+              <option value="नाति / नातिनी">👶 नाति / नातिनी (Grandchild)</option>
+              <option value="अन्य">👥 अन्य नाता (Other)</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; font-weight: 700; padding: 10px;">
+            ✓ परिवारमा जोड्नुहोस् (Link Family Member)
+          </button>
+        </form>
+
+        <!-- FORM B: ADD CUSTOM RELATIVE (MINOR / NON-VOTER) -->
+        <form id="formLinkNew" style="display: none;" onsubmit="saveLinkNewFamily(event, '${v.VoterID}')">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">सदस्यको नाम *</label>
+              <input type="text" id="customMemberName" required class="form-control" placeholder="उदा: सुजन थापा">
+            </div>
+            <div class="form-group">
+              <label class="form-label">नाता / सम्बन्ध *</label>
+              <select id="customMemberRelation" required class="form-control">
+                <option value="छोरा">👦 छोरा (Son)</option>
+                <option value="छोरी">👧 छोरी (Daughter)</option>
+                <option value="पति / पत्नी">💍 पति / पत्नी (Spouse)</option>
+                <option value="बुबा">👨 बुबा (Father)</option>
+                <option value="आमा">👩 आमा (Mother)</option>
+                <option value="दाजु / भाइ">👬 दाजु / भाइ (Brother)</option>
+                <option value="दिदी / बहिनी">👭 दिदी / बहिनी (Sister)</option>
+                <option value="नाति / नातिनी">👶 नाति / नातिनी (Grandchild)</option>
+                <option value="अन्य">👥 अन्य नाता</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">उमेर / जन्ममिति</label>
+              <input type="number" id="customMemberAge" class="form-control" placeholder="उदा: 16" min="1" max="120">
+            </div>
+            <div class="form-group">
+              <label class="form-label">लिंग</label>
+              <select id="customMemberGender" class="form-control">
+                <option value="Male">पुरुष (Male)</option>
+                <option value="Female">महिला (Female)</option>
+                <option value="Other">अन्य (Other)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">सम्पर्क फोन (ऐच्छिक)</label>
+              <input type="text" id="customMemberPhone" class="form-control" placeholder="उदा: 9841000000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">पार्टी झुकाव</label>
+              <select id="customMemberParty" class="form-control">
+                <option value="UML">नेकपा (एमाले)</option>
+                <option value="Congress">नेपाली कांग्रेस</option>
+                <option value="RSP">रास्वपा</option>
+                <option value="Maoist">माओवादी केन्द्र</option>
+                <option value="RPP">राप्रपा</option>
+                <option value="Independent">स्वतन्त्र / अन्य</option>
+                <option value="Undecided" selected>दोधार / अनिर्णित</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; font-weight: 700; padding: 10px;">
+            ✓ नयाँ सदस्य दर्ता गर्नुहोस् (Add Member)
+          </button>
+        </form>
         `,
-        `<button class="btn btn-secondary" onclick="closeModal()">Close</button>`
+        `<button class="btn btn-secondary" onclick="viewVoterProfile('${v.VoterID}', 'family')">पछाडि फर्कनुहोस् (Back to Profile)</button>`,
+        'modal-lg'
       );
+    }
+
+    function toggleLinkMode(mode) {
+      const isExisting = mode === 'existing';
+      document.getElementById('formLinkExisting').style.display = isExisting ? 'block' : 'none';
+      document.getElementById('formLinkNew').style.display = isExisting ? 'none' : 'block';
+      document.getElementById('btnLinkModeExisting').className = `btn btn-sm ${isExisting ? 'btn-primary' : 'btn-secondary'}`;
+      document.getElementById('btnLinkModeNew').className = `btn btn-sm ${!isExisting ? 'btn-primary' : 'btn-secondary'}`;
+    }
+
+    function saveLinkExistingFamily(e, voterId) {
+      e.preventDefault();
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+
+      const targetId = document.getElementById('linkSelectVoterId').value;
+      const rel = document.getElementById('linkRelationExisting').value;
+      if (!targetId) return showToast('कृपया मतदाता छान्नुहोस्', 'error');
+
+      const target = state.voters.find(x => x.VoterID === targetId);
+      if (!target) return;
+
+      // Ensure household ID exists
+      let hhId = v.HouseholdID;
+      if (!hhId) {
+        hhId = 'HHD_W' + v.Ward + '_' + Date.now().toString(36).toUpperCase();
+        v.HouseholdID = hhId;
+        state.households.push({
+          HouseholdID: hhId,
+          WardNo: v.Ward,
+          Tole: v.Tole || '',
+          HouseNo: v.HouseNo || '101',
+          Address: (v.Tole || '') + ', Ward ' + v.Ward,
+          PrimaryContactName: v.Name,
+          PrimaryPhone: v.Phone || '',
+          VerificationStatus: v.VerificationStatus || 'Pending'
+        });
+      }
+
+      target.HouseholdID = hhId;
+      target.HouseNo = v.HouseNo || '101';
+      target.FamilyRelation = rel;
+      if (!v.FamilyRelation) {
+        v.FamilyRelation = 'घरमुली';
+      }
+
+      saveState();
+      logActivity('voter_verify', `${v.Name} को परिवारमा ${target.Name} (${rel}) नाता जोडियो।`);
+      showToast(`${target.Name} लाई ${rel} को रूपमा परिवारमा जोडियो!`, 'success');
+      viewVoterProfile(voterId, 'family');
+    }
+
+    function saveLinkNewFamily(e, voterId) {
+      e.preventDefault();
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+
+      const name = document.getElementById('customMemberName').value.trim();
+      const rel = document.getElementById('customMemberRelation').value;
+      const age = document.getElementById('customMemberAge').value;
+      const gender = document.getElementById('customMemberGender').value;
+      const phone = document.getElementById('customMemberPhone').value.trim();
+      const party = document.getElementById('customMemberParty').value;
+
+      if (!name) return showToast('कृपया सदस्यको नाम लेख्नुहोस्', 'error');
+
+      if (!Array.isArray(v.CustomFamily)) v.CustomFamily = [];
+      v.CustomFamily.push({
+        Name: name,
+        Relation: rel,
+        Age: age,
+        Gender: gender,
+        Phone: phone,
+        PartyLeaning: party
+      });
+
+      saveState();
+      logActivity('voter_verify', `${v.Name} को परिवारमा नयाँ सदस्य ${name} (${rel}) थपियो।`);
+      showToast(`${name} (${rel}) परिवारमा थपियो!`, 'success');
+      viewVoterProfile(voterId, 'family');
+    }
+
+    function unlinkFamilyMember(voterId, targetId, customIdx) {
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+
+      if (targetId && !targetId.startsWith('CUSTOM_')) {
+        const target = state.voters.find(x => x.VoterID === targetId);
+        if (target) {
+          target.HouseholdID = '';
+          target.FamilyRelation = '';
+          showToast(`${target.Name} लाई परिवारबाट हटाइयो।`, 'info');
+        }
+      } else if (customIdx !== null && customIdx !== undefined && Array.isArray(v.CustomFamily)) {
+        v.CustomFamily.splice(customIdx, 1);
+        showToast('सदस्य हटाइयो।', 'info');
+      }
+
+      saveState();
+      viewVoterProfile(voterId, 'family');
     }
 
     // ==========================================
@@ -3807,35 +4517,85 @@
       const h = state.households.find(x => x.HouseholdID === id);
       if (!h) return;
       const members = state.voters.filter(v => v.HouseholdID === id);
+      const headVoter = members.find(m => m.FamilyRelation === 'घरमुली' || m.Name === h.PrimaryContactName) || members[0];
 
       openModal(
-        `Household: ${h.HouseholdID}`,
+        `घरधुरी विवरण: ${h.HouseholdID}`,
         `
-        <div class="form-grid" style="margin-bottom: 20px;">
-          <div class="form-group"><span class="form-label">Primary Contact</span><b>${esc(h.PrimaryContactName)}</b></div>
-          <div class="form-group"><span class="form-label">Phone</span><b>${esc(h.PrimaryPhone || '-')}</b></div>
-          <div class="form-group"><span class="form-label">Ward & Tole</span><b>Ward ${h.WardNo} • ${esc(h.Tole || '-')}</b></div>
-          <div class="form-group"><span class="form-label">House No</span><b>${esc(h.HouseNo || '-')}</b></div>
+        <div style="background: linear-gradient(135deg, #f0fdf4 0%, #e6f7ec 100%); border: 1.5px solid #bbf7d0; border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <div style="font-size: 15px; font-weight: 800; color: #166534;">
+                🏠 घर नं. ${esc(h.HouseNo || '-')} • ${esc(h.Address || 'वडा ' + h.WardNo)}
+              </div>
+              <div style="font-size: 12.5px; color: #15803d; margin-top: 2px;">
+                घरमुली: <b>${esc(h.PrimaryContactName)}</b> • वडा नं. ${h.WardNo}, टोल: ${esc(h.Tole || '-')}
+              </div>
+            </div>
+            ${headVoter ? `
+              <button class="btn btn-sm btn-primary" onclick="closeModal(); openLinkFamilyModal('${headVoter.VoterID}')" style="background: #166534; border-color: #166534; font-weight: 700;">
+                ➕ सदस्य थप्नुहोस्
+              </button>
+            ` : ''}
+          </div>
         </div>
 
-        <h4 style="margin-bottom: 12px;">Linked Members (${members.length})</h4>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <h4 style="margin: 0; font-size: 14px;">परिवारका सदस्यहरू (${members.length} जना)</h4>
+        </div>
+
         <div class="table-responsive">
           <table>
-            <thead><tr><th>Name</th><th>Phone</th><th>Booth / Serial</th><th>Contact Status</th></tr></thead>
+            <thead>
+              <tr>
+                <th>नाता / सदस्य</th>
+                <th>सम्पर्क</th>
+                <th>पार्टी झुकाव</th>
+                <th>बुथ / क्र.सं.</th>
+                <th>अवस्था</th>
+                <th>कार्य</th>
+              </tr>
+            </thead>
             <tbody>
               ${members.map(m => `
                 <tr>
-                  <td><b>${esc(m.Name)}</b></td>
-                  <td>${esc(m.Phone || '-')}</td>
-                  <td>Booth ${esc(m.BoothNo || '-')} • ${esc(m.VoterSerial || '-')}</td>
-                  <td><span class="badge ${m.ContactStatus === 'Contacted' ? 'badge-contacted' : 'badge-notcontacted'}">${m.ContactStatus}</span></td>
+                  <td>
+                    ${getRelationBadge(m.FamilyRelation || (m.Name === h.PrimaryContactName ? 'घरमुली' : 'सदस्य'))}
+                    <div style="margin-top: 4px;">
+                      <a href="javascript:void(0)" onclick="closeModal(); viewVoterProfile('${m.VoterID}', 'family')" style="font-weight: 800; color: var(--navy-900); text-decoration: none;">
+                        👉 ${esc(m.Name)}
+                      </a>
+                    </div>
+                  </td>
+                  <td>
+                    ${m.Phone ? `
+                      <a href="tel:${cleanPhone(m.Phone)}" style="color: #059669; font-weight: 600; text-decoration: none;">📞 ${esc(m.Phone)}</a>
+                      <a href="https://wa.me/977${cleanPhone(m.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(m))}" target="_blank" style="text-decoration: none; margin-left: 4px;">🟢</a>
+                    ` : '<span style="color: var(--slate-400);">-</span>'}
+                  </td>
+                  <td>
+                    <div style="cursor: pointer;" onclick="quickCycleParty('${m.VoterID}'); viewHouseholdDetail('${id}');" title="पार्टी झुकाव">
+                      ${getPartyLabel(m.PartyLeaning)}
+                    </div>
+                  </td>
+                  <td>
+                    <div>Booth ${esc(m.BoothNo || '-')}</div>
+                    <div style="font-size: 11.5px; color: var(--slate-600);">क्र.सं: ${esc(m.VoterSerial || '-')}</div>
+                  </td>
+                  <td>
+                    <span class="badge ${m.VerificationStatus === 'Verified' ? 'badge-verified' : 'badge-pending'}">${m.VerificationStatus}</span>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-secondary" onclick="closeModal(); viewVoterProfile('${m.VoterID}', 'family')">हेर्नुहोस्</button>
+                  </td>
                 </tr>
-              `).join('') || '<tr><td colspan="4" style="color: var(--slate-600);">No contacts linked to this household yet.</td></tr>'}
+              `).join('') || '<tr><td colspan="6" style="color: var(--slate-600); text-align: center;">यस घरधुरीमा कुनै सदस्य जोडिएको छैन।</td></tr>'}
             </tbody>
           </table>
         </div>
         `,
-        `<button class="btn btn-secondary" onclick="closeModal()">Close</button>`
+        `<button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>`,
+        'modal-lg'
       );
     }
 
@@ -5324,6 +6084,20 @@
       return birth.getDate() === today.getDate() && birth.getMonth() === today.getMonth();
     }
 
+    function getDaysUntilBirthday(dobString) {
+      if (!dobString) return null;
+      const birth = new Date(dobString);
+      if (isNaN(birth.getTime())) return null;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      let nextBday = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+      if (nextBday < today) {
+        nextBday.setFullYear(today.getFullYear() + 1);
+      }
+      const diffTime = nextBday - today;
+      return Math.round(diffTime / (1000 * 60 * 60 * 24));
+    }
+
     function autoFillAgeGroup(dobString, selectId) {
       const age = calculateAge(dobString);
       if (age === '') return;
@@ -6098,16 +6872,22 @@
 
     // ==========================================
     // 25. MODAL SURFACE MANAGER & LIFECYCLE
-    function openModal(title, bodyHtml, footerHtml = '') {
+    function openModal(title, bodyHtml, footerHtml = '', sizeClass = '') {
       document.getElementById('modalTitle').textContent = title;
       document.getElementById('modalBody').innerHTML = bodyHtml;
       document.getElementById('modalFooter').innerHTML = footerHtml;
+      const card = document.querySelector('.modal-card');
+      if (card) {
+        card.className = 'modal-card' + (sizeClass ? ' ' + sizeClass : '');
+      }
       document.getElementById('modalOverlay').classList.add('active');
     }
 
     function closeModal() {
       document.getElementById('modalOverlay').classList.remove('active');
       document.getElementById('modalBody').innerHTML = '';
+      const card = document.querySelector('.modal-card');
+      if (card) card.className = 'modal-card';
     }
 
     function openQuickActionModal() {
