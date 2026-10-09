@@ -1186,6 +1186,12 @@
     <!-- Main Working Area -->
     <main class="main-wrap">
       
+      <!-- 👑 Support Mode Impersonation Banner -->
+      <div id="supportModeBannerContainer"></div>
+
+      <!-- 📢 Global Platform Broadcast Announcement Banner -->
+      <div id="globalBroadcastBannerContainer"></div>
+
       <!-- Topbar Header -->
       <header class="topbar">
         <div class="topbar-left">
@@ -2004,6 +2010,7 @@
                 </select>
                 <select id="timelineTypeFilter" class="filter-select" onchange="renderActivityTimeline()">
                   <option value="">All Activities (सबै कार्य)</option>
+                  <option value="saas_security">👑 SaaS & Security Events Only (प्रणाली लग)</option>
                   <option value="voter_add">नयाँ मतदाता दर्ता</option>
                   <option value="voter_verify">प्रमाणीकरण (Verify)</option>
                   <option value="visit">घरदैलो भेटघाट</option>
@@ -2062,7 +2069,7 @@
             </div>
 
             <!-- SaaS Master SMS Gateway & Credit Pool Card -->
-            <div class="card" style="margin-bottom: 24px; border: 1px solid #10b981; background: #f0fdf4; border-radius: var(--radius-md); padding: 18px;">
+            <div class="card" style="margin-bottom: 20px; border: 1px solid #10b981; background: #f0fdf4; border-radius: var(--radius-md); padding: 18px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                   <span style="font-size: 26px;">📡</span>
@@ -2103,23 +2110,59 @@
               </div>
             </div>
 
+            <!-- 📢 Global Platform Announcement Broadcast Hub -->
+            <div class="card" style="margin-bottom: 24px; border: 1px solid #f59e0b; background: #fffbeb; border-radius: var(--radius-md); padding: 18px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="font-size: 26px;">📢</span>
+                  <div>
+                    <h4 style="color: #92400e; font-size: 16px; margin: 0; font-weight: 800;">Global System Broadcast & Alert Banner</h4>
+                    <p style="font-size: 12px; color: #b45309; margin: 0;">
+                      सबै पालिकाहरू र कार्यकर्ताहरूको स्क्रिनको माथिल्लो भागमा तत्काल देखिने गरी केन्द्रीय सूचना/अलर्ट प्रसारण गर्नुहोस्।
+                    </p>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span id="superBroadcastStatusPill" class="badge" style="background: #e2e8f0; color: #475569; font-weight: 700; padding: 4px 10px;">⚪ प्रसारण बन्द (Off)</span>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center;">
+                <input type="text" id="superBroadcastInput" class="form-control" placeholder="उदा: 📢 आज राति १२ बजे नयाँ अपडेट सिङ्क हुँदैछ, सम्पूर्ण वडा कार्यकर्ताहरू सचेत रहनुहोला।" style="font-size: 13px; background: white;">
+                <select id="superBroadcastTypeSelect" class="filter-select" style="font-size: 12.5px; background: white;">
+                  <option value="warning">🟡 ध्यानाकर्षण (Warning)</option>
+                  <option value="urgent">🔴 आपतकालीन अलर्ट (Urgent)</option>
+                  <option value="info">🔵 सामान्य सूचना (Info)</option>
+                </select>
+                <div style="display: flex; gap: 6px;">
+                  <button class="btn btn-primary" onclick="handleSaveGlobalBroadcast(true)" style="background: #d97706; border-color: #d97706; font-weight: 700; white-space: nowrap;">
+                    📢 Live प्रसारण गर्नुहोस्
+                  </button>
+                  <button class="btn btn-secondary" onclick="handleSaveGlobalBroadcast(false)" style="font-weight: 700; white-space: nowrap;" title="प्रसारण रोक्नुहोस्">
+                    ✕ रोक्नुहोस्
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <h4 style="margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
               <span>🏛️ ग्राहक पालिकाहरू र Admin खाता सूची (Client Palika Admins)</span>
+              <span style="font-size: 12px; color: var(--slate-600); font-weight: 500;">👁️ Login as Admin, 🧾 Invoice, ⚙️ Features, 🗄️ Vault, ⛔ Kill-Switch समावेश</span>
             </h4>
 
             <div class="table-responsive">
               <table>
                 <thead>
                   <tr>
-                    <th style="width: 50px; text-align: center;">क्र.सं.</th>
+                    <th style="width: 45px; text-align: center;">क्र.सं.</th>
                     <th>पालिका (Palika / Unit)</th>
                     <th>Admin Username & Password</th>
                     <th>सम्पर्क व्यक्ति / फोन</th>
                     <th>SMS कोटा (Credits)</th>
                     <th>प्लान & मासिक शुल्क</th>
-                    <th>म्याद (Expiry)</th>
+                    <th>सक्रिय मोड्युल (Features)</th>
                     <th>सिस्टम स्थिति (Kill-Switch)</th>
-                    <th>कार्यहरू (Action)</th>
+                    <th style="text-align: center;">सुपर एडमिन कार्यहरू (Super Actions)</th>
                   </tr>
                 </thead>
                 <tbody id="tenantsTableRows"></tbody>
@@ -2424,7 +2467,19 @@
           state.tenants.forEach(t => {
             if (t.SmsCredits === undefined) t.SmsCredits = t.TenantID === 'TNT_HELAMBU' ? 4850 : 2000;
             if (t.SmsUsed === undefined) t.SmsUsed = 42;
+            if (!t.Features) t.Features = { sms: true, familyTree: true, reports: true, voterSlips: true };
+            if (!t.BillingStatus) t.BillingStatus = t.Status === 'Active' ? 'Paid' : 'Pending';
+            if (!t.InvoiceNo) t.InvoiceNo = 'INV-2026-' + (t.Slug || 'TNT').toUpperCase().slice(0, 4) + '-01';
+            if (!t.ContractAmount) t.ContractAmount = t.TenantID === 'TNT_HELAMBU' ? 25000 : 15000;
           });
+          if (!state.globalBroadcast) {
+            state.globalBroadcast = {
+              active: false,
+              message: '',
+              type: 'warning',
+              postedAt: ''
+            };
+          }
           if (!state.smsLogs || !state.smsLogs.length) {
             state.smsLogs = [
               { LogID: 'SMS_001', RecipientName: 'रामबहादुर थापा', Phone: '9841000001', Ward: 5, Tole: 'Jorpati Chowk', Type: 'मतदान केन्द्र र पर्चा', Text: 'आदरणीय रामबहादुर थापा ज्यू, तपाईंको मतदान केन्द्र बुथ A, वडा नं. ५, क्र.सं. १०१ रहेको जानकारी गराउँदछौं।', Credits: 2, SentAt: new Date(Date.now() - 3600000 * 4).toLocaleString('ne-NP'), Status: 'Delivered', TenantID: 'TNT_HELAMBU' },
@@ -3248,6 +3303,8 @@
       renderActivityTimeline();
       if (isSuper) renderTenantsManagement();
       renderReportsView();
+      renderSupportModeBanner();
+      renderGlobalBroadcastBanner();
 
       // Auto route to appropriate landing view
       if (isSuper) {
@@ -3281,6 +3338,25 @@
       if ((viewName === 'settings' || viewName === 'tenants') && currentUser && currentUser.Role !== 'Super Admin') {
         showToast('यो सेक्सन केवल SaaS Super Admin ले मात्र खोल्न मिल्छ।', 'error');
         return;
+      }
+
+      // Feature Module Protection for Palikas
+      if (currentUser && currentUser.Role === 'Palika Admin' && currentUser.TenantID && currentUser.TenantID !== 'ALL') {
+        const curTenant = (state.tenants || []).find(t => t.TenantID === currentUser.TenantID);
+        if (curTenant && curTenant.Features) {
+          if (viewName === 'messages' && curTenant.Features.sms === false) {
+            showFeatureLockedModal('📲 Aakash SMS क्याम्पेन', curTenant.PalikaName);
+            return;
+          }
+          if (viewName === 'households' && curTenant.Features.familyTree === false) {
+            showFeatureLockedModal('🌳 Family Tree र घरधुरी लेयर', curTenant.PalikaName);
+            return;
+          }
+          if (viewName === 'reports' && curTenant.Features.reports === false) {
+            showFeatureLockedModal('📊 एडभान्स इन्टेलिजेन्स रिपोर्टिङ', curTenant.PalikaName);
+            return;
+          }
+        }
       }
 
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -7720,7 +7796,14 @@
 
       let list = state.activities.filter(a => {
         if (selectedWorker && a.UserID !== selectedWorker) return false;
-        if (typeFilter && a.Type !== typeFilter) return false;
+        if (typeFilter) {
+          if (typeFilter === 'saas_security') {
+            const secTypes = ['login', 'logout', 'user_manage', 'sms_alloc', 'broadcast', 'export'];
+            if (!secTypes.includes(a.Type)) return false;
+          } else if (a.Type !== typeFilter) {
+            return false;
+          }
+        }
         return true;
       });
 
@@ -7742,6 +7825,11 @@
         else if (a.Type === 'message') icon = '💬';
         else if (a.Type === 'issue') icon = '⚠️';
         else if (a.Type === 'login') icon = '🔑';
+        else if (a.Type === 'logout') icon = '🚪';
+        else if (a.Type === 'user_manage') icon = '👑';
+        else if (a.Type === 'broadcast') icon = '📢';
+        else if (a.Type === 'export') icon = '🗄️';
+        else if (a.Type === 'sms_alloc') icon = '📡';
 
         return `
           <div class="timeline-item">
@@ -7861,6 +7949,15 @@
       if (document.getElementById('saasSuspendedTenantsCount')) document.getElementById('saasSuspendedTenantsCount').textContent = suspendedCount;
       if (document.getElementById('saasTotalPlatformVoters')) document.getElementById('saasTotalPlatformVoters').textContent = state.voters.length;
 
+      // Calculate total platform revenue
+      const totalRev = state.tenants.reduce((sum, t) => {
+        const num = parseInt((t.FeeMonthly || '').replace(/[^0-9]/g, '')) || 25000;
+        return sum + num;
+      }, 0);
+      if (document.getElementById('saasTotalRevenue')) {
+        document.getElementById('saasTotalRevenue').textContent = 'Rs. ' + totalRev.toLocaleString();
+      }
+
       // Update Super Admin Aakash SMS metrics
       const totalAllocatedSms = state.tenants.reduce((sum, t) => sum + (t.SmsCredits || 0), 0);
       const masterPool = state.settings.MASTER_SMS_CREDITS || 50000;
@@ -7871,68 +7968,111 @@
         document.getElementById('superAakashTokenInput').value = state.settings.AAKASH_SMS_AUTH_TOKEN || '';
       }
 
+      // Update Broadcast controls state
+      const pill = document.getElementById('superBroadcastStatusPill');
+      if (pill) {
+        const isBcastActive = state.globalBroadcast && state.globalBroadcast.active;
+        pill.className = 'badge ' + (isBcastActive ? 'badge-verified' : 'badge-pending');
+        pill.style.background = isBcastActive ? '#10b981' : '#e2e8f0';
+        pill.style.color = isBcastActive ? '#ffffff' : '#475569';
+        pill.textContent = isBcastActive ? '🟢 Live प्रसारण जारी (Active)' : '⚪ प्रसारण बन्द (Off)';
+      }
+      if (document.getElementById('superBroadcastInput') && state.globalBroadcast && state.globalBroadcast.message && !document.getElementById('superBroadcastInput').value) {
+        document.getElementById('superBroadcastInput').value = state.globalBroadcast.message;
+      }
+      if (document.getElementById('superBroadcastTypeSelect') && state.globalBroadcast && state.globalBroadcast.type) {
+        document.getElementById('superBroadcastTypeSelect').value = state.globalBroadcast.type;
+      }
+
       tbody.innerHTML = state.tenants.map((t, idx) => {
         const isActive = t.Status === 'Active';
+        const isPaid = t.BillingStatus === 'Paid';
         const slug = t.Slug || (t.PalikaName ? t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') : t.TenantID.toLowerCase());
         const portalUrl = `${window.location.origin}${window.location.pathname}?palika=${slug}`;
+        if (!t.Features) t.Features = { sms: true, familyTree: true, reports: true, voterSlips: true };
+
+        const featBadges = [
+          t.Features.sms !== false ? '<span style="background:#ecfdf5;color:#047857;padding:2px 5px;border-radius:3px;font-size:10.5px;font-weight:700;">📲 SMS</span>' : '<span style="background:#fee2e2;color:#b91c1c;padding:2px 5px;border-radius:3px;font-size:10.5px;text-decoration:line-through;" title="Disabled">SMS</span>',
+          t.Features.familyTree !== false ? '<span style="background:#eff6ff;color:#1e40af;padding:2px 5px;border-radius:3px;font-size:10.5px;font-weight:700;">🌳 Tree</span>' : '<span style="background:#fee2e2;color:#b91c1c;padding:2px 5px;border-radius:3px;font-size:10.5px;text-decoration:line-through;" title="Disabled">Tree</span>',
+          t.Features.reports !== false ? '<span style="background:#fef3c7;color:#92400e;padding:2px 5px;border-radius:3px;font-size:10.5px;font-weight:700;">📊 AI</span>' : '<span style="background:#fee2e2;color:#b91c1c;padding:2px 5px;border-radius:3px;font-size:10.5px;text-decoration:line-through;" title="Disabled">AI</span>'
+        ].join(' ');
 
         return `
           <tr style="${!isActive ? 'background: #fff1f2;' : ''}">
             <td style="text-align: center; font-weight: 700; color: var(--slate-600);">${idx + 1}</td>
             <td>
               <div style="font-weight: 800; font-size: 14.5px; color: var(--navy-900);">${esc(t.PalikaName)}</div>
-              <div style="margin-top: 6px; font-size: 11.5px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
-                <span style="background: #e0e7ff; color: #3730a3; padding: 2px 7px; border-radius: 4px; font-family: monospace; font-weight: 700;">?palika=${slug}</span>
-                <button class="btn btn-sm btn-secondary" onclick="copyPortalLink('${slug}')" style="padding: 2px 7px; font-size: 11px;" title="Copy Private Portal Link">
+              <div style="margin-top: 5px; font-size: 11.5px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+                <span style="background: #e0e7ff; color: #3730a3; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-weight: 700;">?palika=${slug}</span>
+                <button class="btn btn-sm btn-secondary" onclick="copyPortalLink('${slug}')" style="padding: 2px 6px; font-size: 10.5px;" title="Copy Private Portal Link">
                   📋 Link
                 </button>
-                <button class="btn btn-sm btn-secondary" onclick="sendWhatsAppPortalInvite('${t.TenantID}')" style="padding: 2px 7px; font-size: 11px; background: #ecfdf5; color: #047857; border-color: #a7f3d0;" title="Send WhatsApp Invite">
-                  💬 WhatsApp
+                <button class="btn btn-sm btn-secondary" onclick="sendWhatsAppPortalInvite('${t.TenantID}')" style="padding: 2px 6px; font-size: 10.5px; background: #ecfdf5; color: #047857; border-color: #a7f3d0;" title="Send WhatsApp Invite">
+                  💬 WA
                 </button>
               </div>
             </td>
             <td>
-              <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: #1e40af;">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 700; color: #1e40af;">
                 👤 ${esc(t.AdminUsername)}
               </div>
-              <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #dc2626; margin-top: 2px;">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #dc2626; margin-top: 2px;">
                 🔑 ${esc(t.AdminPassword)}
               </div>
             </td>
             <td>
-              <div><b>${esc(t.ContactPerson)}</b></div>
+              <div style="font-size: 13px;"><b>${esc(t.ContactPerson)}</b></div>
               <div style="font-size: 12px; color: var(--slate-600);">${esc(t.Phone)}</div>
             </td>
             <td>
               <div style="font-weight: 800; color: #059669; font-size: 13.5px;">${(t.SmsCredits || 0).toLocaleString()} SMS</div>
               <div style="font-size: 11px; color: var(--slate-600);">खर्च: ${(t.SmsUsed || 0).toLocaleString()} SMS</div>
-              <button class="btn btn-sm btn-secondary" onclick="openAllocateSmsModal('${t.TenantID}')" style="margin-top: 4px; padding: 2px 8px; font-size: 11px; font-weight: 700; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
-                + Top-up SMS
+              <button class="btn btn-sm btn-secondary" onclick="openAllocateSmsModal('${t.TenantID}')" style="margin-top: 4px; padding: 2px 7px; font-size: 11px; font-weight: 700; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
+                + Top-up
               </button>
             </td>
             <td>
-              <div style="font-weight: 600; color: #0284c7;">${esc(t.PlanType)}</div>
-              <div style="font-size: 12px; font-weight: 700; color: #16a34a;">${esc(t.FeeMonthly)}</div>
+              <div style="font-weight: 600; color: #0284c7; font-size: 12.5px;">${esc(t.PlanType)}</div>
+              <div style="font-size: 12.5px; font-weight: 700; color: #16a34a;">${esc(t.FeeMonthly)}</div>
+              <div style="margin-top: 3px;">
+                <span class="badge ${isPaid ? 'badge-verified' : 'badge-urgent'}" style="font-size: 10.5px; padding: 2px 6px;">
+                  ${isPaid ? 'PAID' : 'PENDING'}
+                </span>
+              </div>
             </td>
             <td>
-              <div style="font-size: 12.5px;">${esc(t.ExpiresAt || 'Unlimited')}</div>
+              <div style="display: flex; gap: 3px; flex-wrap: wrap;">${featBadges}</div>
+              <button class="btn btn-sm btn-secondary" onclick="openTenantFeaturesModal('${t.TenantID}')" style="margin-top: 4px; padding: 2px 7px; font-size: 10.5px; font-weight: 700;">
+                ⚙️ Features
+              </button>
             </td>
             <td>
-              <span class="badge ${isActive ? 'badge-verified' : 'badge-urgent'}" style="font-size: 12px; padding: 6px 12px;">
-                ${isActive ? '🟢 ACTIVE (चालू)' : '🔴 OFF / SUSPENDED'}
+              <span class="badge ${isActive ? 'badge-verified' : 'badge-urgent'}" style="font-size: 11.5px; padding: 5px 8px;">
+                ${isActive ? '🟢 ACTIVE' : '🔴 SUSPENDED'}
               </span>
+              <div style="font-size: 11px; color: var(--slate-600); margin-top: 3px;">म्याद: ${esc(t.ExpiresAt ? t.ExpiresAt.slice(0,10) : 'Unlimited')}</div>
             </td>
-            <td>
-              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <td style="text-align: center;">
+              <div style="display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; max-width: 220px; margin: 0 auto;">
+                <button class="btn btn-sm" onclick="loginAsTenantAdmin('${t.TenantID}')" style="background: #4f46e5; color: white; border: none; font-weight: 700; padding: 3px 8px; font-size: 11px;" title="सपोर्ट मोडमा पालिका एडमिनका रूपमा सिधै लगइन">
+                  👁️ Login
+                </button>
+                <button class="btn btn-sm btn-secondary" onclick="openTenantInvoiceModal('${t.TenantID}')" style="padding: 3px 7px; font-size: 11px; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; font-weight: 700;" title="आधिकारिक कर इनभ्वाइस हेर्नुहोस् र प्रिन्ट गर्नुहोस्">
+                  🧾 Bill
+                </button>
+                <button class="btn btn-sm btn-secondary" onclick="exportTenantDataVault('${t.TenantID}')" style="padding: 3px 7px; font-size: 11px; font-weight: 700;" title="यस पालिकाको डाटा भल्ट ब्याकअप डाउनलोड">
+                  🗄️ Vault
+                </button>
                 <button class="btn btn-sm ${isActive ? 'btn-danger' : 'btn-success'}" 
                         onclick="toggleTenantStatus('${t.TenantID}')" 
+                        style="padding: 3px 7px; font-size: 11px; font-weight: 700;"
                         title="Turn System ON / OFF">
-                  ${isActive ? '⛔ Turn OFF' : '✅ Turn ON'}
+                  ${isActive ? '⛔ OFF' : '✅ ON'}
                 </button>
-                <button class="btn btn-sm btn-secondary" onclick="copyTenantCredentials('${t.TenantID}')" title="Copy Credentials">
-                  📋 Copy Login
+                <button class="btn btn-sm btn-secondary" onclick="copyTenantCredentials('${t.TenantID}')" style="padding: 3px 6px; font-size: 11px;" title="Copy Credentials">
+                  📋
                 </button>
-                <button class="btn btn-sm btn-secondary" onclick="deleteTenant('${t.TenantID}')" style="color: #dc2626;" title="Delete Tenant">
+                <button class="btn btn-sm btn-secondary" onclick="deleteTenant('${t.TenantID}')" style="color: #dc2626; padding: 3px 6px; font-size: 11px;" title="Delete Tenant">
                   🗑️
                 </button>
               </div>
@@ -8052,6 +8192,16 @@
         Status: 'Active',
         PlanType: 'Full Palika Suite',
         FeeMonthly: formData.get('FeeMonthly').trim(),
+        BillingStatus: 'Paid',
+        ContractAmount: parseInt(formData.get('FeeMonthly').replace(/[^0-9]/g, '')) || 25000,
+        PaymentMethod: 'Bank Transfer',
+        InvoiceNo: 'INV-2026-' + slug.toUpperCase().slice(0, 4) + '-01',
+        Features: {
+          sms: true,
+          familyTree: true,
+          reports: true,
+          voterSlips: true
+        },
         SmsCredits: Number(formData.get('SmsCredits')) || 5000,
         SmsUsed: 0,
         ExpiresAt: formData.get('ExpiresAt'),
@@ -8115,6 +8265,403 @@
         renderTenantsManagement();
         showToast('Palika account removed', 'info');
       }
+    }
+
+    // ==========================================
+    // 25. ENTERPRISE SAAS MASTER EXTENSIONS
+    // ==========================================
+
+    // 1. 👁️ IMPERSONATE PALIKA ADMIN (SUPPORT MODE)
+    function loginAsTenantAdmin(tenantId) {
+      const t = (state.tenants || []).find(x => x.TenantID === tenantId);
+      if (!t) return;
+
+      currentUser = {
+        UserID: 'USR_' + t.TenantID,
+        Name: `${t.PalikaName} Admin`,
+        Role: 'Palika Admin',
+        TenantID: t.TenantID,
+        PalikaName: t.PalikaName,
+        Ward: 'All',
+        IsSupportMode: true
+      };
+      state.settings.MUNICIPALITY = t.PalikaName;
+      saveState();
+
+      launchDashboard();
+      switchView('dashboard');
+      renderSupportModeBanner();
+      logActivity('login', `👁️ Super Admin ले प्राविधिक सहयोग (Support Mode) का लागि ${t.PalikaName} को Admin ड्यासबोर्ड खोल्नुभयो।`);
+      showToast(`👁️ Support Mode: ${t.PalikaName} Admin को ड्यासबोर्ड खोलियो।`, 'info');
+    }
+
+    function renderSupportModeBanner() {
+      const container = document.getElementById('supportModeBannerContainer');
+      if (!container) return;
+      if (currentUser && currentUser.IsSupportMode) {
+        container.innerHTML = `
+          <div id="supportModeBanner" style="background: linear-gradient(90deg, #991b1b, #b91c1c); color: white; padding: 10px 18px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(185, 28, 28, 0.25); z-index: 1000; position: sticky; top: 0;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 20px;">⚠️</span>
+              <div>
+                <div style="font-weight: 800; font-size: 13px; letter-spacing: 0.2px;">SUPPORT & IMPERSONATION MODE ACTIVATED</div>
+                <div style="font-size: 11.5px; opacity: 0.9;">तपाईं अहिले <b>${esc(currentUser.PalikaName)}</b> को Admin का रूपमा प्रत्यक्ष काम गरिरहनुभएको छ।</div>
+              </div>
+            </div>
+            <button class="btn btn-sm" onclick="exitSupportMode()" style="background: #fbbf24; color: #0f172a; font-weight: 800; border: none; padding: 6px 14px; font-size: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+              👑 Return to Super Admin HQ
+            </button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = '';
+      }
+    }
+
+    function exitSupportMode() {
+      currentUser = {
+        UserID: 'USR_SUPER_OWNER',
+        Name: 'SaaS Platform Owner',
+        Role: 'Super Admin',
+        TenantID: 'ALL',
+        PalikaName: 'All Palikas HQ',
+        Ward: 'All'
+      };
+      const container = document.getElementById('supportModeBannerContainer');
+      if (container) container.innerHTML = '';
+      launchDashboard();
+      switchView('tenants');
+      logActivity('login', '👑 Support Mode समाप्त गरी Super Admin Master Console मा फर्कनुभयो।');
+      showToast('👑 Super Admin Master HQ मा सफलतापूर्वक फिर्ता!', 'success');
+    }
+
+    // 2. 🧾 DIGITAL INVOICE & REVENUE RECEIPT
+    function openTenantInvoiceModal(tenantId) {
+      const t = (state.tenants || []).find(x => x.TenantID === tenantId);
+      if (!t) return;
+      const invNo = t.InvoiceNo || ('INV-2026-' + (t.Slug||'TNT').toUpperCase().slice(0,4) + '-01');
+      const isPaid = t.BillingStatus === 'Paid';
+      const feeNum = parseInt((t.FeeMonthly || '').replace(/[^0-9]/g, '')) || (t.ContractAmount || 25000);
+      const smsCost = Math.round((t.SmsCredits || 5000) * 1.5);
+      const total = feeNum + smsCost;
+
+      openModal(
+        `🧾 आधिकारिक कर इनभ्वाइस: ${invNo}`,
+        `
+        <div id="printableInvoiceArea" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: white; padding: 22px; border: 1px solid #e2e8f0; border-radius: 8px; color: #0f172a;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #0f172a; padding-bottom: 14px; margin-bottom: 18px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 26px;">🗳️</span>
+                <span style="font-size: 20px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px;">ELECTION OPS SAAS</span>
+              </div>
+              <div style="font-size: 11.5px; color: #64748b; margin-top: 3px;">Next-Gen Multi-Tenant Campaign Operations Platform</div>
+              <div style="font-size: 11px; color: #64748b;">Kathmandu, Nepal | support@electionops.np</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 18px; font-weight: 900; color: #0f172a;">TAX INVOICE</div>
+              <div style="font-family: monospace; font-size: 12.5px; font-weight: 700; color: #2563eb;">${invNo}</div>
+              <div style="font-size: 11.5px; color: #64748b; margin-top: 3px;">जारी मिति: ${new Date().toLocaleDateString('ne-NP')}</div>
+              <div style="font-size: 11.5px; color: #64748b;">म्याद: ${esc(t.ExpiresAt ? t.ExpiresAt.slice(0,10) : 'End of Term')}</div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; background: #f8fafc; padding: 12px; border-radius: 6px;">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748b;">सेवाग्राही (Billed To):</div>
+              <div style="font-size: 14.5px; font-weight: 800; color: #0f172a; margin-top: 2px;">${esc(t.PalikaName)}</div>
+              <div style="font-size: 12px; color: #475569;">सम्पर्क: ${esc(t.ContactPerson || '-')}</div>
+              <div style="font-size: 12px; color: #475569;">फोन: ${esc(t.Phone || '-')}</div>
+              <div style="font-size: 11.5px; font-family: monospace; color: #2563eb;">Dedicated URL: ?palika=${esc(t.Slug)}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748b;">भुक्तानी स्थिति (Payment Status):</div>
+              <div style="margin-top: 6px;">
+                <span style="display: inline-block; padding: 4px 12px; border-radius: 999px; font-weight: 800; font-size: 12px; background: ${isPaid ? '#dcfce7; color: #15803d; border: 2px solid #86efac;' : '#fee2e2; color: #b91c1c; border: 2px solid #fca5a5;'}">
+                  ${isPaid ? '✓ PAID / भुक्तानी भइसकेको' : '⚠ PENDING / भुक्तानी बाँकी'}
+                </span>
+              </div>
+              <div style="font-size: 11.5px; color: #64748b; margin-top: 6px;">भुक्तानी माध्यम: ${esc(t.PaymentMethod || 'Bank Transfer')}</div>
+            </div>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 12.5px;">
+            <thead>
+              <tr style="background: #0f172a; color: white;">
+                <th style="padding: 9px; text-align: left; border: 1px solid #0f172a;">विवरण (Description)</th>
+                <th style="padding: 9px; text-align: center; border: 1px solid #0f172a; width: 80px;">अवधि/परिमाण</th>
+                <th style="padding: 9px; text-align: right; border: 1px solid #0f172a; width: 120px;">दर (Rate)</th>
+                <th style="padding: 9px; text-align: right; border: 1px solid #0f172a; width: 120px;">रकम (Amount)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding: 9px; border: 1px solid #e2e8f0;">
+                  <b>Election Operations Platform Subscription</b><br>
+                  <span style="font-size: 11px; color: #64748b;">Plan: ${esc(t.PlanType)} (Voters, Households, Wards, Workers & AI Reports)</span>
+                </td>
+                <td style="padding: 9px; text-align: center; border: 1px solid #e2e8f0;">१ महिना</td>
+                <td style="padding: 9px; text-align: right; border: 1px solid #e2e8f0;">Rs. ${feeNum.toLocaleString()}</td>
+                <td style="padding: 9px; text-align: right; border: 1px solid #e2e8f0; font-weight: 700;">Rs. ${feeNum.toLocaleString()}</td>
+              </tr>
+              <tr style="background: #fafafa;">
+                <td style="padding: 9px; border: 1px solid #e2e8f0;">
+                  <b>Aakash SMS Gateway Enterprise Bulk Credit Bundle</b><br>
+                  <span style="font-size: 11px; color: #64748b;">कोटा: ${(t.SmsCredits||0).toLocaleString()} SMS Credits (Sender ID: HELMBU)</span>
+                </td>
+                <td style="padding: 9px; text-align: center; border: 1px solid #e2e8f0;">${(t.SmsCredits||0).toLocaleString()} SMS</td>
+                <td style="padding: 9px; text-align: right; border: 1px solid #e2e8f0;">Rs. 1.50</td>
+                <td style="padding: 9px; text-align: right; border: 1px solid #e2e8f0; font-weight: 700;">Rs. ${smsCost.toLocaleString()}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr style="background: #f1f5f9; font-weight: 800;">
+                <td colspan="3" style="padding: 10px; text-align: right; border: 1px solid #cbd5e1; font-size: 13.5px;">कुल जम्मा (Grand Total):</td>
+                <td style="padding: 10px; text-align: right; border: 1px solid #cbd5e1; font-size: 15px; color: #0f172a;">Rs. ${total.toLocaleString()}</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px; padding-top: 14px; border-top: 1px dashed #cbd5e1;">
+            <div style="font-size: 11px; color: #64748b; line-height: 1.5;">
+              • यो आधिकारिक कम्प्युटर जेनेरेटेड इनभ्वाइस हो।<br>
+              • भुक्तानीका लागि बैंक खाता: Nabil Bank A/C 01234567890 (Election Ops Nepal)<br>
+              • कुनै जिज्ञासा भएमा: support@electionops.np
+            </div>
+            <div style="text-align: center;">
+              <div style="display: inline-block; border: 2px dashed ${isPaid ? '#16a34a' : '#dc2626'}; border-radius: 6px; padding: 4px 14px; color: ${isPaid ? '#16a34a' : '#dc2626'}; font-weight: 900; font-size: 13px; text-transform: uppercase;">
+                ${isPaid ? '★ VERIFIED & PAID ★' : '⚠ PAYMENT DUE ⚠'}
+              </div>
+              <div style="font-size: 10.5px; color: #64748b; margin-top: 3px;">Platform Finance Stamp</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px 14px; border-radius: 6px; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: #475569;">स्थिति:</span>
+            <button class="btn btn-sm ${isPaid ? 'btn-secondary' : 'btn-success'}" onclick="toggleInvoicePaidStatus('${t.TenantID}')" style="font-weight: 700;">
+              ${isPaid ? 'Mark as Pending' : '✓ Mark as PAID'}
+            </button>
+          </div>
+          <button class="btn btn-primary" onclick="window.print()" style="font-weight: 700;">🖨️ Print / Download PDF</button>
+        </div>
+        `,
+        '<button class="btn btn-secondary" onclick="closeModal()">Close</button>',
+        'modal-lg'
+      );
+    }
+
+    function toggleInvoicePaidStatus(tenantId) {
+      const t = (state.tenants || []).find(x => x.TenantID === tenantId);
+      if (!t) return;
+      t.BillingStatus = t.BillingStatus === 'Paid' ? 'Pending' : 'Paid';
+      saveState();
+      renderTenantsManagement();
+      openTenantInvoiceModal(tenantId);
+      showToast(`${t.PalikaName} भुक्तानी स्थिति परिवर्तन भयो: ${t.BillingStatus}`, 'success');
+    }
+
+    // 3. ⚙️ FEATURE FLAGS & MODULE TOGGLE PER PALIKA
+    function openTenantFeaturesModal(tenantId) {
+      const t = (state.tenants || []).find(x => x.TenantID === tenantId);
+      if (!t) return;
+      if (!t.Features) {
+        t.Features = { sms: true, familyTree: true, reports: true, voterSlips: true };
+      }
+
+      openModal(
+        `⚙️ मोड्युल कन्ट्रोल: ${t.PalikaName}`,
+        `
+        <div style="font-size: 13.5px; color: var(--slate-700);">
+          <p style="margin-bottom: 14px; color: var(--slate-600); line-height: 1.5;">
+            यस पालिकाले खरिद गरेको प्याकेज अनुसार मोड्युलहरू सक्रिय (ON) वा निष्क्रिय (OFF) गर्नुहोस्। बन्द गरिएका मोड्युलहरू प्रयोग गर्न खोज्दा एड-अन अपग्रेड सूचना देखिनेछ।
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <label style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; cursor: pointer;">
+              <div>
+                <div style="font-weight: 700; color: #0f172a;">📲 Aakash SMS क्याम्पेन हब</div>
+                <div style="font-size: 12px; color: #64748b;">बल्क SMS, १-क्लिक टेम्प्लेट, र आज जन्मदिन अटोमेसन</div>
+              </div>
+              <input type="checkbox" id="modalFeatSms" ${t.Features.sms !== false ? 'checked' : ''} style="width: 20px; height: 20px; cursor: pointer;">
+            </label>
+
+            <label style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; cursor: pointer;">
+              <div>
+                <div style="font-weight: 700; color: #0f172a;">🌳 Family Tree र घरधुरी लेयर</div>
+                <div style="font-size: 12px; color: #64748b;">पारिवारिक नाता, घरमुली र परिवार वृक्ष सम्बन्ध नक्साङ्कन</div>
+              </div>
+              <input type="checkbox" id="modalFeatFamilyTree" ${t.Features.familyTree !== false ? 'checked' : ''} style="width: 20px; height: 20px; cursor: pointer;">
+            </label>
+
+            <label style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; cursor: pointer;">
+              <div>
+                <div style="font-weight: 700; color: #0f172a;">📊 एडभान्स इन्टेलिजेन्स र विश्लेषणात्मक रिपोर्ट</div>
+                <div style="font-size: 12px; color: #64748b;">वडागत झुकाव प्रक्षेपण र इन्टेलिजेन्स म्याट्रिक्स</div>
+              </div>
+              <input type="checkbox" id="modalFeatReports" ${t.Features.reports !== false ? 'checked' : ''} style="width: 20px; height: 20px; cursor: pointer;">
+            </label>
+
+            <label style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; cursor: pointer;">
+              <div>
+                <div style="font-weight: 700; color: #0f172a;">🪪 १-क्लिक मतदाता पर्ची र QR स्क्यानर</div>
+                <div style="font-size: 12px; color: #64748b;">डिजिटल मतदान पर्ची, बुथ स्लिप र मतदाता कार्ड प्रिन्ट</div>
+              </div>
+              <input type="checkbox" id="modalFeatVoterSlips" ${t.Features.voterSlips !== false ? 'checked' : ''} style="width: 20px; height: 20px; cursor: pointer;">
+            </label>
+          </div>
+
+          <div style="margin-top: 16px;">
+            <button class="btn btn-primary" onclick="saveTenantFeatures('${t.TenantID}')" style="width: 100%; font-weight: 700; background: #0f172a; border-color: #0f172a;">
+              💾 मोड्युल सेटिङ सुरक्षित गर्नुहोस्
+            </button>
+          </div>
+        </div>
+        `,
+        '<button class="btn btn-secondary" onclick="closeModal()">Close</button>'
+      );
+    }
+
+    function saveTenantFeatures(tenantId) {
+      const t = (state.tenants || []).find(x => x.TenantID === tenantId);
+      if (!t) return;
+      t.Features = {
+        sms: document.getElementById('modalFeatSms').checked,
+        familyTree: document.getElementById('modalFeatFamilyTree').checked,
+        reports: document.getElementById('modalFeatReports').checked,
+        voterSlips: document.getElementById('modalFeatVoterSlips').checked
+      };
+      saveState();
+      closeModal();
+      renderTenantsManagement();
+      showToast(`${t.PalikaName} को मोड्युल कन्फिगरेसन सुरक्षित भयो!`, 'success');
+    }
+
+    // 4. 🗄️ TENANT DATA VAULT EXPORT (1-CLICK FULL BACKUP)
+    function exportTenantDataVault(tenantId) {
+      const t = (state.tenants || []).find(x => x.TenantID === tenantId);
+      if (!t) return;
+
+      const vault = {
+        VaultVersion: '2.5',
+        ExportDate: new Date().toISOString(),
+        TenantInfo: t,
+        Voters: state.voters || [],
+        Households: state.households || [],
+        Visits: state.visits || [],
+        Followups: state.followups || [],
+        TeamMembers: state.team || [],
+        SmsLogs: (state.smsLogs || []).filter(s => s.TenantID === t.TenantID || !s.TenantID),
+        Issues: state.issues || []
+      };
+
+      const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(vault, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute('href', dataStr);
+      const slug = t.Slug || 'palika';
+      a.setAttribute('download', `${slug}_election_vault_${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      logActivity('export', `👑 Super Admin ले ${t.PalikaName} को सम्पूर्ण डेटा भल्ट (Full Tenant Vault) एक्सपोर्ट गर्नुभयो।`);
+      showToast(`🗄️ ${t.PalikaName} को डेटा भल्ट ब्याकअप डाउनलोड भयो!`, 'success');
+    }
+
+    // 5. 📢 GLOBAL SYSTEM BROADCAST
+    function handleSaveGlobalBroadcast(activate = true) {
+      const input = document.getElementById('superBroadcastInput');
+      const typeSelect = document.getElementById('superBroadcastTypeSelect');
+      const msg = input ? input.value.trim() : '';
+      const type = typeSelect ? typeSelect.value : 'warning';
+
+      if (activate && !msg) {
+        showToast('कृपया प्रसारण गर्न चाहेको सूचना लेख्नुहोस्!', 'error');
+        return;
+      }
+
+      state.globalBroadcast = {
+        active: activate,
+        message: activate ? msg : '',
+        type: type,
+        postedAt: activate ? new Date().toLocaleString('ne-NP') : ''
+      };
+      saveState();
+      renderGlobalBroadcastBanner();
+      renderTenantsManagement();
+
+      if (activate) {
+        logActivity('broadcast', `📢 Super Admin ले सबै पालिकाहरूका लागि ग्लोबल सूचना जारी गर्नुभयो: "${msg}"`);
+        showToast('📢 ग्लोबल सूचना सबै पालिकाहरूको स्क्रिनमा लाइभ भयो!', 'success');
+      } else {
+        if (input) input.value = '';
+        logActivity('broadcast', '⚪ Super Admin ले ग्लोबल सूचना प्रसारण बन्द गर्नुभयो।');
+        showToast('⚪ ग्लोबल सूचना प्रसारण बन्द गरियो।', 'info');
+      }
+    }
+
+    function renderGlobalBroadcastBanner() {
+      const container = document.getElementById('globalBroadcastBannerContainer');
+      if (!container) return;
+      const gb = state.globalBroadcast;
+      if (gb && gb.active && gb.message) {
+        let bg = '#fffbeb';
+        let border = '#f59e0b';
+        let textCol = '#92400e';
+        let icon = '📢';
+
+        if (gb.type === 'urgent') {
+          bg = '#fef2f2';
+          border = '#ef4444';
+          textCol = '#991b1b';
+          icon = '🚨';
+        } else if (gb.type === 'info') {
+          bg = '#eff6ff';
+          border = '#3b82f6';
+          textCol = '#1e40af';
+          icon = 'ℹ️';
+        }
+
+        container.innerHTML = `
+          <div id="liveGlobalBannerEl" style="background: ${bg}; border-bottom: 2px solid ${border}; color: ${textCol}; padding: 10px 18px; display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; z-index: 999; animation: fadeIn 0.3s ease;">
+            <div style="display: flex; align-items: center; gap: 10px; font-weight: 600;">
+              <span style="font-size: 20px;">${icon}</span>
+              <span><b>प्रणालीगत सूचना (System Notice):</b> ${esc(gb.message)}</span>
+              <span style="font-size: 11px; opacity: 0.8; margin-left: 8px;">(${gb.postedAt})</span>
+            </div>
+            <button onclick="dismissGlobalBroadcast()" style="background: transparent; border: none; font-size: 16px; color: ${textCol}; cursor: pointer; padding: 2px 6px; font-weight: 800;" title="Dismiss">
+              ✕
+            </button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = '';
+      }
+    }
+
+    function dismissGlobalBroadcast() {
+      const el = document.getElementById('liveGlobalBannerEl');
+      if (el) el.remove();
+    }
+
+    function showFeatureLockedModal(featureName, palikaName) {
+      openModal(
+        '🔒 फिचर लक गरिएको छ (Add-on Required)',
+        `
+        <div style="text-align: center; padding: 24px 16px;">
+          <div style="font-size: 54px; margin-bottom: 14px;">👑</div>
+          <h3 style="color: var(--navy-900); margin-bottom: 8px;">${featureName} उपलब्ध छैन</h3>
+          <p style="color: var(--slate-600); font-size: 14px; line-height: 1.6; max-width: 480px; margin: 0 auto;">
+            यो सुविधा <b>${esc(palikaName)}</b> को हालको प्याकेजमा समावेश गरिएको छैन वा बन्द गरिएको छ। 
+            यसलाई सक्रिय गर्न आफ्नो प्याकेज अपग्रेड गर्न वा SaaS Super Admin सँग सम्पर्क गर्नुहोस्।
+          </p>
+          <div style="margin-top: 20px; padding: 12px; background: #f8fafc; border-radius: 8px; font-size: 13px; color: var(--slate-700);">
+            📞 सुपर एडमिन हटलाइन: <b>+977-9851000000</b> (SaaS Platform HQ)
+          </div>
+        </div>
+        `,
+        '<button class="btn btn-secondary" onclick="closeModal()">Close</button>'
+      );
     }
 
     // ==========================================
