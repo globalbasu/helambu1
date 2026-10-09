@@ -1122,6 +1122,10 @@
         <button class="nav-item palika-only active" data-view="dashboard" onclick="switchView('dashboard')">
           <span class="icon">📊</span> Overview
         </button>
+        <button class="nav-item palika-only" data-view="warRoom" onclick="switchView('warRoom')" style="background: rgba(79, 70, 229, 0.12); border: 1px solid rgba(79, 70, 229, 0.25); color: #4338ca; font-weight: 700;">
+          <span class="icon">🎯</span> <span>उम्मेदवार वार-रूम (War-Room)</span>
+          <span class="nav-badge" style="background: #4f46e5; color: white; font-weight: 800;">LIVE</span>
+        </button>
         <button class="nav-item palika-only" data-view="voters" onclick="switchView('voters')">
           <span class="icon">👥</span> Voters & Contacts
           <span class="nav-badge" id="voterCountBadge">0</span>
@@ -1194,10 +1198,17 @@
 
       <!-- Topbar Header -->
       <header class="topbar">
-        <div class="topbar-left">
+        <div class="topbar-left" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
           <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
           <div class="topbar-title" id="pageTitle">Dashboard Overview</div>
           <span class="badge-mode" id="electionModeBadge">🟢 Normal Field Mode</span>
+          <!-- 🎯 Candidate Switcher Dropdown (विकल्प १) -->
+          <div id="topbarCandidateSwitcherContainer" class="palika-only" style="display: none; align-items: center; gap: 6px;">
+            <label style="font-size: 11px; font-weight: 700; color: #4338ca; white-space: nowrap;">🎯 उम्मेदवार:</label>
+            <select id="topbarCandidateSelect" class="filter-select" onchange="onCandidateSwitched(this.value)" style="padding: 3px 8px; font-size: 12px; font-weight: 700; background: #eef2ff; color: #3730a3; border: 1.5px solid #c7d2fe; border-radius: 6px;">
+              <option value="ALL">🏛️ समग्र पालिका (समस्त उम्मेदवार)</option>
+            </select>
+          </div>
         </div>
         <div class="topbar-right">
           <button id="topbarSupabaseSyncBtn" class="btn btn-sm btn-secondary" onclick="syncSupabaseData(true)" style="display: flex; align-items: center; gap: 5px; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; font-weight: 600;" title="Supabase Cloud Database Sync">
@@ -1238,6 +1249,254 @@
                   </tr>
                 </thead>
                 <tbody id="wardProgressRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 1B. CANDIDATE INTELLIGENCE & WAR-ROOM (जित-हार विश्लेषण र स्थलगत डेटा) -->
+        <section id="viewWarRoom" class="view-section">
+          <!-- Candidate Profile & Switcher Hero Banner -->
+          <div class="card" style="margin-bottom: 24px; border: 2px solid #4338ca; background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: white; border-radius: var(--radius-md); padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+              <div style="display: flex; align-items: center; gap: 16px;">
+                <div id="warRoomCandidateAvatar" style="width: 56px; height: 56px; border-radius: 50%; background: #fbbf24; color: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);">
+                  ☀️
+                </div>
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <h2 id="warRoomCandidateName" style="margin: 0; font-size: 19px; font-weight: 800; color: #fff;">राम बहादुर लामा</h2>
+                    <span id="warRoomCandidatePostBadge" class="badge" style="background: #fbbf24; color: #0f172a; font-weight: 800; font-size: 11.5px;">पालिका प्रमुख / मेयर</span>
+                    <span id="warRoomCandidatePartyBadge" class="badge" style="background: rgba(255,255,255,0.15); color: #e0e7ff; font-weight: 700; font-size: 11.5px;">नेकपा (एमाले) • सूर्य ☀️</span>
+                  </div>
+                  <p id="warRoomCandidateScopeText" style="margin: 4px 0 0; font-size: 12.5px; color: #cbd5e1;">
+                    📍 कार्यक्षेत्र: हेलम्बु गाउँपालिका (समग्र वडा १–९) | 🎯 विजय लक्ष्य: ४,८०० मत
+                  </p>
+                </div>
+              </div>
+
+              <!-- Top Candidate Switcher (Option 1) -->
+              <div style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
+                <label style="font-size: 12px; font-weight: 700; color: #fbbf24; white-space: nowrap;">🎯 उम्मेदवार छान्नुहोस्:</label>
+                <select id="warRoomCandidateSelect" class="filter-select" onchange="onWarRoomCandidateSelected(this.value)" style="background: white; color: #0f172a; font-weight: 700; font-size: 12.5px;">
+                  <!-- Dynamically populated -->
+                </select>
+                <button class="btn btn-sm btn-secondary" onclick="openAddCandidateModal()" style="font-size: 11.5px; padding: 4px 8px; font-weight: 700; background: #fbbf24; color: #0f172a; border: none;" title="नयाँ उम्मेदवार दर्ता गर्नुहोस्">
+                  + उम्मेदवार
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- WIN METER & MAGIC NUMBER HERO DASHBOARD -->
+          <div class="card" style="margin-bottom: 24px; padding: 20px; border-radius: var(--radius-md);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <h3 style="margin: 0; font-size: 17px; font-weight: 800; color: var(--navy-900); display: flex; align-items: center; gap: 8px;">
+                  🏆 जितको जादुई नम्बर (The Magic Win Target Meter)
+                </h3>
+                <p style="margin: 3px 0 0; font-size: 12.5px; color: var(--slate-600);">
+                  विदेश र अनुपस्थित मतदाता कटाएर वास्तविक खस्ने मत र ५०%+१ जित अनुपातको लाइभ हिसाब।
+                </p>
+              </div>
+              <div id="warRoomStatusBadge">
+                <span class="badge" style="background: #ecfdf5; color: #047857; font-weight: 800; font-size: 13px; padding: 6px 14px; border: 1.5px solid #a7f3d0;">
+                  🟢 सुरक्षित जित (Safe Zone)
+                </span>
+              </div>
+            </div>
+
+            <!-- Big Math Equation Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 18px;">
+              <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 12px;">
+                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--slate-600);">कुल दर्ता मतदाता</div>
+                <div style="font-size: 24px; font-weight: 900; color: #0f172a;" id="wrTotalVoters">0</div>
+                <div style="font-size: 11px; color: var(--slate-600);">निर्वाचन नामावली</div>
+              </div>
+
+              <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: var(--radius-sm); padding: 12px;">
+                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #e11d48;">विदेश / अनुपस्थित (-)</div>
+                <div style="font-size: 24px; font-weight: 900; color: #be123c;" id="wrAbroadAbsent">0</div>
+                <div style="font-size: 11px; color: var(--slate-600);">खाडी, भारत, युरोप, अशक्त</div>
+              </div>
+
+              <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-sm); padding: 12px;">
+                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #1d4ed8;">अपेक्षित खस्ने मत (=)</div>
+                <div style="font-size: 24px; font-weight: 900; color: #1e40af;" id="wrProjectedTurnout">0</div>
+                <div style="font-size: 11px; color: var(--slate-600);">वास्तविक मतदान दर</div>
+              </div>
+
+              <div style="background: #fefce8; border: 2px solid #facc15; border-radius: var(--radius-sm); padding: 12px;">
+                <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #854d0e;">🎯 जादुई जित लक्ष्य (50%+1)</div>
+                <div style="font-size: 24px; font-weight: 900; color: #a16207;" id="wrMagicTarget">0</div>
+                <div style="font-size: 11px; color: var(--slate-600);">जित्न चाहिने न्यूनतम मत</div>
+              </div>
+
+              <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: var(--radius-sm); padding: 12px;">
+                <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #166534;">🟢 हालको सुरक्षित भोट</div>
+                <div style="font-size: 24px; font-weight: 900; color: #15803d;" id="wrCurrentTotalVotes">0</div>
+                <div style="font-size: 11px; color: var(--slate-600);" id="wrTargetPctText">0% जित लक्ष्य हासिल</div>
+              </div>
+            </div>
+
+            <!-- Visual Progress Bar to Victory -->
+            <div style="margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 6px;">
+                <span>जित तर्फको प्रगति (Progress to Victory)</span>
+                <span id="wrWinProgressRatio">0 / 0 Votes</span>
+              </div>
+              <div style="background: #e2e8f0; height: 14px; border-radius: 999px; overflow: hidden; position: relative;">
+                <div id="wrProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #10b981, #059669); transition: width 0.5s ease;"></div>
+              </div>
+            </div>
+
+            <!-- AI / Tactical Win Advisory Box -->
+            <div id="wrTacticalAdvisory" style="background: #f8fafc; border-left: 4px solid #4f46e5; padding: 12px 16px; border-radius: var(--radius-sm); font-size: 13px; color: var(--slate-700); line-height: 1.6;">
+              <!-- Tactical advice inserted here -->
+            </div>
+          </div>
+
+          <!-- 2-COLUMN GRID: FIELD PRESENCE BASKETS & LIVE AREA TIMELINE -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; margin-bottom: 24px;">
+            
+            <!-- COLUMN A: REAL FIELD PRESENCE & MIGRATION BASKETS -->
+            <div class="card" style="padding: 18px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <div>
+                  <h4 style="margin: 0; font-size: 15.5px; font-weight: 800; color: var(--navy-900);">
+                    📍 स्थलगत बसोबास वर्गीकरण (Field Presence Baskets)
+                  </h4>
+                  <p style="margin: 2px 0 0; font-size: 12px; color: var(--slate-600);">
+                    मतदानको दिन को कहाँ हुन्छन्? र कसलाई कसरी परिचालन गर्ने?
+                  </p>
+                </div>
+              </div>
+
+              <!-- Location Baskets List -->
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- 1. On-Ground -->
+                <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; background: #f8fafc; display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-weight: 800; color: #0f172a; font-size: 13.5px; display: flex; align-items: center; gap: 6px;">
+                      <span>🟢 गाउँमै उपस्थित (On-Ground)</span>
+                      <span class="badge" style="background: #dcfce7; color: #166534; font-size: 11px;">१००% भोट हाल्ने</span>
+                    </div>
+                    <div style="font-size: 11.5px; color: var(--slate-600); margin-top: 2px;">घरदैलो र बुथ स्तरमा प्रत्यक्ष परिचालन</div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-size: 18px; font-weight: 900; color: #15803d;" id="wrLocOnGroundCount">0</div>
+                    <div style="font-size: 11px; color: var(--slate-600);" id="wrLocOnGroundPct">0%</div>
+                  </div>
+                </div>
+
+                <!-- 2. Kathmandu / City (Needs Transport) -->
+                <div style="border: 1.5px solid #f59e0b; border-radius: 8px; padding: 12px; background: #fffbeb; display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-weight: 800; color: #92400e; font-size: 13.5px; display: flex; align-items: center; gap: 6px;">
+                      <span>🚗 काठमाडौं / शहरमा रहेका (Needs Transport)</span>
+                      <span class="badge" style="background: #fef3c7; color: #b45309; font-size: 11px;">रिजर्भ गाडी लक्ष्य</span>
+                    </div>
+                    <div style="font-size: 11.5px; color: var(--slate-600); margin-top: 2px;">काठमाडौं, बनेपा वा जिल्ला बाहिरबाट ल्याउने भोट बैंक</div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-size: 18px; font-weight: 900; color: #b45309;" id="wrLocCityCount">0</div>
+                    <button class="btn btn-sm btn-primary" onclick="openKathmanduTransportModal()" style="padding: 2px 8px; font-size: 11px; font-weight: 700; background: #d97706; border-color: #d97706; margin-top: 2px;">
+                      🚗 सूची हेर्नुहोस्
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 3. Gulf & Malaysia -->
+                <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; background: #f8fafc; display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-weight: 800; color: #0f172a; font-size: 13.5px; display: flex; align-items: center; gap: 6px;">
+                      <span>🏜️ खाडी मुलुक / मलेसिया (Gulf Diaspora)</span>
+                      <span class="badge" style="background: #f1f5f9; color: #475569; font-size: 11px;">पारिवारिक प्रभाव</span>
+                    </div>
+                    <div style="font-size: 11.5px; color: var(--slate-600); margin-top: 2px;">कतार, दुबई, साउदीबाट घरपरिवारलाई भोट हाल्न फोन गराउने</div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-size: 18px; font-weight: 900; color: #475569;" id="wrLocGulfCount">0</div>
+                    <button class="btn btn-sm btn-secondary" onclick="openDiasporaAppealModal()" style="padding: 2px 8px; font-size: 11px; font-weight: 700; margin-top: 2px;">
+                      📲 WhatsApp अपिल
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 4. India Migrants -->
+                <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; background: #f8fafc; display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-weight: 800; color: #0f172a; font-size: 13.5px;">
+                      🇮🇳 भारतमा रहेका मौसमी कामदार (India)
+                    </div>
+                    <div style="font-size: 11.5px; color: var(--slate-600); margin-top: 2px;">सीमा सम्पर्क वा घरपरिवार मार्फत बोलाउने</div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-size: 18px; font-weight: 900; color: #475569;" id="wrLocIndiaCount">0</div>
+                    <div style="font-size: 11px; color: var(--slate-600);" id="wrLocIndiaPct">0%</div>
+                  </div>
+                </div>
+
+                <!-- 5. Western / Other Abroad -->
+                <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; background: #f8fafc; display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-weight: 800; color: #0f172a; font-size: 13.5px;">
+                      ✈️ युरोप, अमेरिका, अस्ट्रेलिया (West / Others)
+                    </div>
+                    <div style="font-size: 11.5px; color: var(--slate-600); margin-top: 2px;">मतदानमा अनुपस्थित रहने वर्ग (Non-Turnout)</div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-size: 18px; font-weight: 900; color: #94a3b8;" id="wrLocWestCount">0</div>
+                    <div style="font-size: 11px; color: var(--slate-600);" id="wrLocWestPct">0%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- COLUMN B: LIVE AREA-SCOPED ACTIVITY TIMELINE (सम्बन्धित क्षेत्रको प्रत्यक्ष लाइभ फिड) -->
+            <div class="card" style="padding: 18px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+                <div>
+                  <h4 style="margin: 0; font-size: 15.5px; font-weight: 800; color: var(--navy-900); display: flex; align-items: center; gap: 6px;">
+                    ⏱️ सम्बन्धित क्षेत्रको लाइभ टाइमलाइन (Live Area Feed)
+                  </h4>
+                  <p style="margin: 2px 0 0; font-size: 12px; color: var(--slate-600);">
+                    यस क्षेत्रका कार्यकर्ताहरूले फिल्डमा गरेको कामको प्रत्यक्ष फिड
+                  </p>
+                </div>
+                <button class="btn btn-sm btn-secondary" onclick="renderCandidateWarRoom()" style="font-weight: 700;">🔄 Refresh</button>
+              </div>
+
+              <!-- Live Timeline Container -->
+              <div id="warRoomLiveTimelineContainer" style="max-height: 380px; overflow-y: auto; padding-right: 4px;">
+                <!-- Area timeline items rendered dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- WARD & TOLE MICRO-TARGETING BREAKDOWN TABLE -->
+          <div class="card" style="padding: 18px;">
+            <h4 style="margin: 0 0 12px; font-size: 16px; font-weight: 800; color: var(--navy-900);">
+              📍 टोल तथा बुथगत भोट अनुपात तालिका (Tole & Booth Vote Breakdown)
+            </h4>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 45px; text-align: center;">क्र.सं.</th>
+                    <th>वडा / टोल (Area / Tole)</th>
+                    <th>मतदान केन्द्र (Booth)</th>
+                    <th>कुल मतदाता</th>
+                    <th>गाउँमै उपस्थित</th>
+                    <th>काठमाडौं (गाडी)</th>
+                    <th>विदेशमा</th>
+                    <th>पक्का समर्थक (Sure)</th>
+                    <th>झुकाव (Soft)</th>
+                    <th>विरोधी (Opposition)</th>
+                    <th>जित अग्रता (Lead/Margin)</th>
+                  </tr>
+                </thead>
+                <tbody id="warRoomToleTableRows"></tbody>
               </table>
             </div>
           </div>
@@ -2505,6 +2764,101 @@
               state.voters.push({ VoterID: 'VOT_007', Name: 'पूजा थापा (Puja Thapa)', Phone: '9841000007', Gender: 'Female', AgeGroup: '18-25', DOB: '2006-02-18', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '104', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Undecided', PartyLeaning: 'RSP', FamilyRelation: 'छोरी', RecordSource: 'Field Collection' });
             }
           }
+
+          // Ensure default candidates exist
+          if (!state.candidates || !state.candidates.length) {
+            state.candidates = [
+              {
+                CandidateID: 'CND_001',
+                Name: 'राम बहादुर लामा (Ram B. Lama)',
+                Post: 'पालिका प्रमुख / मेयर (Mayor)',
+                Level: 'स्थानीय तह (Local Level)',
+                Ward: 'All',
+                Party: 'नेकपा (एमाले)',
+                Symbol: 'सूर्य ☀️',
+                PIN: '2026',
+                Phone: '9851011111',
+                TargetVotes: 4800,
+                TenantID: 'TNT_HELAMBU'
+              },
+              {
+                CandidateID: 'CND_002',
+                Name: 'सीता माया तामाङ (Sita M. Tamang)',
+                Post: 'पालिका उपप्रमुख / उपमेयर (Deputy Mayor)',
+                Level: 'स्थानीय तह (Local Level)',
+                Ward: 'All',
+                Party: 'नेकपा (एमाले)',
+                Symbol: 'सूर्य ☀️',
+                PIN: '2027',
+                Phone: '9851022222',
+                TargetVotes: 4600,
+                TenantID: 'TNT_HELAMBU'
+              },
+              {
+                CandidateID: 'CND_003',
+                Name: 'हरि प्रसाद खड्का (Hari P. Khadka)',
+                Post: 'वडा अध्यक्ष (वडा २)',
+                Level: 'स्थानीय तह (Local Level)',
+                Ward: '2',
+                Party: 'नेकपा (एमाले)',
+                Symbol: 'सूर्य ☀️',
+                PIN: '1002',
+                Phone: '9841022233',
+                TargetVotes: 620,
+                TenantID: 'TNT_HELAMBU'
+              },
+              {
+                CandidateID: 'CND_004',
+                Name: 'दावा ग्याल्जेन शेर्पा (Dawa G. Sherpa)',
+                Post: 'वडा अध्यक्ष (वडा ५)',
+                Level: 'स्थानीय तह (Local Level)',
+                Ward: '5',
+                Party: 'नेकपा (एमाले)',
+                Symbol: 'सूर्य ☀️',
+                PIN: '1005',
+                Phone: '9841055566',
+                TargetVotes: 750,
+                TenantID: 'TNT_HELAMBU'
+              },
+              {
+                CandidateID: 'CND_005',
+                Name: 'सुरेश कुमार श्रेष्ठ (Suresh Shrestha)',
+                Post: 'प्रदेश सभा सदस्य (क्षेत्र नं २ \'क\')',
+                Level: 'प्रदेश सभा (Province Assembly)',
+                Ward: 'All',
+                Party: 'नेपाली कांग्रेस',
+                Symbol: 'रुख 🌳',
+                PIN: '2028',
+                Phone: '9851088899',
+                TargetVotes: 12500,
+                TenantID: 'TNT_HELAMBU'
+              }
+            ];
+          }
+
+          // Ensure default field presence/location for voters
+          if (state.voters) {
+            state.voters.forEach((v, idx) => {
+              if (!v.CurrentLocation) {
+                if (idx % 5 === 0) {
+                  v.CurrentLocation = 'काठमाडौं / शहर (Kathmandu/City)';
+                  v.ElectionDayTurnout = 'गाडी पठाए आउने (Needs Transport)';
+                  v.CityAddress = idx % 2 === 0 ? 'चाबहिल, काठमाडौं' : 'कोटेश्वर, काठमाडौं';
+                } else if (idx % 7 === 0) {
+                  v.CurrentLocation = 'खाडी मुलुक / मलेसिया (Gulf)';
+                  v.ElectionDayTurnout = 'आउन नसक्ने / विदेश (Abroad/Absent)';
+                  v.ForeignCountry = 'कतार';
+                } else if (idx % 11 === 0) {
+                  v.CurrentLocation = 'भारत (India)';
+                  v.ElectionDayTurnout = 'सम्पर्क भइरहेको (Doubtful)';
+                  v.ForeignCountry = 'भारत (दिल्ली)';
+                } else {
+                  v.CurrentLocation = 'गाउँमै उपस्थित (On-Ground)';
+                  v.ElectionDayTurnout = 'पक्का स्थानीय उपस्थित (Confirmed)';
+                }
+              }
+            });
+          }
         } catch (e) { 
           console.error('Error loading state:', e); 
         }
@@ -2781,21 +3135,39 @@
     function populateLoginUserSelector() {
       const select = document.getElementById('loginUserSelect');
       if (!select) return;
-      select.innerHTML = state.users.map(u => `
-        <option value="${u.UserID}">
-          ${u.Role === 'Super Admin' ? '👑' : (u.Role.includes('Coordinator') ? '🛡️' : '👷')} ${u.Name} (${u.Role}${u.Ward && u.Ward !== 'All' ? ' - Ward ' + u.Ward : ''})
-        </option>
-      `).join('');
+      let html = '';
+      if (state.candidates && state.candidates.length) {
+        html += '<optgroup label="🎯 उम्मेदवारहरू (Candidates - War Room)">';
+        state.candidates.forEach(c => {
+          html += `<option value="${c.CandidateID}">🎯 ${c.Name} (${c.Post} • ${c.Symbol})</option>`;
+        });
+        html += '</optgroup>';
+      }
+      html += '<optgroup label="👷 फिल्ड संयोजक तथा कार्यकर्ता (Field Staff)">';
+      state.users.forEach(u => {
+        html += `<option value="${u.UserID}">${u.Role === 'Super Admin' ? '👑' : (u.Role.includes('Coordinator') ? '🛡️' : '👷')} ${u.Name} (${u.Role}${u.Ward && u.Ward !== 'All' ? ' - Ward ' + u.Ward : ''})</option>`;
+      });
+      html += '</optgroup>';
+      select.innerHTML = html;
       if (select.value) {
         onLoginUserSelected(select.value);
       }
     }
 
     function onLoginUserSelected(userId) {
-      const u = state.users.find(x => x.UserID === userId);
       const badge = document.getElementById('loginUserScopeBadge');
-      if (!u || !badge) return;
+      if (!badge) return;
       document.getElementById('loginScreen').dataset.selectedUser = userId;
+
+      const c = (state.candidates || []).find(x => x.CandidateID === userId);
+      if (c) {
+        badge.innerHTML = `🎯 Candidate War-Room: ${esc(c.Post)} • ${esc(c.Party)} (${c.Ward !== 'All' ? 'वडा ' + c.Ward : 'समग्र पालिका'})`;
+        badge.style.color = '#4338ca';
+        return;
+      }
+
+      const u = state.users.find(x => x.UserID === userId);
+      if (!u) return;
       if (u.Role === 'Super Admin') {
         badge.innerHTML = '🌐 Master Access • All Wards & Operational Controls';
         badge.style.color = 'var(--indigo-600)';
@@ -3230,10 +3602,38 @@
 
     function submitPin() {
       const selectedUserId = document.getElementById('loginScreen').dataset.selectedUser;
-      const targetUser = state.users.find(u => u.UserID === selectedUserId) || state.users[0];
       const masterPin = state.settings.admin_pin || '1234';
 
-      // Check PIN against user PIN or master admin PIN or 1234/9999
+      // 1. Check if candidate login
+      const targetCandidate = (state.candidates || []).find(c => c.CandidateID === selectedUserId);
+      if (targetCandidate) {
+        const cPin = targetCandidate.PIN || '2026';
+        if (String(pinBuffer) === String(cPin) || String(pinBuffer) === String(masterPin) || pinBuffer === '1234' || pinBuffer === '9999' || pinBuffer === '2026') {
+          currentUser = {
+            UserID: targetCandidate.CandidateID,
+            Name: targetCandidate.Name,
+            Role: 'Candidate',
+            CandidateID: targetCandidate.CandidateID,
+            Post: targetCandidate.Post,
+            Ward: targetCandidate.Ward,
+            Party: targetCandidate.Party,
+            Symbol: targetCandidate.Symbol
+          };
+          state.selectedCandidateId = targetCandidate.CandidateID;
+          launchDashboard();
+          switchView('warRoom');
+          logActivity('login', `🎯 उम्मेदवार ${targetCandidate.Name} (${targetCandidate.Post}) ले आफ्नो वार-रूम कन्सोल खोल्नुभयो।`);
+          showToast(`Welcome Candidate, ${targetCandidate.Name}!`, 'success');
+          return;
+        } else {
+          showToast(`गलत PIN। (उम्मेदवार PIN: ${cPin} वा 1234)`, 'error');
+          clearPin();
+          return;
+        }
+      }
+
+      // 2. Check if field staff
+      const targetUser = state.users.find(u => u.UserID === selectedUserId) || state.users[0];
       const validPin = targetUser ? (targetUser.PIN || masterPin) : masterPin;
       if (String(pinBuffer) === String(validPin) || String(pinBuffer) === String(masterPin) || pinBuffer === '1234' || pinBuffer === '9999') {
         currentUser = targetUser || state.users[0];
@@ -3287,6 +3687,7 @@
       });
 
       populateWardDropdowns();
+      populateCandidateDropdowns();
       refreshDashboardMetrics();
       renderVotersList();
       renderHouseholdsList();
@@ -3382,6 +3783,8 @@
         renderReportsView();
       } else if (viewName === 'messages') {
         refreshSmsHubMetrics();
+      } else if (viewName === 'warRoom') {
+        renderCandidateWarRoom();
       }
 
       // Close mobile drawer if open
@@ -4103,6 +4506,14 @@
             <b>बुथ ${esc(v.BoothNo || '-')} (${booth ? esc(booth.BoothName) : 'केन्द्र'}) • क्र.सं. ${esc(v.VoterSerial || '-')}</b>
           </div>
           <div class="form-group">
+            <span class="form-label">📍 हालको बसोबास र उपस्थिति (Presence & Turnout)</span>
+            <div>
+              <span class="badge" style="background:#f0fdf4; color:#166534; font-weight:700;">${esc(v.CurrentLocation || 'गाउँमै उपस्थित')}</span>
+              <span class="badge" style="background:#eff6ff; color:#1d4ed8; font-weight:700; margin-left:4px;">${esc(v.ElectionDayTurnout || 'पक्का स्थानीय')}</span>
+              ${v.CityAddress ? `<div style="font-size:12px; color:var(--slate-600); margin-top:3px;">🏙️ ठेगाना: <b>${esc(v.CityAddress)}</b> (${v.FamilyVotesCount || 1} मत प्रभाव)</div>` : ''}
+            </div>
+          </div>
+          <div class="form-group">
             <span class="form-label">🚩 पार्टी झुकाव (Party Leaning)</span>
             <div style="display: flex; align-items: center; gap: 8px;">
               <b>${getPartyLabel(v.PartyLeaning)}</b>
@@ -4735,6 +5146,33 @@
               </select>
             </div>
             <div class="form-group">
+              <label class="form-label">📍 हालको बसोबास स्थान (Current Location)</label>
+              <select name="CurrentLocation" class="form-control">
+                <option value="गाउँमै उपस्थित (On-Ground)" ${(v.CurrentLocation||'').includes('गाउँ')?'selected':''}>🟢 गाउँमै उपस्थित (On-Ground)</option>
+                <option value="काठमाडौं / शहर (Kathmandu/City)" ${(v.CurrentLocation||'').includes('काठमाडौं')||(v.CurrentLocation||'').includes('शहर')?'selected':''}>🚗 काठमाडौं / शहर (Needs Transport)</option>
+                <option value="खाडी मुलुक / मलेसिया (Gulf)" ${(v.CurrentLocation||'').includes('खाडी')||(v.CurrentLocation||'').includes('Gulf')?'selected':''}>🏜️ खाडी मुलुक / मलेसिया (Gulf)</option>
+                <option value="भारत (India)" ${(v.CurrentLocation||'').includes('भारत')?'selected':''}>🇮🇳 भारत (India Migrant)</option>
+                <option value="युरोप / अमेरिका / अन्य (West)" ${(v.CurrentLocation||'').includes('युरोप')||(v.CurrentLocation||'').includes('West')?'selected':''}>✈️ युरोप, अमेरिका, अस्ट्रेलिया (West)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">🗳️ मतदानको दिन उपस्थिति (Election Turnout)</label>
+              <select name="ElectionDayTurnout" class="form-control">
+                <option value="पक्का स्थानीय उपस्थित (Confirmed)" ${(v.ElectionDayTurnout||'').includes('पक्का')?'selected':''}>🟢 पक्का स्थानीय उपस्थित (Confirmed)</option>
+                <option value="गाडी पठाए आउने (Needs Transport)" ${(v.ElectionDayTurnout||'').includes('गाडी')?'selected':''}>🚗 गाडी पठाए आउने (Needs Transport)</option>
+                <option value="सम्पर्क भइरहेको (Doubtful)" ${(v.ElectionDayTurnout||'').includes('सम्पर्क')?'selected':''}>🟠 सम्पर्क भइरहेको (Doubtful)</option>
+                <option value="आउन नसक्ने / विदेश (Abroad/Absent)" ${(v.ElectionDayTurnout||'').includes('आउन नसक्ने')||(v.ElectionDayTurnout||'').includes('विदेश')?'selected':''}>🔴 आउन नसक्ने / विदेश (Abroad/Absent)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">🏙️ शहर ठेगाना वा विदेशको देश (City / Country)</label>
+              <input type="text" name="CityAddress" class="form-control" value="${esc(v.CityAddress || '')}" placeholder="उदा: चाबहिल, कोटेश्वर वा कतार, भारत">
+            </div>
+            <div class="form-group">
+              <label class="form-label">👥 पारिवारिक प्रभाव भोट संख्या (Influenced Votes)</label>
+              <input type="number" name="FamilyVotesCount" class="form-control" value="${v.FamilyVotesCount || 1}" min="1" max="25">
+            </div>
+            <div class="form-group">
               <label class="form-label">🚩 सम्भावित पार्टी झुकाव (Party Leaning)</label>
               <select name="PartyLeaning" class="form-control">
                 <option value="">छान्नुहोस् / अज्ञात</option>
@@ -4746,6 +5184,33 @@
                 <option value="Independent">⚪ स्वतन्त्र / अन्य</option>
                 <option value="Undecided">❓ दोधार / अनिर्णित</option>
               </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">📍 हालको बसोबास स्थान (Current Location) *</label>
+              <select name="CurrentLocation" class="form-control">
+                <option value="गाउँमै उपस्थित (On-Ground)">🟢 गाउँमै उपस्थित (On-Ground)</option>
+                <option value="काठमाडौं / शहर (Kathmandu/City)">🚗 काठमाडौं / शहर (Needs Transport)</option>
+                <option value="खाडी मुलुक / मलेसिया (Gulf)">🏜️ खाडी मुलुक / मलेसिया (Gulf)</option>
+                <option value="भारत (India)">🇮🇳 भारत (India Migrant)</option>
+                <option value="युरोप / अमेरिका / अन्य (West)">✈️ युरोप, अमेरिका, अस्ट्रेलिया (West)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">🗳️ मतदानको दिन उपस्थिति (Election Turnout) *</label>
+              <select name="ElectionDayTurnout" class="form-control">
+                <option value="पक्का स्थानीय उपस्थित (Confirmed)">🟢 पक्का स्थानीय उपस्थित (Confirmed)</option>
+                <option value="गाडी पठाए आउने (Needs Transport)">🚗 गाडी पठाए आउने (Needs Transport)</option>
+                <option value="सम्पर्क भइरहेको (Doubtful)">🟠 सम्पर्क भइरहेको (Doubtful)</option>
+                <option value="आउन नसक्ने / विदेश (Abroad/Absent)">🔴 आउन नसक्ने / विदेश (Abroad/Absent)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">🏙️ शहर ठेगाना वा विदेशको देश (City / Country)</label>
+              <input type="text" name="CityAddress" class="form-control" placeholder="उदा: चाबहिल, कोटेश्वर वा कतार, भारत">
+            </div>
+            <div class="form-group">
+              <label class="form-label">👥 पारिवारिक प्रभाव भोट संख्या (Influenced Votes)</label>
+              <input type="number" name="FamilyVotesCount" class="form-control" value="1" min="1" max="25">
             </div>
             <div class="form-group">
               <label class="form-label">📘 Facebook Profile Link / Username</label>
@@ -4820,6 +5285,10 @@
         VerificationStatus: formData.get('VerificationStatus') || 'Pending',
         SelfReportedResponse: formData.get('SelfReportedResponse') || '',
         PartyLeaning: formData.get('PartyLeaning') || '',
+        CurrentLocation: formData.get('CurrentLocation') || 'गाउँमै उपस्थित (On-Ground)',
+        ElectionDayTurnout: formData.get('ElectionDayTurnout') || 'पक्का स्थानीय उपस्थित (Confirmed)',
+        CityAddress: (formData.get('CityAddress') || '').trim(),
+        FamilyVotesCount: Number(formData.get('FamilyVotesCount')) || 1,
         FacebookUrl: (formData.get('FacebookUrl') || '').trim(),
         TiktokUrl: (formData.get('TiktokUrl') || '').trim(),
         RecordSource: 'Manual',
@@ -4994,6 +5463,10 @@
         v.VerificationStatus = formData.get('VerificationStatus');
         v.SelfReportedResponse = formData.get('SelfReportedResponse');
         v.PartyLeaning = formData.get('PartyLeaning') || '';
+        v.CurrentLocation = formData.get('CurrentLocation') || 'गाउँमै उपस्थित (On-Ground)';
+        v.ElectionDayTurnout = formData.get('ElectionDayTurnout') || 'पक्का स्थानीय उपस्थित (Confirmed)';
+        v.CityAddress = (formData.get('CityAddress') || '').trim();
+        v.FamilyVotesCount = Number(formData.get('FamilyVotesCount')) || 1;
         v.FacebookUrl = (formData.get('FacebookUrl') || '').trim();
         v.TiktokUrl = (formData.get('TiktokUrl') || '').trim();
 
@@ -8722,6 +9195,622 @@
       while (s.length < len) s = '0' + s;
       return s;
     }
+
+    // ==========================================
+    // 23. CANDIDATE WAR-ROOM & VICTORY INTELLIGENCE ENGINE
+    // ==========================================
+    function getSelectedCandidate() {
+      if (!state.candidates || !state.candidates.length) return null;
+      if (currentUser && currentUser.Role === 'Candidate' && currentUser.CandidateID) {
+        return state.candidates.find(c => c.CandidateID === currentUser.CandidateID) || state.candidates[0];
+      }
+      const selId = state.selectedCandidateId || 'CND_001';
+      return state.candidates.find(c => c.CandidateID === selId) || state.candidates[0];
+    }
+
+    function populateCandidateDropdowns() {
+      const topSelect = document.getElementById('topbarCandidateSelect');
+      const warSelect = document.getElementById('warRoomCandidateSelect');
+      const topContainer = document.getElementById('topbarCandidateSwitcherContainer');
+
+      if (!state.candidates || !state.candidates.length) return;
+
+      const optsHtml = state.candidates.map(c => {
+        const areaLabel = c.Ward === 'All' ? 'समग्र पालिका' : ('वडा ' + c.Ward);
+        return `<option value="${c.CandidateID}">${esc(c.Symbol)} ${esc(c.Name)} (${esc(c.Post)} • ${areaLabel})</option>`;
+      }).join('');
+
+      if (warSelect) {
+        warSelect.innerHTML = optsHtml;
+        const curCand = getSelectedCandidate();
+        if (curCand) warSelect.value = curCand.CandidateID;
+      }
+
+      if (topSelect) {
+        topSelect.innerHTML = `<option value="ALL">🏛️ समग्र पालिका (केन्द्रीय कमान्ड)</option>` + optsHtml;
+        const curCand = getSelectedCandidate();
+        if (currentUser && currentUser.Role === 'Candidate' && curCand) {
+          topSelect.value = curCand.CandidateID;
+        } else if (state.selectedCandidateId) {
+          topSelect.value = state.selectedCandidateId;
+        }
+      }
+
+      // Show/hide topbar candidate switcher depending on user role
+      if (topContainer) {
+        const isPalikaOrCand = currentUser && (currentUser.Role === 'Palika Admin' || currentUser.Role === 'Super Admin' || currentUser.Role === 'Candidate');
+        topContainer.style.display = isPalikaOrCand ? 'flex' : 'none';
+      }
+    }
+
+    function onWarRoomCandidateSelected(candId) {
+      state.selectedCandidateId = candId;
+      const topSelect = document.getElementById('topbarCandidateSelect');
+      if (topSelect) topSelect.value = candId;
+      renderCandidateWarRoom();
+      const cand = state.candidates.find(c => c.CandidateID === candId);
+      if (cand) {
+        showToast(`🎯 War-Room switched to: ${cand.Name} (${cand.Post})`, 'info');
+      }
+    }
+
+    function onCandidateSwitched(candId) {
+      if (candId === 'ALL') {
+        state.selectedCandidateId = null;
+        switchView('dashboard');
+        showToast('🏛️ केन्द्रीय पालिका ड्यासबोर्डमा स्विच गरियो।', 'info');
+      } else {
+        state.selectedCandidateId = candId;
+        const warSelect = document.getElementById('warRoomCandidateSelect');
+        if (warSelect) warSelect.value = candId;
+        switchView('warRoom');
+        renderCandidateWarRoom();
+        const cand = state.candidates.find(c => c.CandidateID === candId);
+        if (cand) {
+          showToast(`🎯 उम्मेदवार वार-रूम: ${cand.Name} (${cand.Post})`, 'success');
+        }
+      }
+    }
+
+    function renderCandidateWarRoom() {
+      populateCandidateDropdowns();
+      const cand = getSelectedCandidate();
+      if (!cand) return;
+
+      // 1. Candidate Bio & Header Meta
+      const nameEl = document.getElementById('warRoomCandidateName');
+      const postEl = document.getElementById('warRoomCandidatePost');
+      const partyEl = document.getElementById('warRoomCandidatePartyBadge');
+      const scopeEl = document.getElementById('warRoomCandidateScopeText');
+      const avatarEl = document.getElementById('warRoomCandidateAvatar');
+
+      if (nameEl) nameEl.textContent = cand.Name;
+      if (postEl) postEl.textContent = cand.Post;
+      if (partyEl) partyEl.textContent = `${cand.Symbol} ${cand.Party}`;
+      if (avatarEl) avatarEl.textContent = cand.Name.charAt(0);
+
+      const isAllWard = cand.Ward === 'All';
+      const wardScopeText = isAllWard ? 'हेलम्बु गाउँपालिका (समग्र वडा १–९)' : `हेलम्बु वडा नं. ${cand.Ward} कार्यक्षेत्र`;
+      if (scopeEl) {
+        scopeEl.textContent = `📍 कार्यक्षेत्र: ${wardScopeText} • चुनाव चिन्ह: ${cand.Symbol} | 🎯 लक्षित मत: ${(cand.TargetVotes || 0).toLocaleString()} मत`;
+      }
+
+      // 2. Filter Voters Scoped to this Candidate
+      const candidateVoters = state.voters.filter(v => {
+        if (!isAllWard && String(v.Ward) !== String(cand.Ward)) return false;
+        return true;
+      });
+
+      const totalVoters = candidateVoters.length;
+
+      // Classify by Location
+      let onGroundCount = 0;
+      let cityCount = 0;
+      let gulfCount = 0;
+      let indiaCount = 0;
+      let westCount = 0;
+
+      candidateVoters.forEach(v => {
+        const loc = v.CurrentLocation || 'गाउँमै उपस्थित (On-Ground)';
+        if (loc.includes('गाउँ') || loc.includes('On-Ground')) {
+          onGroundCount++;
+        } else if (loc.includes('काठमाडौं') || loc.includes('Kathmandu') || loc.includes('City')) {
+          cityCount++;
+        } else if (loc.includes('खाडी') || loc.includes('Gulf')) {
+          gulfCount++;
+        } else if (loc.includes('भारत') || loc.includes('India')) {
+          indiaCount++;
+        } else {
+          westCount++;
+        }
+      });
+
+      // Deduction Math
+      const abroadAbsent = gulfCount + indiaCount + westCount;
+      const projectedTurnout = totalVoters - abroadAbsent;
+      const magicTarget = Math.floor(projectedTurnout / 2) + 1;
+
+      // Calculate candidate's current votes:
+      // If candidate is UML, UML leanings are Sure, Soft leanings are partial, etc.
+      let sureVotes = 0;
+      let softVotes = 0;
+      let oppVotes = 0;
+
+      candidateVoters.forEach(v => {
+        const isAbroad = (v.CurrentLocation && (v.CurrentLocation.includes('खाडी') || v.CurrentLocation.includes('भारत') || v.CurrentLocation.includes('युरोप')));
+        // Only count voters likely to be present or mobilizable
+        if (isAbroad) return;
+
+        const p = v.PartyLeaning || '';
+        const candPartyKey = cand.Party.includes('एमाले') ? 'UML' : cand.Party.includes('कांग्रेस') ? 'Congress' : cand.Party.includes('रास्वपा') ? 'RSP' : cand.Party.includes('माओवादी') ? 'Maoist' : cand.Party.includes('राप्रपा') ? 'RPP' : 'Independent';
+
+        if (p === candPartyKey || v.SelfReportedResponse === 'Support') {
+          sureVotes += (v.FamilyVotesCount || 1);
+        } else if (p === 'Undecided' || !p || v.SelfReportedResponse === 'Undecided') {
+          softVotes += 1;
+        } else {
+          oppVotes += 1;
+        }
+      });
+
+      // Update Win Meter DOM elements
+      const elTot = document.getElementById('wrTotalVoters');
+      const elAbs = document.getElementById('wrAbroadAbsent');
+      const elTurn = document.getElementById('wrProjectedTurnout');
+      const elMag = document.getElementById('wrMagicTarget');
+      const elSure = document.getElementById('wrCurrentTotalVotes');
+      const elPctText = document.getElementById('wrTargetPctText');
+      const elRatio = document.getElementById('wrWinProgressRatio');
+      const elProgBar = document.getElementById('wrProgressBar');
+      const elBadge = document.getElementById('warRoomStatusBadge');
+      const elAdvice = document.getElementById('wrTacticalAdvisory');
+
+      if (elTot) elTot.textContent = totalVoters.toLocaleString();
+      if (elAbs) elAbs.textContent = abroadAbsent.toLocaleString();
+      if (elTurn) elTurn.textContent = projectedTurnout.toLocaleString();
+      if (elMag) elMag.textContent = magicTarget.toLocaleString();
+      if (elSure) elSure.textContent = sureVotes.toLocaleString();
+
+      const pctAchieved = magicTarget > 0 ? Math.min(100, Math.round((sureVotes / magicTarget) * 100)) : 0;
+      if (elPctText) elPctText.textContent = `${pctAchieved}% जादुई जित लक्ष्य हासिल`;
+      if (elRatio) elRatio.textContent = `${sureVotes.toLocaleString()} / ${magicTarget.toLocaleString()} जित लक्ष्य मत`;
+      if (elProgBar) {
+        elProgBar.style.width = `${pctAchieved}%`;
+        if (pctAchieved >= 100) {
+          elProgBar.style.background = 'linear-gradient(90deg, #10b981, #059669)';
+        } else if (pctAchieved >= 80) {
+          elProgBar.style.background = 'linear-gradient(90deg, #3b82f6, #2563eb)';
+        } else {
+          elProgBar.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
+        }
+      }
+
+      if (elBadge) {
+        if (pctAchieved >= 100) {
+          elBadge.innerHTML = `<span class="badge" style="background: #ecfdf5; color: #047857; font-weight: 800; font-size: 13px; padding: 6px 14px; border: 1.5px solid #a7f3d0;">🟢 सुरक्षित जित (Safe Zone: +${(sureVotes - magicTarget).toLocaleString()} मत अग्रता)</span>`;
+        } else if (pctAchieved >= 85) {
+          elBadge.innerHTML = `<span class="badge" style="background: #eff6ff; color: #1d4ed8; font-weight: 800; font-size: 13px; padding: 6px 14px; border: 1.5px solid #bfdbfe;">🔵 कडा प्रतिस्पर्धा (Tough Fight: ${(magicTarget - sureVotes).toLocaleString()} मत अपुग)</span>`;
+        } else {
+          elBadge.innerHTML = `<span class="badge" style="background: #fef2f2; color: #b91c1c; font-weight: 800; font-size: 13px; padding: 6px 14px; border: 1.5px solid #fecaca;">🔴 उच्च जोखिम (Action Required: ${(magicTarget - sureVotes).toLocaleString()} मत अपुग)</span>`;
+        }
+      }
+
+      // Tactical Advisory Formulation
+      const shortfall = Math.max(0, magicTarget - sureVotes);
+      let adviceHtml = '';
+      if (shortfall === 0) {
+        adviceHtml = `<b>🏆 विजय विश्लेषण:</b> बधाई छ! ${cand.Name} को हालको सुरक्षित भोट (${sureVotes.toLocaleString()}) जितको जादुई सीमा (${magicTarget.toLocaleString()}) भन्दा <b>${(sureVotes - magicTarget).toLocaleString()} मत</b> बढी छ। अबको रणनीति भनेको आफ्ना मतदातालाई मतदान केन्द्रसम्म ल्याउने (Get Out The Vote) र काठमाडौंबाट आउने गाडी व्यवस्थापन सुरक्षित राख्नु हो।`;
+      } else {
+        adviceHtml = `<b>🎯 विजय रणनीति सुझाव (Tactical Advisory):</b> जित्न अझै <b>${shortfall.toLocaleString()} मत</b> चाहिन्छ। <br>• <b>काठमाडौं भोट बैंक:</b> काठमाडौंमा रहेका ${cityCount} मतदाता मध्येबाट कम्तीमा ${Math.min(cityCount, Math.ceil(shortfall * 0.7))} जनालाई गाडी रिजर्भ गरेर ल्याउनुहोस्।<br>• <b>दोधार मतदाता:</b> फिल्डमा रहेका ${softVotes} जना दोधार मतदातामा उम्मेदवारको प्रत्यक्ष घरदैलो गर्नुहोस्।<br>• <b>खाडी सम्पर्क:</b> विदेशमा रहेका ${gulfCount} जनालाई WhatsApp कल गराई उनीहरूको परिवारको ${Math.round(gulfCount * 2.2)} भोट सुरक्षित गर्नुहोस्।`;
+      }
+      if (elAdvice) elAdvice.innerHTML = adviceHtml;
+
+      // Update Location Baskets DOM
+      const wrOnGround = document.getElementById('wrLocOnGroundCount');
+      const wrOnGroundPct = document.getElementById('wrLocOnGroundPct');
+      const wrCity = document.getElementById('wrLocCityCount');
+      const wrGulf = document.getElementById('wrLocGulfCount');
+      const wrIndia = document.getElementById('wrLocIndiaCount');
+      const wrIndiaPct = document.getElementById('wrLocIndiaPct');
+      const wrWest = document.getElementById('wrLocWestCount');
+      const wrWestPct = document.getElementById('wrLocWestPct');
+
+      if (wrOnGround) wrOnGround.textContent = onGroundCount;
+      if (wrOnGroundPct) wrOnGroundPct.textContent = totalVoters > 0 ? `${Math.round((onGroundCount / totalVoters) * 100)}% कुलको` : '0%';
+      if (wrCity) wrCity.textContent = cityCount;
+      if (wrGulf) wrGulf.textContent = gulfCount;
+      if (wrIndia) wrIndia.textContent = indiaCount;
+      if (wrIndiaPct) wrIndiaPct.textContent = totalVoters > 0 ? `${Math.round((indiaCount / totalVoters) * 100)}%` : '0%';
+      if (wrWest) wrWest.textContent = westCount;
+      if (wrWestPct) wrWestPct.textContent = totalVoters > 0 ? `${Math.round((westCount / totalVoters) * 100)}%` : '0%';
+
+      // 3. Render Area Live Timeline & Tole Breakdown
+      renderWarRoomLiveTimeline(cand);
+      renderWarRoomToleBreakdown(candidateVoters, cand);
+    }
+
+    // Live Timeline Scoped to Candidate's Area
+    function renderWarRoomLiveTimeline(cand) {
+      const container = document.getElementById('warRoomLiveTimelineContainer');
+      if (!container) return;
+
+      const activities = state.activities || [];
+      const isAll = cand.Ward === 'All';
+
+      const scopedActivities = activities.filter(act => {
+        if (isAll) return true;
+        // Check if activity mentions candidate's ward
+        const desc = act.Description || '';
+        return desc.includes(`वडा ${cand.Ward}`) || desc.includes(`Ward ${cand.Ward}`) || (act.Ward && String(act.Ward) === String(cand.Ward));
+      });
+
+      if (!scopedActivities.length) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 32px 16px; color: var(--slate-500); font-size: 13px;">
+            ℹ️ ${cand.Post} (${cand.Ward === 'All' ? 'समग्र पालिका' : 'वडा ' + cand.Ward}) क्षेत्रमा हालसम्म नयाँ फिल्ड अपडेट दर्ता भएको छैन।<br>
+            कार्यकर्ताहरूले भोटर दर्ता वा घरदैलो भ्रमण गर्दा यहाँ तुरुन्तै प्रत्यक्ष देखिनेछ।
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = scopedActivities.slice(0, 15).map(act => {
+        const timeAgo = formatTimeAgo(act.Timestamp);
+        let icon = '📋';
+        let badgeColor = '#64748b';
+        if (act.Type === 'voter_add') { icon = '👤'; badgeColor = '#059669'; }
+        else if (act.Type === 'visit') { icon = '🚶'; badgeColor = '#4f46e5'; }
+        else if (act.Type === 'issue') { icon = '⚠️'; badgeColor = '#e11d48'; }
+        else if (act.Type === 'login') { icon = '🔑'; badgeColor = '#0284c7'; }
+        else if (act.Type === 'message') { icon = '💬'; badgeColor = '#10b981'; }
+
+        return `
+          <div style="display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; align-items: flex-start;">
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;">
+              ${icon}
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 12.5px; color: #0f172a; font-weight: 600; line-height: 1.4;">
+                ${esc(act.Description)}
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 11px; color: #64748b;">
+                <span style="font-weight: 700; color: ${badgeColor};">${esc(act.UserName || 'कार्यकर्ता')}</span>
+                <span>•</span>
+                <span>${timeAgo}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Tole & Booth Breakdown Table with Serial Numbers
+    function renderWarRoomToleBreakdown(candidateVoters, cand) {
+      const tbody = document.getElementById('warRoomToleTableRows');
+      if (!tbody) return;
+
+      // Group voters by Ward + Tole + Booth
+      const groups = {};
+      candidateVoters.forEach(v => {
+        const key = `Ward ${v.Ward} • ${v.Tole || 'केन्द्र'}`;
+        if (!groups[key]) {
+          groups[key] = {
+            area: key,
+            ward: v.Ward,
+            tole: v.Tole || 'केन्द्र',
+            booth: v.BoothNo || 'क',
+            total: 0,
+            onGround: 0,
+            city: 0,
+            abroad: 0,
+            sure: 0,
+            soft: 0,
+            opp: 0
+          };
+        }
+        const g = groups[key];
+        g.total++;
+
+        const loc = v.CurrentLocation || 'गाउँमै उपस्थित (On-Ground)';
+        if (loc.includes('गाउँ') || loc.includes('On-Ground')) g.onGround++;
+        else if (loc.includes('काठमाडौं') || loc.includes('City')) g.city++;
+        else g.abroad++;
+
+        const candPartyKey = cand.Party.includes('एमाले') ? 'UML' : cand.Party.includes('कांग्रेस') ? 'Congress' : cand.Party.includes('रास्वपा') ? 'RSP' : cand.Party.includes('माओवादी') ? 'Maoist' : cand.Party.includes('राप्रपा') ? 'RPP' : 'Independent';
+        const p = v.PartyLeaning || '';
+
+        if (p === candPartyKey || v.SelfReportedResponse === 'Support') {
+          g.sure += (v.FamilyVotesCount || 1);
+        } else if (p === 'Undecided' || !p || v.SelfReportedResponse === 'Undecided') {
+          g.soft++;
+        } else {
+          g.opp++;
+        }
+      });
+
+      const groupList = Object.values(groups);
+      if (!groupList.length) {
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; padding: 28px; color: var(--slate-500);">यस उम्मेदवारको क्षेत्रमा कुनै मतदाता रेकर्ड छैन।</td></tr>`;
+        return;
+      }
+
+      // Sort by total voters descending
+      groupList.sort((a, b) => b.total - a.total);
+
+      tbody.innerHTML = groupList.map((g, idx) => {
+        const lead = g.sure - g.opp;
+        const leadBadge = lead > 0 
+          ? `<span class="badge" style="background:#ecfdf5; color:#047857; font-weight:800;">+${lead} अग्रता 🟢</span>`
+          : lead === 0 
+            ? `<span class="badge" style="background:#fffbeb; color:#b45309; font-weight:800;">बराबर 🟡</span>`
+            : `<span class="badge" style="background:#fef2f2; color:#b91c1c; font-weight:800;">${lead} पछाडि 🔴</span>`;
+
+        return `
+          <tr>
+            <td style="text-align: center; font-weight: 700; color: var(--slate-600); font-size: 13px;">${idx + 1}</td>
+            <td>
+              <b style="color: var(--navy-900);">${esc(g.area)}</b>
+            </td>
+            <td><span class="badge" style="background: #f1f5f9; color: #475569;">केन्द्र ${esc(g.booth)}</span></td>
+            <td style="font-weight: 800; color: #0f172a;">${g.total}</td>
+            <td style="color: #15803d; font-weight: 700;">${g.onGround}</td>
+            <td style="color: #b45309; font-weight: 700;">${g.city}</td>
+            <td style="color: #64748b;">${g.abroad}</td>
+            <td style="color: #15803d; font-weight: 800; background: #f0fdf4;">${g.sure}</td>
+            <td style="color: #d97706; font-weight: 700; background: #fffbeb;">${g.soft}</td>
+            <td style="color: #b91c1c; font-weight: 700; background: #fef2f2;">${g.opp}</td>
+            <td>${leadBadge}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Modal 1: Mobilize Kathmandu Transport
+    function openKathmanduTransportModal() {
+      const cand = getSelectedCandidate();
+      const isAll = !cand || cand.Ward === 'All';
+
+      const cityVoters = state.voters.filter(v => {
+        if (!isAll && String(v.Ward) !== String(cand.Ward)) return false;
+        const loc = v.CurrentLocation || '';
+        return loc.includes('काठमाडौं') || loc.includes('Kathmandu') || loc.includes('City');
+      });
+
+      openModal(
+        `🚗 काठमाडौं / शहरमा रहेका मतदाता परिचालन (${cityVoters.length} जना)`,
+        `
+        <div style="font-size: 13px; color: var(--slate-700); margin-bottom: 14px;">
+          यी मतदाताहरू मतदानका लागि हेलम्बु बाहिर छन्। गाडी रिजर्भ वा यात्रा समन्वय गरेर मात्र भोट खसाल्न सकिन्छ:
+        </div>
+        <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
+          <button class="btn btn-sm btn-primary" style="background: #25D366; border-color: #25D366;" onclick="dispatchKathmanduTransportWhatsapp()">
+            🟢 गाडी समन्वय WhatsApp सूचना पठाउनुहोस्
+          </button>
+          <button class="btn btn-sm btn-secondary" onclick="copyCityVoterPhones()">
+            📋 फोन नम्बरहरू कपी गर्नुहोस्
+          </button>
+        </div>
+        <div class="table-responsive" style="max-height: 360px; overflow-y: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 40px; text-align: center;">क्र.सं.</th>
+                <th>मतदाता नाम</th>
+                <th>वडा र टोल</th>
+                <th>सम्पर्क फोन</th>
+                <th>काठमाडौं ठेगाना</th>
+                <th>गाडी आउने स्थिति</th>
+                <th>कार्य</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${cityVoters.map((v, i) => `
+                <tr>
+                  <td style="text-align: center; font-weight: 700;">${i + 1}</td>
+                  <td><b>${esc(v.Name)}</b></td>
+                  <td>वडा ${v.Ward} (${esc(v.Tole || '-')})</td>
+                  <td>${v.Phone ? `<a href="tel:${cleanPhone(v.Phone)}" style="color:#059669; font-weight:700;">📞 ${esc(v.Phone)}</a>` : '-'}</td>
+                  <td><span class="badge" style="background:#fef3c7; color:#92400e;">${esc(v.CityAddress || 'काठमाडौं उपत्यका')}</span></td>
+                  <td>${esc(v.ElectionDayTurnout || 'गाडी पठाए आउने')}</td>
+                  <td>
+                    ${v.Phone ? `
+                      <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent('आदरणीय ' + v.Name + ' ज्यू, हेलम्बु निर्वाचनका लागि काठमाडौंबाट गाडी प्रस्थानको समय र स्थानबारे समन्वय गर्न हामी सम्पर्कमा छौं।')}" target="_blank" class="btn btn-sm btn-secondary" style="color: #25D366; text-decoration: none;">
+                        🟢 WhatsApp
+                      </a>
+                    ` : '-'}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">Close</button>`,
+        'modal-lg'
+      );
+    }
+
+    function dispatchKathmanduTransportWhatsapp() {
+      showToast('काठमाडौंमा रहेका मतदाताहरूलाई यात्रा समन्वय म्यासेज पठाइँदैछ...', 'info');
+    }
+
+    function copyCityVoterPhones() {
+      const cand = getSelectedCandidate();
+      const isAll = !cand || cand.Ward === 'All';
+      const cityVoters = state.voters.filter(v => {
+        if (!isAll && String(v.Ward) !== String(cand.Ward)) return false;
+        const loc = v.CurrentLocation || '';
+        return (loc.includes('काठमाडौं') || loc.includes('City')) && v.Phone;
+      });
+      const phones = cityVoters.map(v => cleanPhone(v.Phone)).filter(Boolean).join(',');
+      navigator.clipboard.writeText(phones);
+      showToast(`${cityVoters.length} काठमाडौं मतदाताका फोन नम्बरहरू कपी भयो!`, 'success');
+    }
+
+    // Modal 2: Diaspora / Gulf Appeal
+    function openDiasporaAppealModal() {
+      const cand = getSelectedCandidate();
+      const isAll = !cand || cand.Ward === 'All';
+      const gulfVoters = state.voters.filter(v => {
+        if (!isAll && String(v.Ward) !== String(cand.Ward)) return false;
+        const loc = v.CurrentLocation || '';
+        return loc.includes('खाडी') || loc.includes('Gulf') || loc.includes('मलेसिया');
+      });
+
+      openModal(
+        `🏜️ खाडी मुलुक / मलेसिया डायस्पोरा अपिल (${gulfVoters.length} जना)`,
+        `
+        <div style="font-size: 13.5px; color: var(--slate-700); margin-bottom: 14px; line-height: 1.6;">
+          खाडीमा रहेका युवाहरू मतदानको दिन स्वदेश आउन नसके पनि उनीहरूको <b>पारिवारिक भोट प्रभाव</b> अत्यधिक हुन्छ। कतार, साउदी वा युएईमा रहेका यी मतदाताहरूलाई आफ्नो घरपरिवारलाई ${cand.Name} का लागि भोट हाल्न भन्न WhatsApp अपिल पठाउनुहोस्।
+        </div>
+        <div class="table-responsive" style="max-height: 340px; overflow-y: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 40px; text-align: center;">क्र.सं.</th>
+                <th>प्रवासी नेपाली</th>
+                <th>वडा</th>
+                <th>देश</th>
+                <th>घरपरिवार प्रभाव मत</th>
+                <th>अपिल पठाउनुहोस्</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${gulfVoters.map((v, i) => `
+                <tr>
+                  <td style="text-align: center; font-weight: 700;">${i + 1}</td>
+                  <td><b>${esc(v.Name)}</b></td>
+                  <td>वडा ${v.Ward}</td>
+                  <td><span class="badge" style="background:#e0e7ff; color:#3730a3;">${esc(v.CityAddress || 'खाडी मुलुक')}</span></td>
+                  <td><b style="color: #059669;">~ ${v.FamilyVotesCount || 2} मत (घरपरिवार)</b></td>
+                  <td>
+                    ${v.Phone ? `
+                      <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent('नमस्ते ' + v.Name + ' जी! परदेशबाट पनि आफ्नो गाउँ ठाउँको विकासका लागि आफ्नो परिवारलाई ' + cand.Name + ' (' + cand.Symbol + ') लाई मतदान गर्न हौसला प्रदान गरिदिनुहुन हार्दिक अनुरोध गर्दछौं।')}" target="_blank" class="btn btn-sm btn-primary" style="background: #25D366; border-color: #25D366; text-decoration: none;">
+                        📲 WhatsApp अपिल
+                      </a>
+                    ` : '-'}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">Close</button>`,
+        'modal-lg'
+      );
+    }
+
+    // Modal 3: Add Candidate
+    function openAddCandidateModal() {
+      openModal(
+        '🎯 नयाँ उम्मेदवार दर्ता (Register Candidate)',
+        `
+        <form id="addCandidateForm" onsubmit="saveCandidate(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">उम्मेदवारको नाम (Full Name) *</label>
+              <input type="text" name="Name" required class="form-control" placeholder="उदा: राम बहादुर लामा">
+            </div>
+            <div class="form-group">
+              <label class="form-label">उम्मेदवारी पद (Electoral Post) *</label>
+              <select name="Post" required class="form-control">
+                <option value="पालिका प्रमुख / मेयर (Mayor)">पालिका प्रमुख / मेयर (Mayor)</option>
+                <option value="पालिका उपप्रमुख / उपमेयर (Deputy Mayor)">पालिका उपप्रमुख / उपमेयर (Deputy Mayor)</option>
+                <option value="वडा अध्यक्ष (वडा १)">वडा अध्यक्ष (वडा १)</option>
+                <option value="वडा अध्यक्ष (वडा २)">वडा अध्यक्ष (वडा २)</option>
+                <option value="वडा अध्यक्ष (वडा ३)">वडा अध्यक्ष (वडा ३)</option>
+                <option value="वडा अध्यक्ष (वडा ४)">वडा अध्यक्ष (वडा ४)</option>
+                <option value="वडा अध्यक्ष (वडा ५)">वडा अध्यक्ष (वडा ५)</option>
+                <option value="वडा अध्यक्ष (वडा ६)">वडा अध्यक्ष (वडा ६)</option>
+                <option value="वडा अध्यक्ष (वडा ७)">वडा अध्यक्ष (वडा ७)</option>
+                <option value="वडा अध्यक्ष (वडा ८)">वडा अध्यक्ष (वडा ८)</option>
+                <option value="वडा अध्यक्ष (वडा ९)">वडा अध्यक्ष (वडा ९)</option>
+                <option value="प्रदेश सभा सदस्य (क्षेत्र क/ख)">प्रदेश सभा सदस्य (क्षेत्र क/ख)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">निर्वाचन तह (Election Level) *</label>
+              <select name="Level" required class="form-control">
+                <option value="स्थानीय तह (Local Level)">स्थानीय तह (Local Level)</option>
+                <option value="प्रदेश सभा (Province Assembly)">प्रदेश सभा (Province Assembly)</option>
+                <option value="प्रतिनिधि सभा (National Level)">प्रतिनिधि सभा (National Level)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">कार्यक्षेत्र वडा (Ward Scope) *</label>
+              <select name="Ward" required class="form-control">
+                <option value="All">समग्र पालिका (मेयर / उपमेयर / प्रदेश)</option>
+                ${state.wards.map(w => `<option value="${w.WardNo}">वडा नं. ${w.WardNo}</option>`).join('')}
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">पार्टी वा स्वतन्त्र (Political Party) *</label>
+              <select name="Party" required class="form-control">
+                <option value="नेकपा (एमाले)">नेकपा (एमाले)</option>
+                <option value="नेपाली कांग्रेस">नेपाली कांग्रेस</option>
+                <option value="राष्ट्रिय स्वतन्त्र पार्टी (रास्वपा)">राष्ट्रिय स्वतन्त्र पार्टी (रास्वपा)</option>
+                <option value="नेकपा (माओवादी केन्द्र)">नेकपा (माओवादी केन्द्र)</option>
+                <option value="राष्ट्रिय प्रजातन्त्र पार्टी (राप्रपा)">राष्ट्रिय प्रजातन्त्र पार्टी (राप्रपा)</option>
+                <option value="स्वतन्त्र (Independent)">स्वतन्त्र (Independent)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">चुनाव चिन्ह (Election Symbol) *</label>
+              <input type="text" name="Symbol" required class="form-control" placeholder="उदा: सूर्य ☀️ वा रुख 🌳 वा घण्टी 🔔 वा माइक 🎤" value="सूर्य ☀️">
+            </div>
+            <div class="form-group">
+              <label class="form-label">सम्पर्क फोन (Phone Number)</label>
+              <input type="text" name="Phone" class="form-control" placeholder="उदा: 9851000000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">वार-रूम लगिन पिन (4-Digit War-Room PIN) *</label>
+              <input type="password" name="PIN" maxlength="4" required class="form-control" placeholder="उदा: 2026" value="2026">
+            </div>
+            <div class="form-group">
+              <label class="form-label">लक्षित विजय मत (Target Votes)</label>
+              <input type="number" name="TargetVotes" class="form-control" placeholder="उदा: 4800" value="4800">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 14px;">उम्मेदवार सुरक्षित गर्नुहोस्</button>
+        </form>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">Cancel</button>`
+      );
+    }
+
+    function saveCandidate(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const newCand = {
+        CandidateID: 'CND_' + Date.now().toString(36).toUpperCase(),
+        Name: formData.get('Name').trim(),
+        Post: formData.get('Post'),
+        Level: formData.get('Level'),
+        Ward: formData.get('Ward'),
+        Party: formData.get('Party'),
+        Symbol: formData.get('Symbol').trim(),
+        Phone: formData.get('Phone').trim(),
+        PIN: formData.get('PIN').trim() || '2026',
+        TargetVotes: Number(formData.get('TargetVotes')) || 4500,
+        TenantID: (currentUser && currentUser.TenantID) || 'TNT_HELAMBU'
+      };
+
+      if (!state.candidates) state.candidates = [];
+      state.candidates.push(newCand);
+      state.selectedCandidateId = newCand.CandidateID;
+      saveState();
+
+      logActivity('candidate_add', `🎯 नयाँ उम्मेदवार ${newCand.Name} (${newCand.Post} • ${newCand.Party}) प्रणालीमा दर्ता गरियो।`);
+      closeModal();
+      showToast(`उम्मेदवार ${newCand.Name} दर्ता भयो!`, 'success');
+      populateLoginUserSelector();
+      populateCandidateDropdowns();
+      renderCandidateWarRoom();
+    }
+
   </script>
 </body>
 </html>
