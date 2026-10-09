@@ -913,16 +913,16 @@
         <p id="loginSubtitle" style="font-size: 12.5px; color: var(--slate-600);">SaaS निर्वाचन व्यवस्थापन प्रणाली • मास्टर लगइन</p>
       </div>
 
-      <!-- Quick Switcher Tabs (Default: Super Admin) -->
-      <div style="display: flex; gap: 6px; background: var(--slate-100); padding: 4px; border-radius: var(--radius-md); margin-bottom: 18px;">
-        <button class="btn btn-sm btn-secondary active" id="tabBtnSuperLogin" onclick="switchLoginMode('super')" style="flex: 1; font-weight: 700; border: none;">
-          👑 Super Admin
-        </button>
-        <button class="btn btn-sm btn-secondary" id="tabBtnAdminLogin" onclick="switchLoginMode('admin')" style="flex: 1; font-weight: 700; border: none;">
+      <!-- Quick Switcher Tabs (Only visible when accessing via dedicated Palika portal) -->
+      <div id="loginTabsContainer" style="display: none; gap: 6px; background: var(--slate-100); padding: 4px; border-radius: var(--radius-md); margin-bottom: 18px;">
+        <button class="btn btn-sm btn-secondary active" id="tabBtnAdminLogin" onclick="switchLoginMode('admin')" style="flex: 1; font-weight: 700; border: none;">
           🏛️ पालिका Admin
         </button>
         <button class="btn btn-sm btn-secondary" id="tabBtnWorkerLogin" onclick="switchLoginMode('worker')" style="flex: 1; font-weight: 700; border: none;">
           👷 कार्यकर्ता PIN
+        </button>
+        <button class="btn btn-sm btn-secondary" id="tabBtnSuperLogin" onclick="switchLoginMode('super')" style="display: none; flex: 1; font-weight: 700; border: none;">
+          👑 Super Admin
         </button>
       </div>
 
@@ -1928,6 +1928,7 @@
         {
           TenantID: 'TNT_HELAMBU',
           PalikaName: 'Helambu Rural Municipality',
+          Slug: 'helambu',
           AdminUsername: 'helambu_admin',
           AdminPassword: 'helambu@123',
           ContactPerson: 'Basu Dev (Election Head)',
@@ -1941,6 +1942,7 @@
         {
           TenantID: 'TNT_GOKARNESHWOR',
           PalikaName: 'Gokarneshwor Municipality',
+          Slug: 'gokarneshwor',
           AdminUsername: 'gokarna_admin',
           AdminPassword: 'gokarna@123',
           ContactPerson: 'Dinesh Adhikari',
@@ -1971,6 +1973,7 @@
               {
                 TenantID: 'TNT_HELAMBU',
                 PalikaName: 'Helambu Rural Municipality',
+                Slug: 'helambu',
                 AdminUsername: 'helambu_admin',
                 AdminPassword: 'helambu@123',
                 ContactPerson: 'Basu Dev (Election Head)',
@@ -1984,6 +1987,7 @@
               {
                 TenantID: 'TNT_GOKARNESHWOR',
                 PalikaName: 'Gokarneshwor Municipality',
+                Slug: 'gokarneshwor',
                 AdminUsername: 'gokarna_admin',
                 AdminPassword: 'gokarna@123',
                 ContactPerson: 'Dinesh Adhikari',
@@ -1996,6 +2000,12 @@
               }
             ];
           }
+          // Ensure all tenants have a valid URL Slug
+          state.tenants.forEach(t => {
+            if (!t.Slug) {
+              t.Slug = t.TenantID === 'TNT_HELAMBU' ? 'helambu' : (t.TenantID === 'TNT_GOKARNESHWOR' ? 'gokarneshwor' : (t.PalikaName ? t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') : t.TenantID.toLowerCase()));
+            }
+          });
         } catch (e) { 
           console.error('Error loading state:', e); 
         }
@@ -2107,17 +2117,139 @@
         }
       }
 
-      // Default Route: Super Admin Master Login
-      showAdminLoginPrompt();
+      // Route C: Dedicated Palika Portal (?palika=<slug> or ?p=<slug>)
+      const palikaParam = params.get('palika') || params.get('p');
+      if (palikaParam) {
+        showPalikaPortalLogin(palikaParam.trim().toLowerCase());
+        return;
+      }
+
+      // Default Route: STRICTLY 100% Super Admin Master Gateway (No Tabs!)
+      showSuperAdminGatewayPrompt();
+    }
+
+    // STRICT 100% SUPER ADMIN MASTER SCREEN (Default on Root Domain)
+    function showSuperAdminGatewayPrompt() {
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('appShell').style.display = 'none';
+
+      // Brand icon and header
+      const icon = document.querySelector('.pin-card .brand-icon');
+      if (icon) {
+        icon.textContent = '👑';
+        icon.style.background = '#0f172a';
+        icon.style.color = '#fbbf24';
+      }
+      document.getElementById('loginTitle').textContent = 'Super Admin Control Hub';
+      document.getElementById('loginSubtitle').textContent = 'SaaS निर्वाचन व्यवस्थापन प्रणाली • मास्टर लगइन';
+
+      // HIDE TABS ENTIRELY ON ROOT DOMAIN
+      const tabs = document.getElementById('loginTabsContainer');
+      if (tabs) tabs.style.display = 'none';
+
+      // Show Super Admin Pane Only
+      document.getElementById('paneSuperLogin').style.display = 'block';
+      document.getElementById('paneAdminLogin').style.display = 'none';
+      document.getElementById('paneWorkerLogin').style.display = 'none';
+
+      const footerNotice = document.getElementById('loginFooterNotice');
+      if (footerNotice) {
+        footerNotice.innerHTML = '🛡️ Secured SaaS Master Gateway • Palikas access via dedicated tenant links';
+      }
+
+      currentLoginMode = 'super';
+      pinBuffer = '';
+      updatePinDots();
+    }
+
+    // DEDICATED PALIKA PORTAL (?palika=<slug>)
+    function showPalikaPortalLogin(slug) {
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('appShell').style.display = 'none';
+
+      // Find matching tenant
+      const tenant = (state.tenants || []).find(t => 
+        (t.Slug && t.Slug.toLowerCase() === slug) ||
+        (t.TenantID && t.TenantID.toLowerCase() === slug) ||
+        (t.PalikaName && t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') === slug.replace(/[^a-z0-9]/g, '')) ||
+        (t.AdminUsername && t.AdminUsername.toLowerCase() === slug)
+      );
+
+      if (!tenant) {
+        openModal(
+          '⚠️ पालिका फेला परेन (Palika Not Found)',
+          `
+          <div style="text-align: center; padding: 18px;">
+            <div style="font-size: 48px; margin-bottom: 10px;">🔍</div>
+            <h3 style="color: #0f172a; margin-bottom: 8px;">"${slug}" नामको पालिका प्रणालीमा दर्ता छैन</h3>
+            <p style="color: var(--slate-600); font-size: 13.5px; line-height: 1.6;">
+              कृपया सही लिङ्क प्रयोग गर्नुहोस् वा मुख्य Super Admin लाई सम्पर्क गरी आफ्नो पालिका दर्ता गराउनुहोस्।
+            </p>
+          </div>
+          `,
+          `<button class="btn btn-primary" onclick="window.location.href = window.location.pathname">👑 Super Admin Gateway मा जानुहोस्</button>`
+        );
+        showSuperAdminGatewayPrompt();
+        return;
+      }
+
+      // Check Suspension / Kill-switch
+      if (tenant.Status === 'Suspended') {
+        openModal(
+          '⛔ सेवा निलम्बन गरिएको छ (Service Suspended)',
+          `
+          <div style="text-align: center; padding: 22px;">
+            <div style="font-size: 56px; margin-bottom: 12px;">🚫</div>
+            <h3 style="color: #dc2626; margin-bottom: 8px;">${tenant.PalikaName} को सेवा बन्द गरिएको छ</h3>
+            <p style="color: var(--slate-600); font-size: 14px; line-height: 1.6;">
+              यस पालिकाको खाता Super Admin / Platform Owner द्वारा निष्क्रिय (OFF/Suspended) गरिएको छ। 
+              कृपया भुक्तानी वा नवीकरणका लागि मुख्य एडमिनलाई सम्पर्क गर्नुहोस्।
+            </p>
+          </div>
+          `,
+          `<button class="btn btn-secondary" onclick="closeModal()">Close</button>`
+        );
+      }
+
+      // Customize UI for this specific Palika!
+      const icon = document.querySelector('.pin-card .brand-icon');
+      if (icon) {
+        icon.textContent = '🏛️';
+        icon.style.background = '#1e3a8a';
+        icon.style.color = '#ffffff';
+      }
+      document.getElementById('loginTitle').textContent = tenant.PalikaName;
+      document.getElementById('loginSubtitle').textContent = 'स्थानीय निर्वाचन व्यवस्थापन प्रणाली • कार्यक्षेत्र लगइन';
+
+      // SHOW TABS FOR PALIKA (Only Admin & Worker, Super Admin tab is HIDDEN!)
+      const tabs = document.getElementById('loginTabsContainer');
+      if (tabs) tabs.style.display = 'flex';
+
+      const tabSuper = document.getElementById('tabBtnSuperLogin');
+      if (tabSuper) tabSuper.style.display = 'none';
+
+      // Set tenant in dataset
+      document.getElementById('loginScreen').dataset.palikaTenant = tenant.TenantID;
+
+      // Populate workers for this palika
+      populateLoginUserSelector();
+
+      // Show Admin Pane by default
+      switchLoginMode('admin');
+
+      const adminField = document.getElementById('adminUserField');
+      if (adminField && !adminField.value) {
+        adminField.placeholder = tenant.AdminUsername || 'उदा: ' + tenant.AdminUsername;
+      }
+
+      const footerNotice = document.getElementById('loginFooterNotice');
+      if (footerNotice) {
+        footerNotice.innerHTML = `<a href="${window.location.pathname}" style="color: var(--slate-500); text-decoration: none;">👑 Super Admin Gateway (Platform HQ)</a>`;
+      }
     }
 
     function showAdminLoginPrompt() {
-      populateLoginUserSelector();
-      document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('appShell').style.display = 'none';
-      pinBuffer = '';
-      updatePinDots();
-      switchLoginMode('super');
+      showSuperAdminGatewayPrompt();
     }
 
     function populateLoginUserSelector() {
@@ -2648,10 +2780,18 @@
 
     function logout() {
       logActivity('logout', `${currentUser ? currentUser.Name : 'User'} logged out.`);
+      const wasPalika = currentUser && currentUser.TenantID && currentUser.TenantID !== 'ALL';
+      const tenant = wasPalika ? (state.tenants || []).find(t => t.TenantID === currentUser.TenantID) : null;
       currentUser = null;
       document.getElementById('appShell').style.display = 'none';
-      window.history.replaceState({}, document.title, window.location.pathname);
-      showAdminLoginPrompt();
+
+      if (tenant && tenant.Slug) {
+        window.history.replaceState({}, document.title, `${window.location.pathname}?palika=${tenant.Slug}`);
+        showPalikaPortalLogin(tenant.Slug);
+      } else {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        showSuperAdminGatewayPrompt();
+      }
     }
 
     // ==========================================
@@ -5726,11 +5866,22 @@
 
       tbody.innerHTML = state.tenants.map(t => {
         const isActive = t.Status === 'Active';
+        const slug = t.Slug || (t.PalikaName ? t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') : t.TenantID.toLowerCase());
+        const portalUrl = `${window.location.origin}${window.location.pathname}?palika=${slug}`;
+
         return `
           <tr style="${!isActive ? 'background: #fff1f2;' : ''}">
             <td>
               <div style="font-weight: 800; font-size: 14.5px; color: var(--navy-900);">${esc(t.PalikaName)}</div>
-              <div style="font-size: 11.5px; color: var(--slate-600);">ID: ${esc(t.TenantID)}</div>
+              <div style="margin-top: 6px; font-size: 11.5px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+                <span style="background: #e0e7ff; color: #3730a3; padding: 2px 7px; border-radius: 4px; font-family: monospace; font-weight: 700;">?palika=${slug}</span>
+                <button class="btn btn-sm btn-secondary" onclick="copyPortalLink('${slug}')" style="padding: 2px 7px; font-size: 11px;" title="Copy Private Portal Link">
+                  📋 Link
+                </button>
+                <button class="btn btn-sm btn-secondary" onclick="sendWhatsAppPortalInvite('${t.TenantID}')" style="padding: 2px 7px; font-size: 11px; background: #ecfdf5; color: #047857; border-color: #a7f3d0;" title="Send WhatsApp Invite">
+                  💬 WhatsApp
+                </button>
+              </div>
             </td>
             <td>
               <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: #1e40af;">
@@ -5763,10 +5914,10 @@
                         title="Turn System ON / OFF">
                   ${isActive ? '⛔ Turn OFF' : '✅ Turn ON'}
                 </button>
-                <button class="btn btn-sm btn-secondary" onclick="copyTenantCredentials('${t.TenantID}')">
+                <button class="btn btn-sm btn-secondary" onclick="copyTenantCredentials('${t.TenantID}')" title="Copy Credentials">
                   📋 Copy Login
                 </button>
-                <button class="btn btn-sm btn-secondary" onclick="deleteTenant('${t.TenantID}')" style="color: #dc2626;">
+                <button class="btn btn-sm btn-secondary" onclick="deleteTenant('${t.TenantID}')" style="color: #dc2626;" title="Delete Tenant">
                   🗑️
                 </button>
               </div>
@@ -5774,6 +5925,37 @@
           </tr>
         `;
       }).join('');
+    }
+
+    function copyPortalLink(slug) {
+      const url = `${window.location.origin}${window.location.pathname}?palika=${slug}`;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('पोर्टल लिङ्क क्लिपबोर्डमा कपी भयो:\n' + url, 'success');
+        }).catch(() => {
+          prompt('पोर्टल लिङ्क कपी गर्नुहोस्:', url);
+        });
+      } else {
+        prompt('पोर्टल लिङ्क कपी गर्नुहोस्:', url);
+      }
+    }
+
+    function sendWhatsAppPortalInvite(tenantId) {
+      const t = state.tenants.find(x => x.TenantID === tenantId);
+      if (!t) return;
+      const slug = t.Slug || (t.PalikaName ? t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') : t.TenantID.toLowerCase());
+      const url = `${window.location.origin}${window.location.pathname}?palika=${slug}`;
+      const text = `*निर्वाचन व्यवस्थापन प्रणाली (Election Ops Portal)*\n\n` +
+        `🏛️ *पालिका:* ${t.PalikaName}\n` +
+        `🌐 *तपाईंको निजी पोर्टल लिङ्क:* ${url}\n` +
+        `👤 *Admin Username:* ${t.AdminUsername}\n` +
+        `🔑 *Password:* ${t.AdminPassword}\n` +
+        `📅 *सक्रिय म्याद:* ${t.ExpiresAt || 'Unlimited'}\n\n` +
+        `माथिको लिङ्क खोली आफ्नो पालिका तथा वडाको निर्वाचन डेटा र कार्यकर्ता व्यवस्थापन सुरु गर्नुहोस्।`;
+      
+      const phone = t.Phone ? t.Phone.replace(/[^0-9]/g, '') : '';
+      const waUrl = phone ? `https://wa.me/${phone.length === 10 ? '977' + phone : phone}?text=${encodeURIComponent(text)}` : `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(waUrl, '_blank');
     }
 
     function openCreateTenantModal() {
@@ -5784,7 +5966,12 @@
           <div class="form-grid">
             <div class="form-group full">
               <label class="form-label">पालिकाको पूरा नाम (Palika / Unit Name) *</label>
-              <input type="text" name="PalikaName" required class="form-control" placeholder="उदा: Melamchi Municipality वा Helambu Rural Municipality">
+              <input type="text" name="PalikaName" required class="form-control" placeholder="उदा: Melamchi Municipality वा Helambu Rural Municipality" oninput="autoSuggestSlug(this.value)">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Dedicated URL Slug (लिङ्क कोड) *</label>
+              <input type="text" id="tenantSlugInput" name="Slug" required class="form-control" placeholder="उदा: melamchi" oninput="this.value = this.value.toLowerCase().replace(/[^a-z0-9]/g, '')">
+              <span style="font-size: 11px; color: var(--slate-600);">URL बन्नेछ: <code>domain.com/?palika=<b>slug</b></code></span>
             </div>
             <div class="form-group">
               <label class="form-label">Admin Username *</label>
@@ -5820,14 +6007,25 @@
       );
     }
 
+    function autoSuggestSlug(val) {
+      const input = document.getElementById('tenantSlugInput');
+      if (input && !input.dataset.manuallyEdited) {
+        input.value = val.toLowerCase().replace(/[^a-z0-9]/g, '');
+      }
+    }
+
     function saveTenant(e) {
       e.preventDefault();
       const form = e.target;
       const formData = new FormData(form);
 
+      const rawSlug = formData.get('Slug') || formData.get('PalikaName');
+      const slug = rawSlug.trim().toLowerCase().replace(/[^a-z0-9]/g, '') || ('palika_' + Date.now().toString(36));
+
       const newTenant = {
         TenantID: 'TNT_' + Date.now().toString(36).toUpperCase(),
         PalikaName: formData.get('PalikaName').trim(),
+        Slug: slug,
         AdminUsername: formData.get('AdminUsername').trim().toLowerCase(),
         AdminPassword: formData.get('AdminPassword').trim(),
         ContactPerson: formData.get('ContactPerson').trim(),
@@ -5853,7 +6051,7 @@
         Active: true
       });
 
-      logActivity('user_manage', `👑 Super Admin ले ${newTenant.PalikaName} को लागि नयाँ एडमिन खाता (${newTenant.AdminUsername}) सिर्जना गर्नुभयो।`);
+      logActivity('user_manage', `👑 Super Admin ले ${newTenant.PalikaName} को लागि नयाँ एडमिन खाता (${newTenant.AdminUsername}, ?palika=${newTenant.Slug}) सिर्जना गर्नुभयो।`);
       closeModal();
       renderTenantsManagement();
       showToast(`${newTenant.PalikaName} Admin Account Created Successfully!`, 'success');
@@ -5880,7 +6078,9 @@
     function copyTenantCredentials(tenantId) {
       const t = state.tenants.find(x => x.TenantID === tenantId);
       if (!t) return;
-      const text = `Election Ops Platform Login Credentials:\nPalika: ${t.PalikaName}\nLogin URL: ${window.location.origin}${window.location.pathname}\nUsername: ${t.AdminUsername}\nPassword: ${t.AdminPassword}\nExpiry: ${t.ExpiresAt}`;
+      const slug = t.Slug || (t.PalikaName ? t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') : t.TenantID.toLowerCase());
+      const portalUrl = `${window.location.origin}${window.location.pathname}?palika=${slug}`;
+      const text = `Election Ops Platform Login Credentials:\nPalika: ${t.PalikaName}\nDedicated Portal URL: ${portalUrl}\nUsername: ${t.AdminUsername}\nPassword: ${t.AdminPassword}\nExpiry: ${t.ExpiresAt}`;
       navigator.clipboard.writeText(text);
       showToast(`${t.PalikaName} लगइन विवरण कपी भयो!`, 'success');
     }
