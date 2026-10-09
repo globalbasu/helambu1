@@ -1,0 +1,5 @@
+"FullName","Phone","WardNo","Tole","BlockCluster","HouseholdID","HouseNo","PollingLocationID","BoothNo","VoterSerial","Gender","AgeGroup","VerificationStatus","Notes"
+"Ram Bahadur Thapa","9841000001","5","Jorpati","Block A","HHD_001","104","LOC_W5","A","101","Male","41-60","Verified","Active community member"
+"Sita Maya Lama","9841000002","5","Jorpati","Block A","HHD_001","104","LOC_W5","A","102","Female","26-40","Verified","Household contact"
+"Hari Prasad Adhikari","9841000003","5","Nayabasti","Block B","HHD_002","205","LOC_W5","B","201","Male","60+","Pending","Check address on visit"
+"Gita Karki","9841000004","3","Sundarijal","Block C","HHD_003","12","LOC_W3","A","301","Female","18-25","Verified","Youth representative"
