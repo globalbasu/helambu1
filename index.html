@@ -16,7 +16,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --navy-900: #0f172a;
@@ -52,7 +52,7 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Mukta', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-color: var(--slate-50);
       color: var(--slate-900);
       min-height: 100vh;
@@ -351,19 +351,56 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
       padding: 12px 16px;
-      border-bottom: 1px solid var(--slate-200);
+      border-bottom: 2px solid var(--slate-200);
       white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    thead th.sortable {
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+    thead th.sortable:hover {
+      background: #e2e8f0;
+      color: var(--navy-900);
+    }
+    thead th.sortable span {
+      font-size: 11px;
+      margin-left: 4px;
+      color: var(--slate-500);
     }
 
     tbody td {
-      padding: 14px 16px;
+      padding: 13px 16px;
       border-bottom: 1px solid var(--slate-200);
       color: var(--slate-700);
       vertical-align: middle;
+      transition: background 0.1s ease;
     }
 
     tbody tr:last-child td { border-bottom: none; }
-    tbody tr:hover { background: var(--slate-50); }
+    tbody tr:hover { background: #f8fafc; }
+
+    /* Compact Table Mode */
+    table.table-compact thead th {
+      padding: 8px 10px;
+      font-size: 11px;
+    }
+    table.table-compact tbody td {
+      padding: 6px 10px;
+      font-size: 12.5px;
+    }
+    table.table-compact .btn-sm {
+      padding: 3px 8px;
+      min-height: 26px;
+      font-size: 11.5px;
+    }
+    table.table-compact .badge {
+      padding: 2px 7px;
+      font-size: 11px;
+    }
 
     /* Badges */
     .badge {
@@ -1189,16 +1226,21 @@
           <div class="card">
             <div class="card-header">
               <div>
-                <h3 class="card-title">👥 Voter & Contact Directory</h3>
+                <h3 class="card-title">👥 Voter & Contact Directory (मतदाता निर्देशिका)</h3>
                 <div style="font-size: 13px; color: var(--slate-600); margin-top: 4px;" id="voterResultsCount">Loading...</div>
               </div>
-              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button class="btn btn-sm btn-primary" style="background: #25D366; border-color: #25D366;" onclick="openBroadcastModal()">📢 Broadcast / Bulk SMS</button>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                <button class="btn btn-sm btn-primary" style="background: #25D366; border-color: #25D366;" onclick="openBroadcastModal()">📢 Broadcast / SMS</button>
                 <button class="btn btn-sm btn-secondary" id="toggleViewBtn" onclick="toggleVoterViewMode()">🔲 Card View</button>
-                <button class="btn btn-sm btn-secondary" onclick="exportVotersCsv()">Export CSV</button>
-                <button class="btn btn-sm btn-primary" onclick="openAddVoterModal()">+ Add Contact</button>
+                <button class="btn btn-sm btn-secondary" id="voterDensityBtn" onclick="toggleVoterDensity()" title="कम्प्याक्ट वा सामान्य रो उचाइ">📑 कम्प्याक्ट</button>
+                <button class="btn btn-sm btn-secondary" onclick="exportVotersCsv()" title="फिल्टर गरिएका मतदाता Excel मा डाउनलोड">📥 Export CSV</button>
+                <button class="btn btn-sm btn-secondary" onclick="printFilteredBatchSlips()" title="फिल्टर गरिएका सबै मतदाताको पर्चा प्रिन्ट">🖨️ ब्याच पर्चा</button>
+                <button class="btn btn-sm btn-primary" onclick="openAddVoterModal()">+ नयाँ मतदाता</button>
               </div>
             </div>
+
+            <!-- LIVE METRICS MINI-BAR DIRECTLY ABOVE FILTER -->
+            <div id="voterTableLiveMetrics"></div>
 
             <div class="filter-bar">
               <div class="search-input-wrap">
@@ -1219,6 +1261,16 @@
                 <option value="Pending">Pending</option>
                 <option value="Correction Required">Correction Required</option>
               </select>
+              <select id="voterPartyFilter" class="filter-select" onchange="renderVotersList()">
+                <option value="">पार्टी झुकाव: सबै</option>
+                <option value="UML">नेकपा (एमाले)</option>
+                <option value="Congress">नेपाली कांग्रेस</option>
+                <option value="RSP">रास्वपा</option>
+                <option value="Maoist">माओवादी केन्द्र</option>
+                <option value="RPP">राप्रपा</option>
+                <option value="Independent">स्वतन्त्र / अन्य</option>
+                <option value="Undecided">दोधार / अनिर्णित</option>
+              </select>
               <button class="btn btn-sm btn-secondary" onclick="clearVoterFilters()">Reset</button>
             </div>
 
@@ -1226,13 +1278,13 @@
               <table>
                 <thead>
                   <tr>
-                    <th>Name / Phone</th>
-                    <th>Ward & Tole</th>
-                    <th>Booth / Serial</th>
-                    <th>Contact</th>
-                    <th>Self-reported</th>
-                    <th>Verification</th>
-                    <th>Actions</th>
+                    <th class="sortable" onclick="sortVotersBy('Name')" title="नाम अनुसार क्रमबद्ध">मतदाता / सम्पर्क <span id="sortIconName">⇅</span></th>
+                    <th class="sortable" onclick="sortVotersBy('Ward')" title="वडा अनुसार क्रमबद्ध">वडा र टोल <span id="sortIconWard">⇅</span></th>
+                    <th class="sortable" onclick="sortVotersBy('VoterSerial')" title="क्र.सं. अनुसार क्रमबद्ध">बुथ / क्र.सं. <span id="sortIconVoterSerial">⇅</span></th>
+                    <th class="sortable" onclick="sortVotersBy('ContactStatus')" title="सम्पर्क अनुसार क्रमबद्ध">सम्पर्क <span id="sortIconContactStatus">⇅</span></th>
+                    <th class="sortable" onclick="sortVotersBy('PartyLeaning')" title="पार्टी अनुसार क्रमबद्ध">पार्टी झुकाव <span id="sortIconPartyLeaning">⇅</span></th>
+                    <th class="sortable" onclick="sortVotersBy('VerificationStatus')" title="प्रमाणीकरण अनुसार क्रमबद्ध">प्रमाणीकरण <span id="sortIconVerificationStatus">⇅</span></th>
+                    <th>कार्य (Actions)</th>
                   </tr>
                 </thead>
                 <tbody id="votersTableRows"></tbody>
@@ -2948,9 +3000,124 @@
     // 6. VOTERS & CONTACTS MODULE
     // ==========================================
     let searchTimeout = null;
+    let voterSortField = 'Name';
+    let voterSortAsc = true;
+    let isVoterTableCompact = false;
+
     function debounceRenderVoters() {
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(renderVotersList, 250);
+    }
+
+    function sortVotersBy(field) {
+      if (voterSortField === field) {
+        voterSortAsc = !voterSortAsc;
+      } else {
+        voterSortField = field;
+        voterSortAsc = true;
+      }
+      renderVotersList();
+    }
+
+    function toggleVoterDensity() {
+      isVoterTableCompact = !isVoterTableCompact;
+      const btn = document.getElementById('voterDensityBtn');
+      if (btn) btn.textContent = isVoterTableCompact ? '📐 सामान्य भ्यू' : '📑 कम्प्याक्ट';
+      const table = document.querySelector('#voterTableContainer table');
+      if (table) {
+        if (isVoterTableCompact) table.classList.add('table-compact');
+        else table.classList.remove('table-compact');
+      }
+      showToast(isVoterTableCompact ? 'कम्प्याक्ट भ्यू सक्रिय' : 'सामान्य भ्यू सक्रिय', 'info');
+    }
+
+    function renderVoterLiveMetrics(filtered) {
+      const container = document.getElementById('voterTableLiveMetrics');
+      if (!container) return;
+      const total = filtered.length;
+      if (!total) {
+        container.innerHTML = '';
+        return;
+      }
+      const verified = filtered.filter(v => v.VerificationStatus === 'Verified').length;
+      const contacted = filtered.filter(v => v.ContactStatus === 'Contacted').length;
+      const vPct = Math.round((verified / total) * 100);
+      const cPct = Math.round((contacted / total) * 100);
+
+      const uml = filtered.filter(v => v.PartyLeaning === 'UML').length;
+      const cong = filtered.filter(v => v.PartyLeaning === 'Congress').length;
+      const rsp = filtered.filter(v => v.PartyLeaning === 'RSP').length;
+      const mao = filtered.filter(v => v.PartyLeaning === 'Maoist').length;
+      const rpp = filtered.filter(v => v.PartyLeaning === 'RPP').length;
+      const ind = filtered.filter(v => v.PartyLeaning === 'Independent').length;
+      const und = filtered.filter(v => !v.PartyLeaning || v.PartyLeaning === 'Undecided').length;
+
+      container.innerHTML = `
+        <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12px; box-shadow: var(--shadow-sm);">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="font-weight: 800; color: #fbbf24;">📊 लाइभ मेट्रिक्स:</span>
+            <span>👥 जम्मा: <b>${total} जना</b></span>
+            <span>• ✓ प्रमाणित: <b>${verified} (${vPct}%)</b></span>
+            <span>• 📞 सम्पर्क: <b>${contacted} (${cPct}%)</b></span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+            ${uml ? `<span class="badge" style="background: rgba(220, 38, 38, 0.25); color: #fca5a5; border: 1px solid rgba(220, 38, 38, 0.4); font-size: 11px;">🔴 एमाले: ${uml}</span>` : ''}
+            ${cong ? `<span class="badge" style="background: rgba(37, 99, 235, 0.25); color: #93c5fd; border: 1px solid rgba(37, 99, 235, 0.4); font-size: 11px;">🔵 कांग्रेस: ${cong}</span>` : ''}
+            ${rsp ? `<span class="badge" style="background: rgba(2, 132, 199, 0.25); color: #7dd3fc; border: 1px solid rgba(2, 132, 199, 0.4); font-size: 11px;">🔔 रास्वपा: ${rsp}</span>` : ''}
+            ${mao ? `<span class="badge" style="background: rgba(185, 28, 28, 0.25); color: #fca5a5; border: 1px solid rgba(185, 28, 28, 0.4); font-size: 11px;">🔴 माओवादी: ${mao}</span>` : ''}
+            ${rpp ? `<span class="badge" style="background: rgba(217, 119, 6, 0.25); color: #fde68a; border: 1px solid rgba(217, 119, 6, 0.4); font-size: 11px;">🟡 राप्रपा: ${rpp}</span>` : ''}
+            ${ind ? `<span class="badge" style="background: rgba(100, 116, 139, 0.25); color: #cbd5e1; border: 1px solid rgba(100, 116, 139, 0.4); font-size: 11px;">⚪ स्वतन्त्र: ${ind}</span>` : ''}
+            ${und ? `<span class="badge" style="background: rgba(245, 158, 11, 0.25); color: #fef08a; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 11px;">❓ दोधार: ${und}</span>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function printFilteredBatchSlips() {
+      const filtered = getFilteredVoters();
+      if (!filtered.length) return showToast('प्रिन्ट गर्न कुनै मतदाता भेटिएन', 'info');
+      const list = filtered.slice(0, 100);
+
+      const slipsHtml = list.map(v => {
+        return `
+          <div style="border: 1.5px solid #0f172a; border-radius: 8px; padding: 12px; page-break-inside: avoid; background: white; margin-bottom: 12px; font-family: sans-serif;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #cbd5e1; padding-bottom: 6px; margin-bottom: 8px;">
+              <div>
+                <b style="font-size: 13px; color: #0f172a;">🇳🇵 ${state.settings.MUNICIPALITY || 'हेलम्बु गाउँपालिका'} - मतदाता परिचय पर्चा</b>
+                <div style="font-size: 11px; color: #475569;">वडा नं. ${v.Ward} • टोल: ${esc(v.Tole || '-')}</div>
+              </div>
+              <div style="font-size: 15px; font-weight: 800; color: #dc2626;"># ${esc(v.VoterSerial || '-')}</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 12px; line-height: 1.4;">
+              <div>नाम: <b style="font-size: 13px;">${esc(v.Name)}</b></div>
+              <div>बुथ नं: <b style="color: #4f46e5;">बुथ ${esc(v.BoothNo || 'A')}</b></div>
+              <div>फोन: <b>${esc(v.Phone || '-')}</b></div>
+              <div>उमेर / लिङ्ग: <b>${v.DOB ? `${calculateAge(v.DOB)} वर्ष` : (v.AgeGroup || '-')} • ${esc(v.Gender || '-')}</b></div>
+            </div>
+            <div style="font-size: 10px; color: #64748b; margin-top: 8px; border-top: 1px dashed #cbd5e1; padding-top: 4px; display: flex; justify-content: space-between;">
+              <span>मतदान दिन नागरिकता वा परिचयपत्र साथमा लैजानुहोला।</span>
+              <span>क्र.सं: ${esc(v.VoterSerial || '-')}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      openModal(
+        `ब्याच पर्चा प्रिन्ट (${list.length} जना)`,
+        `
+        <div class="no-print" style="margin-bottom: 14px; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px; border-radius: var(--radius-sm); font-size: 13px; color: #166534;">
+          🖨️ <b>प्रिन्ट तयार:</b> हाल फिल्टर गरिएका <b>${list.length} जना</b> मतदाताहरूको पर्चा तयार गरिएको छ। तलको प्रिन्ट बटन थिच्नुहोस्।
+        </div>
+        <div id="batchPrintArea" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          ${slipsHtml}
+        </div>
+        `,
+        `
+        <button class="btn btn-primary" onclick="window.print()">🖨️ अहिले नै Print गर्नुहोस् (${list.length} पर्चा)</button>
+        <button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>
+        `,
+        'modal-xl'
+      );
     }
 
     function populateWardDropdowns() {
@@ -2958,8 +3125,14 @@
       selects.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
-          el.innerHTML = '<option value="">All Wards</option>' +
-            state.wards.map(w => `<option value="${w.WardNo}">Ward ${w.WardNo}</option>`).join('');
+          if (currentUser && currentUser.Role !== 'Super Admin' && currentUser.Ward && currentUser.Ward !== 'All') {
+            el.innerHTML = `<option value="${currentUser.Ward}">Ward ${currentUser.Ward} (Assigned Workspace)</option>`;
+            el.disabled = true;
+          } else {
+            el.disabled = false;
+            el.innerHTML = '<option value="">All Wards</option>' +
+              state.wards.map(w => `<option value="${w.WardNo}">Ward ${w.WardNo}</option>`).join('');
+          }
         }
       });
     }
@@ -2969,8 +3142,9 @@
       const wardFilter = document.getElementById('voterWardFilter').value;
       const contact = document.getElementById('voterContactFilter').value;
       const verify = document.getElementById('voterVerifyFilter').value;
+      const party = document.getElementById('voterPartyFilter') ? document.getElementById('voterPartyFilter').value : '';
 
-      return state.voters.filter(v => {
+      const list = state.voters.filter(v => {
         // Workspace Scope: If logged in as scoped staff (not Super Admin), auto-restrict to their ward
         if (currentUser && currentUser.Role !== 'Super Admin' && currentUser.Ward && currentUser.Ward !== 'All') {
           if (String(v.Ward) !== String(currentUser.Ward)) return false;
@@ -2983,17 +3157,59 @@
         if (wardFilter && String(v.Ward) !== String(wardFilter)) return false;
         if (contact && v.ContactStatus !== contact) return false;
         if (verify && v.VerificationStatus !== verify) return false;
+        if (party && v.PartyLeaning !== party) return false;
         if (q) {
           const haystack = [v.Name, v.Phone, v.VoterSerial, v.Tole, v.HouseNo, v.PartyLeaning || ''].join(' ').toLowerCase();
           if (!haystack.includes(q)) return false;
         }
         return true;
       });
+
+      // Sort
+      list.sort((a, b) => {
+        let valA = a[voterSortField] || '';
+        let valB = b[voterSortField] || '';
+
+        if (voterSortField === 'Ward') {
+          valA = Number(valA) || 0;
+          valB = Number(valB) || 0;
+          return voterSortAsc ? valA - valB : valB - valA;
+        }
+        if (voterSortField === 'VoterSerial') {
+          valA = parseInt(valA, 10) || 0;
+          valB = parseInt(valB, 10) || 0;
+          return voterSortAsc ? valA - valB : valB - valA;
+        }
+
+        const cmp = String(valA).localeCompare(String(valB), 'ne', { sensitivity: 'base' });
+        return voterSortAsc ? cmp : -cmp;
+      });
+
+      return list;
     }
 
     function renderVotersList() {
       const filtered = getFilteredVoters();
       document.getElementById('voterResultsCount').textContent = `Showing ${filtered.length} of ${state.voters.length} records`;
+      renderVoterLiveMetrics(filtered);
+
+      // Update sort indicators on table headers
+      const sortIcons = {
+        sortIconName: '⇅',
+        sortIconWard: '⇅',
+        sortIconVoterSerial: '⇅',
+        sortIconContactStatus: '⇅',
+        sortIconPartyLeaning: '⇅',
+        sortIconVerificationStatus: '⇅'
+      };
+      const activeIconId = 'sortIcon' + voterSortField;
+      if (sortIcons[activeIconId] !== undefined) {
+        sortIcons[activeIconId] = voterSortAsc ? '▲' : '▼';
+      }
+      Object.keys(sortIcons).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = sortIcons[id];
+      });
 
       const isMobileScreen = window.innerWidth <= 768;
       const effectiveMode = isMobileScreen ? 'card' : currentVoterViewMode;
@@ -3973,6 +4189,23 @@
               <input type="text" name="Tole" class="form-control" placeholder="e.g. Jorpati Chowk">
             </div>
             <div class="form-group">
+              <label class="form-label">🏠 House No (घर नं.)</label>
+              <input type="text" name="HouseNo" class="form-control" placeholder="e.g. 104">
+            </div>
+            <div class="form-group">
+              <label class="form-label">👥 Family Relation (पारिवारिक नाता)</label>
+              <select name="FamilyRelation" class="form-control">
+                <option value="घरमुली">घरमुली (Head of Household)</option>
+                <option value="पति / पत्नी">पति / पत्नी (Spouse)</option>
+                <option value="छोरा">छोरा (Son)</option>
+                <option value="छोरी">छोरी (Daughter)</option>
+                <option value="बुहारी">बुहारी (Daughter-in-law)</option>
+                <option value="बुबा">बुबा (Father)</option>
+                <option value="आमा">आमा (Mother)</option>
+                <option value="अन्य">अन्य (Other)</option>
+              </select>
+            </div>
+            <div class="form-group">
               <label class="form-label">Booth No / Code</label>
               <input type="text" name="BoothNo" class="form-control" placeholder="e.g. A">
             </div>
@@ -4066,12 +4299,46 @@
       e.preventDefault();
       const form = e.target;
       const formData = new FormData(form);
+      const houseNo = (formData.get('HouseNo') || '').trim();
+      const wardNo = Number(formData.get('Ward'));
+      let householdId = '';
+
+      // Smart Household Auto-linking & Grouping
+      if (houseNo) {
+        let existingHh = state.households.find(h => h.HouseNo === houseNo && h.WardNo === wardNo);
+        if (!existingHh) {
+          const matchingVoter = state.voters.find(v => v.HouseNo === houseNo && v.Ward === wardNo && v.HouseholdID);
+          if (matchingVoter) {
+            householdId = matchingVoter.HouseholdID;
+          } else {
+            householdId = 'HHD_' + pad(state.households.length + 1, 3);
+            const newHh = {
+              HouseholdID: householdId,
+              WardNo: wardNo,
+              Tole: formData.get('Tole').trim(),
+              BlockCluster: '',
+              HouseNo: houseNo,
+              Address: `${formData.get('Tole').trim()} घर नं. ${houseNo}`,
+              PrimaryContactName: formData.get('Name').trim(),
+              PrimaryPhone: formData.get('Phone').trim(),
+              VerificationStatus: formData.get('VerificationStatus') || 'Pending'
+            };
+            state.households.unshift(newHh);
+          }
+        } else {
+          householdId = existingHh.HouseholdID;
+        }
+      }
+
       const newVoter = {
         VoterID: 'VOT_' + Date.now().toString(36).toUpperCase(),
         Name: formData.get('Name').trim(),
         Phone: formData.get('Phone').trim(),
-        Ward: Number(formData.get('Ward')),
+        Ward: wardNo,
         Tole: formData.get('Tole').trim(),
+        HouseholdID: householdId,
+        HouseNo: houseNo,
+        FamilyRelation: formData.get('FamilyRelation') || 'घरमुली',
         BoothNo: formData.get('BoothNo').trim(),
         VoterSerial: formData.get('VoterSerial').trim(),
         Gender: formData.get('Gender'),
@@ -4093,9 +4360,10 @@
       // Sync to Supabase Cloud Voters Table
       pushVoterToSupabase(newVoter);
 
-      logActivity('voter_add', `${newVoter.Name} (वडा ${newVoter.Ward}, ${newVoter.Tole || 'केन्द्र'}) नयाँ मतदाता दर्ता गरियो। Party: ${newVoter.PartyLeaning || 'Undecided'}`);
+      const relationNote = newVoter.HouseNo ? ` [घर नं ${newVoter.HouseNo}${householdId ? ' • ' + householdId : ''}]` : '';
+      logActivity('voter_add', `${newVoter.Name} (वडा ${newVoter.Ward}, ${newVoter.Tole || 'केन्द्र'}${relationNote}) नयाँ मतदाता दर्ता गरियो। Party: ${newVoter.PartyLeaning || 'Undecided'}`);
       closeModal();
-      showToast(`Contact saved (${newVoter.VerificationStatus})`, 'success');
+      showToast(`Contact saved (${newVoter.VerificationStatus})${householdId ? ' & Household Linked' : ''}`, 'success');
       refreshDashboardMetrics();
       renderVotersList();
     }
@@ -4340,12 +4608,13 @@
       const response = formData.get('SelfReportedResponse');
       const followReq = formData.get('FollowUpRequired');
       const nextDate = formData.get('NextVisitDate');
+      const outcome = formData.get('VisitOutcome');
 
       const visit = {
         VisitID: 'VIS_' + Date.now().toString(36).toUpperCase(),
         VoterID: voterId,
         Date: formData.get('Date'),
-        VisitOutcome: formData.get('VisitOutcome'),
+        VisitOutcome: outcome,
         ContactStatus: 'Contacted',
         SelfReportedResponse: response,
         FollowUpRequired: followReq,
@@ -4354,29 +4623,45 @@
 
       state.visits.unshift(visit);
 
-      // Update Voter record status
+      // Workflow Automation 1: Update Voter record status and Auto-Verify if 'Support' & 'Met'
+      let autoVerified = false;
       const v = state.voters.find(x => x.VoterID === voterId);
       if (v) {
         v.ContactStatus = 'Contacted';
         if (response) v.SelfReportedResponse = response;
+        if (response === 'Support' && outcome === 'Met') {
+          v.VerificationStatus = 'Verified';
+          autoVerified = true;
+        }
       }
 
-      // Add to Follow-ups if requested
-      if (followReq === 'Yes' && nextDate) {
+      // Workflow Automation 2: Smart Follow-up Generation (on request OR Undecided voter)
+      let scheduledDate = nextDate;
+      const isUndecided = response === 'Undecided';
+      if (!scheduledDate && (followReq === 'Yes' || isUndecided)) {
+        // Auto-schedule follow-up 3 days out
+        const d = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+        scheduledDate = d.toISOString().split('T')[0];
+      }
+
+      if (scheduledDate && (followReq === 'Yes' || isUndecided)) {
+        const autoReason = isUndecided ? 'दोधार मतदाता पुन: परामर्श (Undecided Follow-up)' : 'Field Visit Follow-up';
         state.followups.unshift({
           FollowUpID: 'FUP_' + Date.now().toString(36).toUpperCase(),
           VoterID: voterId,
-          DueDate: nextDate,
-          Reason: 'Field Visit Follow-up',
+          DueDate: scheduledDate,
+          Reason: autoReason,
           Status: 'Pending',
-          Notes: formData.get('Notes')
+          Notes: formData.get('Notes') || (isUndecided ? 'दोधार मतदातासँग ३ दिनपछि थप छलफल तथा सम्पर्क गर्ने' : 'नियमित फलो-अप भेटघाट')
         });
       }
 
       saveState();
-      logActivity('visit', `${v ? v.Name : 'मतदाता'} (वडा ${v ? v.Ward : '-'}) सँग घरदैलो भेटघाट सम्पन्न (नतिजा: ${visit.VisitOutcome}, प्रतिक्रिया: ${visit.SelfReportedResponse || 'तटस्थ'})।`);
+      const verificationNote = autoVerified ? ' [स्वतः Verified गरियो]' : '';
+      const followNote = (scheduledDate && (followReq === 'Yes' || isUndecided)) ? ' [३ दिनपछिको Follow-up तय भयो]' : '';
+      logActivity('visit', `${v ? v.Name : 'मतदाता'} (वडा ${v ? v.Ward : '-'}) सँग घरदैलो भेटघाट सम्पन्न (नतिजा: ${visit.VisitOutcome}, प्रतिक्रिया: ${visit.SelfReportedResponse || 'तटस्थ'})${verificationNote}${followNote}।`);
       closeModal();
-      showToast('Field visit recorded', 'success');
+      showToast(`Field visit recorded! ${autoVerified ? '✓ Voter Verified' : ''} ${isUndecided ? '✓ 3-day Follow-up scheduled' : ''}`.trim(), 'success');
       refreshDashboardMetrics();
       renderVotersList();
       renderVisitsList();
@@ -5834,7 +6119,9 @@
     }
 
     function exportVotersCsv() {
-      const rows = state.voters.map(v => ({
+      const filtered = getFilteredVoters();
+      if (!filtered.length) return showToast('एक्सपोर्ट गर्न कुनै मतदाता भेटिएन', 'info');
+      const rows = filtered.map(v => ({
         Name: v.Name,
         Phone: v.Phone || '',
         Ward: v.Ward,
@@ -5843,12 +6130,20 @@
         BoothNo: v.BoothNo || '',
         VoterSerial: v.VoterSerial || '',
         Gender: v.Gender || '',
-        AgeGroup: v.AgeGroup || '',
-        ContactStatus: v.ContactStatus,
-        VerificationStatus: v.VerificationStatus,
-        SelfReportedResponse: v.SelfReportedResponse || ''
+        DOB: v.DOB || '',
+        Age: calculateAge(v.DOB),
+        PartyLeaning: v.PartyLeaning || '',
+        FamilyRelation: v.FamilyRelation || '',
+        ContactStatus: v.ContactStatus || '',
+        VerificationStatus: v.VerificationStatus || '',
+        SelfReportedResponse: v.SelfReportedResponse || '',
+        Facebook: v.FacebookUrl || '',
+        TikTok: v.TiktokUrl || ''
       }));
-      downloadCsvFile('helambu_voters_export.csv', rows);
+      const ward = document.getElementById('voterWardFilter') ? document.getElementById('voterWardFilter').value : '';
+      const fileName = `${(state.settings.MUNICIPALITY || 'election').toLowerCase().replace(/\s+/g, '_')}_voters_${ward ? 'ward' + ward : 'all'}_export.csv`;
+      downloadCsvFile(fileName, rows);
+      showToast(`${rows.length} जना मतदाताको Excel CSV डाउनलोड भयो!`, 'success');
     }
 
     function exportWardReport() {
@@ -5881,7 +6176,8 @@
         ...data.map(row => headers.map(h => `"${String(row[h] || '').replace(/"/g, '""')}"`).join(','))
       ].join('\n');
 
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      // Prepend UTF-8 BOM (\uFEFF) for Microsoft Excel compatibility with Devanagari
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = filename;
