@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -685,7 +685,114 @@
       gap: 10px;
       animation: slideInRight 0.25s ease;
     }
-    @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    /* Activity Timeline Styles */
+    .timeline-container {
+      position: relative;
+      padding-left: 28px;
+    }
+    .timeline-container::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: var(--slate-200);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -28px;
+      top: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid var(--indigo-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+    .timeline-content {
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+    }
+    .timeline-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      color: var(--slate-600);
+      margin-bottom: 5px;
+    }
+    .timeline-user {
+      font-weight: 700;
+      color: var(--indigo-600);
+    }
+    .timeline-text {
+      font-size: 13.5px;
+      color: var(--slate-900);
+      line-height: 1.4;
+    }
+
+    /* Print Slip Styles */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printableSlipArea, #printableSlipArea * {
+        visibility: visible;
+      }
+      #printableSlipArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white !important;
+        padding: 20px !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    .voter-slip-card {
+      border: 2px dashed #0f172a;
+      border-radius: 8px;
+      padding: 16px;
+      background: #ffffff;
+      max-width: 480px;
+      margin: 0 auto;
+      font-family: inherit;
+      color: #0f172a;
+    }
+    .slip-header {
+      text-align: center;
+      border-bottom: 1.5px solid #0f172a;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .slip-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px dotted #cbd5e1;
+      font-size: 14px;
+    }
+    .slip-row .label {
+      color: #475569;
+      font-weight: 600;
+    }
+    .slip-row .val {
+      font-weight: 700;
+      color: #0f172a;
+    }
 
     /* Comprehensive Mobile Responsive Engine */
     @media (max-width: 900px) {
@@ -795,8 +902,17 @@
     <div class="pin-card">
       <div class="brand-icon" style="margin: 0 auto 16px; width: 48px; height: 48px; font-size: 24px;">🗳️</div>
       <div class="pin-header">
-        <h2 id="loginTitle">Admin Login</h2>
-        <p id="loginSubtitle">Enter 4-digit master PIN (Default: 1234)</p>
+        <h2 id="loginTitle">System Login</h2>
+        <p id="loginSubtitle">प्रयोगकर्ता छान्नुहोस् र ४-अंकको PIN हान्नुहोस्</p>
+      </div>
+
+      <!-- Quick Role / Account Selector -->
+      <div style="margin-bottom: 16px;">
+        <label style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--slate-600); display: block; margin-bottom: 6px;">लगइन खाता (Login Account)</label>
+        <select id="loginUserSelect" class="form-control" onchange="onLoginUserSelected(this.value)" style="background: white; font-weight: 600; font-size: 13.5px;">
+          <!-- Dynamically populated -->
+        </select>
+        <div id="loginUserScopeBadge" style="margin-top: 6px; font-size: 11.5px; color: var(--indigo-600); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 4px;"></div>
       </div>
 
       <!-- 4 PIN Dots -->
@@ -842,7 +958,7 @@
         <div class="brand-icon">🗳️</div>
         <div class="brand-text">
           <h1>EMS Operations</h1>
-          <p id="sbMuniTitle">Gokarneshwor Municipality</p>
+          <p id="sbMuniTitle">Helambu Rural Municipality</p>
         </div>
       </div>
 
@@ -892,10 +1008,14 @@
         <button class="nav-item" data-view="messages" onclick="switchView('messages')">
           <span class="icon">💬</span> Internal Messaging
         </button>
+        <button class="nav-item" data-view="timeline" onclick="switchView('timeline')">
+          <span class="icon">⏱️</span> Activity Timeline
+          <span class="nav-badge" id="timelineCountBadge">0</span>
+        </button>
         <button class="nav-item" data-view="reports" onclick="switchView('reports')">
           <span class="icon">📈</span> Operational Reports
         </button>
-        <button class="nav-item" data-view="settings" onclick="switchView('settings')">
+        <button class="nav-item" id="navItemSettings" data-view="settings" onclick="switchView('settings')">
           <span class="icon">⚙️</span> Settings & Supabase
         </button>
       </div>
@@ -1422,7 +1542,39 @@
           </div>
         </section>
 
-        <!-- 14. SETTINGS & SUPABASE CONFIG -->
+        <!-- 14. ACTIVITY TIMELINE & AUDIT TRAIL (LIVE WORK LOGS) -->
+        <section id="viewTimeline" class="view-section">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">⏱️ Field Activity Timeline & Worker Audit Trail</h3>
+                <p style="font-size: 13px; color: var(--slate-600); margin-top: 4px;">
+                  प्रत्येक युजर र कार्यकर्ताले फिल्डमा गरेको कामको प्रत्यक्ष विवरण (लाइभ टाइमलाइन लग)।
+                </p>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <select id="timelineWorkerFilter" class="filter-select" onchange="renderActivityTimeline()">
+                  <option value="">All Workers (सबै)</option>
+                </select>
+                <select id="timelineTypeFilter" class="filter-select" onchange="renderActivityTimeline()">
+                  <option value="">All Activities (सबै कार्य)</option>
+                  <option value="voter_add">नयाँ मतदाता दर्ता</option>
+                  <option value="voter_verify">प्रमाणीकरण (Verify)</option>
+                  <option value="visit">घरदैलो भेटघाट</option>
+                  <option value="message">सन्देश प्रेषण (SMS/WhatsApp)</option>
+                  <option value="issue">समस्या रिपोर्टिङ</option>
+                </select>
+                <button class="btn btn-sm btn-secondary" onclick="renderActivityTimeline()">🔄 Refresh</button>
+              </div>
+            </div>
+
+            <div id="timelineListContainer" class="timeline-container" style="margin-top: 20px;">
+              <!-- Timeline items rendered here -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 15. SETTINGS & SUPABASE CONFIG -->
         <section id="viewSettings" class="view-section">
           <div class="card">
             <div class="card-header">
@@ -1432,14 +1584,15 @@
             <div class="form-grid">
               <div class="form-group full">
                 <label class="form-label">Supabase URL (Real Database)</label>
-                <input type="text" id="supabaseUrlInput" class="form-control" placeholder="https://your-project.supabase.co">
+                <input type="text" id="supabaseUrlInput" class="form-control" value="https://bmhbuypigsfhvqxxoyoh.supabase.co">
               </div>
               <div class="form-group full">
-                <label class="form-label">Supabase Anon Key</label>
-                <input type="password" id="supabaseKeyInput" class="form-control" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                <label class="form-label">Supabase Anon / Publishable Key</label>
+                <input type="text" id="supabaseKeyInput" class="form-control" value="sb_publishable_1J2kZOka9zrcaHkcGAD5XA_moqVXj2P">
               </div>
-              <div class="form-group">
-                <button class="btn btn-primary" onclick="saveSupabaseConfig()">Save & Connect Supabase</button>
+              <div class="form-group" style="display: flex; gap: 10px; align-items: flex-end;">
+                <button class="btn btn-primary" onclick="saveSupabaseConfig()">Save Credentials</button>
+                <button class="btn btn-secondary" onclick="testSupabaseConnection()">⚡ Test Connection</button>
               </div>
             </div>
 
@@ -1526,7 +1679,8 @@
         <button class="btn btn-secondary" onclick="closeQrModal()">Close</button>
       </div>
     </div>
-  </div>
+  <!-- HIDDEN PRINTABLE CONTAINER FOR VOTER SLIPS & CERTIFICATES -->
+  <div id="printableSlipArea" style="display: none;"></div>
 
   <!-- JS LOGIC ENGINE -->
   <script>
@@ -1534,10 +1688,10 @@
     // 1. STATE & STORAGE MANAGEMENT
     // ==========================================
     const DEFAULT_CONFIG = {
-      MUNICIPALITY: 'Gokarneshwor Municipality',
+      MUNICIPALITY: 'Helambu Rural Municipality',
       DEFAULT_ADMIN_PIN: '1234',
-      SUPABASE_URL: '',
-      SUPABASE_KEY: '',
+      SUPABASE_URL: 'https://bmhbuypigsfhvqxxoyoh.supabase.co',
+      SUPABASE_KEY: 'sb_publishable_1J2kZOka9zrcaHkcGAD5XA_moqVXj2P',
       ELECTION_MODE: false
     };
 
@@ -1550,15 +1704,15 @@
     let state = {
       settings: { ...DEFAULT_CONFIG },
       wards: [
-        { WardNo: 1, Municipality: 'Gokarneshwor Municipality' },
-        { WardNo: 2, Municipality: 'Gokarneshwor Municipality' },
-        { WardNo: 3, Municipality: 'Gokarneshwor Municipality' },
-        { WardNo: 4, Municipality: 'Gokarneshwor Municipality' },
-        { WardNo: 5, Municipality: 'Gokarneshwor Municipality' },
-        { WardNo: 6, Municipality: 'Gokarneshwor Municipality' },
-        { WardNo: 7, Municipality: 'Gokarneshwor Municipality' },
-        { WardNo: 8, Municipality: 'Gokarneshwor Municipality' },
-        { WardNo: 9, Municipality: 'Gokarneshwor Municipality' }
+        { WardNo: 1, Municipality: 'Helambu Rural Municipality' },
+        { WardNo: 2, Municipality: 'Helambu Rural Municipality' },
+        { WardNo: 3, Municipality: 'Helambu Rural Municipality' },
+        { WardNo: 4, Municipality: 'Helambu Rural Municipality' },
+        { WardNo: 5, Municipality: 'Helambu Rural Municipality' },
+        { WardNo: 6, Municipality: 'Helambu Rural Municipality' },
+        { WardNo: 7, Municipality: 'Helambu Rural Municipality' },
+        { WardNo: 8, Municipality: 'Helambu Rural Municipality' },
+        { WardNo: 9, Municipality: 'Helambu Rural Municipality' }
       ],
       toles: [
         { ToleID: 'TOL_01', WardNo: 5, ToleName: 'Jorpati Chowk' },
@@ -1608,7 +1762,12 @@
       publicSubs: [
         { SubmissionID: 'PUB_001', FullName: 'Nabin Shrestha', Phone: '9841555555', WardNo: 5, Tole: 'Jorpati', SubmissionType: 'New Information', Status: 'Pending Review', CreatedDate: new Date().toISOString().slice(0,10) }
       ],
-      electionReports: []
+      electionReports: [],
+      activities: [
+        { ActivityID: 'ACT_001', Timestamp: new Date(Date.now() - 3600000 * 2).toISOString(), UserID: 'USR_RAM', UserName: 'Ram Bahadur', Role: 'Field Worker', Type: 'voter_verify', Description: 'Ram Bahadur Thapa (वडा ५, टोल: Jorpati Chowk) लाई Verified प्रमाणीकरण गरियो।' },
+        { ActivityID: 'ACT_002', Timestamp: new Date(Date.now() - 3600000 * 4).toISOString(), UserID: 'USR_SITA', UserName: 'Sita Maya Lama', Role: 'Ward Coordinator', Type: 'visit', Description: 'वडा ५ मा घरदैलो भेटघाट सम्पन्न (Household HHD_001)।' },
+        { ActivityID: 'ACT_003', Timestamp: new Date(Date.now() - 3600000 * 6).toISOString(), UserID: 'USR_ADMIN', UserName: 'System Admin', Role: 'Super Admin', Type: 'message', Description: 'वडा ५ टिमलाई "Voter Slip Distribution" आन्तरिक कार्य निर्देशन पठाइयो।' }
+      ]
     };
 
     const STORAGE_KEY = 'EMS_OPERATIONS_STATE_V3';
@@ -1620,6 +1779,9 @@
         try { 
           const parsed = JSON.parse(saved);
           state = { ...state, ...parsed };
+          if (!state.settings) state.settings = { ...DEFAULT_CONFIG };
+          if (!state.settings.SUPABASE_URL) state.settings.SUPABASE_URL = DEFAULT_CONFIG.SUPABASE_URL;
+          if (!state.settings.SUPABASE_KEY) state.settings.SUPABASE_KEY = DEFAULT_CONFIG.SUPABASE_KEY;
         } catch (e) { 
           console.error('Error loading state:', e); 
         }
@@ -1641,6 +1803,8 @@
             state = { ...state, ...parsedLegacy };
           } catch(e) {}
         }
+        if (!state.settings.SUPABASE_URL) state.settings.SUPABASE_URL = DEFAULT_CONFIG.SUPABASE_URL;
+        if (!state.settings.SUPABASE_KEY) state.settings.SUPABASE_KEY = DEFAULT_CONFIG.SUPABASE_KEY;
         saveState();
       }
     }
@@ -1731,15 +1895,48 @@
     }
 
     function showAdminLoginPrompt() {
-      document.getElementById('loginTitle').textContent = 'Admin Login';
-      document.getElementById('loginSubtitle').textContent = 'Enter 4-digit master PIN (Default: 1234)';
+      populateLoginUserSelector();
       document.getElementById('loginScreen').style.display = 'flex';
       document.getElementById('appShell').style.display = 'none';
       pinBuffer = '';
       updatePinDots();
     }
 
+    function populateLoginUserSelector() {
+      const select = document.getElementById('loginUserSelect');
+      if (!select) return;
+      select.innerHTML = state.users.map(u => `
+        <option value="${u.UserID}">
+          ${u.Role === 'Super Admin' ? '👑' : (u.Role.includes('Coordinator') ? '🛡️' : '👷')} ${u.Name} (${u.Role}${u.Ward && u.Ward !== 'All' ? ' - Ward ' + u.Ward : ''})
+        </option>
+      `).join('');
+      onLoginUserSelected(select.value);
+    }
+
+    function onLoginUserSelected(userId) {
+      const u = state.users.find(x => x.UserID === userId);
+      const badge = document.getElementById('loginUserScopeBadge');
+      if (!u || !badge) return;
+      document.getElementById('loginScreen').dataset.selectedUser = userId;
+      if (u.Role === 'Super Admin') {
+        badge.innerHTML = '🌐 Master Access • All Wards & Operational Controls';
+        badge.style.color = 'var(--indigo-600)';
+      } else if (u.Role === 'Ward Coordinator') {
+        badge.innerHTML = `📍 Scoped Workspace: Ward ${u.Ward} Team & Voter Management`;
+        badge.style.color = '#0284c7';
+      } else {
+        badge.innerHTML = `📋 Field Worker: Ward ${u.Ward} ${u.Tole ? '(' + u.Tole + ')' : ''} Data Entry`;
+        badge.style.color = '#059669';
+      }
+    }
+
     function showStaffLoginPrompt(staff) {
+      populateLoginUserSelector();
+      const select = document.getElementById('loginUserSelect');
+      if (select) {
+        select.value = staff.UserID;
+        onLoginUserSelected(staff.UserID);
+      }
       document.getElementById('loginTitle').textContent = `Welcome, ${staff.Name}`;
       document.getElementById('loginSubtitle').textContent = `${staff.Role} • Ward ${staff.Ward || '-'}${staff.Tole ? ' • ' + staff.Tole : ''}`;
       document.getElementById('loginScreen').style.display = 'flex';
@@ -1801,42 +1998,25 @@
     });
 
     function submitPin() {
-      const token = document.getElementById('loginScreen').dataset.token;
-      
-      // Staff Login
-      if (token) {
-        const staff = state.users.find(u => u.AccessToken === token);
-        if (staff && String(staff.PIN) === String(pinBuffer)) {
-          currentUser = staff;
-          launchDashboard();
-          showToast(`Welcome, ${staff.Name}`, 'success');
-          return;
-        } else {
-          showToast('Incorrect 4-digit PIN', 'error');
-          clearPin();
-          return;
-        }
-      }
-
-      // Admin Login
+      const selectedUserId = document.getElementById('loginScreen').dataset.selectedUser;
+      const targetUser = state.users.find(u => u.UserID === selectedUserId) || state.users[0];
       const masterPin = state.settings.admin_pin || '1234';
-      if (String(pinBuffer) === String(masterPin)) {
-        currentUser = state.users.find(u => u.Role === 'Super Admin') || {
-          UserID: 'USR_ADMIN',
-          Name: 'System Admin',
-          Role: 'Super Admin',
-          Ward: 'All'
-        };
+
+      // Check PIN against user PIN or master admin PIN
+      const validPin = targetUser.PIN || masterPin;
+      if (String(pinBuffer) === String(validPin) || (targetUser.Role === 'Super Admin' && String(pinBuffer) === String(masterPin))) {
+        currentUser = targetUser;
         launchDashboard();
-        showToast('Admin dashboard unlocked', 'success');
+        logActivity('login', `${currentUser.Name} (${currentUser.Role}) logged into workspace.`);
+        showToast(`Welcome, ${currentUser.Name} (${currentUser.Role})`, 'success');
       } else {
-        showToast('Incorrect PIN. Default is 1234', 'error');
+        showToast('Incorrect 4-digit PIN for ' + targetUser.Name + '. (Default: 1234)', 'error');
         clearPin();
       }
     }
 
     function emergencyResetPin() {
-      if (confirm('Reset Admin PIN to factory default (1234)?')) {
+      if (confirm('Reset Master Admin PIN to factory default (1234)?')) {
         state.settings.admin_pin = '1234';
         const admin = state.users.find(u => u.UserID === 'USR_ADMIN');
         if (admin) admin.PIN = '1234';
@@ -1850,10 +2030,27 @@
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('appShell').style.display = 'flex';
       
-      // Update User Meta
+      // Update User Meta & Workspace Scope Display
       document.getElementById('sbUserName').textContent = currentUser.Name;
       document.getElementById('sbUserRole').textContent = currentUser.Role;
       document.getElementById('sbAvatar').textContent = currentUser.Name.charAt(0).toUpperCase();
+
+      const muniLabel = document.getElementById('sbMuniTitle');
+      if (muniLabel) {
+        if (currentUser.Role === 'Super Admin') {
+          muniLabel.textContent = (state.settings.MUNICIPALITY || 'Helambu') + ' (Master HQ)';
+        } else if (currentUser.Ward && currentUser.Ward !== 'All') {
+          muniLabel.textContent = `Ward ${currentUser.Ward} Workspace`;
+        } else {
+          muniLabel.textContent = state.settings.MUNICIPALITY || 'Helambu';
+        }
+      }
+
+      // Hide admin-only sections for regular field workers
+      const isSuper = currentUser.Role === 'Super Admin';
+      const isWardAdmin = currentUser.Role.includes('Coordinator') || isSuper;
+      const settingsNav = document.getElementById('navItemSettings');
+      if (settingsNav) settingsNav.style.display = isSuper ? 'flex' : 'none';
 
       populateWardDropdowns();
       refreshDashboardMetrics();
@@ -1868,10 +2065,12 @@
       renderElectionReports();
       renderNotices();
       renderMessages();
+      renderActivityTimeline();
       renderReportsView();
     }
 
     function logout() {
+      logActivity('logout', `${currentUser ? currentUser.Name : 'User'} logged out.`);
       currentUser = null;
       document.getElementById('appShell').style.display = 'none';
       window.history.replaceState({}, document.title, window.location.pathname);
@@ -1882,6 +2081,12 @@
     // 4. NAVIGATION & VIEWS
     // ==========================================
     function switchView(viewName) {
+      // Permission protection
+      if (viewName === 'settings' && currentUser && currentUser.Role !== 'Super Admin') {
+        showToast('सिस्टम सेटिङ्स केवल Super Admin ले मात्र हेर्न/परिवर्तन गर्न सक्नुहुन्छ', 'error');
+        return;
+      }
+
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.mob-nav-btn').forEach(el => el.classList.remove('active'));
@@ -1897,7 +2102,9 @@
 
       document.getElementById('pageTitle').textContent = sideNavBtn ? sideNavBtn.textContent.trim() : 'Dashboard';
 
-      if (viewName === 'reports') {
+      if (viewName === 'timeline') {
+        renderActivityTimeline();
+      } else if (viewName === 'reports') {
         renderReportsView();
       }
 
@@ -2006,16 +2213,25 @@
 
     function getFilteredVoters() {
       const q = (document.getElementById('voterSearch').value || '').toLowerCase().trim();
-      const ward = document.getElementById('voterWardFilter').value;
+      const wardFilter = document.getElementById('voterWardFilter').value;
       const contact = document.getElementById('voterContactFilter').value;
       const verify = document.getElementById('voterVerifyFilter').value;
 
       return state.voters.filter(v => {
-        if (ward && String(v.Ward) !== String(ward)) return false;
+        // Workspace Scope: If logged in as scoped staff (not Super Admin), auto-restrict to their ward
+        if (currentUser && currentUser.Role !== 'Super Admin' && currentUser.Ward && currentUser.Ward !== 'All') {
+          if (String(v.Ward) !== String(currentUser.Ward)) return false;
+          // If assigned to a specific tole, restrict to that tole for field workers
+          if (currentUser.Role === 'Field Worker' && currentUser.Tole && v.Tole && !v.Tole.toLowerCase().includes(currentUser.Tole.toLowerCase())) {
+            return false;
+          }
+        }
+
+        if (wardFilter && String(v.Ward) !== String(wardFilter)) return false;
         if (contact && v.ContactStatus !== contact) return false;
         if (verify && v.VerificationStatus !== verify) return false;
         if (q) {
-          const haystack = [v.Name, v.Phone, v.VoterSerial, v.Tole, v.HouseNo].join(' ').toLowerCase();
+          const haystack = [v.Name, v.Phone, v.VoterSerial, v.Tole, v.HouseNo, v.PartyLeaning || ''].join(' ').toLowerCase();
           if (!haystack.includes(q)) return false;
         }
         return true;
@@ -2097,6 +2313,7 @@
                 `<button class="btn btn-sm btn-secondary" onclick="quickTogglePending('${v.VoterID}')" title="Change to Pending">Undo</button>`
               }
               <button class="btn btn-sm btn-secondary" onclick="viewVoterProfile('${v.VoterID}')">Profile</button>
+              <button class="btn btn-sm btn-secondary" onclick="printVoterSlip('${v.VoterID}')" title="Print Voter Slip (मतदाता पर्चा)">🖨️ पर्चा</button>
               <button class="btn btn-sm btn-primary" onclick="openRecordVisitModal('${v.VoterID}')">Visit</button>
             </div>
           </td>
@@ -2144,6 +2361,7 @@
                 `<button class="btn btn-sm btn-success" onclick="quickVerifyVoter('${v.VoterID}')">✓ Verify</button>` : ''
               }
               <button class="btn btn-sm btn-secondary" onclick="viewVoterProfile('${v.VoterID}')">View</button>
+              <button class="btn btn-sm btn-secondary" onclick="printVoterSlip('${v.VoterID}')" title="Print Slip">🖨️ पर्चा</button>
               <button class="btn btn-sm btn-primary" onclick="openRecordVisitModal('${v.VoterID}')">Visit</button>
             </div>
           </div>
@@ -2188,7 +2406,9 @@
           <div style="font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--slate-600); margin-bottom: 10px;">
             ⚡ Quick Direct Communication & Social (सिधा सम्पर्क र सामाजिक सञ्जाल)
           </div>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button onclick="printVoterSlip('${v.VoterID}')" class="btn btn-sm btn-secondary" style="background: white; border: 1.5px solid var(--navy-900); font-weight: 700;">
+              🖨️ मतदाता पर्चा प्रिन्ट (Print Slip)
+            </button>
             ${v.Phone ? `
               <button onclick="openCustomMessageModal('${v.VoterID}')" class="btn btn-sm btn-primary" style="background: #4f46e5; border-color: #4f46e5;">
                 💬 Custom Message (व्यक्तिगत सन्देश)
@@ -2196,10 +2416,10 @@
               <a href="tel:${cleanPhone(v.Phone)}" class="btn btn-sm btn-primary" style="text-decoration: none; background: #059669; border-color: #059669;">
                 📞 Direct Call
               </a>
-              <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" class="btn btn-sm btn-success" style="text-decoration: none; background: #25D366; border-color: #25D366; color: white;">
+              <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" class="btn btn-sm btn-success" style="text-decoration: none; background: #25D366; border-color: #25D366; color: white;" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp सन्देश पठाइयो।')">
                 🟢 WhatsApp
               </a>
-              <a href="sms:${cleanPhone(v.Phone)}?body=${encodeURIComponent(getSmsTemplate(v))}" class="btn btn-sm btn-secondary" style="text-decoration: none;">
+              <a href="sms:${cleanPhone(v.Phone)}?body=${encodeURIComponent(getSmsTemplate(v))}" class="btn btn-sm btn-secondary" style="text-decoration: none;" onclick="logActivity('message', '${esc(v.Name)} लाई SMS पठाइयो।')">
                 💬 Native SMS
               </a>
             ` : ''}
@@ -2440,6 +2660,7 @@
 
       state.voters.unshift(newVoter);
       saveState();
+      logActivity('voter_add', `${newVoter.Name} (वडा ${newVoter.Ward}, ${newVoter.Tole || 'केन्द्र'}) नयाँ मतदाता दर्ता गरियो। Party: ${newVoter.PartyLeaning || 'Undecided'}`);
       closeModal();
       showToast(`Contact saved (${newVoter.VerificationStatus})`, 'success');
       refreshDashboardMetrics();
@@ -2451,6 +2672,7 @@
       if (v) {
         v.VerificationStatus = 'Verified';
         saveState();
+        logActivity('voter_verify', `${v.Name} (वडा ${v.Ward}) लाई Verified प्रमाणीकरण गरियो।`);
         refreshDashboardMetrics();
         renderVotersList();
         showToast(`${v.Name} marked as Verified!`, 'success');
@@ -2462,6 +2684,7 @@
       if (v) {
         v.VerificationStatus = 'Pending';
         saveState();
+        logActivity('voter_verify', `${v.Name} (वडा ${v.Ward}) को स्थिति Pending मा सारियो।`);
         refreshDashboardMetrics();
         renderVotersList();
         showToast(`${v.Name} marked as Pending`, 'info');
@@ -2473,6 +2696,7 @@
       if (v) {
         v.VerificationStatus = v.VerificationStatus === 'Verified' ? 'Pending' : 'Verified';
         saveState();
+        logActivity('voter_verify', `${v.Name} को प्रमाणीकरण स्थिति परिवर्तन: ${v.VerificationStatus}`);
         refreshDashboardMetrics();
         renderVotersList();
         showToast(`${v.Name} changed to ${v.VerificationStatus}!`, 'success');
@@ -2717,6 +2941,7 @@
       }
 
       saveState();
+      logActivity('visit', `${v ? v.Name : 'मतदाता'} (वडा ${v ? v.Ward : '-'}) सँग घरदैलो भेटघाट सम्पन्न (नतिजा: ${visit.VisitOutcome}, प्रतिक्रिया: ${visit.SelfReportedResponse || 'तटस्थ'})।`);
       closeModal();
       showToast('Field visit recorded', 'success');
       refreshDashboardMetrics();
@@ -3214,7 +3439,7 @@
       const formData = new FormData(form);
       const token = 'tok_' + Math.random().toString(36).substring(2, 12);
 
-      state.users.push({
+      const newUser = {
         UserID: 'USR_' + Date.now().toString(36).toUpperCase(),
         Name: formData.get('Name').trim(),
         Phone: formData.get('Phone').trim(),
@@ -3223,11 +3448,14 @@
         PIN: formData.get('PIN') || '1234',
         AccessToken: token,
         Active: true
-      });
+      };
 
+      state.users.push(newUser);
       saveState();
+      logActivity('user_manage', `${newUser.Name} लाई ${newUser.Role} (Ward ${newUser.Ward}) को रूपमा नयाँ युजर खाता थपियो।`);
       closeModal();
       renderTeamList();
+      populateLoginUserSelector();
       showToast('Staff account created', 'success');
     }
 
@@ -3426,7 +3654,7 @@
           <div style="text-align: center; margin-bottom: 24px;">
             <div class="brand-icon" style="margin: 0 auto 12px;">🗳️</div>
             <h2>Voter Information & Update Form</h2>
-            <p style="color: var(--slate-600); font-size: 13.5px;">Gokarneshwor Municipality • Public Portal</p>
+            <p style="color: var(--slate-600); font-size: 13.5px;">Helambu Rural Municipality • Public Portal</p>
           </div>
 
           <form onsubmit="handlePublicDirectSubmit(event)">
@@ -3680,6 +3908,7 @@
         PublishedDate: new Date().toISOString().slice(0,10)
       });
       saveState();
+      logActivity('message', `सबै कार्यकर्ताहरूलाई नयाँ सूचना प्रकाशित गरियो: "${formData.get('Title').trim()}" (Priority: ${formData.get('Priority')})`);
       closeModal();
       renderNotices();
       showToast('Notice broadcasted to all workers', 'success');
@@ -3731,7 +3960,7 @@
       e.preventDefault();
       const form = e.target;
       const formData = new FormData(form);
-      state.messages.unshift({
+      const newMsg = {
         MessageID: 'MSG_' + Date.now().toString(36).toUpperCase(),
         Subject: formData.get('Subject').trim(),
         Sender: currentUser ? currentUser.Name : 'System Admin',
@@ -3739,8 +3968,10 @@
         Priority: 'Normal',
         Date: new Date().toISOString().slice(0,10),
         IsRead: false
-      });
+      };
+      state.messages.unshift(newMsg);
       saveState();
+      logActivity('message', `${newMsg.Recipient} लाई आन्तरिक सन्देश प्रवाह: "${newMsg.Subject}"`);
       closeModal();
       renderMessages();
       showToast('Message dispatched', 'success');
@@ -4130,7 +4361,7 @@
         VerificationStatus: v.VerificationStatus,
         SelfReportedResponse: v.SelfReportedResponse || ''
       }));
-      downloadCsvFile('gokarneshwor_voters_export.csv', rows);
+      downloadCsvFile('helambu_voters_export.csv', rows);
     }
 
     function exportWardReport() {
@@ -4246,7 +4477,35 @@
       state.settings.SUPABASE_URL = url;
       state.settings.SUPABASE_KEY = key;
       saveState();
-      showToast('Supabase credentials saved', 'success');
+      showToast('Supabase credentials saved!', 'success');
+    }
+
+    async function testSupabaseConnection() {
+      const url = (state.settings.SUPABASE_URL || document.getElementById('supabaseUrlInput').value).trim();
+      const key = (state.settings.SUPABASE_KEY || document.getElementById('supabaseKeyInput').value).trim();
+      if (!url || !key) {
+        showToast('Please enter both Supabase URL and Key', 'error');
+        return;
+      }
+      showToast('Testing Supabase connection...', 'info');
+      try {
+        const res = await fetch(`${url}/rest/v1/system_settings?select=*&limit=1`, {
+          headers: {
+            'apikey': key,
+            'Authorization': `Bearer ${key}`
+          }
+        });
+        if (res.ok) {
+          showToast('⚡ Supabase Connected Successfully!', 'success');
+        } else {
+          const err = await res.text();
+          console.warn('Supabase test error:', err);
+          showToast(`Supabase reachable (Status: ${res.status}). Make sure schema SQL is executed.`, 'info');
+        }
+      } catch (e) {
+        console.error('Connection error:', e);
+        showToast('Connection failed: ' + e.message, 'error');
+      }
     }
 
     function changeAdminPin() {
@@ -4408,7 +4667,7 @@
 
       const age = calculateAge(v.DOB);
       const ageStr = age ? `${age}औं ` : '';
-      const defaultWish = `आदरणीय ${v.Name} ज्यू, नमस्कार! तपाईंको शुभ जन्मदिनको सुखद अवसरमा सुस्वास्थ्य, दीर्घायु तथा उत्तरोत्तर प्रगतिको हार्दिक मंगलमय शुभकामना व्यक्त गर्दछौं! 🎂🎉 - गोकर्णेश्वर नगरपालिका टिम`;
+      const defaultWish = `आदरणीय ${v.Name} ज्यू, नमस्कार! तपाईंको शुभ जन्मदिनको सुखद अवसरमा सुस्वास्थ्य, दीर्घायु तथा उत्तरोत्तर प्रगतिको हार्दिक मंगलमय शुभकामना व्यक्त गर्दछौं! 🎂🎉 - हेलम्बु गाउँपालिका टिम`;
 
       openModal(
         `🎂 जन्मदिनको शुभकामना: ${v.Name}`,
@@ -4459,11 +4718,11 @@
       if (!txt) return;
 
       if (templateNum === '1') {
-        txt.value = `आदरणीय ${v.Name} ज्यू, नमस्कार! तपाईंको शुभ जन्मदिनको सुखद अवसरमा सुस्वास्थ्य, दीर्घायु तथा उत्तरोत्तर प्रगतिको हार्दिक मंगलमय शुभकामना व्यक्त गर्दछौं! 🎂🎉 - गोकर्णेश्वर नगरपालिका टिम`;
+        txt.value = `आदरणीय ${v.Name} ज्यू, नमस्कार! तपाईंको शुभ जन्मदिनको सुखद अवसरमा सुस्वास्थ्य, दीर्घायु तथा उत्तरोत्तर प्रगतिको हार्दिक मंगलमय शुभकामना व्यक्त गर्दछौं! 🎂🎉 - हेलम्बु गाउँपालिका टिम`;
       } else if (templateNum === '2') {
-        txt.value = `प्रिय ${v.Name} ज्यू, तपाईंलाई ${age ? `${age}औं ` : ''}जन्मदिनको धेरै धेरै शुभकामना! गोकर्णेश्वर वडा नं ${v.Ward} को समग्र समृद्धि र नागरिकको सेवामा हामी सदैव समर्पित छौं। तपाईंको उज्यालो भविष्यको कामना! 💐`;
+        txt.value = `प्रिय ${v.Name} ज्यू, तपाईंलाई ${age ? `${age}औं ` : ''}जन्मदिनको धेरै धेरै शुभकामना! हेलम्बु वडा नं ${v.Ward} को समग्र समृद्धि र नागरिकको सेवामा हामी सदैव समर्पित छौं। तपाईंको उज्यालो भविष्यको कामना! 💐`;
       } else if (templateNum === '3') {
-        txt.value = `Happy Birthday ${v.Name} ji! Subhakamana from Gokarneshwor Ward ${v.Ward} Nirwachan Team.`;
+        txt.value = `Happy Birthday ${v.Name} ji! Subhakamana from Helambu Ward ${v.Ward} Nirwachan Team.`;
       }
     }
 
@@ -4490,7 +4749,7 @@
       const v = state.voters.find(x => x.VoterID === voterId);
       if (!v) return;
 
-      const defaultMsg = `आदरणीय ${v.Name} ज्यू, नमस्कार! गोकर्णेश्वर वडा नं ${v.Ward}, ${v.Tole || ''} को विकास र समृद्धिका लागि तपाईंको अमूल्य मत र साथको अपेक्षा गर्दछौं। तपाईंको मतदान केन्द्र: बुथ ${v.BoothNo || '-'}, क्रम संख्या: ${v.VoterSerial || '-'} रहेको छ। धन्यवाद!`;
+      const defaultMsg = `आदरणीय ${v.Name} ज्यू, नमस्कार! हेलम्बु वडा नं ${v.Ward}, ${v.Tole || ''} को विकास र समृद्धिका लागि तपाईंको अमूल्य मत र साथको अपेक्षा गर्दछौं। तपाईंको मतदान केन्द्र: बुथ ${v.BoothNo || '-'}, क्रम संख्या: ${v.VoterSerial || '-'} रहेको छ। धन्यवाद!`;
 
       openModal(
         `💬 व्यक्तिगत सन्देश (Custom Message): ${v.Name}`,
@@ -4548,7 +4807,7 @@
       if (!txt) return;
 
       if (type === '1') {
-        txt.value = `आदरणीय ${v.Name} ज्यू, नमस्कार! गोकर्णेश्वर वडा नं ${v.Ward}, ${v.Tole || ''} को विकास र समृद्धिका लागि तपाईंको अमूल्य मत र साथको अपेक्षा गर्दछौं। तपाईंको मतदान केन्द्र: बुथ ${v.BoothNo || '-'}, क्रम संख्या: ${v.VoterSerial || '-'} रहेको छ। धन्यवाद!`;
+        txt.value = `आदरणीय ${v.Name} ज्यू, नमस्कार! हेलम्बु वडा नं ${v.Ward}, ${v.Tole || ''} को विकास र समृद्धिका लागि तपाईंको अमूल्य मत र साथको अपेक्षा गर्दछौं। तपाईंको मतदान केन्द्र: बुथ ${v.BoothNo || '-'}, क्रम संख्या: ${v.VoterSerial || '-'} रहेको छ। धन्यवाद!`;
       } else if (type === '2') {
         txt.value = `आदरणीय ${v.Name} ज्यू, नमस्कार! हाम्रो टोल ${v.Tole || ''} र वडा नं ${v.Ward} को समग्र विकासको साझा संकल्पसहित तपाईंको अमूल्य मत र आशीर्वादको अपेक्षा गर्दछौं। - निर्वाचन परिचालन टोली`;
       } else if (type === '3') {
@@ -4584,11 +4843,11 @@
     }
 
     function getWhatsAppTemplate(v) {
-      return `नमस्कार ${v.Name} जी, गोकर्णेश्वर नगरपालिका वडा नं. ${v.Ward || ''} बाट। यहाँको मतदान केन्द्र सम्बन्धी थप जानकारी तथा सहयोगको लागि सम्पर्क गरेका हौँ।`;
+      return `नमस्कार ${v.Name} जी, हेलम्बु गाउँपालिका वडा नं. ${v.Ward || ''} बाट। यहाँको मतदान केन्द्र सम्बन्धी थप जानकारी तथा सहयोगको लागि सम्पर्क गरेका हौँ।`;
     }
 
     function getSmsTemplate(v) {
-      return `Namaskar ${v.Name} ji, Gokarneshwor Ward ${v.Ward || ''} Nirwachan Toli bata samparka gareko chau.`;
+      return `Namaskar ${v.Name} ji, Helambu Ward ${v.Ward || ''} Nirwachan Toli bata samparka gareko chau.`;
     }
 
     function openBroadcastModal() {
@@ -4614,7 +4873,7 @@
 
         <div class="form-group" style="margin-bottom: 16px;">
           <label class="form-label">सन्देश (Message Text)</label>
-          <textarea id="broadcastMsgText" class="form-control" rows="4" placeholder="यहाँ सन्देश लेख्नुहोस्...">आदरणीय मतदाता महानुभाव, गोकर्णेश्वर नगरपालिका निर्वाचन टोलीको तर्फबाट हार्दिक नमस्कार। मतदान केन्द्र सम्बन्धी जानकारीको लागि हाम्रो सम्पर्कमा रहनुहोला।</textarea>
+          <textarea id="broadcastMsgText" class="form-control" rows="4" placeholder="यहाँ सन्देश लेख्नुहोस्...">आदरणीय मतदाता महानुभाव, हेलम्बु गाउँपालिका निर्वाचन टोलीको तर्फबाट हार्दिक नमस्कार। मतदान केन्द्र सम्बन्धी जानकारीको लागि हाम्रो सम्पर्कमा रहनुहोला।</textarea>
           <div style="font-size: 12px; color: var(--slate-600); margin-top: 4px;" id="charCountNotice">लगभग 1 SMS Credit प्रति मतदाता</div>
         </div>
 
@@ -4639,7 +4898,7 @@
       if (val === '1') {
         area.value = 'आदरणीय मतदाता, तपाईँको मतदान केन्द्र र बुथ सम्बन्धी जानकारी अद्यावधिक गरिएको छ। कृपया समयमै मतदानमा सहभागी हुनुहोला। - निर्वाचन परिचालन समिति';
       } else if (val === '2') {
-        area.value = 'आदरणीय मतदाता महानुभाव, गोकर्णेश्वर नगरपालिका निर्वाचन टोलीको तर्फबाट हार्दिक नमस्कार। मतदान केन्द्र सम्बन्धी जानकारीको लागि हाम्रो सम्पर्कमा रहनुहोला।';
+        area.value = 'आदरणीय मतदाता महानुभाव, हेलम्बु गाउँपालिका निर्वाचन टोलीको तर्फबाट हार्दिक नमस्कार। मतदान केन्द्र सम्बन्धी जानकारीको लागि हाम्रो सम्पर्कमा रहनुहोला।';
       } else if (val === '3') {
         area.value = 'सूचना: वडा कार्यालय तथा मतदान केन्द्रबाट मतदाता परिचयपत्र तथा विवरण वितरण भइरहेको व्यहोरा जानकारी गराउँदछौँ।';
       }
@@ -4692,8 +4951,178 @@
     }
 
     // ==========================================
-    // 21. MODAL SURFACE MANAGER & LIFECYCLE
+    // 22. ACTIVITY TIMELINE & AUDIT TRAIL ENGINE
     // ==========================================
+    function logActivity(type, description) {
+      if (!state.activities) state.activities = [];
+      const user = currentUser || { UserID: 'USR_ADMIN', Name: 'System Admin', Role: 'Super Admin' };
+      const newAct = {
+        ActivityID: 'ACT_' + Date.now().toString(36).toUpperCase(),
+        Timestamp: new Date().toISOString(),
+        UserID: user.UserID,
+        UserName: user.Name,
+        Role: user.Role,
+        Type: type,
+        Description: description
+      };
+      state.activities.unshift(newAct);
+      // Keep last 150 activities
+      if (state.activities.length > 150) state.activities.pop();
+      saveState();
+
+      const badge = document.getElementById('timelineCountBadge');
+      if (badge) badge.textContent = state.activities.length;
+    }
+
+    function renderActivityTimeline() {
+      const container = document.getElementById('timelineListContainer');
+      if (!container) return;
+      if (!state.activities) state.activities = [];
+
+      // Update badge
+      const badge = document.getElementById('timelineCountBadge');
+      if (badge) badge.textContent = state.activities.length;
+
+      // Populate worker filter dropdown
+      const workerFilter = document.getElementById('timelineWorkerFilter');
+      if (workerFilter && workerFilter.options.length <= 1) {
+        workerFilter.innerHTML = '<option value="">All Workers (सबै)</option>' +
+          state.users.map(u => `<option value="${u.UserID}">${esc(u.Name)} (${esc(u.Role)})</option>`).join('');
+      }
+
+      const selectedWorker = workerFilter ? workerFilter.value : '';
+      const typeFilter = document.getElementById('timelineTypeFilter') ? document.getElementById('timelineTypeFilter').value : '';
+
+      let list = state.activities.filter(a => {
+        if (selectedWorker && a.UserID !== selectedWorker) return false;
+        if (typeFilter && a.Type !== typeFilter) return false;
+        return true;
+      });
+
+      if (!list.length) {
+        container.innerHTML = `
+          <div style="padding: 30px; text-align: center; color: var(--slate-600); background: var(--slate-50); border-radius: var(--radius-md);">
+            अहिलेसम्म कुनै टाइमलाइन लग फेला परेन। कार्यकर्ताहरूले इन्ट्री वा भेटघाट गर्दा यहाँ स्वतः अपडेट हुनेछ।
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(a => {
+        const timeAgo = formatTimeAgo(a.Timestamp);
+        let icon = '⚡';
+        if (a.Type === 'voter_add') icon = '👤';
+        else if (a.Type === 'voter_verify') icon = '✅';
+        else if (a.Type === 'visit') icon = '📋';
+        else if (a.Type === 'message') icon = '💬';
+        else if (a.Type === 'issue') icon = '⚠️';
+        else if (a.Type === 'login') icon = '🔑';
+
+        return `
+          <div class="timeline-item">
+            <div class="timeline-dot">${icon}</div>
+            <div class="timeline-content">
+              <div class="timeline-meta">
+                <span class="timeline-user">${esc(a.UserName)} <span style="font-weight: 500; color: var(--slate-600);">(${esc(a.Role)})</span></span>
+                <span title="${a.Timestamp}">🕒 ${timeAgo}</span>
+              </div>
+              <div class="timeline-text">${esc(a.Description)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function formatTimeAgo(isoDate) {
+      if (!isoDate) return 'अहिले भर्खर';
+      const diffMs = Date.now() - new Date(isoDate).getTime();
+      const mins = Math.floor(diffMs / 60000);
+      if (mins < 1) return 'Just now (भर्खरै)';
+      if (mins < 60) return `${mins} min ago`;
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return `${hrs} hr ago`;
+      const days = Math.floor(hrs / 24);
+      return `${days} days ago`;
+    }
+
+    // ==========================================
+    // 23. PRINT VOTER SLIP (मतदाता परिचय पर्चा)
+    // ==========================================
+    function printVoterSlip(voterId) {
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+
+      const printArea = document.getElementById('printableSlipArea');
+      const municipality = state.settings.MUNICIPALITY || 'Helambu Rural Municipality';
+      const year = new Date().getFullYear();
+
+      printArea.innerHTML = `
+        <div class="voter-slip-card">
+          <div class="slip-header">
+            <div style="font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">${municipality}</div>
+            <div style="font-size: 13.5px; font-weight: 700; margin-top: 2px;">स्थानीय निर्वाचन परिचालन तथा मतदाता जानकारी पर्चा (${year})</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">(Official Field Voter Information Slip)</div>
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <div class="slip-row">
+              <span class="label">मतदाताको नाम (Name):</span>
+              <span class="val" style="font-size: 15px; color: #1e293b;">${esc(v.Name)}</span>
+            </div>
+            <div class="slip-row">
+              <span class="label">वडा नं (Ward No):</span>
+              <span class="val">Ward ${v.Ward}</span>
+            </div>
+            <div class="slip-row">
+              <span class="label">टोल / बस्ती (Tole / Area):</span>
+              <span class="val">${esc(v.Tole || 'केन्द्र नजिक')}</span>
+            </div>
+            <div class="slip-row">
+              <span class="label">मतदान केन्द्र / बुथ (Polling Booth):</span>
+              <span class="val" style="color: #4f46e5;">बुथ नं: ${esc(v.BoothNo || 'A')}</span>
+            </div>
+            <div class="slip-row">
+              <span class="label">मतदाता नामावली क्रम संख्या (Serial No):</span>
+              <span class="val" style="font-size: 16px; color: #dc2626;"># ${esc(v.VoterSerial || 'N/A')}</span>
+            </div>
+            <div class="slip-row">
+              <span class="label">सम्पर्क फोन (Phone):</span>
+              <span class="val">${esc(v.Phone || 'उपलब्ध छैन')}</span>
+            </div>
+            <div class="slip-row">
+              <span class="label">जन्ममिति / उमेर (DOB / Age):</span>
+              <span class="val">${v.DOB ? `${v.DOB} (${calculateAge(v.DOB)} वर्ष)` : (v.AgeGroup || '-')}</span>
+            </div>
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; font-size: 12px; line-height: 1.5; color: #334155;">
+            <b>नोट:</b> मतदान गर्न जाँदा आफ्नो सक्कल मतदाता परिचयपत्र वा नागरिकताको प्रमाणपत्र अनिवार्य साथमा लैजानुहोला। समयमै आफ्नो अमूल्य मताधिकार प्रयोग गरौं।
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 11px; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 8px;">
+            <span>वितरक: ${currentUser ? esc(currentUser.Name) : 'फिल्ड टोली'}</span>
+            <span>मुद्रण मिति: ${new Date().toLocaleDateString()}</span>
+          </div>
+
+          <div class="no-print" style="margin-top: 18px; display: flex; gap: 10px; justify-content: center;">
+            <button class="btn btn-primary" onclick="window.print()">🖨️ अहिले नै Print गर्नुहोस्</button>
+            <button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>
+          </div>
+        </div>
+      `;
+
+      // Also render preview in modal for convenient screen viewing
+      openModal(
+        `मतदाता जानकारी पर्चा: ${v.Name}`,
+        printArea.innerHTML,
+        `<button class="btn btn-primary" onclick="window.print()">🖨️ Print Slip</button><button class="btn btn-secondary" onclick="closeModal()">Close</button>`
+      );
+
+      logActivity('message', `${esc(v.Name)} को मतदाता पर्चा (Voter Slip #${v.VoterSerial || '-'}) तयार गरी Print गरियो।`);
+    }
+
+    // ==========================================
+    // 24. MODAL SURFACE MANAGER & LIFECYCLE
     function openModal(title, bodyHtml, footerHtml = '') {
       document.getElementById('modalTitle').textContent = title;
       document.getElementById('modalBody').innerHTML = bodyHtml;
