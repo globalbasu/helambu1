@@ -897,30 +897,52 @@
   <!-- Toast Container -->
   <div class="toast-box" id="toastBox"></div>
 
-  <!-- 1. LOGIN SCREEN (Multi-Tier SaaS Authentication Engine) -->
+  <!-- 1. LOGIN SCREEN (Super Admin Master Gatekeeper & Multi-Tier Auth) -->
   <div id="loginScreen" class="pin-auth-container">
     <div class="pin-card" style="max-width: 440px;">
-      <div class="brand-icon" style="margin: 0 auto 12px; width: 48px; height: 48px; font-size: 24px;">🗳️</div>
+      <div class="brand-icon" style="margin: 0 auto 12px; width: 52px; height: 52px; font-size: 26px; background: #0f172a; color: #fbbf24; border-radius: 12px; display: flex; align-items: center; justify-content: center;">👑</div>
       <div class="pin-header" style="margin-bottom: 16px;">
-        <h2 id="loginTitle" style="font-size: 22px;">Election Ops Platform</h2>
-        <p id="loginSubtitle" style="font-size: 13px; color: var(--slate-600);">मल्टि-पालिका निर्वाचन व्यवस्थापन प्रणाली</p>
+        <h2 id="loginTitle" style="font-size: 22px; font-weight: 800; color: #0f172a;">Super Admin Control Hub</h2>
+        <p id="loginSubtitle" style="font-size: 13px; color: var(--slate-600);">SaaS निर्वाचन व्यवस्थापन प्रणाली • मास्टर लगइन</p>
       </div>
 
-      <!-- Login Tier Selector Tabs -->
+      <!-- Quick Switcher Tabs (Default: Super Admin) -->
       <div style="display: flex; gap: 6px; background: var(--slate-100); padding: 4px; border-radius: var(--radius-md); margin-bottom: 20px;">
-        <button class="btn btn-sm btn-secondary active" id="tabBtnAdminLogin" onclick="switchLoginMode('admin')" style="flex: 1; font-weight: 700; border: none;">
+        <button class="btn btn-sm btn-secondary active" id="tabBtnSuperLogin" onclick="switchLoginMode('super')" style="flex: 1; font-weight: 700; border: none;">
+          👑 Super Admin
+        </button>
+        <button class="btn btn-sm btn-secondary" id="tabBtnAdminLogin" onclick="switchLoginMode('admin')" style="flex: 1; font-weight: 700; border: none;">
           🏛️ पालिका Admin
         </button>
         <button class="btn btn-sm btn-secondary" id="tabBtnWorkerLogin" onclick="switchLoginMode('worker')" style="flex: 1; font-weight: 700; border: none;">
           👷 कार्यकर्ता PIN
         </button>
-        <button class="btn btn-sm btn-secondary" id="tabBtnSuperLogin" onclick="switchLoginMode('super')" style="flex: 1; font-weight: 700; border: none;">
-          👑 Super Admin
-        </button>
       </div>
 
-      <!-- PANE 1: PALIKA ADMIN LOGIN (Username & Password) -->
-      <div id="paneAdminLogin" style="display: block;">
+      <!-- PANE 1: SUPER ADMIN MASTER LOGIN (DEFAULT) -->
+      <div id="paneSuperLogin" style="display: block;">
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-sm); padding: 12px; font-size: 12.5px; color: #1e40af; margin-bottom: 16px; text-align: left; line-height: 1.5;">
+          🔑 <b>मास्टर लगइन:</b> यहाँबाट लगइन गरेपछि तपाईंले पालिकाहरूको डेटा इन्ट्री गर्न, नयाँ पालिका एडमिन बनाउन (Username & Password दिन) र सिस्टम चालू/बन्द गर्न सक्नुहुन्छ।
+        </div>
+        <form onsubmit="handleSuperAdminMasterLogin(event)" style="text-align: left;">
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label">Super Admin Master PIN *</label>
+            <input type="password" id="superAdminMasterKey" required class="form-control" maxlength="4" placeholder="४-अंकको Master PIN (Default: 1234)" style="font-size: 18px; text-align: center; letter-spacing: 0.2em;">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; background: #0f172a; border-color: #0f172a; font-weight: 800; padding: 12px; font-size: 15px;">
+            ⚡ Unlock Super Admin Dashboard
+          </button>
+        </form>
+        <div style="margin-top: 14px; font-size: 12px; color: var(--slate-600); text-align: center;">
+          Default Master PIN: <code>1234</code>
+        </div>
+      </div>
+
+      <!-- PANE 2: PALIKA ADMIN LOGIN (Created by Super Admin) -->
+      <div id="paneAdminLogin" style="display: none;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 10px; font-size: 12px; color: var(--slate-700); margin-bottom: 14px; text-align: left;">
+          🏛️ <b>पालिका Admin Access:</b> Super Admin ले प्रदान गरेको Username र Password हानेर आफ्नो पालिकाको ड्यासबोर्डमा जानुहोस्।
+        </div>
         <form onsubmit="handleTenantAdminLogin(event)" style="text-align: left;">
           <div class="form-group" style="margin-bottom: 14px;">
             <label class="form-label">Admin Username *</label>
@@ -934,12 +956,9 @@
             🚀 पालिका कमान्ड लगइन (Login as Admin)
           </button>
         </form>
-        <div style="margin-top: 14px; font-size: 12px; color: var(--slate-600); text-align: center;">
-          Demo: <code>helambu_admin</code> / <code>helambu@123</code>
-        </div>
       </div>
 
-      <!-- PANE 2: WORKER / COORDINATOR PIN LOGIN (Fast 4-Digit Keypad) -->
+      <!-- PANE 3: WORKER / COORDINATOR PIN LOGIN (Fast 4-Digit Keypad) -->
       <div id="paneWorkerLogin" style="display: none;">
         <div style="margin-bottom: 14px; text-align: left;">
           <label style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--slate-600); display: block; margin-bottom: 6px;">कार्यकर्ता छान्नुहोस् (Select Worker)</label>
@@ -976,22 +995,6 @@
         <button id="loginBtn" class="btn btn-primary" style="width: 100%;" disabled onclick="submitPin()">
           Unlock Field Workspace
         </button>
-      </div>
-
-      <!-- PANE 3: SUPER ADMIN PLATFORM OWNER (Master SaaS Controller) -->
-      <div id="paneSuperLogin" style="display: none;">
-        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-sm); padding: 10px; font-size: 12px; color: #1e40af; margin-bottom: 14px; text-align: left;">
-          👑 <b>SaaS Platform Owner Console:</b> सबै पालिकाहरूको नियन्त्रण, नयाँ एडमिन थप्ने, र सर्भिस बन्द/चालु गर्ने मास्टर कन्सोल।
-        </div>
-        <form onsubmit="handleSuperAdminMasterLogin(event)" style="text-align: left;">
-          <div class="form-group" style="margin-bottom: 14px;">
-            <label class="form-label">Master Owner Key / PIN *</label>
-            <input type="password" id="superAdminMasterKey" required class="form-control" placeholder="४-अंकको Master PIN (Default: 1234)">
-          </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%; background: #0f172a; border-color: #0f172a; font-weight: 700;">
-            ⚡ Unlock Super Admin Console
-          </button>
-        </form>
       </div>
 
       <div style="margin-top: 18px; font-size: 12px; color: var(--slate-600);">
