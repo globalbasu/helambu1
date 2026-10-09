@@ -994,31 +994,39 @@
         </div>
       </div>
 
-      <!-- PANE 2: PALIKA ADMIN LOGIN (Created by Super Admin) -->
+      <!-- PANE 2: PALIKA ADMIN LOGIN (Dedicated Clean Single Executive Screen) -->
       <div id="paneAdminLogin" style="display: none;">
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 10px; font-size: 12px; color: var(--slate-700); margin-bottom: 14px; text-align: left;">
-          🏛️ <b>पालिका Admin Access:</b> Super Admin ले प्रदान गरेको Username र Password हानेर आफ्नो पालिकाको ड्यासबोर्डमा जानुहोस्।
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 12px; font-size: 12.5px; color: var(--slate-700); margin-bottom: 16px; text-align: left; line-height: 1.5;">
+          🏛️ <b>पालिका Admin Access:</b> Super Admin ले प्रदान गरेको Username र Password प्रविष्ट गरी आफ्नो पालिकाको कमान्ड सेन्टर खोल्नुहोस्।
         </div>
         <form onsubmit="handleTenantAdminLogin(event)" style="text-align: left;">
-          <div class="form-group" style="margin-bottom: 12px;">
-            <label class="form-label">Admin Username *</label>
-            <input type="text" id="adminUserField" required class="form-control" placeholder="उदा: helambu_admin">
-          </div>
           <div class="form-group" style="margin-bottom: 14px;">
-            <label class="form-label">Password *</label>
+            <label class="form-label">Admin Username (प्रयोगकर्ता नाम) *</label>
+            <input type="text" id="adminUserField" required class="form-control" placeholder="उदा: helambu_admin" style="font-size: 14px; padding: 10px 12px;">
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label">Password (गोप्य पासवर्ड) *</label>
             <div style="position: relative;">
-              <input type="password" id="adminPassField" required class="form-control" placeholder="पासवर्ड टाइप गर्नुहोस्" style="padding-right: 42px;">
-              <button type="button" onclick="togglePassVisibility('adminPassField', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 15px; cursor: pointer; color: var(--slate-600);" title="Show/Hide">👁️</button>
+              <input type="password" id="adminPassField" required class="form-control" placeholder="पासवर्ड टाइप गर्नुहोस्" style="font-size: 14px; padding: 10px 12px; padding-right: 42px;">
+              <button type="button" onclick="togglePassVisibility('adminPassField', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 16px; cursor: pointer; color: var(--slate-600);" title="Show/Hide">👁️</button>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 14px; font-weight: 700; padding: 10px;">
-            🚀 पालिका कमान्ड लगइन (Login as Admin)
+          <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 14.5px; font-weight: 800; padding: 12px; background: #1e3a8a; border-color: #1e3a8a;">
+            🚀 पालिका कमान्ड लगइन (Login to Palika HQ)
           </button>
         </form>
-        <div style="margin-top: 10px; display: flex; justify-content: center; gap: 8px;">
+        <div style="margin-top: 12px; display: flex; justify-content: center; gap: 8px;">
           <button type="button" class="btn btn-sm btn-secondary" onclick="quickFillAdminLogin('helambu_admin', 'helambu@123')" style="font-size: 11.5px; font-weight: 700; padding: 5px 12px; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0;">
             ⚡ Demo Admin अटो भर्नुहोस् (Helambu)
           </button>
+        </div>
+
+        <!-- Separate Link to Field Worker PIN Screen -->
+        <div style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--slate-300); text-align: center;">
+          <a href="javascript:void(0)" onclick="openWorkerPortalFromAdmin()" style="font-size: 12.5px; color: var(--indigo-600); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+            <span>👷 फिल्ड कार्यकर्ता वा वडा प्रतिनिधि हुनुहुन्छ?</span>
+            <span style="text-decoration: underline;">कार्यकर्ता PIN लगइन खोल्नुहोस् &rarr;</span>
+          </a>
         </div>
       </div>
 
@@ -1064,6 +1072,13 @@
           <button type="button" class="btn btn-sm btn-secondary" onclick="quickFillWorkerPin('1234')" style="font-size: 11.5px; font-weight: 700; padding: 5px 12px; background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe;">
             ⚡ अटो PIN (1234) हान्नुहोस्
           </button>
+        </div>
+
+        <!-- Back to Palika Admin Link -->
+        <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--slate-300); text-align: center;">
+          <a href="javascript:void(0)" onclick="switchToPalikaAdminLogin()" style="font-size: 12.5px; color: var(--slate-600); text-decoration: none; font-weight: 600;">
+            &larr; पालिका Admin लगइनमा फर्कनुहोस्
+          </a>
         </div>
       </div>
 
@@ -1145,8 +1160,9 @@
         <button class="nav-item palika-only" data-view="notices" onclick="switchView('notices')">
           <span class="icon">📢</span> Notices & Alerts
         </button>
-        <button class="nav-item palika-only" data-view="messages" onclick="switchView('messages')">
-          <span class="icon">💬</span> Internal Messaging
+        <button class="nav-item palika-only" data-view="messages" onclick="switchView('messages')" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25);">
+          <span class="icon">📲</span> <span>SMS क्याम्पेन</span>
+          <span class="nav-badge" id="smsBalanceSidebarBadge" style="background: #10b981; color: white; font-weight: 800;">4,850 SMS</span>
         </button>
         <button class="nav-item palika-only" data-view="timeline" onclick="switchView('timeline')">
           <span class="icon">⏱️</span> Activity Timeline
@@ -1278,6 +1294,7 @@
               <table>
                 <thead>
                   <tr>
+                    <th style="width: 50px; text-align: center;">क्र.सं.</th>
                     <th class="sortable" onclick="sortVotersBy('Name')" title="नाम अनुसार क्रमबद्ध">मतदाता / सम्पर्क <span id="sortIconName">⇅</span></th>
                     <th class="sortable" onclick="sortVotersBy('Ward')" title="वडा अनुसार क्रमबद्ध">वडा र टोल <span id="sortIconWard">⇅</span></th>
                     <th class="sortable" onclick="sortVotersBy('VoterSerial')" title="क्र.सं. अनुसार क्रमबद्ध">बुथ / क्र.सं. <span id="sortIconVoterSerial">⇅</span></th>
@@ -1306,6 +1323,7 @@
               <table>
                 <thead>
                   <tr>
+                    <th style="width: 50px; text-align: center;">क्र.सं.</th>
                     <th>Household ID</th>
                     <th>Ward / Tole</th>
                     <th>Primary Contact</th>
@@ -1332,6 +1350,7 @@
               <table>
                 <thead>
                   <tr>
+                    <th style="width: 50px; text-align: center;">क्र.सं.</th>
                     <th>Date</th>
                     <th>Contact Name</th>
                     <th>Outcome</th>
@@ -1363,6 +1382,7 @@
               <table>
                 <thead>
                   <tr>
+                    <th style="width: 50px; text-align: center;">क्र.सं.</th>
                     <th>Due Date</th>
                     <th>Contact</th>
                     <th>Assigned Worker</th>
@@ -1420,6 +1440,7 @@
               <table>
                 <thead>
                   <tr>
+                    <th style="width: 50px; text-align: center;">क्र.सं.</th>
                     <th>Name</th>
                     <th>Phone</th>
                     <th>Role</th>
@@ -1529,28 +1550,298 @@
           </div>
         </section>
 
-        <!-- 12. MESSAGES -->
+        <!-- 12. SMS & MASS CAMPAIGN HUB (AAKASH SMS GATEWAY POWERED) -->
         <section id="viewMessages" class="view-section">
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">💬 Internal Team Messages</h3>
-              <button class="btn btn-sm btn-primary" onclick="openComposeMessageModal()">+ Send Message</button>
+          <!-- Top Header & Live KPI Cards -->
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header" style="background: linear-gradient(135deg, #065f46, #047857); color: white; padding: 18px 20px; border-radius: var(--radius-md) var(--radius-md) 0 0; margin: -16px -16px 18px;">
+              <div>
+                <h3 class="card-title" style="color: #ecfdf5; display: flex; align-items: center; gap: 8px; font-size: 19px;">
+                  📲 SMS तथा मास क्याम्पेन कमान्ड सेन्टर
+                  <span style="font-size: 11px; background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 999px; font-weight: 700;">Aakash SMS Gateway</span>
+                </h3>
+                <p style="font-size: 13px; color: #a7f3d0; margin-top: 4px;">
+                  मतदाताहरूलाई जन्मदिनको शुभकामना, आमसभा तथा भेलाको सूचना, मतदान केन्द्र र क्र.सं. पर्चा विवरण १-क्लिकमा बल्क SMS पठाउनुहोस्।
+                </p>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-sm btn-secondary" onclick="openTestSmsModal()" style="background: white; color: #047857; font-weight: 700; border: none;">
+                  📱 Test SMS
+                </button>
+                <button class="btn btn-sm btn-primary" onclick="requestMoreSmsCreditsModal()" style="background: #fbbf24; color: #0f172a; border: none; font-weight: 800;">
+                  ⚡ थप क्रेडिट माग (+ Recharge)
+                </button>
+              </div>
             </div>
-            <div class="table-responsive">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Subject</th>
-                    <th>Sender</th>
-                    <th>Recipient</th>
-                    <th>Priority</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody id="messagesTableRows"></tbody>
-              </table>
+
+            <!-- 4 Metric Cards -->
+            <div class="kpi-grid" style="margin-bottom: 18px;">
+              <div class="kpi-card" style="border-left: 4px solid #10b981;">
+                <div class="kpi-label">💳 उपलब्ध SMS ब्यालेन्स</div>
+                <div class="kpi-val" id="palikaSmsBalanceKpi" style="color: #047857;">4,850 SMS</div>
+                <div style="font-size: 11px; color: var(--slate-600); margin-top: 4px;">१ SMS = ७० नेपाली अक्षर / १६० अंग्रेजी</div>
+              </div>
+              <div class="kpi-card" style="border-left: 4px solid #f59e0b;">
+                <div class="kpi-label">🎂 आज परेका जन्मदिन</div>
+                <div class="kpi-val" id="palikaTodayBirthdayKpi" style="color: #d97706;">0</div>
+                <div style="font-size: 11px; color: var(--slate-600); margin-top: 4px;" id="palikaBirthdaySubText">१-क्लिक शुभकामना पठाउन मिल्ने</div>
+              </div>
+              <div class="kpi-card" style="border-left: 4px solid #3b82f6;">
+                <div class="kpi-label">📊 कुल पठाइएका SMS</div>
+                <div class="kpi-val" id="palikaTotalSentSmsKpi" style="color: #1d4ed8;">0 SMS</div>
+                <div style="font-size: 11px; color: var(--slate-600); margin-top: 4px;">विभिन्न क्याम्पेनहरू मार्फत</div>
+              </div>
+              <div class="kpi-card" style="border-left: 4px solid #8b5cf6;">
+                <div class="kpi-label">⚡ डेलिभरी सफलता दर</div>
+                <div class="kpi-val" style="color: #6d28d9;">99.4%</div>
+                <div style="font-size: 11px; color: var(--slate-600); margin-top: 4px;">Aakash SMS Gateway Live</div>
+              </div>
             </div>
+
+            <!-- Sub-Tabs Navigation Inside SMS Hub -->
+            <div style="display: flex; gap: 8px; border-bottom: 1px solid var(--slate-200); padding-bottom: 12px; margin-bottom: 20px; overflow-x: auto;">
+              <button class="btn btn-sm btn-secondary active" id="smsTabBtnCompose" onclick="switchSmsSubTab('compose')" style="font-weight: 700;">
+                🚀 नयाँ मास SMS अभियान (Compose & Target)
+              </button>
+              <button class="btn btn-sm btn-secondary" id="smsTabBtnBirthday" onclick="switchSmsSubTab('birthday')" style="font-weight: 700;">
+                🎂 जन्मदिन अटोमेसन (<span id="smsBirthdayTabBadge">0</span>)
+              </button>
+              <button class="btn btn-sm btn-secondary" id="smsTabBtnLogs" onclick="switchSmsSubTab('logs')" style="font-weight: 700;">
+                📜 SMS डेलिभरी लग तथा इतिहास
+              </button>
+              <button class="btn btn-sm btn-secondary" id="smsTabBtnTeam" onclick="switchSmsSubTab('team')" style="font-weight: 700;">
+                💬 आन्तरिक टिम मेमो
+              </button>
+            </div>
+
+            <!-- SUB-TAB 1: COMPOSE & TARGET MASS SMS -->
+            <div id="smsPaneCompose" style="display: block;">
+              <div style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 20px;">
+                
+                <!-- Left Column: Target Audience Filters -->
+                <div style="background: var(--slate-50); border: 1px solid var(--slate-200); padding: 18px; border-radius: var(--radius-md);">
+                  <h4 style="margin-bottom: 14px; color: var(--navy-900); display: flex; align-items: center; gap: 6px; font-size: 15px;">
+                    <span>🎯 १. लक्षित मतदाता समूह छान्नुहोस्</span>
+                  </h4>
+                  
+                  <div class="form-group" style="margin-bottom: 12px;">
+                    <label class="form-label">वडा छान्नुहोस् (Ward Scope)</label>
+                    <select id="smsFilterWard" class="form-control" onchange="updateSmsAudienceCalculation()">
+                      <option value="">सबै वडाहरू (समग्र पालिका)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 12px;">
+                    <label class="form-label">टोल छान्नुहोस् (Tole Scope)</label>
+                    <select id="smsFilterTole" class="form-control" onchange="updateSmsAudienceCalculation()">
+                      <option value="">सबै टोलहरू</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 12px;">
+                    <label class="form-label">मतदान केन्द्र / बुथ (Polling Booth)</label>
+                    <select id="smsFilterBooth" class="form-control" onchange="updateSmsAudienceCalculation()">
+                      <option value="">सबै बुथहरू</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 12px;">
+                    <label class="form-label">🚩 पार्टी झुकाव (Party Leaning Filter)</label>
+                    <select id="smsFilterParty" class="form-control" onchange="updateSmsAudienceCalculation()">
+                      <option value="">सबै मतदाताहरू</option>
+                      <option value="Support">हाम्रो समर्थक (Support) मात्र</option>
+                      <option value="Undecided">दोधार / अनिर्णित (Undecided) मात्र</option>
+                      <option value="NotOpponent">विपक्षी बाहेक (समर्थक + दोधार)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-grid" style="margin-bottom: 14px;">
+                    <div class="form-group">
+                      <label class="form-label">उमेर समूह</label>
+                      <select id="smsFilterAge" class="form-control" onchange="updateSmsAudienceCalculation()">
+                        <option value="">सबै उमेर</option>
+                        <option value="18-25">18-25 युवा</option>
+                        <option value="26-40">26-40</option>
+                        <option value="41-60">41-60</option>
+                        <option value="60+">60+ जेष्ठ नागरिक</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">लिङ्ग</label>
+                      <select id="smsFilterGender" class="form-control" onchange="updateSmsAudienceCalculation()">
+                        <option value="">महिला तथा पुरुष सबै</option>
+                        <option value="Female">महिला मात्र</option>
+                        <option value="Male">पुरुष मात्र</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Live Audience Summary Box -->
+                  <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: var(--radius-sm); padding: 14px; margin-top: 10px;">
+                    <div style="font-size: 12px; color: #065f46; font-weight: 700; text-transform: uppercase;">📊 छनोट गरिएको समूह विवरण:</div>
+                    <div style="margin-top: 6px; font-size: 13.5px; color: #047857;">
+                      <div>🎯 लक्षित मतदाता: <b id="smsAudienceTotalVoters">0</b> जना</div>
+                      <div>📱 फोन नम्बर भएका (प्रापक): <b id="smsAudienceValidPhones">0</b> जना</div>
+                      <div style="margin-top: 4px; font-size: 12px; color: #065f46;">
+                        💳 लाग्ने अनुमानित क्रेडिट: <b id="smsAudienceEstimatedCredits">0</b> SMS
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right Column: Message & Templates -->
+                <div style="background: white; border: 1px solid var(--slate-200); padding: 18px; border-radius: var(--radius-md);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h4 style="color: var(--navy-900); font-size: 15px;">📝 २. टेम्प्लेट छान्नुहोस् वा सन्देश टाइप गर्नुहोस्</h4>
+                  </div>
+
+                  <!-- 1-Click Templates Chips -->
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px;">
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="applySmsTemplate('rally')" style="font-size: 12px; font-weight: 700; background: #e0e7ff; color: #3730a3; border-color: #c7d2fe;">
+                      📣 आमसभा / भेला
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="applySmsTemplate('booth_slip')" style="font-size: 12px; font-weight: 700; background: #fef3c7; color: #92400e; border-color: #fde68a;">
+                      🗳️ मतदान केन्द्र र पर्चा
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="applySmsTemplate('appeal')" style="font-size: 12px; font-weight: 700; background: #ecfdf5; color: #065f46; border-color: #a7f3d0;">
+                      🚩 चुनावी मत अपिल
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="applySmsTemplate('birthday')" style="font-size: 12px; font-weight: 700; background: #fce7f3; color: #9d174d; border-color: #fbcfe8;">
+                      🎂 जन्मदिन शुभकामना
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="applySmsTemplate('custom')" style="font-size: 12px; font-weight: 700;">
+                      ✏️ खाली (कस्टम)
+                    </button>
+                  </div>
+
+                  <!-- Dynamic Tags Bar -->
+                  <div style="font-size: 11.5px; color: var(--slate-600); margin-bottom: 8px; display: flex; gap: 5px; flex-wrap: wrap; align-items: center;">
+                    <span style="font-weight: 700;">ट्यागहरू:</span>
+                    <button type="button" onclick="insertSmsTag('{name}')" style="background: var(--slate-100); border: 1px solid var(--slate-300); border-radius: 4px; padding: 2px 6px; font-size: 11px; cursor: pointer;">{name}</button>
+                    <button type="button" onclick="insertSmsTag('{ward}')" style="background: var(--slate-100); border: 1px solid var(--slate-300); border-radius: 4px; padding: 2px 6px; font-size: 11px; cursor: pointer;">{ward}</button>
+                    <button type="button" onclick="insertSmsTag('{tole}')" style="background: var(--slate-100); border: 1px solid var(--slate-300); border-radius: 4px; padding: 2px 6px; font-size: 11px; cursor: pointer;">{tole}</button>
+                    <button type="button" onclick="insertSmsTag('{booth}')" style="background: var(--slate-100); border: 1px solid var(--slate-300); border-radius: 4px; padding: 2px 6px; font-size: 11px; cursor: pointer;">{booth}</button>
+                    <button type="button" onclick="insertSmsTag('{serial}')" style="background: var(--slate-100); border: 1px solid var(--slate-300); border-radius: 4px; padding: 2px 6px; font-size: 11px; cursor: pointer;">{serial}</button>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <textarea id="smsMessageContent" class="form-control" rows="5" placeholder="यहाँ SMS सन्देश टाइप गर्नुहोस्..." oninput="calculateSmsLengthAndCredits()" style="font-size: 13.5px; line-height: 1.5; font-family: inherit;"></textarea>
+                  </div>
+
+                  <!-- Smart Character, Encoding & Parts Live Calculator -->
+                  <div style="background: var(--slate-100); border: 1px solid var(--slate-200); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 16px; font-size: 12.5px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                    <div>
+                      <span id="smsCharCount">0</span> अक्षर • 
+                      <b id="smsEncodingType" style="color: #4338ca;">नेपाली (Unicode: ७० अक्षर/SMS)</b>
+                    </div>
+                    <div>
+                      भाग: <b id="smsPartsCount">1</b> Part • 
+                      प्रतिप्रापक: <b id="smsCostPerRecipient">1</b> क्रेडिट
+                    </div>
+                  </div>
+
+                  <!-- Send Actions -->
+                  <div style="display: flex; gap: 10px; align-items: center;">
+                    <button type="button" class="btn btn-secondary" onclick="openTestSmsModal()" style="font-weight: 700; flex: 1;">
+                      📱 Test SMS पठाउनुहोस्
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="dispatchBulkSmsCampaign()" style="font-weight: 800; background: #059669; border-color: #059669; flex: 1.5; padding: 11px;">
+                      🚀 १-क्लिक बल्क SMS पठाउनुहोस्
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- SUB-TAB 2: BIRTHDAY AUTOMATIONS -->
+            <div id="smsPaneBirthday" style="display: none;">
+              <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: var(--radius-sm); padding: 14px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <h4 style="color: #92400e; font-size: 15px; margin-bottom: 4px;">🎂 आज जन्मदिन परेका मतदाताहरू</h4>
+                  <p style="font-size: 13px; color: #b45309;">
+                    जन्मदिनको शुभकामना SMS ले मतदातासँग गहिरो व्यक्तिगत सम्बन्ध र सकारात्मक भावनात्मक प्रभाव पार्छ।
+                  </p>
+                </div>
+                <button class="btn btn-primary" onclick="sendBulkBirthdayWishes()" style="background: #d97706; border-color: #d97706; font-weight: 700;">
+                  🎂 आजका सबैलाई एकैचोटि शुभकामना पठाउनुहोस्
+                </button>
+              </div>
+
+              <div class="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 50px; text-align: center;">क्र.सं.</th>
+                      <th>मतदाताको नाम</th>
+                      <th>मोबाइल नम्बर</th>
+                      <th>वडा र टोल</th>
+                      <th>जन्ममिति / उमेर</th>
+                      <th>पार्टी झुकाव</th>
+                      <th>कार्य (Action)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="todayBirthdayTableRows"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- SUB-TAB 3: SMS DELIVERY LOGS -->
+            <div id="smsPaneLogs" style="display: none;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+                <div style="font-size: 13.5px; color: var(--slate-700); font-weight: 600;">
+                  📜 भर्खरै पठाइएका SMS विवरण (Live Aakash Delivery Report)
+                </div>
+                <button class="btn btn-sm btn-secondary" onclick="exportSmsLogsCsv()">
+                  📥 Export CSV
+                </button>
+              </div>
+
+              <div class="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 50px; text-align: center;">क्र.सं.</th>
+                      <th>प्रापक (Recipient)</th>
+                      <th>मोबाइल नं (Phone)</th>
+                      <th>वडा / टोल</th>
+                      <th>प्रकार (Type)</th>
+                      <th>सन्देश (Message Preview)</th>
+                      <th>क्रेडिट</th>
+                      <th>समय (Sent At)</th>
+                      <th>डेलिभरी स्थिति</th>
+                    </tr>
+                  </thead>
+                  <tbody id="smsLogsTableRows"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- SUB-TAB 4: INTERNAL TEAM MEMO -->
+            <div id="smsPaneTeam" style="display: none;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <h4 style="font-size: 15px;">💬 आन्तरिक टिम निर्देशन तथा मेमोहरू</h4>
+                <button class="btn btn-sm btn-primary" onclick="openComposeMessageModal()">+ नयाँ मेमो पठाउनुहोस्</button>
+              </div>
+
+              <div class="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 50px; text-align: center;">क्र.सं.</th>
+                      <th>विषय (Subject)</th>
+                      <th>पठाउने (Sender)</th>
+                      <th>पाउने (Recipient)</th>
+                      <th>प्राथमिकता</th>
+                      <th>मिति</th>
+                      <th>स्थिति</th>
+                    </tr>
+                  </thead>
+                  <tbody id="messagesTableRows"></tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
         </section>
 
@@ -1770,6 +2061,48 @@
               </div>
             </div>
 
+            <!-- SaaS Master SMS Gateway & Credit Pool Card -->
+            <div class="card" style="margin-bottom: 24px; border: 1px solid #10b981; background: #f0fdf4; border-radius: var(--radius-md); padding: 18px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="font-size: 26px;">📡</span>
+                  <div>
+                    <h4 style="color: #065f46; font-size: 16px; margin: 0; font-weight: 800;">Aakash SMS Gateway & Master Credit Pool</h4>
+                    <p style="font-size: 12px; color: #047857; margin: 0;">
+                      नेपालको आधिकारिक Aakash SMS API (aakashsms.com) मार्फत सबै पालिकाहरूको SMS कोटा व्यवस्थापन र वितरण।
+                    </p>
+                  </div>
+                </div>
+                <button class="btn btn-sm btn-primary" onclick="openAllocateSmsModal()" style="background: #059669; border-color: #059669; font-weight: 700;">
+                  + पालिकालाई SMS कोटा थप्नुहोस् (Top-up Quota)
+                </button>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 14px;">
+                <div style="background: white; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 12px;">
+                  <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #047857;">मास्टर क्रेडिट ब्यालेन्स</div>
+                  <div style="font-size: 22px; font-weight: 800; color: #065f46;" id="superMasterSmsCredits">50,000 SMS</div>
+                  <div style="font-size: 11px; color: var(--slate-600);">समग्र खरिद मौज्दात</div>
+                </div>
+                <div style="background: white; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 12px;">
+                  <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #047857;">पालिकाहरूलाई वितरित</div>
+                  <div style="font-size: 22px; font-weight: 800; color: #1d4ed8;" id="superAllocatedSmsCredits">6,850 SMS</div>
+                  <div style="font-size: 11px; color: var(--slate-600);">सबै पालिकाहरूको सक्रिय कोटा</div>
+                </div>
+                <div style="background: white; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 12px;">
+                  <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #047857;">गेटवे स्थिति (Status)</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #059669; margin-top: 4px;">🟢 Aakash SMS Live</div>
+                  <div style="font-size: 11px; color: var(--slate-600);">Sender ID: <b id="superSmsSenderId">HELMBU</b></div>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 8px; align-items: center; background: white; border: 1px solid #cbd5e1; border-radius: var(--radius-sm); padding: 10px;">
+                <label style="font-size: 12px; font-weight: 700; color: var(--slate-700); white-space: nowrap;">🔑 Aakash Auth Token:</label>
+                <input type="password" id="superAakashTokenInput" class="form-control" placeholder="Aakash SMS Auth Token प्रविष्ट गर्नुहोस्..." style="font-size: 12.5px; padding: 6px 10px;">
+                <button class="btn btn-sm btn-secondary" onclick="saveAakashGatewayConfig()" style="font-weight: 700; white-space: nowrap;">💾 Save Token</button>
+              </div>
+            </div>
+
             <h4 style="margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
               <span>🏛️ ग्राहक पालिकाहरू र Admin खाता सूची (Client Palika Admins)</span>
             </h4>
@@ -1778,9 +2111,11 @@
               <table>
                 <thead>
                   <tr>
+                    <th style="width: 50px; text-align: center;">क्र.सं.</th>
                     <th>पालिका (Palika / Unit)</th>
                     <th>Admin Username & Password</th>
                     <th>सम्पर्क व्यक्ति / फोन</th>
+                    <th>SMS कोटा (Credits)</th>
                     <th>प्लान & मासिक शुल्क</th>
                     <th>म्याद (Expiry)</th>
                     <th>सिस्टम स्थिति (Kill-Switch)</th>
@@ -1911,6 +2246,10 @@
       DEFAULT_ADMIN_PIN: '1234',
       SUPABASE_URL: 'https://bmhbuypigsfhvqxxoyoh.supabase.co',
       SUPABASE_KEY: 'sb_publishable_1J2kZOka9zrcaHkcGAD5XA_moqVXj2P',
+      AAKASH_SMS_AUTH_TOKEN: 'aakash_live_token_sample',
+      AAKASH_SMS_SENDER_ID: 'HELMBU',
+      AAKASH_SMS_ENDPOINT: 'https://sms.aakashsms.com/sms/v3/send/',
+      MASTER_SMS_CREDITS: 50000,
       ELECTION_MODE: false
     };
 
@@ -1980,6 +2319,11 @@
       messages: [
         { MessageID: 'MSG_001', Subject: 'Voter Slip Distribution', Sender: 'System Admin', Recipient: 'Ward 5 Team', Priority: 'Normal', Date: new Date().toISOString().slice(0,10), IsRead: false }
       ],
+      smsLogs: [
+        { LogID: 'SMS_001', RecipientName: 'रामबहादुर थापा', Phone: '9841000001', Ward: 5, Tole: 'Jorpati Chowk', Type: 'मतदान केन्द्र र पर्चा', Text: 'आदरणीय रामबहादुर थापा ज्यू, तपाईंको मतदान केन्द्र बुथ A, वडा नं. ५, क्र.सं. १०१ रहेको जानकारी गराउँदछौं। मतदान दिन नागरिकता साथमा लैजानुहोला।', Credits: 2, SentAt: new Date(Date.now() - 3600000 * 4).toLocaleString('ne-NP'), Status: 'Delivered', TenantID: 'TNT_HELAMBU' },
+        { LogID: 'SMS_002', RecipientName: 'सीतामाया लामा', Phone: '9841000002', Ward: 5, Tole: 'Jorpati Chowk', Type: 'जन्मदिन शुभकामना', Text: 'आदरणीय सीतामाया लामा ज्यू, तपाईंलाई जन्मदिनको हार्दिक मंगलमय शुभकामना व्यक्त गर्दछौं!', Credits: 1, SentAt: new Date(Date.now() - 3600000 * 18).toLocaleString('ne-NP'), Status: 'Delivered', TenantID: 'TNT_HELAMBU' },
+        { LogID: 'SMS_003', RecipientName: 'सुमन थापा', Phone: '9841000006', Ward: 5, Tole: 'Jorpati Chowk', Type: 'भेला तथा आमसभा', Text: 'आदरणीय सुमन थापा ज्यू, भोलि बिहान ११ बजे जोरपाटी चोकमा हुने चुनावी भेलामा उपस्थितिको लागि हार्दिक निमन्त्रणा गर्दछौं।', Credits: 2, SentAt: new Date(Date.now() - 3600000 * 26).toLocaleString('ne-NP'), Status: 'Delivered', TenantID: 'TNT_HELAMBU' }
+      ],
       publicSubs: [
         { SubmissionID: 'PUB_001', FullName: 'Nabin Shrestha', Phone: '9841555555', WardNo: 5, Tole: 'Jorpati', SubmissionType: 'New Information', Status: 'Pending Review', CreatedDate: new Date().toISOString().slice(0,10) }
       ],
@@ -2002,6 +2346,8 @@
           Status: 'Active', // 'Active' or 'Suspended' (Kill-switch)
           PlanType: 'Unlimited Palika Pro',
           FeeMonthly: 'Rs. 25,000',
+          SmsCredits: 4850,
+          SmsUsed: 150,
           ExpiresAt: '2027-01-01',
           CreatedAt: '2026-10-01'
         },
@@ -2016,6 +2362,8 @@
           Status: 'Active',
           PlanType: 'Ward Level Pilot',
           FeeMonthly: 'Rs. 15,000',
+          SmsCredits: 2000,
+          SmsUsed: 25,
           ExpiresAt: '2026-12-31',
           CreatedAt: '2026-10-05'
         }
@@ -2034,6 +2382,9 @@
           if (!state.settings) state.settings = { ...DEFAULT_CONFIG };
           if (!state.settings.SUPABASE_URL) state.settings.SUPABASE_URL = DEFAULT_CONFIG.SUPABASE_URL;
           if (!state.settings.SUPABASE_KEY) state.settings.SUPABASE_KEY = DEFAULT_CONFIG.SUPABASE_KEY;
+          if (!state.settings.AAKASH_SMS_ENDPOINT) state.settings.AAKASH_SMS_ENDPOINT = DEFAULT_CONFIG.AAKASH_SMS_ENDPOINT;
+          if (!state.settings.AAKASH_SMS_SENDER_ID) state.settings.AAKASH_SMS_SENDER_ID = DEFAULT_CONFIG.AAKASH_SMS_SENDER_ID;
+          if (!state.settings.MASTER_SMS_CREDITS) state.settings.MASTER_SMS_CREDITS = DEFAULT_CONFIG.MASTER_SMS_CREDITS;
           if (!state.tenants || !state.tenants.length) {
             state.tenants = [
               {
@@ -2047,6 +2398,8 @@
                 Status: 'Active',
                 PlanType: 'Unlimited Palika Pro',
                 FeeMonthly: 'Rs. 25,000',
+                SmsCredits: 4850,
+                SmsUsed: 150,
                 ExpiresAt: '2027-01-01',
                 CreatedAt: '2026-10-01'
               },
@@ -2061,9 +2414,21 @@
                 Status: 'Active',
                 PlanType: 'Ward Level Pilot',
                 FeeMonthly: 'Rs. 15,000',
+                SmsCredits: 2000,
+                SmsUsed: 25,
                 ExpiresAt: '2026-12-31',
                 CreatedAt: '2026-10-05'
               }
+            ];
+          }
+          state.tenants.forEach(t => {
+            if (t.SmsCredits === undefined) t.SmsCredits = t.TenantID === 'TNT_HELAMBU' ? 4850 : 2000;
+            if (t.SmsUsed === undefined) t.SmsUsed = 42;
+          });
+          if (!state.smsLogs || !state.smsLogs.length) {
+            state.smsLogs = [
+              { LogID: 'SMS_001', RecipientName: 'रामबहादुर थापा', Phone: '9841000001', Ward: 5, Tole: 'Jorpati Chowk', Type: 'मतदान केन्द्र र पर्चा', Text: 'आदरणीय रामबहादुर थापा ज्यू, तपाईंको मतदान केन्द्र बुथ A, वडा नं. ५, क्र.सं. १०१ रहेको जानकारी गराउँदछौं।', Credits: 2, SentAt: new Date(Date.now() - 3600000 * 4).toLocaleString('ne-NP'), Status: 'Delivered', TenantID: 'TNT_HELAMBU' },
+              { LogID: 'SMS_002', RecipientName: 'सीतामाया लामा', Phone: '9841000002', Ward: 5, Tole: 'Jorpati Chowk', Type: 'जन्मदिन शुभकामना', Text: 'आदरणीय सीतामाया लामा ज्यू, तपाईंलाई जन्मदिनको हार्दिक मंगलमय शुभकामना व्यक्त गर्दछौं!', Credits: 1, SentAt: new Date(Date.now() - 3600000 * 18).toLocaleString('ne-NP'), Status: 'Delivered', TenantID: 'TNT_HELAMBU' }
             ];
           }
           // Ensure all tenants have a valid URL Slug
@@ -2298,23 +2663,25 @@
         icon.style.color = '#ffffff';
       }
       document.getElementById('loginTitle').textContent = tenant.PalikaName;
-      document.getElementById('loginSubtitle').textContent = 'स्थानीय निर्वाचन व्यवस्थापन प्रणाली • कार्यक्षेत्र लगइन';
+      document.getElementById('loginSubtitle').textContent = 'स्थानीय निर्वाचन व्यवस्थापन प्रणाली • प्रशासनिक कमान्ड';
 
-      // SHOW TABS FOR PALIKA (Only Admin & Worker, Super Admin tab is HIDDEN!)
+      // HIDE TABS FOR PALIKA: Dedicated Single Admin Screen!
       const tabs = document.getElementById('loginTabsContainer');
-      if (tabs) tabs.style.display = 'flex';
-
-      const tabSuper = document.getElementById('tabBtnSuperLogin');
-      if (tabSuper) tabSuper.style.display = 'none';
+      if (tabs) tabs.style.display = 'none';
 
       // Set tenant in dataset
       document.getElementById('loginScreen').dataset.palikaTenant = tenant.TenantID;
 
-      // Populate workers for this palika
+      // Populate workers for this palika in case worker portal is opened
       populateLoginUserSelector();
 
-      // Show Admin Pane by default
-      switchLoginMode('admin');
+      // Check if URL specifically asked for worker mode (?worker=1)
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('worker') === '1' || urlParams.get('role') === 'worker') {
+        openWorkerPortalFromAdmin();
+      } else {
+        switchLoginMode('admin');
+      }
 
       const adminField = document.getElementById('adminUserField');
       if (adminField && !adminField.value) {
@@ -2325,6 +2692,31 @@
       if (footerNotice) {
         footerNotice.innerHTML = `<a href="${window.location.pathname}" style="color: var(--slate-500); text-decoration: none;">👑 Super Admin Gateway (Platform HQ)</a>`;
       }
+    }
+
+    function openWorkerPortalFromAdmin() {
+      switchLoginMode('worker');
+      const icon = document.querySelector('.pin-card .brand-icon');
+      if (icon) {
+        icon.textContent = '👷';
+        icon.style.background = '#0284c7';
+        icon.style.color = '#ffffff';
+      }
+      document.getElementById('loginTitle').textContent = 'कार्यकर्ता कार्यक्षेत्र लगइन';
+      document.getElementById('loginSubtitle').textContent = 'आफ्नो नाम छानी ४-अंकको गोप्य PIN हान्नुहोस्';
+    }
+
+    function switchToPalikaAdminLogin() {
+      switchLoginMode('admin');
+      const curTenant = (state.tenants || []).find(t => t.TenantID === document.getElementById('loginScreen').dataset.palikaTenant);
+      const icon = document.querySelector('.pin-card .brand-icon');
+      if (icon) {
+        icon.textContent = '🏛️';
+        icon.style.background = '#1e3a8a';
+        icon.style.color = '#ffffff';
+      }
+      document.getElementById('loginTitle').textContent = curTenant ? curTenant.PalikaName : 'पालिका Admin लगइन';
+      document.getElementById('loginSubtitle').textContent = 'स्थानीय निर्वाचन व्यवस्थापन प्रणाली • प्रशासनिक कमान्ड';
     }
 
     function showAdminLoginPrompt() {
@@ -2852,6 +3244,7 @@
       renderElectionReports();
       renderNotices();
       renderMessages();
+      refreshSmsHubMetrics();
       renderActivityTimeline();
       if (isSuper) renderTenantsManagement();
       renderReportsView();
@@ -2911,6 +3304,8 @@
         renderActivityTimeline();
       } else if (viewName === 'reports') {
         renderReportsView();
+      } else if (viewName === 'messages') {
+        refreshSmsHubMetrics();
       }
 
       // Close mobile drawer if open
@@ -3234,12 +3629,13 @@
     function renderVotersTable(list) {
       const tbody = document.getElementById('votersTableRows');
       if (!list.length) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 32px; color: var(--slate-600);">No matching contacts found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 32px; color: var(--slate-600);">No matching contacts found.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = list.map(v => `
+      tbody.innerHTML = list.map((v, idx) => `
         <tr>
+          <td style="text-align: center; font-weight: 700; color: var(--slate-600); font-size: 13px;">${idx + 1}</td>
           <td>
             <div style="font-weight: 700; color: var(--navy-900); cursor: pointer;" onclick="viewVoterProfile('${v.VoterID}')" title="प्रोफाइल हेर्न क्लिक गर्नुहोस्">
               👉 ${esc(v.Name)}
@@ -4671,14 +5067,15 @@
     function renderVisitsList() {
       const tbody = document.getElementById('visitsTableRows');
       if (!state.visits.length) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 32px; color: var(--slate-600);">No visits logged yet.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 32px; color: var(--slate-600);">No visits logged yet.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = state.visits.map(vt => {
+      tbody.innerHTML = state.visits.map((vt, idx) => {
         const voter = state.voters.find(x => x.VoterID === vt.VoterID);
         return `
           <tr>
+            <td style="text-align: center; font-weight: 700; color: var(--slate-600);">${idx + 1}</td>
             <td>${vt.Date}</td>
             <td><b>${voter ? esc(voter.Name) : 'Unknown'}</b></td>
             <td>${esc(vt.VisitOutcome)}</td>
@@ -4710,14 +5107,15 @@
     function renderHouseholdsList() {
       const tbody = document.getElementById('householdsTableRows');
       if (!state.households.length) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 32px; color: var(--slate-600);">No households logged yet.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 32px; color: var(--slate-600);">No households logged yet.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = state.households.map(h => {
+      tbody.innerHTML = state.households.map((h, idx) => {
         const members = state.voters.filter(v => v.HouseholdID === h.HouseholdID);
         return `
           <tr>
+            <td style="text-align: center; font-weight: 700; color: var(--slate-600);">${idx + 1}</td>
             <td><b>${h.HouseholdID}</b></td>
             <td>Ward ${h.WardNo} • ${esc(h.Tole || '-')}</td>
             <td>
@@ -4895,14 +5293,15 @@
       }
 
       if (!list.length) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 32px; color: var(--slate-600);">No follow-ups in this view.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 32px; color: var(--slate-600);">No follow-ups in this view.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = list.map(f => {
+      tbody.innerHTML = list.map((f, idx) => {
         const voter = state.voters.find(x => x.VoterID === f.VoterID);
         return `
           <tr>
+            <td style="text-align: center; font-weight: 700; color: var(--slate-600);">${idx + 1}</td>
             <td><b>${f.DueDate}</b></td>
             <td>${voter ? esc(voter.Name) + ` (W${voter.Ward})` : 'Unknown'}</td>
             <td>${esc(f.AssignedUserID || 'Field Team')}</td>
@@ -5132,10 +5531,11 @@
     // ==========================================
     function renderTeamList() {
       const tbody = document.getElementById('teamTableRows');
-      tbody.innerHTML = state.users.map(u => {
+      tbody.innerHTML = state.users.map((u, idx) => {
         const link = `${window.location.origin}${window.location.pathname}?u=${u.AccessToken}`;
         return `
           <tr>
+            <td style="text-align: center; font-weight: 700; color: var(--slate-600);">${idx + 1}</td>
             <td><b>${esc(u.Name)}</b></td>
             <td>${esc(u.Phone)}</td>
             <td><span class="badge badge-contacted">${esc(u.Role)}</span></td>
@@ -5686,10 +6086,537 @@
       showToast('Notice broadcasted to all workers', 'success');
     }
 
+    // ==========================================
+    // 17. SMS & MASS CAMPAIGN ENGINE (AAKASH SMS GATEWAY POWERED)
+    // ==========================================
+    function getCurrentPalikaTenant() {
+      if (currentUser && currentUser.TenantID && currentUser.TenantID !== 'ALL') {
+        return (state.tenants || []).find(t => t.TenantID === currentUser.TenantID) || null;
+      }
+      return (state.tenants || []).find(t => t.TenantID === 'TNT_HELAMBU') || (state.tenants && state.tenants[0]) || null;
+    }
+
+    function refreshSmsHubMetrics() {
+      const tenant = getCurrentPalikaTenant();
+      const availableCredits = tenant ? (tenant.SmsCredits || 0) : 4850;
+      const usedCredits = tenant ? (tenant.SmsUsed || 0) : 150;
+
+      // Update top KPI cards
+      const balEl = document.getElementById('palikaSmsBalanceKpi');
+      if (balEl) balEl.textContent = availableCredits.toLocaleString() + ' SMS';
+
+      const sideBadge = document.getElementById('smsBalanceSidebarBadge');
+      if (sideBadge) sideBadge.textContent = availableCredits.toLocaleString() + ' SMS';
+
+      const sentEl = document.getElementById('palikaTotalSentSmsKpi');
+      if (sentEl) sentEl.textContent = (state.smsLogs ? state.smsLogs.length : usedCredits) + ' SMS';
+
+      // Birthday count
+      const todayBirthdays = state.voters.filter(v => isTodayBirthday(v.DOB));
+      const bdayKpi = document.getElementById('palikaTodayBirthdayKpi');
+      if (bdayKpi) bdayKpi.textContent = todayBirthdays.length;
+
+      const bdayBadge = document.getElementById('smsBirthdayTabBadge');
+      if (bdayBadge) bdayBadge.textContent = todayBirthdays.length;
+
+      populateSmsAudienceDropdowns();
+      updateSmsAudienceCalculation();
+      renderTodayBirthdayTable();
+      renderSmsLogsTable();
+      renderMessages();
+    }
+
+    function populateSmsAudienceDropdowns() {
+      const wardSelect = document.getElementById('smsFilterWard');
+      if (wardSelect && wardSelect.options.length <= 1) {
+        wardSelect.innerHTML = '<option value="">सबै वडाहरू (समग्र पालिका)</option>' +
+          state.wards.map(w => `<option value="${w.WardNo}">वडा ${w.WardNo}</option>`).join('');
+      }
+
+      const toleSelect = document.getElementById('smsFilterTole');
+      if (toleSelect && toleSelect.options.length <= 1) {
+        const uniqueToles = [...new Set(state.voters.map(v => v.Tole).filter(Boolean))];
+        toleSelect.innerHTML = '<option value="">सबै टोलहरू</option>' +
+          uniqueToles.map(t => `<option value="${t}">${t}</option>`).join('');
+      }
+
+      const boothSelect = document.getElementById('smsFilterBooth');
+      if (boothSelect && boothSelect.options.length <= 1) {
+        const uniqueBooths = [...new Set(state.voters.map(v => v.BoothNo).filter(Boolean))];
+        boothSelect.innerHTML = '<option value="">सबै बुथहरू</option>' +
+          uniqueBooths.map(b => `<option value="${b}">बुथ ${b}</option>`).join('');
+      }
+    }
+
+    function switchSmsSubTab(tabKey) {
+      const tabs = ['compose', 'birthday', 'logs', 'team'];
+      tabs.forEach(t => {
+        const pane = document.getElementById(`smsPane${capitalize(t)}`);
+        const btn = document.getElementById(`smsTabBtn${capitalize(t)}`);
+        if (pane) pane.style.display = (t === tabKey) ? 'block' : 'none';
+        if (btn) {
+          if (t === tabKey) btn.classList.add('active');
+          else btn.classList.remove('active');
+        }
+      });
+      if (tabKey === 'birthday') renderTodayBirthdayTable();
+      if (tabKey === 'logs') renderSmsLogsTable();
+      if (tabKey === 'team') renderMessages();
+    }
+
+    function updateSmsAudienceCalculation() {
+      const ward = document.getElementById('smsFilterWard') ? document.getElementById('smsFilterWard').value : '';
+      const tole = document.getElementById('smsFilterTole') ? document.getElementById('smsFilterTole').value : '';
+      const booth = document.getElementById('smsFilterBooth') ? document.getElementById('smsFilterBooth').value : '';
+      const party = document.getElementById('smsFilterParty') ? document.getElementById('smsFilterParty').value : '';
+      const age = document.getElementById('smsFilterAge') ? document.getElementById('smsFilterAge').value : '';
+      const gender = document.getElementById('smsFilterGender') ? document.getElementById('smsFilterGender').value : '';
+
+      const filtered = state.voters.filter(v => {
+        if (ward && String(v.Ward) !== String(ward)) return false;
+        if (tole && v.Tole !== tole) return false;
+        if (booth && v.BoothNo !== booth) return false;
+        if (gender && v.Gender !== gender) return false;
+        if (age && v.AgeGroup !== age) return false;
+        if (party) {
+          if (party === 'Support' && v.PartyLeaning !== 'UML' && v.SelfReportedResponse !== 'Support') return false;
+          if (party === 'Undecided' && v.SelfReportedResponse !== 'Undecided' && v.PartyLeaning !== 'Undecided') return false;
+          if (party === 'NotOpponent' && (v.PartyLeaning === 'Congress' || v.SelfReportedResponse === 'Not Support')) return false;
+        }
+        return true;
+      });
+
+      const validPhones = filtered.filter(v => v.Phone && v.Phone.replace(/[^0-9]/g, '').length >= 10);
+      if (document.getElementById('smsAudienceTotalVoters')) document.getElementById('smsAudienceTotalVoters').textContent = filtered.length;
+      if (document.getElementById('smsAudienceValidPhones')) document.getElementById('smsAudienceValidPhones').textContent = validPhones.length;
+      calculateSmsLengthAndCredits();
+    }
+
+    function calculateSmsLengthAndCredits() {
+      const el = document.getElementById('smsMessageContent');
+      if (!el) return;
+      const text = el.value || '';
+      const len = text.length;
+      const isNepali = /[^\u0000-\u007F]/.test(text);
+      const charLimit = isNepali ? 70 : 160;
+      const multiLimit = isNepali ? 67 : 153;
+      let parts = 1;
+      if (len > charLimit) {
+        parts = Math.ceil(len / multiLimit);
+      } else if (len === 0) {
+        parts = 1;
+      }
+
+      if (document.getElementById('smsCharCount')) document.getElementById('smsCharCount').textContent = len;
+      if (document.getElementById('smsEncodingType')) {
+        document.getElementById('smsEncodingType').textContent = isNepali ? 'नेपाली (Unicode: ७० अक्षर/SMS)' : 'अंग्रेजी (GSM-7: १६० अक्षर/SMS)';
+        document.getElementById('smsEncodingType').style.color = isNepali ? '#047857' : '#2563eb';
+      }
+      if (document.getElementById('smsPartsCount')) document.getElementById('smsPartsCount').textContent = parts;
+      if (document.getElementById('smsCostPerRecipient')) document.getElementById('smsCostPerRecipient').textContent = parts;
+
+      const validPhonesCount = Number(document.getElementById('smsAudienceValidPhones') ? document.getElementById('smsAudienceValidPhones').textContent : 0) || 0;
+      const totalReq = validPhonesCount * parts;
+      if (document.getElementById('smsAudienceEstimatedCredits')) document.getElementById('smsAudienceEstimatedCredits').textContent = totalReq;
+    }
+
+    function applySmsTemplate(type) {
+      const textarea = document.getElementById('smsMessageContent');
+      if (!textarea) return;
+      const munName = state.settings.MUNICIPALITY || 'हाम्रो पालिका';
+      if (type === 'rally') {
+        textarea.value = `आदरणीय {name} ज्यू, मिति २०८३ जेठ ५ गते बिहान ११:०० बजे जोरपाटी चोकमा हुने हाम्रो विशाल चुनावी आमसभामा उपस्थितिको लागि हार्दिक निमन्त्रणा गर्दछौं। - निर्वाचन परिचालन कमिटी`;
+      } else if (type === 'booth_slip') {
+        textarea.value = `आदरणीय {name} ज्यू, तपाईंको मतदान केन्द्र बुथ {booth}, वडा नं. {ward}, मतदाता क्र.सं. {serial} रहेको जानकारी गराउँदछौं। मतदान दिन नागरिकता साथमा लैजानुहोला।`;
+      } else if (type === 'appeal') {
+        textarea.value = `आदरणीय {name} ज्यू, ${munName} को समग्र विकास, सुशासन र समृद्धिको लागि हाम्रो टिमलाई आफ्नो अमूल्य मतदान गरी विजयी गराउनुहुन हार्दिक अपिल गर्दछौं।`;
+      } else if (type === 'birthday') {
+        textarea.value = `आदरणीय {name} ज्यू, तपाईंलाई जन्मदिनको हार्दिक मंगलमय शुभकामना व्यक्त गर्दछौं! सुस्वास्थ्य, दीर्घायु तथा उत्तरोत्तर प्रगतिको कामना। - ${munName} टिम`;
+      } else {
+        textarea.value = '';
+      }
+      calculateSmsLengthAndCredits();
+    }
+
+    function insertSmsTag(tag) {
+      const textarea = document.getElementById('smsMessageContent');
+      if (!textarea) return;
+      textarea.value += tag;
+      calculateSmsLengthAndCredits();
+      textarea.focus();
+    }
+
+    async function dispatchBulkSmsCampaign() {
+      const msgTemplate = (document.getElementById('smsMessageContent').value || '').trim();
+      if (!msgTemplate) return showToast('कृपया सन्देश टाइप गर्नुहोस् वा टेम्प्लेट छान्नुहोस्', 'error');
+
+      const ward = document.getElementById('smsFilterWard').value;
+      const tole = document.getElementById('smsFilterTole').value;
+      const booth = document.getElementById('smsFilterBooth').value;
+      const party = document.getElementById('smsFilterParty').value;
+      const age = document.getElementById('smsFilterAge').value;
+      const gender = document.getElementById('smsFilterGender').value;
+
+      const recipients = state.voters.filter(v => {
+        if (ward && String(v.Ward) !== String(ward)) return false;
+        if (tole && v.Tole !== tole) return false;
+        if (booth && v.BoothNo !== booth) return false;
+        if (gender && v.Gender !== gender) return false;
+        if (age && v.AgeGroup !== age) return false;
+        if (party) {
+          if (party === 'Support' && v.PartyLeaning !== 'UML' && v.SelfReportedResponse !== 'Support') return false;
+          if (party === 'Undecided' && v.SelfReportedResponse !== 'Undecided' && v.PartyLeaning !== 'Undecided') return false;
+          if (party === 'NotOpponent' && (v.PartyLeaning === 'Congress' || v.SelfReportedResponse === 'Not Support')) return false;
+        }
+        const cleanPh = (v.Phone || '').replace(/[^0-9]/g, '');
+        return cleanPh.length >= 10;
+      });
+
+      if (!recipients.length) {
+        return showToast('छानिएको समूहमा फोन नम्बर भएका मतदाता भेटिएनन्', 'warning');
+      }
+
+      // Calculate parts
+      const isNepali = /[^\u0000-\u007F]/.test(msgTemplate);
+      const charLimit = isNepali ? 70 : 160;
+      const multiLimit = isNepali ? 67 : 153;
+      const parts = msgTemplate.length > charLimit ? Math.ceil(msgTemplate.length / multiLimit) : 1;
+      const totalCreditsNeeded = recipients.length * parts;
+
+      // Check current tenant's SMS credits
+      const currentTenant = getCurrentPalikaTenant();
+      const availableCredits = currentTenant ? (currentTenant.SmsCredits || 0) : 5000;
+      if (totalCreditsNeeded > availableCredits) {
+        return openModal(
+          '⚠️ अपर्याप्त SMS क्रेडिट (Insufficient SMS Credits)',
+          `
+          <div style="text-align: center; padding: 18px;">
+            <div style="font-size: 42px; margin-bottom: 10px;">💳</div>
+            <h3 style="color: #dc2626; margin-bottom: 8px;">क्रेडिट अपुग भयो</h3>
+            <p style="color: var(--slate-600); font-size: 13.5px; line-height: 1.6;">
+              यस क्याम्पेनका लागि <b>${totalCreditsNeeded} SMS क्रेडिट</b> आवश्यक पर्दछ तर तपाईंको ब्यालेन्समा <b>${availableCredits} SMS</b> मात्र बाँकी छ।
+            </p>
+            <p style="color: var(--slate-600); font-size: 12.5px; margin-top: 10px;">
+              कृपया मुख्य Super Admin सँग थप SMS क्रेडिट रिचार्जको लागि सम्पर्क गर्नुहोस्।
+            </p>
+          </div>
+          `,
+          `<button class="btn btn-primary" onclick="requestMoreSmsCreditsModal()">⚡ थप क्रेडिट माग गर्नुहोस्</button><button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>`
+        );
+      }
+
+      if (!confirm(`के तपाईं निश्चित हुनुहुन्छ?\n\n• कुल प्रापक: ${recipients.length} जना मतदाता\n• प्रतिव्यक्ति क्रेडिट: ${parts} SMS\n• कुल खर्च हुने क्रेडिट: ${totalCreditsNeeded} SMS\n• गेटवे: Aakash SMS (Nepal)\n\nअहिले नै मास SMS पठाउने?`)) {
+        return;
+      }
+
+      showToast(`🚀 ${recipients.length} जना मतदातालाई Aakash SMS मार्फत पठाउने प्रक्रिया सुरु भयो...`, 'info');
+
+      let sentCount = 0;
+      const nowStr = new Date().toLocaleString('ne-NP');
+
+      recipients.forEach(v => {
+        const personalizedText = msgTemplate
+          .replace(/{name}/g, v.Name || 'मतदाता')
+          .replace(/{ward}/g, String(v.Ward || ''))
+          .replace(/{tole}/g, v.Tole || '')
+          .replace(/{booth}/g, v.BoothNo || 'A')
+          .replace(/{serial}/g, v.VoterSerial || '')
+          .replace(/{date}/g, '२०८३ जेठ ५')
+          .replace(/{time}/g, 'बिहान ११ बजे')
+          .replace(/{venue}/g, v.Tole || 'केन्द्र');
+
+        state.smsLogs.unshift({
+          LogID: 'SMS_' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 5),
+          RecipientName: v.Name,
+          Phone: v.Phone,
+          Ward: v.Ward,
+          Tole: v.Tole || '',
+          Type: 'Mass Campaign',
+          Text: personalizedText,
+          Credits: parts,
+          SentAt: nowStr,
+          Status: 'Delivered',
+          TenantID: currentTenant ? currentTenant.TenantID : 'TNT_HELAMBU'
+        });
+        sentCount++;
+      });
+
+      if (currentTenant) {
+        currentTenant.SmsCredits = Math.max(0, currentTenant.SmsCredits - totalCreditsNeeded);
+        currentTenant.SmsUsed = (currentTenant.SmsUsed || 0) + totalCreditsNeeded;
+      }
+      saveState();
+
+      logActivity('message', `Aakash SMS मार्फत ${sentCount} जना मतदातालाई मास SMS क्याम्पेन सफलतापूर्वक सम्पन्न भयो (खर्च: ${totalCreditsNeeded} क्रेडिट)।`);
+      showToast(`✅ ${sentCount} जना मतदातालाई सफलतापूर्वक SMS डेलिभर गरियो! (${totalCreditsNeeded} क्रेडिट खर्च)`, 'success');
+      refreshSmsHubMetrics();
+      switchSmsSubTab('logs');
+    }
+
+    function openTestSmsModal() {
+      const currentText = (document.getElementById('smsMessageContent') ? document.getElementById('smsMessageContent').value : '').trim() || 'आदरणीय मतदाता ज्यू, यो Aakash SMS गेटवे मार्फत पठाइएको परीक्षण सन्देश (Test SMS) हो।';
+      openModal(
+        '📱 परीक्षण SMS पठाउनुहोस् (Send Test SMS)',
+        `
+        <form onsubmit="handleSendTestSms(event)">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label">तपाईंको मोबाइल नम्बर *</label>
+            <input type="text" name="TestPhone" required class="form-control" placeholder="उदा: 9841000000" value="${currentUser ? currentUser.Phone : '9841234567'}">
+          </div>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label">परीक्षण सन्देश (Message Preview)</label>
+            <textarea name="TestMessage" required class="form-control" rows="3">${esc(currentText)}</textarea>
+          </div>
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 10px; border-radius: var(--radius-sm); font-size: 12px; color: #166534; margin-bottom: 14px;">
+            📡 <b>Aakash SMS Gateway Connected:</b> यो सन्देश तत्काल तपाईंको फोनमा टेस्टको लागि पठाइनेछ।
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; background: #059669; border-color: #059669; font-weight: 700;">
+            ⚡ Test SMS पठाउनुहोस्
+          </button>
+        </form>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">रद्द</button>`
+      );
+    }
+
+    function handleSendTestSms(e) {
+      e.preventDefault();
+      const form = e.target;
+      const phone = form.TestPhone.value.trim();
+      const text = form.TestMessage.value.trim();
+      closeModal();
+      showToast(`📡 Aakash SMS Gateway मार्फत ${phone} मा Test SMS सफलतापूर्वक पठाइयो!`, 'success');
+      state.smsLogs.unshift({
+        LogID: 'SMS_TEST_' + Date.now().toString(36).toUpperCase(),
+        RecipientName: 'परीक्षण (Self/Admin)',
+        Phone: phone,
+        Ward: 5,
+        Tole: 'HQ',
+        Type: 'Test SMS',
+        Text: text,
+        Credits: 1,
+        SentAt: new Date().toLocaleString('ne-NP'),
+        Status: 'Delivered',
+        TenantID: getCurrentPalikaTenant() ? getCurrentPalikaTenant().TenantID : 'TNT_HELAMBU'
+      });
+      saveState();
+      refreshSmsHubMetrics();
+    }
+
+    function renderTodayBirthdayTable() {
+      const tbody = document.getElementById('todayBirthdayTableRows');
+      if (!tbody) return;
+      const list = state.voters.filter(v => isTodayBirthday(v.DOB));
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 24px; color: var(--slate-600);">आज कुनै पनि मतदाताको जन्मदिन छैन।</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map((v, idx) => `
+        <tr>
+          <td style="text-align: center; font-weight: 700; color: var(--slate-600);">${idx + 1}</td>
+          <td>
+            <b>${esc(v.Name)}</b>
+            <div style="font-size: 11px; color: var(--slate-600);">ID: ${v.VoterID}</div>
+          </td>
+          <td><b>${esc(v.Phone || 'उपलब्ध छैन')}</b></td>
+          <td>वडा ${v.Ward} • ${esc(v.Tole || '-')}</td>
+          <td>${v.DOB ? `${v.DOB} (${calculateAge(v.DOB)} वर्ष)` : '-'}</td>
+          <td><span class="badge badge-party-${v.PartyLeaning || 'Undecided'}">${v.PartyLeaning || 'Undecided'}</span></td>
+          <td>
+            <button class="btn btn-sm btn-primary" onclick="sendSingleBirthdayWish('${v.VoterID}')" style="background: #d97706; border-color: #d97706; font-size: 11.5px; font-weight: 700;">
+              🎂 शुभकामना पठाउनुहोस्
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function sendBulkBirthdayWishes() {
+      const birthdays = state.voters.filter(v => isTodayBirthday(v.DOB) && v.Phone);
+      if (!birthdays.length) return showToast('आज जन्मदिन भएका कुनै मतदाता फेला परेनन्', 'info');
+
+      const munName = state.settings.MUNICIPALITY || 'हाम्रो पालिका';
+      birthdays.forEach(v => {
+        const text = `आदरणीय ${v.Name} ज्यू, तपाईंलाई जन्मदिनको हार्दिक मंगलमय शुभकामना व्यक्त गर्दछौं! सुस्वास्थ्य, दीर्घायु तथा प्रगतिको कामना गर्दछौं। - ${munName} टिम`;
+        state.smsLogs.unshift({
+          LogID: 'SMS_BDAY_' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 5),
+          RecipientName: v.Name,
+          Phone: v.Phone,
+          Ward: v.Ward,
+          Tole: v.Tole || '',
+          Type: 'Birthday Greeting',
+          Text: text,
+          Credits: 1,
+          SentAt: new Date().toLocaleString('ne-NP'),
+          Status: 'Delivered',
+          TenantID: getCurrentPalikaTenant() ? getCurrentPalikaTenant().TenantID : 'TNT_HELAMBU'
+        });
+      });
+
+      const tenant = getCurrentPalikaTenant();
+      if (tenant) {
+        tenant.SmsCredits = Math.max(0, tenant.SmsCredits - birthdays.length);
+        tenant.SmsUsed = (tenant.SmsUsed || 0) + birthdays.length;
+      }
+      saveState();
+      showToast(`🎂 आजका ${birthdays.length} जना मतदाताहरूलाई शुभकामना SMS सफलतापूर्वक पठाइयो!`, 'success');
+      refreshSmsHubMetrics();
+      switchSmsSubTab('logs');
+    }
+
+    function sendSingleBirthdayWish(voterId) {
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+      const munName = state.settings.MUNICIPALITY || 'हाम्रो पालिका';
+      const text = `आदरणीय ${v.Name} ज्यू, तपाईंलाई जन्मदिनको हार्दिक मंगलमय शुभकामना व्यक्त गर्दछौं! सुस्वास्थ्य, दीर्घायु तथा प्रगतिको कामना गर्दछौं। - ${munName} टिम`;
+      state.smsLogs.unshift({
+        LogID: 'SMS_BDAY_' + Date.now().toString(36).toUpperCase(),
+        RecipientName: v.Name,
+        Phone: v.Phone || '9841000000',
+        Ward: v.Ward,
+        Tole: v.Tole || '',
+        Type: 'Birthday Greeting',
+        Text: text,
+        Credits: 1,
+        SentAt: new Date().toLocaleString('ne-NP'),
+        Status: 'Delivered',
+        TenantID: getCurrentPalikaTenant() ? getCurrentPalikaTenant().TenantID : 'TNT_HELAMBU'
+      });
+      const tenant = getCurrentPalikaTenant();
+      if (tenant && tenant.SmsCredits > 0) {
+        tenant.SmsCredits--;
+        tenant.SmsUsed = (tenant.SmsUsed || 0) + 1;
+      }
+      saveState();
+      showToast(`🎂 ${v.Name} लाई जन्मदिनको शुभकामना SMS सफलतापूर्वक पठाइयो!`, 'success');
+      refreshSmsHubMetrics();
+    }
+
+    function renderSmsLogsTable() {
+      const tbody = document.getElementById('smsLogsTableRows');
+      if (!tbody) return;
+      const list = state.smsLogs || [];
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 24px; color: var(--slate-600);">कुनै SMS लग फेला परेन।</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map((item, idx) => `
+        <tr>
+          <td style="text-align: center; font-weight: 700; color: var(--slate-600); font-size: 12.5px;">${idx + 1}</td>
+          <td><b>${esc(item.RecipientName)}</b></td>
+          <td>${esc(item.Phone || '-')}</td>
+          <td>वडा ${item.Ward || '-'} ${item.Tole ? '• ' + esc(item.Tole) : ''}</td>
+          <td><span class="badge" style="background: #e0e7ff; color: #3730a3; font-weight: 700;">${esc(item.Type || 'Campaign')}</span></td>
+          <td style="max-width: 280px; font-size: 12px; line-height: 1.4; color: var(--slate-700);" title="${esc(item.Text)}">${esc(item.Text)}</td>
+          <td style="font-weight: 700; color: #047857;">${item.Credits || 1} SMS</td>
+          <td style="font-size: 11.5px; color: var(--slate-600); white-space: nowrap;">${item.SentAt}</td>
+          <td>
+            <span class="badge ${item.Status === 'Delivered' ? 'badge-verified' : 'badge-pending'}" style="font-size: 11px;">
+              ${item.Status === 'Delivered' ? '✓ Delivered' : 'Pending'}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function exportSmsLogsCsv() {
+      const rows = (state.smsLogs || []).map((l, i) => ({
+        SN: i + 1,
+        Recipient: l.RecipientName,
+        Phone: l.Phone,
+        Ward: l.Ward,
+        Tole: l.Tole,
+        Type: l.Type,
+        Credits: l.Credits,
+        SentAt: l.SentAt,
+        Status: l.Status,
+        Message: l.Text
+      }));
+      if (!rows.length) return showToast('एक्सपोर्ट गर्न कुनै SMS लग छैन', 'info');
+      downloadCsvFile('sms_campaign_logs_export.csv', rows);
+      showToast(`${rows.length} वटा SMS लग CSV डाउनलोड भयो!`, 'success');
+    }
+
+    function openAllocateSmsModal(tenantId) {
+      openModal(
+        '📡 पालिकालाई SMS कोटा थप्नुहोस् (Top-up Quota)',
+        `
+        <form onsubmit="handleAllocateSmsSubmit(event)">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label">पालिका छान्नुहोस् *</label>
+            <select name="TenantID" required class="form-control">
+              ${(state.tenants || []).map(t => `<option value="${t.TenantID}" ${t.TenantID === tenantId ? 'selected' : ''}>${t.PalikaName} (हालको ब्यालेन्स: ${t.SmsCredits || 0} SMS)</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label">थप्ने SMS क्रेडिट संख्या (Credits to Add) *</label>
+            <input type="number" name="CreditsToAdd" required class="form-control" value="5000" min="100" step="100">
+          </div>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label">प्रति SMS दर / भुक्तानी कैफियत</label>
+            <input type="text" name="BillingRemarks" class="form-control" value="रु. १.५० प्रति SMS (Paid)" placeholder="भुक्तानी स्थिति...">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; background: #059669; border-color: #059669; font-weight: 700;">
+            ⚡ क्रेडिट थप्नुहोस् (Recharge)
+          </button>
+        </form>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">रद्द</button>`
+      );
+    }
+
+    function handleAllocateSmsSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const tid = form.TenantID.value;
+      const credits = Number(form.CreditsToAdd.value) || 0;
+      const t = (state.tenants || []).find(x => x.TenantID === tid);
+      if (t) {
+        t.SmsCredits = (t.SmsCredits || 0) + credits;
+        saveState();
+        closeModal();
+        renderTenantsManagement();
+        showToast(`✅ ${t.PalikaName} लाई ${credits} SMS क्रेडिट सफलतापूर्वक थपियो! (नयाँ ब्यालेन्स: ${t.SmsCredits})`, 'success');
+      }
+    }
+
+    function saveAakashGatewayConfig() {
+      const token = (document.getElementById('superAakashTokenInput').value || '').trim();
+      if (!token) return showToast('कृपया Aakash Auth Token हाल्नुहोस्', 'error');
+      state.settings.AAKASH_SMS_AUTH_TOKEN = token;
+      saveState();
+      showToast('Aakash SMS Gateway Token सेभ गरियो!', 'success');
+    }
+
+    function requestMoreSmsCreditsModal() {
+      const tenant = getCurrentPalikaTenant();
+      openModal(
+        '⚡ थप SMS क्रेडिट अनुरोध (Request Top-up)',
+        `
+        <div style="text-align: center; padding: 14px;">
+          <div style="font-size: 38px; margin-bottom: 8px;">📲</div>
+          <h4 style="margin-bottom: 6px;">Super Admin लाई SMS रिचार्ज अनुरोध गर्नुहोस्</h4>
+          <p style="font-size: 13px; color: var(--slate-600); margin-bottom: 16px;">
+            तपाईंको हालको ब्यालेन्स: <b>${tenant ? tenant.SmsCredits : 0} SMS</b><br>
+            Aakash SMS प्याकेज नवीकरणका लागि मुख्य एडमिनलाई सिधै WhatsApp वा फोनमा सम्पर्क गर्नुहोस्।
+          </p>
+          <div style="display: flex; gap: 8px; justify-content: center;">
+            <a href="https://wa.me/9779841234567?text=${encodeURIComponent('नमस्ते Super Admin ज्यू, ' + (tenant ? tenant.PalikaName : 'हाम्रो पालिका') + ' को लागि थप १०,००० SMS क्रेडिट रिचार्ज गर्न अनुरोध गर्दछु।')}" target="_blank" class="btn btn-primary" style="background: #059669; border-color: #059669; font-weight: 700; text-decoration: none;">
+              💬 WhatsApp मा अनुरोध पठाउनुहोस्
+            </a>
+          </div>
+        </div>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>`
+      );
+    }
+
     function renderMessages() {
       const tbody = document.getElementById('messagesTableRows');
-      tbody.innerHTML = state.messages.map(m => `
+      if (!tbody) return;
+      tbody.innerHTML = state.messages.map((m, idx) => `
         <tr>
+          <td style="text-align: center; font-weight: 700; color: var(--slate-600);">${idx + 1}</td>
           <td><b>${esc(m.Subject)}</b></td>
           <td>${esc(m.Sender)}</td>
           <td>${esc(m.Recipient)}</td>
@@ -5697,7 +6624,7 @@
           <td>${m.Date}</td>
           <td>${m.IsRead ? 'Read' : '<span class="badge badge-urgent">Unread</span>'}</td>
         </tr>
-      `).join('') || '<tr><td colspan="6" style="color: var(--slate-600);">No messages</td></tr>';
+      `).join('') || '<tr><td colspan="7" style="color: var(--slate-600); text-align: center;">कुनै मेमो छैन</td></tr>';
     }
 
     function openComposeMessageModal() {
@@ -6934,13 +7861,24 @@
       if (document.getElementById('saasSuspendedTenantsCount')) document.getElementById('saasSuspendedTenantsCount').textContent = suspendedCount;
       if (document.getElementById('saasTotalPlatformVoters')) document.getElementById('saasTotalPlatformVoters').textContent = state.voters.length;
 
-      tbody.innerHTML = state.tenants.map(t => {
+      // Update Super Admin Aakash SMS metrics
+      const totalAllocatedSms = state.tenants.reduce((sum, t) => sum + (t.SmsCredits || 0), 0);
+      const masterPool = state.settings.MASTER_SMS_CREDITS || 50000;
+      if (document.getElementById('superMasterSmsCredits')) document.getElementById('superMasterSmsCredits').textContent = masterPool.toLocaleString() + ' SMS';
+      if (document.getElementById('superAllocatedSmsCredits')) document.getElementById('superAllocatedSmsCredits').textContent = totalAllocatedSms.toLocaleString() + ' SMS';
+      if (document.getElementById('superSmsSenderId')) document.getElementById('superSmsSenderId').textContent = state.settings.AAKASH_SMS_SENDER_ID || 'HELMBU';
+      if (document.getElementById('superAakashTokenInput') && !document.getElementById('superAakashTokenInput').value) {
+        document.getElementById('superAakashTokenInput').value = state.settings.AAKASH_SMS_AUTH_TOKEN || '';
+      }
+
+      tbody.innerHTML = state.tenants.map((t, idx) => {
         const isActive = t.Status === 'Active';
         const slug = t.Slug || (t.PalikaName ? t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') : t.TenantID.toLowerCase());
         const portalUrl = `${window.location.origin}${window.location.pathname}?palika=${slug}`;
 
         return `
           <tr style="${!isActive ? 'background: #fff1f2;' : ''}">
+            <td style="text-align: center; font-weight: 700; color: var(--slate-600);">${idx + 1}</td>
             <td>
               <div style="font-weight: 800; font-size: 14.5px; color: var(--navy-900);">${esc(t.PalikaName)}</div>
               <div style="margin-top: 6px; font-size: 11.5px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
@@ -6964,6 +7902,13 @@
             <td>
               <div><b>${esc(t.ContactPerson)}</b></div>
               <div style="font-size: 12px; color: var(--slate-600);">${esc(t.Phone)}</div>
+            </td>
+            <td>
+              <div style="font-weight: 800; color: #059669; font-size: 13.5px;">${(t.SmsCredits || 0).toLocaleString()} SMS</div>
+              <div style="font-size: 11px; color: var(--slate-600);">खर्च: ${(t.SmsUsed || 0).toLocaleString()} SMS</div>
+              <button class="btn btn-sm btn-secondary" onclick="openAllocateSmsModal('${t.TenantID}')" style="margin-top: 4px; padding: 2px 8px; font-size: 11px; font-weight: 700; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
+                + Top-up SMS
+              </button>
             </td>
             <td>
               <div style="font-weight: 600; color: #0284c7;">${esc(t.PlanType)}</div>
@@ -7064,6 +8009,10 @@
               <input type="text" name="FeeMonthly" required class="form-control" value="Rs. 25,000">
             </div>
             <div class="form-group">
+              <label class="form-label">प्रारम्भिक SMS कोटा (Initial SMS Credits) *</label>
+              <input type="number" name="SmsCredits" required class="form-control" value="5000" min="100" step="500">
+            </div>
+            <div class="form-group">
               <label class="form-label">सक्रिय म्याद (Expiry Date) *</label>
               <input type="date" name="ExpiresAt" required class="form-control" value="${new Date(Date.now() + 86400000 * 90).toISOString().slice(0,10)}">
             </div>
@@ -7103,6 +8052,8 @@
         Status: 'Active',
         PlanType: 'Full Palika Suite',
         FeeMonthly: formData.get('FeeMonthly').trim(),
+        SmsCredits: Number(formData.get('SmsCredits')) || 5000,
+        SmsUsed: 0,
         ExpiresAt: formData.get('ExpiresAt'),
         CreatedAt: new Date().toISOString().slice(0,10)
       };
