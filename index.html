@@ -1277,6 +1277,305 @@
       }
     }
 
+  
+    /* ==========================================================================
+       NEXT-GEN NATIVE MOBILE APP RESPONSIVE SYSTEM (iOS & Android Tier)
+       ========================================================================== */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .sidebar-backdrop.active {
+      display: block !important;
+      opacity: 1 !important;
+    }
+
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid #e2e8f0;
+      z-index: 950;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 4px;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.08);
+    }
+    .mob-nav-btn {
+      background: transparent;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      padding: 5px 8px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.18s ease;
+      flex: 1;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+    .mob-nav-btn:active {
+      background: rgba(79, 70, 229, 0.08);
+      transform: scale(0.96);
+    }
+    .mob-nav-btn .nav-icon {
+      font-size: 19px;
+      line-height: 1.1;
+      margin-bottom: 2px;
+      transition: transform 0.2s ease;
+    }
+    .mob-nav-btn .nav-label {
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+    .mob-nav-btn.active {
+      color: #4f46e5;
+    }
+    .mob-nav-btn.active .nav-icon {
+      transform: scale(1.15);
+    }
+    .mob-nav-btn.active .nav-label {
+      font-weight: 800;
+    }
+
+    .sidebar-close-btn {
+      display: none;
+      background: rgba(255, 255, 255, 0.12);
+      border: none;
+      color: #ffffff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      margin-left: auto;
+    }
+
+    /* --- Tablet & Mobile Media Queries (<= 880px) --- */
+    @media (max-width: 880px) {
+      .app-shell {
+        display: block !important;
+        width: 100% !important;
+        overflow-x: hidden !important;
+        position: relative !important;
+      }
+
+      /* Sidebar off-canvas mobile drawer */
+      .sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        width: 285px !important;
+        max-width: 84vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        z-index: 1001 !important;
+        transform: translateX(-100%) !important;
+        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        box-shadow: none !important;
+      }
+      .sidebar.open {
+        transform: translateX(0) !important;
+        box-shadow: 12px 0 40px rgba(0, 0, 0, 0.5) !important;
+      }
+      .sidebar-close-btn {
+        display: flex !important;
+      }
+
+      /* Full-width main view */
+      .main-wrap {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        padding-bottom: 74px !important; /* Prevents bottom nav overlap */
+        box-sizing: border-box !important;
+      }
+
+      /* Hamburger menu toggle */
+      .menu-toggle {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 38px !important;
+        height: 38px !important;
+        border-radius: 9px !important;
+        font-size: 20px !important;
+        cursor: pointer !important;
+        border: 1px solid #cbd5e1 !important;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        flex-shrink: 0 !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+      }
+
+      /* Show native bottom navigation bar */
+      .mobile-bottom-nav {
+        display: flex !important;
+      }
+
+      /* Mobile Topbar */
+      .topbar {
+        padding: 8px 12px !important;
+        min-height: 52px !important;
+        gap: 8px !important;
+      }
+      .topbar-title {
+        font-size: 14.5px !important;
+        max-width: 130px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      #electionModeBadge {
+        display: none !important;
+      }
+      .topbar-right .online-badge {
+        display: none !important;
+      }
+      .topbar-right .btn-sm {
+        font-size: 11px !important;
+        padding: 5px 8px !important;
+      }
+
+      /* Content Area compact padding */
+      .content-container {
+        padding: 12px 10px !important;
+      }
+
+      /* Grids and Cards */
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+      }
+      .kpi-card {
+        padding: 12px 10px !important;
+      }
+      .kpi-card .kpi-value {
+        font-size: 20px !important;
+      }
+      .kpi-card .kpi-label {
+        font-size: 10.5px !important;
+      }
+
+      /* Table responsive horizontal scroll */
+      .table-responsive, .table-wrap, .data-table-container {
+        display: block !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      table {
+        min-width: 600px !important;
+      }
+      .table th, .table td {
+        padding: 8px 10px !important;
+        font-size: 12px !important;
+      }
+
+      /* Mobile Bottom Sheet Modals */
+      .modal-overlay {
+        align-items: flex-end !important;
+        padding: 0 !important;
+      }
+      .modal-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 20px 20px 0 0 !important;
+        max-height: 90vh !important;
+        max-height: 90dvh !important;
+        border: none !important;
+        box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.25) !important;
+        animation: modalSlideMobile 0.26s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      }
+      @keyframes modalSlideMobile {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+      }
+      .modal-header {
+        padding: 14px 16px !important;
+      }
+      .modal-body {
+        padding: 14px 16px !important;
+        max-height: calc(90dvh - 120px) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      .modal-footer {
+        padding: 12px 16px !important;
+      }
+
+      /* War Room Banner & Candidate Card on Mobile */
+      .war-room-hero {
+        padding: 14px 12px !important;
+      }
+      .war-room-hero-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+      }
+      .war-room-actions {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        width: 100% !important;
+      }
+      .war-room-actions .btn {
+        flex: 1 1 calc(50% - 6px) !important;
+        text-align: center !important;
+        justify-content: center !important;
+        font-size: 11px !important;
+        padding: 7px 6px !important;
+      }
+      
+      /* Profile tabs on mobile */
+      .profile-tabs-nav {
+        gap: 4px !important;
+        padding-bottom: 6px !important;
+      }
+      .profile-tab-btn {
+        padding: 6px 10px !important;
+        font-size: 11.5px !important;
+      }
+
+      /* Print brochure container preview */
+      #printBrochureContainer {
+        padding: 14px 12px !important;
+      }
+    }
+
+    /* Small Phone adjustments (<= 480px) */
+    @media (max-width: 480px) {
+      .topbar-title {
+        max-width: 110px !important;
+      }
+      .kpi-grid {
+        grid-template-columns: 1fr 1fr !important;
+      }
+    }
+
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
@@ -1460,6 +1759,7 @@
   <div id="appShell" class="app-shell" style="display: none;">
     
     <!-- Sidebar Navigation -->
+    <div id="sidebarBackdrop" class="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-brand">
         <div class="brand-icon">🗳️</div>
@@ -1467,6 +1767,7 @@
           <h1>EMS Operations</h1>
           <p id="sbMuniTitle">Helambu Rural Municipality</p>
         </div>
+        <button class="sidebar-close-btn" onclick="toggleSidebar(false)" title="बन्द गर्नुहोस्">✕</button>
       </div>
 
       <div class="sidebar-nav">
@@ -2991,6 +3292,30 @@
     <span class="fab-label">भिजिट</span>
   </div>
 
+
+  <!-- MOBILE NATIVE BOTTOM NAVIGATION BAR (Visible on mobile <= 880px) -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav">
+    <button class="mob-nav-btn active" id="mobNavDashboard" data-view="dashboard" onclick="switchView('dashboard')">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">ड्यासबोर्ड</span>
+    </button>
+    <button class="mob-nav-btn" id="mobNavWarRoom" data-view="warRoom" onclick="switchView('warRoom')">
+      <span class="nav-icon">🗳️</span>
+      <span class="nav-label">वार रुम</span>
+    </button>
+    <button class="mob-nav-btn" id="mobNavVoters" data-view="voters" onclick="switchView('voters')">
+      <span class="nav-icon">👥</span>
+      <span class="nav-label">मतदाता</span>
+    </button>
+    <button class="mob-nav-btn" id="mobNavTeam" data-view="team" onclick="switchView('team')">
+      <span class="nav-icon">🤝</span>
+      <span class="nav-label">टोली</span>
+    </button>
+    <button class="mob-nav-btn" id="mobNavMenu" onclick="toggleSidebar()">
+      <span class="nav-icon">☰</span>
+      <span class="nav-label">मेनु</span>
+    </button>
+  </nav>
 
   <!-- REUSABLE MODAL CONTAINER -->
   <div id="modalOverlay" class="modal-overlay" onclick="if(event.target===this) closeModal()">
@@ -4914,12 +5239,22 @@
         renderCandidateWarRoom();
       }
 
-      // Close mobile drawer if open
-      document.getElementById('sidebar').classList.remove('open');
+      // Update mobile bottom nav active state
+      document.querySelectorAll('.mob-nav-btn[data-view]').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-view') === viewName);
+      });
+
+      // Close mobile drawer and backdrop
+      toggleSidebar(false);
     }
 
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('open');
+    function toggleSidebar(forceState) {
+      const sb = document.getElementById('sidebar');
+      const bd = document.getElementById('sidebarBackdrop');
+      if (!sb) return;
+      const isOpen = (typeof forceState === 'boolean') ? forceState : !sb.classList.contains('open');
+      sb.classList.toggle('open', isOpen);
+      if (bd) bd.classList.toggle('active', isOpen);
     }
 
     function capitalize(str) {
