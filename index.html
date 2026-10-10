@@ -1836,10 +1836,7 @@
         <button class="nav-item palika-only" data-view="visits" onclick="switchView('visits')">
           <span class="icon">📋</span> Field Visits
         </button>
-      <button class="mob-nav-btn" id="mobNavDayBook" onclick="switchView('dayBook')">
-        <span class="icon">📖</span>
-        <span>डे-बुक</span>
-      </button>
+      
         <button class="nav-item palika-only" data-view="followups" onclick="switchView('followups')">
           <span class="icon">📅</span> Follow-ups
           <span class="nav-badge urgent" id="pendingFollowBadge">0</span>
@@ -3287,7 +3284,7 @@
 
   <!-- Mobile Bottom Navigation (for Field Workers and Candidates on phones) -->
   <nav class="mobile-bottom-nav">
-    <div class="mobile-bottom-nav-inner">
+    <div class="mobile-bottom-nav-inner" id="mobileBottomNavInner">
       <button class="mob-nav-btn active" onclick="switchView('dashboard')">
         <span class="icon">📊</span>
         <span>ड्यासबोर्ड</span>
@@ -4557,30 +4554,10 @@
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('appShell').style.display = 'flex';
       
-      // Update User Meta & Workspace Scope Display
-      document.getElementById('sbUserName').textContent = currentUser.Name;
-      document.getElementById('sbUserRole').textContent = currentUser.Role;
-      document.getElementById('sbAvatar').textContent = currentUser.Name.charAt(0).toUpperCase();
+      // Apply Complete Role-Based Navigation & UI Boundaries
+      applyRoleBasedNavigation(currentUser);
 
-      const isSuper = currentUser.Role === 'Super Admin';
-      const muniLabel = document.getElementById('sbMuniTitle');
-      if (muniLabel) {
-        if (isSuper) {
-          muniLabel.textContent = 'SaaS Master HQ';
-        } else if (currentUser.Ward && currentUser.Ward !== 'All') {
-          muniLabel.textContent = `Ward ${currentUser.Ward} Workspace`;
-        } else {
-          muniLabel.textContent = state.settings.MUNICIPALITY || 'Helambu';
-        }
-      }
-
-      // Role-Based Sidebar Navigation Scoping
-      document.querySelectorAll('.saas-only').forEach(el => {
-        el.style.display = isSuper ? (el.classList.contains('nav-group-title') ? 'block' : 'flex') : 'none';
-      });
-      document.querySelectorAll('.palika-only').forEach(el => {
-        el.style.display = isSuper ? 'none' : (el.classList.contains('nav-group-title') ? 'block' : 'flex');
-      });
+      const isSuper = currentUser && currentUser.Role === 'Super Admin';
 
       populateWardDropdowns();
       populateCandidateDropdowns();
@@ -4606,30 +4583,9 @@
       renderSupportModeBanner();
       renderGlobalBroadcastBanner();
 
-      // Strict UI Scoping for Field Workers
-      if (currentUser && currentUser.Role === 'Field Worker') {
-        const restrictedSelectors = [
-          '[data-view="warRoom"]',
-          '[data-view="team"]',
-          '[data-view="settings"]',
-          '[data-view="tenants"]',
-          '[data-view="reports"]',
-          '[data-view="messages"]',
-          '[data-view="areas"]'
-        ];
-        restrictedSelectors.forEach(sel => {
-          document.querySelectorAll(sel).forEach(el => el.style.display = 'none');
-        });
-      }
-
-      // Auto route to appropriate landing view
-      if (isSuper) {
-        switchView('tenants');
-      } else if (currentUser && currentUser.Role === 'Field Worker') {
-        switchView('dayBook');
-      } else {
-        switchView('dashboard');
-      }
+      // Auto route to appropriate landing view according to Role definition
+      const rolePerm = currentUser ? (ROLE_PERMISSIONS[currentUser.Role] || ROLE_PERMISSIONS['Field Worker']) : ROLE_PERMISSIONS['Palika Admin'];
+      switchView(rolePerm.defaultView);
     }
 
     function logout() {
@@ -4775,20 +4731,388 @@
       }).join('');
     }
 
-    function switchView(viewName) {
-      // Strict Security Wall for Field Workers
-      if (currentUser && currentUser.Role === 'Field Worker') {
-        const workerRestricted = ['warRoom', 'settings', 'tenants', 'team', 'reports', 'messages', 'areas', 'electionReports'];
-        if (workerRestricted.includes(viewName)) {
-          showToast('🔒 यो खण्ड पालिका एडमिनका लागि मात्र हो। तपाईंको कार्यक्षेत्र: दैनिक कार्य डायरी र मतदाता भेटघाट।', 'warning');
-          if (viewName !== 'dayBook') switchView('dayBook');
-          return;
+    
+    // =========================================================================
+    // COMPREHENSIVE ROLE-BASED ACCESS CONTROL (RBAC) ENGINE
+    // =========================================================================
+    const ROLE_PERMISSIONS = {
+      'Super Admin': {
+        label: 'सुपर एडमिन (SaaS Platform HQ)',
+        badgeColor: '#fbbf24',
+        badgeBg: '#0f172a',
+        badgeBorder: '#334155',
+        icon: '👑',
+        defaultView: 'tenants',
+        allowedViews: ['tenants', 'settings', 'timeline', 'reports'],
+        description: 'सम्पूर्ण पालिकाहरूको सुपरिवेक्षण, नयाँ पालिका दर्ता, डेटाबेस सिंक र मास्टर प्लेटफर्म सेटिङ्स।'
+      },
+      'Palika Admin': {
+        label: 'पालिका कमान्डर / प्रमुख एडमिन',
+        badgeColor: '#ffffff',
+        badgeBg: '#4f46e5',
+        badgeBorder: '#4338ca',
+        icon: '🏛️',
+        defaultView: 'dashboard',
+        allowedViews: [
+          'dashboard', 'warRoom', 'voters', 'households', 'visits', 
+          'followups', 'areas', 'team', 'issues', 'publicSubs', 
+          'electionDay', 'notices', 'messages', 'timeline', 'reports'
+        ],
+        description: 'पालिकाको सम्पूर्ण निर्वाचन कमान्ड, रणनीति, कार्यकर्ता टोली, बल्क एसएमएस र विश्लेषण।'
+      },
+      'Municipality Coordinator': {
+        label: 'पालिका संयोजक',
+        badgeColor: '#ffffff',
+        badgeBg: '#4f46e5',
+        badgeBorder: '#4338ca',
+        icon: '🏛️',
+        defaultView: 'dashboard',
+        allowedViews: [
+          'dashboard', 'warRoom', 'voters', 'households', 'visits', 
+          'followups', 'areas', 'team', 'issues', 'publicSubs', 
+          'electionDay', 'notices', 'messages', 'timeline', 'reports'
+        ],
+        description: 'पालिका स्तरीय निर्वाचन परिचालन र समन्वय।'
+      },
+      'Candidate': {
+        label: 'उम्मेदवार (Candidate)',
+        badgeColor: '#ffffff',
+        badgeBg: '#ea580c',
+        badgeBorder: '#c2410c',
+        icon: '🎯',
+        defaultView: 'warRoom',
+        allowedViews: [
+          'warRoom', 'dashboard', 'voters', 'reports', 'notices', 'issues', 'electionDay'
+        ],
+        description: 'उम्मेदवार जित-हार प्रक्षेपण, मतदाता रुझान, गुप्त रणनीति र निर्वाचन प्रतिवेदन।'
+      },
+      'Ward Coordinator': {
+        label: 'वडा संयोजक (Ward Coordinator)',
+        badgeColor: '#ffffff',
+        badgeBg: '#0891b2',
+        badgeBorder: '#0e7490',
+        icon: '📋',
+        defaultView: 'dashboard',
+        allowedViews: [
+          'dashboard', 'voters', 'households', 'visits', 
+          'followups', 'team', 'notices', 'issues', 'electionDay'
+        ],
+        description: 'तोकिएको वडाको सम्पूर्ण निर्वाचन व्यवस्थापन, मतदाता सम्पर्क र वडा टोली परिचालन।'
+      },
+      'Booth Coordinator': {
+        label: 'मतदान केन्द्र संयोजक',
+        badgeColor: '#ffffff',
+        badgeBg: '#0891b2',
+        badgeBorder: '#0e7490',
+        icon: '🗳️',
+        defaultView: 'voters',
+        allowedViews: [
+          'voters', 'visits', 'notices', 'issues', 'electionDay'
+        ],
+        description: 'तोकिएको मतदान केन्द्रको मतदाता परिचालन र मतदान दिन अनुगमन।'
+      },
+      'Tole Coordinator': {
+        label: 'टोल संयोजक',
+        badgeColor: '#ffffff',
+        badgeBg: '#059669',
+        badgeBorder: '#047857',
+        icon: '🏘️',
+        defaultView: 'dayBook',
+        allowedViews: [
+          'dayBook', 'voters', 'households', 'visits', 'notices', 'issues'
+        ],
+        description: 'टोल स्तरको घरदैलो, मतदाता भेटघाट र समस्या संकलन।'
+      },
+      'Field Worker': {
+        label: 'फिल्ड कार्यकर्ता (Data Collector)',
+        badgeColor: '#ffffff',
+        badgeBg: '#16a34a',
+        badgeBorder: '#15803d',
+        icon: '🚶',
+        defaultView: 'dayBook',
+        allowedViews: [
+          'dayBook', 'voters', 'visits', 'notices', 'issues'
+        ],
+        description: 'स्थलगत घरदैलो, मतदाता विवरण संकलन र दैनिक कार्य डायरी।'
+      }
+    };
+
+    function canRoleAccessView(role, viewName) {
+      if (!role) return false;
+      const perm = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS['Field Worker'];
+      return perm.allowedViews.includes(viewName);
+    }
+
+    function applyRoleBasedNavigation(user) {
+      if (!user) return;
+      const role = user.Role || 'Field Worker';
+      const perm = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS['Field Worker'];
+
+      // 1. Update User Meta & Badges in Sidebar
+      const avatarEl = document.getElementById('sbAvatar');
+      const nameEl = document.getElementById('sbUserName');
+      const roleEl = document.getElementById('sbUserRole');
+
+      if (avatarEl) {
+        avatarEl.textContent = user.Name ? user.Name.charAt(0).toUpperCase() : 'U';
+        avatarEl.style.background = perm.badgeBg;
+        avatarEl.style.color = perm.badgeColor;
+      }
+      if (nameEl) nameEl.textContent = user.Name;
+      if (roleEl) {
+        roleEl.innerHTML = `<span class="badge" style="background: ${perm.badgeBg}; color: ${perm.badgeColor}; border: 1px solid ${perm.badgeBorder}; font-weight: 800; font-size: 11px; padding: 2px 8px;">${perm.icon} ${perm.label}</span>`;
+      }
+
+      // 2. Update Muni Workspace Title
+      const muniLabel = document.getElementById('sbMuniTitle');
+      if (muniLabel) {
+        if (role === 'Super Admin') {
+          muniLabel.textContent = '👑 SaaS Master Platform HQ';
+        } else if (role === 'Candidate') {
+          muniLabel.textContent = `🎯 ${user.Post || 'उम्मेदवार'} कन्सोल`;
+        } else if (user.Ward && user.Ward !== 'All') {
+          muniLabel.textContent = `🏛️ वडा नं. ${user.Ward} कार्यक्षेत्र`;
+        } else {
+          muniLabel.textContent = `🏛️ ${state.settings.MUNICIPALITY || 'Helambu Rural Municipality'}`;
         }
       }
 
-      // Permission protection
-      if ((viewName === 'settings' || viewName === 'tenants') && currentUser && currentUser.Role !== 'Super Admin') {
-        showToast('यो सेक्सन केवल SaaS Super Admin ले मात्र खोल्न मिल्छ।', 'error');
+      // 3. Strict Sidebar Navigation Filtering
+      const navItems = document.querySelectorAll('.sidebar-nav .nav-item[data-view]');
+      navItems.forEach(item => {
+        const v = item.getAttribute('data-view');
+        if (perm.allowedViews.includes(v)) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      // 4. Hide empty group titles
+      const groupTitles = document.querySelectorAll('.sidebar-nav .nav-group-title');
+      groupTitles.forEach(title => {
+        let sibling = title.nextElementSibling;
+        let hasVisibleChild = false;
+        while (sibling && !sibling.classList.contains('nav-group-title') && !sibling.classList.contains('sidebar-footer')) {
+          if (sibling.classList.contains('nav-item') && sibling.style.display !== 'none') {
+            hasVisibleChild = true;
+            break;
+          }
+          sibling = sibling.nextElementSibling;
+        }
+        title.style.display = hasVisibleChild ? 'block' : 'none';
+      });
+
+      // 5. Dynamic Mobile Bottom Navigation tailored to Role
+      const mobNav = document.getElementById('mobileBottomNavInner');
+      if (mobNav) {
+        let mobButtons = '';
+        if (role === 'Field Worker' || role === 'Tole Coordinator') {
+          mobButtons = `
+            <button class="mob-nav-btn active" onclick="switchView('dayBook')">
+              <span class="icon">📖</span><span>डे-बुक</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('voters')">
+              <span class="icon">👥</span><span>मतदाता</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('visits')">
+              <span class="icon">🚶</span><span>घरदैलो</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('notices')">
+              <span class="icon">📢</span><span>सूचना</span>
+            </button>
+            <button class="mob-nav-btn" onclick="toggleSidebar()">
+              <span class="icon">☰</span><span>मेनु</span>
+            </button>
+          `;
+        } else if (role === 'Candidate') {
+          mobButtons = `
+            <button class="mob-nav-btn active" onclick="switchView('warRoom')">
+              <span class="icon">🎯</span><span>वार-रूम</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('dashboard')">
+              <span class="icon">📊</span><span>ओभरभ्यू</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('voters')">
+              <span class="icon">👥</span><span>मतदाता</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('reports')">
+              <span class="icon">📈</span><span>रिपोर्ट</span>
+            </button>
+            <button class="mob-nav-btn" onclick="toggleSidebar()">
+              <span class="icon">☰</span><span>मेनु</span>
+            </button>
+          `;
+        } else if (role === 'Ward Coordinator' || role === 'Booth Coordinator') {
+          mobButtons = `
+            <button class="mob-nav-btn active" onclick="switchView('dashboard')">
+              <span class="icon">📊</span><span>ड्यासबोर्ड</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('voters')">
+              <span class="icon">👥</span><span>मतदाता</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('visits')">
+              <span class="icon">🚶</span><span>घरदैलो</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('team')">
+              <span class="icon">🤝</span><span>टोली</span>
+            </button>
+            <button class="mob-nav-btn" onclick="toggleSidebar()">
+              <span class="icon">☰</span><span>मेनु</span>
+            </button>
+          `;
+        } else if (role === 'Super Admin') {
+          mobButtons = `
+            <button class="mob-nav-btn active" onclick="switchView('tenants')">
+              <span class="icon">👑</span><span>पालिकाहरू</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('timeline')">
+              <span class="icon">⏱️</span><span>लग</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('reports')">
+              <span class="icon">📈</span><span>मेट्रिक्स</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('settings')">
+              <span class="icon">⚙️</span><span>सेटिङ्स</span>
+            </button>
+            <button class="mob-nav-btn" onclick="toggleSidebar()">
+              <span class="icon">☰</span><span>मेनु</span>
+            </button>
+          `;
+        } else {
+          // Palika Admin default
+          mobButtons = `
+            <button class="mob-nav-btn active" onclick="switchView('dashboard')">
+              <span class="icon">📊</span><span>ड्यासबोर्ड</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('warRoom')">
+              <span class="icon">🎯</span><span>वार-रूम</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('voters')">
+              <span class="icon">👥</span><span>मतदाता</span>
+            </button>
+            <button class="mob-nav-btn" onclick="switchView('visits')">
+              <span class="icon">🚶</span><span>घरदैलो</span>
+            </button>
+            <button class="mob-nav-btn" onclick="toggleSidebar()">
+              <span class="icon">☰</span><span>मेनु</span>
+            </button>
+          `;
+        }
+        mobNav.innerHTML = mobButtons;
+      }
+
+      // 6. Add "मेरो पहुँच" Pill in Sidebar Footer if not present
+      let accessPill = document.getElementById('userAccessScopePill');
+      if (!accessPill) {
+        const footerMeta = document.querySelector('.sidebar-footer .user-meta');
+        if (footerMeta) {
+          accessPill = document.createElement('div');
+          accessPill.id = 'userAccessScopePill';
+          accessPill.style.marginTop = '4px';
+          footerMeta.appendChild(accessPill);
+        }
+      }
+      if (accessPill) {
+        accessPill.innerHTML = `<button type="button" class="btn btn-sm btn-link" onclick="showUserPermissionsModal()" style="font-size: 11px; padding: 0; color: #94a3b8; text-decoration: underline; background: none; border: none; cursor: pointer;">🔐 मेरो पहुँच (${perm.allowedViews.length} खण्डहरू)</button>`;
+      }
+    }
+
+    function showUserPermissionsModal() {
+      if (!currentUser) return;
+      const perm = ROLE_PERMISSIONS[currentUser.Role] || ROLE_PERMISSIONS['Field Worker'];
+
+      const viewLabels = {
+        'dashboard': '📊 ओभरभ्यू / ड्यासबोर्ड',
+        'warRoom': '🎯 उम्मेदवार वार-रूम (Winning Math)',
+        'dayBook': '📖 दैनिक कार्य डायरी (Day-Book)',
+        'voters': '👥 मतदाता सूची तथा सम्पर्क विवरण',
+        'households': '🏠 घरधुरी तह तथा पारिवारिक नक्सांकन',
+        'visits': '🚶 स्थलगत घरदैलो भेटघाट',
+        'followups': '📅 फलो-अप तथा रिमाइन्डर',
+        'areas': '🗺️ क्षेत्र, टोल तथा मतदान केन्द्र',
+        'team': '🤝 कार्यकर्ता टोली परिचालन तथा QR/PIN',
+        'issues': '⚠️ स्थलगत समस्या तथा घटना दर्ता',
+        'publicSubs': '📥 नागरिक खुला दर्ता सूची',
+        'electionDay': '🗳️ मतदान दिन लाइभ बुथ ट्याकिङ',
+        'notices': '📢 सूचना तथा निर्देशन प्रेषण',
+        'messages': '📲 बल्क एसएमएस क्याम्पेन',
+        'timeline': '⏱️ कार्य विवरण तथा अडिट लग',
+        'reports': '📈 चुनावी विश्लेषण तथा जित-हार प्रतिवेदन',
+        'tenants': '👑 पालिका टेनेन्ट व्यवस्थापन (SaaS HQ)',
+        'settings': '⚙️ प्रणाली सेटिङ्स र Supabase क्लाउड'
+      };
+
+      const allowedPills = perm.allowedViews.map(v => `
+        <span class="badge" style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; font-size: 12px; padding: 4px 10px; font-weight: 700;">
+          ✅ ${viewLabels[v] || v}
+        </span>
+      `).join('');
+
+      const allKeys = Object.keys(viewLabels);
+      const restrictedPills = allKeys.filter(v => !perm.allowedViews.includes(v)).map(v => `
+        <span class="badge" style="background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; font-size: 12px; padding: 4px 10px; font-weight: 600;">
+          🔒 ${viewLabels[v] || v}
+        </span>
+      `).join('');
+
+      openModal(
+        `🔐 तपाईंको भूमिका र पहुँच विवरण: ${esc(currentUser.Name)}`,
+        `
+        <div style="padding: 6px;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0;">
+            <div style="width: 46px; height: 46px; border-radius: 50%; background: ${perm.badgeBg}; color: ${perm.badgeColor}; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800;">
+              ${currentUser.Name.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <h3 style="margin: 0; font-size: 16px; color: #0f172a;">${esc(currentUser.Name)}</h3>
+              <div style="display: flex; gap: 6px; margin-top: 4px;">
+                <span class="badge" style="background: ${perm.badgeBg}; color: ${perm.badgeColor}; border: 1px solid ${perm.badgeBorder}; font-weight: 800;">${perm.icon} ${perm.label}</span>
+                <span class="badge" style="background: #e2e8f0; color: #334155;">वडा ${esc(currentUser.Ward || 'All')}${currentUser.Tole ? ' • ' + esc(currentUser.Tole) : ''}</span>
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size: 13px; color: #475569; margin-bottom: 14px; line-height: 1.5;">
+            ℹ️ ${perm.description}
+          </p>
+
+          <div style="margin-bottom: 16px;">
+            <h4 style="font-size: 13px; font-weight: 800; color: #065f46; text-transform: uppercase; margin-bottom: 8px;">
+              ✅ तपाईंले चलाउन पाउने स्वीकृत खण्डहरू (${perm.allowedViews.length}):
+            </h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+              ${allowedPills}
+            </div>
+          </div>
+
+          ${restrictedPills ? `
+            <div>
+              <h4 style="font-size: 13px; font-weight: 800; color: #991b1b; text-transform: uppercase; margin-bottom: 8px;">
+                🔒 सुरक्षाका कारण निषेधित खण्डहरू (${allKeys.length - perm.allowedViews.length}):
+              </h4>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                ${restrictedPills}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>`
+      );
+    }
+
+
+    function switchView(viewName) {
+      if (!currentUser) return;
+
+      // 1. Strict Centralized RBAC Security Gatekeeper
+      if (!canRoleAccessView(currentUser.Role, viewName)) {
+        const perm = ROLE_PERMISSIONS[currentUser.Role] || ROLE_PERMISSIONS['Field Worker'];
+        showToast(`🔒 '${viewName}' सेक्सन तपाईंको भूमिका (${currentUser.Role}) का लागि सुरक्षित/निषेधित छ।`, 'warning');
+        if (viewName !== perm.defaultView) {
+          switchView(perm.defaultView);
+        }
         return;
       }
 
@@ -5126,6 +5450,16 @@
     }
 
     function renderVotersList() {
+      // Auto-lock ward dropdown for Ward Coordinator & Field Worker
+      if (currentUser && currentUser.Role !== 'Super Admin' && currentUser.Role !== 'Palika Admin' && currentUser.Ward && currentUser.Ward !== 'All') {
+        const wardSelect = document.getElementById('voterWardFilter');
+        if (wardSelect) {
+          wardSelect.value = currentUser.Ward;
+          wardSelect.disabled = true;
+          wardSelect.title = `तपाईंको भूमिका वडा नं. ${currentUser.Ward} मा मात्र सिमित छ`;
+        }
+      }
+
       const filtered = getFilteredVoters();
       document.getElementById('voterResultsCount').textContent = `Showing ${filtered.length} of ${state.voters.length} records`;
       renderVoterLiveMetrics(filtered);
@@ -7323,7 +7657,16 @@
     function renderTeamList() {
       const tbody = document.getElementById('teamTableRows');
       if (!tbody) return;
-      tbody.innerHTML = state.users.map((u, idx) => {
+
+      const isWardCoord = currentUser && currentUser.Role === 'Ward Coordinator';
+      const myWard = currentUser ? currentUser.Ward : 'All';
+
+      let displayUsers = state.users;
+      if (isWardCoord && myWard !== 'All') {
+        displayUsers = state.users.filter(u => String(u.Ward) === String(myWard) || u.UserID === currentUser.UserID);
+      }
+
+      tbody.innerHTML = displayUsers.map((u, idx) => {
         const pin = u.PIN || '1234';
         return `
           <tr>
@@ -7344,6 +7687,9 @@
               <span class="badge ${u.Role === 'Super Admin' ? 'badge-solid' : (u.Role === 'Field Worker' ? 'badge-verified' : 'badge-contacted')}" style="font-weight: 700;">
                 ${esc(u.Role)}
               </span>
+              <div style="font-size: 11px; color: var(--slate-500); margin-top: 3px;">
+                ${ROLE_PERMISSIONS[u.Role] ? ROLE_PERMISSIONS[u.Role].allowedViews.length + ' सेक्सन अनुमति' : 'फिल्ड पहुँच'}
+              </div>
             </td>
             <td>वडा ${esc(u.Ward || 'All')}${u.Tole ? ' • ' + esc(u.Tole) : ''}</td>
             <td>
@@ -7366,6 +7712,24 @@
       }).join('');
     }
 
+    
+    function updateRolePreviewHelp(role) {
+      const box = document.getElementById('roleAccessPreviewBox');
+      if (!box) return;
+      const perm = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS['Field Worker'];
+      box.innerHTML = `
+        <div style="font-weight: 800; color: #0f172a; margin-bottom: 3px;">
+          ${perm.icon} ${perm.label} — ${perm.allowedViews.length} वटा सेक्सनमा पहुँच
+        </div>
+        <div style="font-size: 11.5px; color: #475569; margin-bottom: 5px;">
+          ${perm.description}
+        </div>
+        <div style="font-size: 11.5px; color: #047857; font-weight: 700;">
+          स्वीकृत सेक्सनहरू: ${perm.allowedViews.join(' • ')}
+        </div>
+      `;
+    }
+
     function openAddUserModal() {
       openModal(
         'Add Staff Member / Coordinator',
@@ -7381,15 +7745,19 @@
               <input type="text" name="Phone" required class="form-control" placeholder="e.g. 9841000000">
             </div>
             <div class="form-group">
-              <label class="form-label">Role *</label>
-              <select name="Role" required class="form-control">
-                <option value="Field Worker">Field Worker</option>
-                <option value="Booth Coordinator">Booth Coordinator</option>
-                <option value="Tole Coordinator">Tole Coordinator</option>
-                <option value="Ward Coordinator">Ward Coordinator</option>
-                <option value="Municipality Coordinator">Municipality Coordinator</option>
-                <option value="Report Viewer">Report Viewer</option>
+              <label class="form-label">भूमिका (Role & Access Level) *</label>
+              <select name="Role" required class="form-control" onchange="updateRolePreviewHelp(this.value)" style="font-weight: 700; font-size: 13.5px;">
+                <option value="Field Worker">🚶 फिल्ड कार्यकर्ता (Field Worker / Data Collector)</option>
+                <option value="Tole Coordinator">🏘️ टोल संयोजक (Tole Coordinator)</option>
+                <option value="Booth Coordinator">🗳️ मतदान केन्द्र संयोजक (Booth Coordinator)</option>
+                <option value="Ward Coordinator">📋 वडा संयोजक (Ward Coordinator)</option>
+                <option value="Candidate">🎯 उम्मेदवार (Candidate - War Room Console)</option>
+                <option value="Palika Admin">🏛️ पालिका एडमिन (Municipality Campaign Admin)</option>
+                <option value="Super Admin">👑 सुपर एडमिन (SaaS Platform HQ)</option>
               </select>
+              <div id="roleAccessPreviewBox" style="margin-top: 8px; padding: 10px 12px; background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 8px; font-size: 12px; color: #14532d;">
+                <b>पहुँच दायरा:</b> स्थलगत घरदैलो, मतदाता विवरण संकलन, नयाँ भिजिट र दैनिक कार्य डायरी मात्र।
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label">Assigned Ward</label>
