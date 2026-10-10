@@ -2134,16 +2134,16 @@
                 <option value="Correction Required">Correction Required</option>
               </select>
               <select id="voterSupportFilter" class="filter-select" onchange="renderVotersList()" style="font-weight: 700; color: #047857;">
-                <option value="">समर्थन सम्भाव्यता: सबै</option>
-                <option value="solid">🟢 पक्का समर्थक (100%)</option>
-                <option value="lean">🟩 सकारात्मक/झुकाव (75%)</option>
-                <option value="swing">🟡 दोधार/तटस्थ (50%)</option>
-                <option value="opponent_lean">🟠 विपक्षी झुकाव (25%)</option>
-                <option value="hard_opponent">🔴 कडा विरोधी (0%)</option>
+                <option value="">समर्थन अवस्था: सबै</option>
+                <option value="solid">🟢 पक्का समर्थक</option>
+                <option value="lean">🟩 सकारात्मक</option>
+                <option value="swing">🟡 दोधार / तटस्थ</option>
+                <option value="opponent_lean">🟠 विपक्षी झुकाव</option>
+                <option value="hard_opponent">🔴 कडा विरोधी</option>
               </select>
               <select id="voterInfluencerFilter" class="filter-select" onchange="renderVotersList()" style="font-weight: 700; color: #7c2d12;">
                 <option value="">प्रभावकारी व्यक्ति: सबै</option>
-                <option value="yes">🌟 प्रभावकारी व्यक्ति मात्र (VIP)</option>
+                <option value="yes">🌟 प्रभावकारी अगुवा मात्र</option>
               </select>
               <select id="voterPartyFilter" class="filter-select" onchange="renderVotersList()">
                 <option value="">पार्टी झुकाव: सबै</option>
@@ -5256,16 +5256,16 @@
             <div class="form-group">
               <label class="form-label">अनुमानित मत प्रभाव (Influence Reach) *</label>
               <select name="InfluencerReach" required class="form-control">
-                <option value="१०-२५ मत" ${v.InfluencerReach === '१०-२५ मत' ? 'selected' : ''}>१०-२५ मत (साना क्लस्टर)</option>
-                <option value="२५-५० मत" ${v.InfluencerReach === '२५-५० मत' ? 'selected' : ''}>२५-५० मत (टोल स्तर)</option>
-                <option value="५०-१०० मत" ${v.InfluencerReach === '५०-१०० मत' ? 'selected' : ''}>५०-१०० मत (वडा स्तर)</option>
-                <option value="१००+ मत" ${v.InfluencerReach === '१००+ मत' ? 'selected' : ''}>१००+ मत (Game Changer)</option>
+                <option value="१०-२५ मत" ${v.InfluencerReach === '१०-२५ मत' ? 'selected' : ''}>१०-२५ मत</option>
+                <option value="२५-५० मत" ${v.InfluencerReach === '२५-५० मत' ? 'selected' : ''}>२५-५० मत</option>
+                <option value="५०-१०० मत" ${v.InfluencerReach === '५०-१०० मत' ? 'selected' : ''}>५०-१०० मत</option>
+                <option value="१००+ मत" ${v.InfluencerReach === '१००+ मत' ? 'selected' : ''}>१००+ मत</option>
               </select>
             </div>
             <div class="form-group">
               <label class="form-label">जिम्मेवारी तोकिएको नेता (VIP Handler) *</label>
               <select name="InfluencerHandler" required class="form-control">
-                <option value="उम्मेदवार आफैं" ${v.InfluencerHandler === 'उम्मेदवार आफैं' ? 'selected' : ''}>उम्मेदवार आफैं (Direct Candidate)</option>
+                <option value="उम्मेदवार आफैं" ${v.InfluencerHandler === 'उम्मेदवार आफैं' ? 'selected' : ''}>उम्मेदवार आफैं</option>
                 <option value="पार्टी नगर/पालिका अध्यक्ष" ${v.InfluencerHandler === 'पार्टी नगर/पालिका अध्यक्ष' ? 'selected' : ''}>पार्टी नगर/पालिका अध्यक्ष</option>
                 <option value="वडा अध्यक्ष उम्मेदवार" ${v.InfluencerHandler === 'वडा अध्यक्ष उम्मेदवार' ? 'selected' : ''}>वडा अध्यक्ष उम्मेदवार</option>
                 <option value="स्थानीय नाता पर्ने साथी" ${v.InfluencerHandler === 'स्थानीय नाता पर्ने साथी' ? 'selected' : ''}>स्थानीय नाता पर्ने साथी</option>
@@ -5968,8 +5968,8 @@
             <div class="form-group">
               <label class="form-label">Verification Status</label>
               <select name="VerificationStatus" class="form-control">
-                <option value="Verified">Verified (प्रमाणित)</option>
-                <option value="Pending" selected>Pending (प्रमाणीकरण बाँकी)</option>
+                <option value="Verified">✓ प्रमाणित</option>
+                <option value="Pending" selected>⏳ प्रमाणीकरण बाँकी</option>
                 <option value="Field Checked">Field Checked</option>
                 <option value="Correction Required">Correction Required</option>
               </select>
@@ -5977,25 +5977,25 @@
             <div class="form-group">
               <label class="form-label">Contact Status</label>
               <select name="ContactStatus" class="form-control">
-                <option value="Contacted">Contacted (सम्पर्क भएको)</option>
-                <option value="Not Contacted" selected>Not Contacted (सम्पर्क बाँकी)</option>
+                <option value="Contacted">सम्पर्क भएको</option>
+                <option value="Not Contacted" selected>सम्पर्क बाँकी</option>
               </select>
             </div>
             <div class="form-group">
               <label class="form-label" style="font-weight: 700; color: #047857;">समर्थन सम्भाव्यता (५ स्ल्याब) *</label>
               <select name="SupportTier" class="form-control" style="font-weight: 700;">
-                <option value="solid">🟢 पक्का समर्थक (100% Solid)</option>
-                <option value="lean">🟩 सकारात्मक / झुकाव (75% Lean)</option>
-                <option value="swing" selected>🟡 दोधार / तटस्थ (50% Neutral)</option>
-                <option value="opponent_lean">🟠 विपक्षी झुकाव (25% Opponent Lean)</option>
-                <option value="hard_opponent">🔴 कडा विरोधी (0% Hard Anti)</option>
+                <option value="solid">🟢 पक्का समर्थक</option>
+                <option value="lean">🟩 सकारात्मक</option>
+                <option value="swing" selected>🟡 दोधार / तटस्थ</option>
+                <option value="opponent_lean">🟠 विपक्षी झुकाव</option>
+                <option value="hard_opponent">🔴 कडा विरोधी</option>
               </select>
             </div>
             <div class="form-group">
               <label class="form-label" style="font-weight: 700; color: #7c2d12;">🌟 समुदायको प्रभावकारी व्यक्ति (Influencer)?</label>
               <select name="IsInfluencer" class="form-control">
-                <option value="No">होइन (सामान्य मतदाता)</option>
-                <option value="Yes">हो, टोल/समुदायको अगुवा (VIP Influencer)</option>
+                <option value="No">सामान्य मतदाता</option>
+                <option value="Yes">🌟 टोल/समुदायको अगुवा</option>
               </select>
             </div>
             
@@ -6231,8 +6231,8 @@
             <div class="form-group">
               <label class="form-label">Verification Status</label>
               <select name="VerificationStatus" class="form-control">
-                <option value="Verified" ${v.VerificationStatus === 'Verified' ? 'selected' : ''}>Verified (प्रमाणित)</option>
-                <option value="Pending" ${v.VerificationStatus === 'Pending' ? 'selected' : ''}>Pending (प्रमाणीकरण बाँकी)</option>
+                <option value="Verified" ${v.VerificationStatus === 'Verified' ? 'selected' : ''}>✓ प्रमाणित</option>
+                <option value="Pending" ${v.VerificationStatus === 'Pending' ? 'selected' : ''}>⏳ प्रमाणीकरण बाँकी</option>
                 <option value="Field Checked" ${v.VerificationStatus === 'Field Checked' ? 'selected' : ''}>Field Checked</option>
                 <option value="Correction Required" ${v.VerificationStatus === 'Correction Required' ? 'selected' : ''}>Correction Required</option>
               </select>
@@ -8142,8 +8142,8 @@
     // 5-Tier Voter Support Probability Architecture
     const SUPPORT_TIERS = {
       'solid': { key: 'solid', label: 'पक्का समर्थक', shortLabel: 'पक्का', prob: 1.0, color: '#059669', bg: '#ecfdf5', border: '#a7f3d0', icon: '🟢' },
-      'lean': { key: 'lean', label: 'सकारात्मक/झुकाव', shortLabel: 'सकारात्मक', prob: 0.75, color: '#16a34a', bg: '#f0fdf4', border: '#bbf7d0', icon: '🟩' },
-      'swing': { key: 'swing', label: 'दोधार/तटस्थ', shortLabel: 'दोधार', prob: 0.50, color: '#d97706', bg: '#fffbeb', border: '#fde68a', icon: '🟡' },
+      'lean': { key: 'lean', label: 'सकारात्मक', shortLabel: 'सकारात्मक', prob: 0.75, color: '#16a34a', bg: '#f0fdf4', border: '#bbf7d0', icon: '🟩' },
+      'swing': { key: 'swing', label: 'दोधार / तटस्थ', shortLabel: 'दोधार', prob: 0.50, color: '#d97706', bg: '#fffbeb', border: '#fde68a', icon: '🟡' },
       'opponent_lean': { key: 'opponent_lean', label: 'विपक्षी झुकाव', shortLabel: 'विपक्षी', prob: 0.25, color: '#ea580c', bg: '#fff7ed', border: '#fed7aa', icon: '🟠' },
       'hard_opponent': { key: 'hard_opponent', label: 'कडा विरोधी', shortLabel: 'विरोधी', prob: 0.0, color: '#dc2626', bg: '#fef2f2', border: '#fecaca', icon: '🔴' }
     };
@@ -8169,7 +8169,7 @@
     function getSupportBadge(v, isClickable = true) {
       const tier = getSupportTier(v);
       const clickAttr = isClickable ? `style="cursor: pointer; background: ${tier.bg}; color: ${tier.color}; border: 1.5px solid ${tier.border}; font-weight: 700;" onclick="quickCycleSupportTier('${v.VoterID}')" title="क्लिक गरी समर्थन तह बदल्नुहोस् (५ स्ल्याब)"` : `style="background: ${tier.bg}; color: ${tier.color}; border: 1.5px solid ${tier.border}; font-weight: 700;"`;
-      return `<span class="badge" ${clickAttr}>${tier.icon} ${tier.label} (${Math.round(tier.prob * 100)}%)</span>`;
+      return `<span class="badge" ${clickAttr}>${tier.icon} ${tier.label}</span>`;
     }
 
     function quickCycleSupportTier(voterId, activeTab = '') {
@@ -8183,7 +8183,7 @@
       if (typeof pushVoterToSupabase === 'function') pushVoterToSupabase(v);
 
       const tier = SUPPORT_TIERS[v.SupportTier];
-      showToast(`${v.Name} को समर्थन: ${tier.icon} ${tier.label} (${Math.round(tier.prob * 100)}%)`, 'info');
+      showToast(`${v.Name} को समर्थन: ${tier.icon} ${tier.label}`, 'info');
 
       // Refresh UI components
       if (activeTab && typeof viewVoterProfile === 'function') {
