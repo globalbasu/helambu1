@@ -107,6 +107,9 @@
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
       overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
+      box-sizing: border-box;
       scroll-behavior: smooth;
     }
 
@@ -123,6 +126,8 @@
       -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
       width: 100%;
+      max-width: 100vw;
+      position: relative;
       touch-action: manipulation;
       padding-top: env(safe-area-inset-top, 0px);
       padding-left: env(safe-area-inset-left, 0px);
@@ -1433,9 +1438,15 @@
         transform: scale(0.95);
       }
 
-      /* Show native bottom navigation bar */
+      /* Show native bottom navigation bar ONLY when logged in */
       .mobile-bottom-nav {
         display: flex !important;
+      }
+      body.login-active .mobile-bottom-nav,
+      #appShell[style*="display: none"] .mobile-bottom-nav,
+      #loginScreen:not([style*="display: none"]) ~ * .mobile-bottom-nav,
+      #loginScreen:not([style*="display: none"]) ~ .mobile-bottom-nav {
+        display: none !important;
       }
 
       /* Mobile Topbar - Sleek Native App Header with Safe-Area Insets */
@@ -1444,6 +1455,9 @@
         padding-top: calc(8px + env(safe-area-inset-top, 0px)) !important;
         min-height: 54px !important;
         height: auto !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
         display: flex !important;
         justify-content: space-between !important;
         align-items: center !important;
@@ -1456,6 +1470,8 @@
         backdrop-filter: blur(18px) saturate(180%) !important;
         -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
         border-bottom: 1px solid rgba(226, 232, 240, 0.85) !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
       }
       .topbar-left {
         gap: 8px !important;
@@ -1464,6 +1480,7 @@
         display: flex !important;
         align-items: center !important;
         flex-wrap: nowrap !important;
+        overflow: hidden !important;
       }
       .topbar-title {
         font-size: 14.5px !important;
@@ -1474,7 +1491,8 @@
         text-overflow: ellipsis !important;
         line-height: 1.2 !important;
       }
-      #electionModeBadge {
+      #electionModeBadge,
+      #topbarCandidateSwitcherContainer label {
         display: none !important;
       }
       .topbar-right {
@@ -1484,7 +1502,11 @@
         flex-shrink: 0 !important;
         flex-wrap: nowrap !important;
       }
-      .topbar-right .online-badge {
+      .topbar-right .online-badge,
+      .topbar-right .sync-label,
+      .topbar-right button[onclick="openQrModal()"],
+      .topbar-right #pwaInstallBtn,
+      .hide-mobile, .btn-text-mobile-hide {
         display: none !important;
       }
       .topbar-right .btn-sm {
@@ -1494,19 +1516,24 @@
         border-radius: 10px !important;
         white-space: nowrap !important;
       }
-      .topbar-right button[onclick="openQrModal()"] {
-        display: none !important;
-      }
-      .hide-mobile, .btn-text-mobile-hide {
-        display: none !important;
+      #topbarSupabaseSyncBtn {
+        padding: 6px 8px !important;
       }
 
       /* Content Area compact padding & mobile container flow */
       .content-container {
         padding: 12px 10px !important;
         width: 100% !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
         box-sizing: border-box !important;
         overflow-x: hidden !important;
+      }
+
+      .view-section {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
       }
 
       /* Grids and Cards */
@@ -1539,18 +1566,26 @@
 
       /* Card and Container responsive full widths */
       .card, .panel, .box {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
         border-radius: 14px !important;
         margin-bottom: 12px !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
       }
 
       /* Table responsive horizontal scroll */
       .table-responsive, .table-wrap, .data-table-container {
         display: block !important;
         width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch !important;
         margin-bottom: 12px !important;
         border-radius: 10px !important;
+        box-sizing: border-box !important;
       }
       table {
         min-width: 580px !important;
@@ -1742,18 +1777,23 @@
     /* Small Phone adjustments (<= 480px) */
     @media (max-width: 480px) {
       .topbar-title {
-        max-width: 120px !important;
+        max-width: 130px !important;
       }
       .kpi-grid {
         grid-template-columns: 1fr 1fr !important;
       }
+      .pin-auth-container {
+        padding: 16px 12px !important;
+      }
       .pin-card {
-        padding: 20px 16px !important;
+        padding: 26px 18px !important;
         border-radius: 20px !important;
-        margin: 10px !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
       }
       .key-btn {
-        height: 54px !important;
+        height: 52px !important;
         font-size: 20px !important;
       }
     }
@@ -1761,7 +1801,7 @@
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
-<body>
+<body class="login-active">
 
   <!-- Toast Container -->
   <div class="toast-box" id="toastBox"></div>
@@ -1776,10 +1816,10 @@
         <span>🟢 Supabase Cloud: Live Sync</span>
       </div>
 
-      <div class="brand-icon" style="margin: 0 auto 10px; width: 50px; height: 50px; font-size: 24px; background: #0f172a; color: #fbbf24; border-radius: 12px; display: flex; align-items: center; justify-content: center;">👑</div>
-      <div class="pin-header" style="margin-bottom: 14px;">
+      <div class="brand-icon" style="margin: 0 auto 10px; width: 52px; height: 52px; font-size: 24px; background: #0f172a; color: #fbbf24; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.35);">👑</div>
+      <div class="pin-header" style="margin-bottom: 16px;">
         <h2 id="loginTitle" style="font-size: 21px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">Super Admin Control Hub</h2>
-        <p id="loginSubtitle" style="font-size: 12.5px; color: var(--slate-600);">SaaS निर्वाचन व्यवस्थापन प्रणाली • मास्टर लगइन</p>
+        <p id="loginSubtitle" style="font-size: 12.5px; color: var(--slate-600); margin: 0;">SaaS निर्वाचन व्यवस्थापन प्रणाली • मास्टर लगइन</p>
       </div>
 
       <!-- Quick Switcher Tabs (Only visible when accessing via dedicated Palika portal) -->
@@ -1797,62 +1837,56 @@
 
       <!-- PANE 1: SUPER ADMIN MASTER LOGIN (DEFAULT) -->
       <div id="paneSuperLogin" style="display: block;">
-        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-sm); padding: 11px; font-size: 12px; color: #1e40af; margin-bottom: 14px; text-align: left; line-height: 1.5;">
-          🔑 <b>मास्टर लगइन:</b> यहाँबाट लगइन गरेपछि तपाईंले पालिकाहरूको डेटा इन्ट्री गर्न, नयाँ पालिका एडमिन बनाउन (Username & Password दिन) र सिस्टम चालू/बन्द गर्न सक्नुहुन्छ।
-        </div>
         <form onsubmit="handleSuperAdminMasterLogin(event)" style="text-align: left;">
           <div class="form-group" style="margin-bottom: 14px;">
-            <label class="form-label">Super Admin Master PIN वा Key *</label>
+            <label class="form-label" style="font-size: 12px; font-weight: 700; color: #475569;">सुरक्षित Master PIN वा Key *</label>
             <div style="position: relative;">
-              <input type="password" id="superAdminMasterKey" required class="form-control" placeholder="Master PIN (उदा: 1234)" inputmode="numeric" autocomplete="current-password" style="font-size: 16px; text-align: center; letter-spacing: 0.15em; padding-right: 42px;">
-              <button type="button" onclick="togglePassVisibility('superAdminMasterKey', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 15px; cursor: pointer; color: var(--slate-600);" title="Show/Hide">👁️</button>
+              <input type="password" id="superAdminMasterKey" required class="form-control" placeholder="Master PIN (उदा: 1234)" inputmode="numeric" autocomplete="current-password" style="font-size: 18px; text-align: center; letter-spacing: 0.15em; padding-right: 42px; height: 48px; border-radius: 12px; font-weight: 700;">
+              <button type="button" onclick="togglePassVisibility('superAdminMasterKey', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; cursor: pointer; color: var(--slate-600);" title="Show/Hide">👁️</button>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%; background: #0f172a; border-color: #0f172a; font-weight: 800; padding: 11px; font-size: 14.5px;">
+          <button type="submit" class="btn btn-primary" style="width: 100%; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border: none; font-weight: 800; padding: 13px; font-size: 15px; border-radius: 12px; box-shadow: 0 4px 14px rgba(15,23,42,0.3);">
             ⚡ Unlock Super Admin Dashboard
           </button>
         </form>
 
         <!-- 1-Click Fast Unlock Helper -->
-        <div style="margin-top: 10px; display: flex; justify-content: center; gap: 8px;">
-          <button type="button" class="btn btn-sm btn-secondary" onclick="quickFillSuperLogin('1234')" style="font-size: 11.5px; font-weight: 700; padding: 5px 12px; background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe;">
+        <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+          <button type="button" class="btn btn-secondary" onclick="quickFillSuperLogin('1234')" style="width: 100%; font-size: 13px; font-weight: 700; padding: 10px; background: #e0e7ff; color: #3730a3; border: 1.5px solid #c7d2fe; border-radius: 10px;">
             🚀 १-क्लिक फास्ट अनलक (PIN: 1234)
           </button>
-        </div>
-        <div style="margin-top: 10px; font-size: 11.5px; color: var(--slate-600); text-align: center;">
-          Default Master PIN: <code>1234</code> वा <code>9999</code>
+          <div style="font-size: 11.5px; color: var(--slate-600); text-align: center;">
+            Default Master PIN: <code>1234</code> वा <code>9999</code>
+          </div>
         </div>
       </div>
 
       <!-- PANE 2: PALIKA ADMIN LOGIN (Dedicated Clean Single Executive Screen) -->
       <div id="paneAdminLogin" style="display: none;">
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 12px; font-size: 12.5px; color: var(--slate-700); margin-bottom: 16px; text-align: left; line-height: 1.5;">
-          🏛️ <b>पालिका Admin Access:</b> Super Admin ले प्रदान गरेको Username र Password प्रविष्ट गरी आफ्नो पालिकाको कमान्ड सेन्टर खोल्नुहोस्।
-        </div>
         <form onsubmit="handleTenantAdminLogin(event)" style="text-align: left;">
-          <div class="form-group" style="margin-bottom: 14px;">
-            <label class="form-label">Admin Username (प्रयोगकर्ता नाम) *</label>
-            <input type="text" id="adminUserField" required class="form-control" placeholder="उदा: helambu_admin" autocomplete="username" autocapitalize="none" style="font-size: 14px; padding: 10px 12px;">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 12px; font-weight: 700; color: #475569;">Admin Username (प्रयोगकर्ता नाम) *</label>
+            <input type="text" id="adminUserField" required class="form-control" placeholder="उदा: helambu_admin" autocomplete="username" autocapitalize="none" style="font-size: 14.5px; padding: 11px 14px; border-radius: 10px;">
           </div>
           <div class="form-group" style="margin-bottom: 16px;">
-            <label class="form-label">Password (गोप्य पासवर्ड) *</label>
+            <label class="form-label" style="font-size: 12px; font-weight: 700; color: #475569;">Password (गोप्य पासवर्ड) *</label>
             <div style="position: relative;">
-              <input type="password" id="adminPassField" required class="form-control" placeholder="पासवर्ड टाइप गर्नुहोस्" autocomplete="current-password" style="font-size: 14px; padding: 10px 12px; padding-right: 42px;">
-              <button type="button" onclick="togglePassVisibility('adminPassField', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 16px; cursor: pointer; color: var(--slate-600);" title="Show/Hide">👁️</button>
+              <input type="password" id="adminPassField" required class="form-control" placeholder="पासवर्ड टाइप गर्नुहोस्" autocomplete="current-password" style="font-size: 14.5px; padding: 11px 14px; padding-right: 42px; border-radius: 10px;">
+              <button type="button" onclick="togglePassVisibility('adminPassField', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; cursor: pointer; color: var(--slate-600);" title="Show/Hide">👁️</button>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 14.5px; font-weight: 800; padding: 12px; background: #1e3a8a; border-color: #1e3a8a;">
+          <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 15px; font-weight: 800; padding: 13px; background: #1e3a8a; border: none; border-radius: 12px;">
             🚀 पालिका कमान्ड लगइन (Login to Palika HQ)
           </button>
         </form>
-        <div style="margin-top: 12px; display: flex; justify-content: center; gap: 8px;">
-          <button type="button" class="btn btn-sm btn-secondary" onclick="quickFillAdminLogin('helambu_admin', 'helambu@123')" style="font-size: 11.5px; font-weight: 700; padding: 5px 12px; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0;">
+        <div style="margin-top: 10px;">
+          <button type="button" class="btn btn-secondary" onclick="quickFillAdminLogin('helambu_admin', 'helambu@123')" style="width: 100%; font-size: 12.5px; font-weight: 700; padding: 9px; background: #f0fdf4; color: #166534; border: 1.5px solid #bbf7d0; border-radius: 10px;">
             ⚡ Demo Admin अटो भर्नुहोस् (Helambu)
           </button>
         </div>
 
         <!-- Separate Link to Field Worker PIN Screen -->
-        <div style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--slate-300); text-align: center;">
+        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--slate-300); text-align: center;">
           <a href="javascript:void(0)" onclick="openWorkerPortalFromAdmin()" style="font-size: 12.5px; color: var(--indigo-600); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
             <span>👷 फिल्ड कार्यकर्ता वा वडा प्रतिनिधि हुनुहुन्छ?</span>
             <span style="text-decoration: underline;">कार्यकर्ता PIN लगइन खोल्नुहोस् &rarr;</span>
@@ -3443,33 +3477,33 @@
 
       </div>
     </main>
-  </div>
 
-  <!-- Mobile Bottom Navigation (for Field Workers, Candidates & Admins on phones) -->
-  <nav class="mobile-bottom-nav" id="mobileBottomNav">
-    <div class="mobile-bottom-nav-inner" id="mobileBottomNavInner">
-      <button class="mob-nav-btn active" data-view="dashboard" onclick="switchView('dashboard')">
-        <span class="nav-icon">📊</span>
-        <span class="nav-label">ड्यासबोर्ड</span>
-      </button>
-      <button class="mob-nav-btn" data-view="warRoom" onclick="switchView('warRoom')">
-        <span class="nav-icon">🎯</span>
-        <span class="nav-label">वार-रूम</span>
-      </button>
-      <button class="mob-nav-btn" data-view="voters" onclick="switchView('voters')">
-        <span class="nav-icon">👥</span>
-        <span class="nav-label">मतदाता</span>
-      </button>
-      <button class="mob-nav-btn" data-view="visits" onclick="switchView('visits')">
-        <span class="nav-icon">🚶</span>
-        <span class="nav-label">घरदैलो</span>
-      </button>
-      <button class="mob-nav-btn" id="mobNavMenu" onclick="toggleSidebar()">
-        <span class="nav-icon">☰</span>
-        <span class="nav-label">मेनु</span>
-      </button>
-    </div>
-  </nav>
+    <!-- Mobile Bottom Navigation (for Field Workers, Candidates & Admins on phones) -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+      <div class="mobile-bottom-nav-inner" id="mobileBottomNavInner">
+        <button class="mob-nav-btn active" data-view="dashboard" onclick="switchView('dashboard')">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">ड्यासबोर्ड</span>
+        </button>
+        <button class="mob-nav-btn" data-view="warRoom" onclick="switchView('warRoom')">
+          <span class="nav-icon">🎯</span>
+          <span class="nav-label">वार-रूम</span>
+        </button>
+        <button class="mob-nav-btn" data-view="voters" onclick="switchView('voters')">
+          <span class="nav-icon">👥</span>
+          <span class="nav-label">मतदाता</span>
+        </button>
+        <button class="mob-nav-btn" data-view="visits" onclick="switchView('visits')">
+          <span class="nav-icon">🚶</span>
+          <span class="nav-label">घरदैलो</span>
+        </button>
+        <button class="mob-nav-btn" id="mobNavMenu" onclick="toggleSidebar()">
+          <span class="nav-icon">☰</span>
+          <span class="nav-label">मेनु</span>
+        </button>
+      </div>
+    </nav>
+  </div>
 
   <!-- REUSABLE MODAL CONTAINER -->
   <div id="modalOverlay" class="modal-overlay" onclick="if(event.target===this) closeModal()">
@@ -3910,6 +3944,12 @@
       // Auto-Sync with Supabase Cloud on Launch
       syncSupabaseData(false);
 
+      if (!currentUser) {
+        document.body.classList.add('login-active');
+        const mobNav = document.getElementById('mobileBottomNav');
+        if (mobNav) mobNav.style.display = 'none';
+      }
+
       // Register Service Worker
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
@@ -3978,8 +4018,11 @@
 
     // STRICT 100% SUPER ADMIN MASTER SCREEN (Default on Root Domain)
     function showSuperAdminGatewayPrompt() {
+      document.body.classList.add('login-active');
       document.getElementById('loginScreen').style.display = 'flex';
       document.getElementById('appShell').style.display = 'none';
+      const mobNav = document.getElementById('mobileBottomNav');
+      if (mobNav) mobNav.style.display = 'none';
 
       // Brand icon and header
       const icon = document.querySelector('.pin-card .brand-icon');
@@ -4012,8 +4055,11 @@
 
     // DEDICATED PALIKA PORTAL (?palika=<slug>)
     function showPalikaPortalLogin(slug) {
+      document.body.classList.add('login-active');
       document.getElementById('loginScreen').style.display = 'flex';
       document.getElementById('appShell').style.display = 'none';
+      const mobNav = document.getElementById('mobileBottomNav');
+      if (mobNav) mobNav.style.display = 'none';
 
       // Find matching tenant
       const tenant = (state.tenants || []).find(t => 
@@ -4256,8 +4302,11 @@
 
       document.getElementById('loginTitle').textContent = `नमस्ते, ${staff.Name} जी!`;
       document.getElementById('loginSubtitle').textContent = `${staff.Role} • Ward ${staff.Ward || '-'}${staff.Tole ? ' • ' + staff.Tole : ''}`;
+      document.body.classList.add('login-active');
       document.getElementById('loginScreen').style.display = 'flex';
       document.getElementById('appShell').style.display = 'none';
+      const mobNav = document.getElementById('mobileBottomNav');
+      if (mobNav) mobNav.style.display = 'none';
 
       pinBuffer = '';
       updatePinDots();
@@ -4557,6 +4606,13 @@
           topBadge.innerHTML = `<span>🟢</span> <span class="sync-label btn-text-mobile-hide">Cloud Synced (${state.voters.length})</span>`;
         }
 
+        // Auto-refresh active views if logged in
+        if (currentUser) {
+          refreshDashboardMetrics();
+          renderVotersList();
+          if (currentUser.Role === 'Super Admin') renderTenantsManagement();
+        }
+
         if (interactive) showToast('⚡ Supabase Cloud Synced Successfully!', 'success');
       } catch (err) {
         console.warn('Supabase sync warning:', err);
@@ -4778,8 +4834,11 @@
     }
 
     function launchDashboard() {
+      document.body.classList.remove('login-active');
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('appShell').style.display = 'flex';
+      const mobNav = document.getElementById('mobileBottomNav');
+      if (mobNav) mobNav.style.display = window.innerWidth <= 880 ? 'flex' : 'none';
       
       // Apply Complete Role-Based Navigation & UI Boundaries
       applyRoleBasedNavigation(currentUser);
@@ -4816,11 +4875,14 @@
     }
 
     function logout() {
+      document.body.classList.add('login-active');
       logActivity('logout', `${currentUser ? currentUser.Name : 'User'} logged out.`);
       const wasPalika = currentUser && currentUser.TenantID && currentUser.TenantID !== 'ALL';
       const tenant = wasPalika ? (state.tenants || []).find(t => t.TenantID === currentUser.TenantID) : null;
       currentUser = null;
       document.getElementById('appShell').style.display = 'none';
+      const mobNav = document.getElementById('mobileBottomNav');
+      if (mobNav) mobNav.style.display = 'none';
 
       if (tenant && tenant.Slug) {
         window.history.replaceState({}, document.title, `${window.location.pathname}?palika=${tenant.Slug}`);
@@ -5472,22 +5534,23 @@
 
     function renderWardProgressTable() {
       const tbody = document.getElementById('wardProgressRows');
+      if (!tbody) return;
       let html = '';
       for (let w = 1; w <= 9; w++) {
-        const wv = state.voters.filter(v => Number(v.Ward) === w);
+        const wv = (state.voters || []).filter(v => Number(v.Ward || v.WardNo || 0) === w);
         const contacted = wv.filter(v => v.ContactStatus === 'Contacted').length;
         const verified = wv.filter(v => v.VerificationStatus === 'Verified').length;
-        const booths = state.booths.filter(b => Number(b.WardNo) === w).length;
-        const issues = state.issues.filter(i => Number(i.WardNo) === w && i.Status !== 'Resolved').length;
-        const followups = state.followups.filter(f => {
-          const voter = state.voters.find(x => x.VoterID === f.VoterID);
-          return voter && Number(voter.Ward) === w && f.Status === 'Pending';
+        const booths = (state.booths || []).filter(b => Number(b.WardNo || b.Ward || 0) === w).length;
+        const issues = (state.issues || []).filter(i => Number(i.WardNo || i.Ward || 0) === w && i.Status !== 'Resolved').length;
+        const followups = (state.followups || []).filter(f => {
+          const voter = (state.voters || []).find(x => x.VoterID === f.VoterID);
+          return voter && Number(voter.Ward || voter.WardNo || 0) === w && f.Status === 'Pending';
         }).length;
 
         html += `
           <tr>
-            <td><b>Ward ${w}</b></td>
-            <td>${wv.length}</td>
+            <td><b>वडा ${w}</b></td>
+            <td><b>${wv.length}</b></td>
             <td><span class="badge badge-contacted">${contacted}</span></td>
             <td><span class="badge badge-verified">${verified}</span></td>
             <td>${followups ? `<span class="badge badge-urgent">${followups}</span>` : '0'}</td>
