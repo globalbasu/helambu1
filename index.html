@@ -5982,42 +5982,23 @@
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Self-reported Response</label>
-              <select name="SelfReportedResponse" class="form-control">
-                <option value="">None / Not Provided</option>
-                <option value="Support">Support (हाम्रो समर्थक)</option>
-                <option value="Undecided">Undecided (दोधार)</option>
-                <option value="Not Support">Not Support (विपक्षी)</option>
-                <option value="Declined to Answer">Declined to Answer</option>
+              <label class="form-label" style="font-weight: 700; color: #047857;">समर्थन सम्भाव्यता (५ स्ल्याब) *</label>
+              <select name="SupportTier" class="form-control" style="font-weight: 700;">
+                <option value="solid">🟢 पक्का समर्थक (100% Solid)</option>
+                <option value="lean">🟩 सकारात्मक / झुकाव (75% Lean)</option>
+                <option value="swing" selected>🟡 दोधार / तटस्थ (50% Neutral)</option>
+                <option value="opponent_lean">🟠 विपक्षी झुकाव (25% Opponent Lean)</option>
+                <option value="hard_opponent">🔴 कडा विरोधी (0% Hard Anti)</option>
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">📍 हालको बसोबास स्थान (Current Location)</label>
-              <select name="CurrentLocation" class="form-control">
-                <option value="गाउँमै उपस्थित (On-Ground)" ${(v.CurrentLocation||'').includes('गाउँ')?'selected':''}>🟢 गाउँमै उपस्थित (On-Ground)</option>
-                <option value="काठमाडौं / शहर (Kathmandu/City)" ${(v.CurrentLocation||'').includes('काठमाडौं')||(v.CurrentLocation||'').includes('शहर')?'selected':''}>🚗 काठमाडौं / शहर (Needs Transport)</option>
-                <option value="खाडी मुलुक / मलेसिया (Gulf)" ${(v.CurrentLocation||'').includes('खाडी')||(v.CurrentLocation||'').includes('Gulf')?'selected':''}>🏜️ खाडी मुलुक / मलेसिया (Gulf)</option>
-                <option value="भारत (India)" ${(v.CurrentLocation||'').includes('भारत')?'selected':''}>🇮🇳 भारत (India Migrant)</option>
-                <option value="युरोप / अमेरिका / अन्य (West)" ${(v.CurrentLocation||'').includes('युरोप')||(v.CurrentLocation||'').includes('West')?'selected':''}>✈️ युरोप, अमेरिका, अस्ट्रेलिया (West)</option>
+              <label class="form-label" style="font-weight: 700; color: #7c2d12;">🌟 समुदायको प्रभावकारी व्यक्ति (Influencer)?</label>
+              <select name="IsInfluencer" class="form-control">
+                <option value="No">होइन (सामान्य मतदाता)</option>
+                <option value="Yes">हो, टोल/समुदायको अगुवा (VIP Influencer)</option>
               </select>
             </div>
-            <div class="form-group">
-              <label class="form-label">🗳️ मतदानको दिन उपस्थिति (Election Turnout)</label>
-              <select name="ElectionDayTurnout" class="form-control">
-                <option value="पक्का स्थानीय उपस्थित (Confirmed)" ${(v.ElectionDayTurnout||'').includes('पक्का')?'selected':''}>🟢 पक्का स्थानीय उपस्थित (Confirmed)</option>
-                <option value="गाडी पठाए आउने (Needs Transport)" ${(v.ElectionDayTurnout||'').includes('गाडी')?'selected':''}>🚗 गाडी पठाए आउने (Needs Transport)</option>
-                <option value="सम्पर्क भइरहेको (Doubtful)" ${(v.ElectionDayTurnout||'').includes('सम्पर्क')?'selected':''}>🟠 सम्पर्क भइरहेको (Doubtful)</option>
-                <option value="आउन नसक्ने / विदेश (Abroad/Absent)" ${(v.ElectionDayTurnout||'').includes('आउन नसक्ने')||(v.ElectionDayTurnout||'').includes('विदेश')?'selected':''}>🔴 आउन नसक्ने / विदेश (Abroad/Absent)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">🏙️ शहर ठेगाना वा विदेशको देश (City / Country)</label>
-              <input type="text" name="CityAddress" class="form-control" value="${esc(v.CityAddress || '')}" placeholder="उदा: चाबहिल, कोटेश्वर वा कतार, भारत">
-            </div>
-            <div class="form-group">
-              <label class="form-label">👥 पारिवारिक प्रभाव भोट संख्या (Influenced Votes)</label>
-              <input type="number" name="FamilyVotesCount" class="form-control" value="${v.FamilyVotesCount || 1}" min="1" max="25">
-            </div>
+            
             <div class="form-group">
               <label class="form-label">🚩 सम्भावित पार्टी झुकाव (Party Leaning)</label>
               <select name="PartyLeaning" class="form-control">
@@ -6131,6 +6112,8 @@
         VerificationStatus: formData.get('VerificationStatus') || 'Pending',
         SelfReportedResponse: formData.get('SelfReportedResponse') || '',
         PartyLeaning: formData.get('PartyLeaning') || '',
+        SupportTier: formData.get('SupportTier') || 'swing',
+        IsInfluencer: formData.get('IsInfluencer') === 'Yes',
         CurrentLocation: formData.get('CurrentLocation') || 'गाउँमै उपस्थित (On-Ground)',
         ElectionDayTurnout: formData.get('ElectionDayTurnout') || 'पक्का स्थानीय उपस्थित (Confirmed)',
         CityAddress: (formData.get('CityAddress') || '').trim(),
