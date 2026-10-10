@@ -3967,6 +3967,8 @@
     function populateLoginUserSelector() {
       const select = document.getElementById('loginUserSelect');
       if (!select) return;
+      const currentSelected = document.getElementById('loginScreen') ? document.getElementById('loginScreen').dataset.selectedUser : null;
+
       let html = '';
       if (state.candidates && state.candidates.length) {
         html += '<optgroup label="🎯 उम्मेदवारहरू (Candidates - War Room)">';
@@ -3981,34 +3983,56 @@
       });
       html += '</optgroup>';
       select.innerHTML = html;
-      if (select.value) {
+
+      // Preserve active selected user if already set (avoid overriding worker with candidate)
+      if (currentSelected && (state.users.some(u => u.UserID === currentSelected) || (state.candidates || []).some(c => c.CandidateID === currentSelected))) {
+        select.value = currentSelected;
+        onLoginUserSelected(currentSelected);
+      } else if (select.value) {
         onLoginUserSelected(select.value);
       }
     }
 
     function onLoginUserSelected(userId) {
+      const loginScr = document.getElementById('loginScreen');
+      if (loginScr) loginScr.dataset.selectedUser = userId;
+
+      const autoPinBtn = document.getElementById('workerAutoPinBtn');
       const badge = document.getElementById('loginUserScopeBadge');
-      if (!badge) return;
-      document.getElementById('loginScreen').dataset.selectedUser = userId;
 
       const c = (state.candidates || []).find(x => x.CandidateID === userId);
       if (c) {
-        badge.innerHTML = `🎯 Candidate War-Room: ${esc(c.Post)} • ${esc(c.Party)} (${c.Ward !== 'All' ? 'वडा ' + c.Ward : 'समग्र पालिका'})`;
-        badge.style.color = '#4338ca';
+        if (badge) {
+          badge.innerHTML = `🎯 Candidate War-Room: ${esc(c.Post)} • ${esc(c.Party)} (${c.Ward !== 'All' ? 'वडा ' + c.Ward : 'समग्र पालिका'})`;
+          badge.style.color = '#4338ca';
+        }
+        if (autoPinBtn) {
+          const cPin = c.PIN || '2026';
+          autoPinBtn.textContent = `⚡ अटो PIN (${cPin}) हान्नुहोस्`;
+          autoPinBtn.setAttribute('onclick', `quickFillWorkerPin('${cPin}')`);
+        }
         return;
       }
 
       const u = state.users.find(x => x.UserID === userId);
       if (!u) return;
-      if (u.Role === 'Super Admin') {
-        badge.innerHTML = '🌐 Master Access • All Wards & Operational Controls';
-        badge.style.color = 'var(--indigo-600)';
-      } else if (u.Role === 'Ward Coordinator') {
-        badge.innerHTML = `📍 Scoped Workspace: Ward ${u.Ward} Team & Voter Management`;
-        badge.style.color = '#0284c7';
-      } else {
-        badge.innerHTML = `📋 Field Worker: Ward ${u.Ward} ${u.Tole ? '(' + u.Tole + ')' : ''} Data Entry`;
-        badge.style.color = '#059669';
+      if (autoPinBtn) {
+        const uPin = u.PIN || '1234';
+        autoPinBtn.textContent = `⚡ अटो PIN (${uPin}) हान्नुहोस्`;
+        autoPinBtn.setAttribute('onclick', `quickFillWorkerPin('${uPin}')`);
+      }
+
+      if (badge) {
+        if (u.Role === 'Super Admin') {
+          badge.innerHTML = '🌐 Master Access • All Wards & Operational Controls';
+          badge.style.color = 'var(--indigo-600)';
+        } else if (u.Role === 'Ward Coordinator') {
+          badge.innerHTML = `📍 Scoped Workspace: Ward ${u.Ward} Team & Voter Management`;
+          badge.style.color = '#0284c7';
+        } else {
+          badge.innerHTML = `📋 Field Worker: Ward ${u.Ward} ${u.Tole ? '(' + u.Tole + ')' : ''} Data Entry`;
+          badge.style.color = '#059669';
+        }
       }
     }
 
@@ -4023,7 +4047,28 @@
     function showStaffLoginPrompt(staff) {
       if (!staff) return;
 
-      // Populate Worker Personalized Card
+      // 1. Switch login mode to worker first so panes activate cleanly
+      currentLoginMode = 'worker';
+      ['Super', 'Admin', 'Worker'].forEach(m => {
+        const btn = document.getElementById(`tabBtn${m}Login`);
+        const pane = document.getElementById(`pane${m}Login`);
+        if (btn) btn.classList.toggle('active', m.toLowerCase() === 'worker');
+        if (pane) pane.style.display = (m.toLowerCase() === 'worker') ? 'block' : 'none';
+      });
+
+      // 2. Explicitly bind selected user ID
+      const loginScr = document.getElementById('loginScreen');
+      if (loginScr) loginScr.dataset.selectedUser = staff.UserID;
+
+      // 3. Populate selector (will preserve staff.UserID)
+      populateLoginUserSelector();
+      const select = document.getElementById('loginUserSelect');
+      if (select) {
+        select.value = staff.UserID;
+      }
+      onLoginUserSelected(staff.UserID);
+
+      // 4. Populate Worker Personalized Card
       const welcomeCard = document.getElementById('workerDirectWelcomeCard');
       const manualWrap = document.getElementById('workerManualSelectWrap');
       const nameEl = document.getElementById('workerWelcomeName');
@@ -4038,21 +4083,21 @@
       if (wardEl) wardEl.textContent = `वडा नं. ${staff.Ward || '१'}${staff.Tole ? ' • ' + staff.Tole : ''}`;
       if (avatarEl) avatarEl.textContent = staff.Name.charAt(0).toUpperCase();
 
-      populateLoginUserSelector();
-      const select = document.getElementById('loginUserSelect');
-      if (select) {
-        select.value = staff.UserID;
-        onLoginUserSelected(staff.UserID);
+      // 5. Update Auto PIN quick button with this worker's actual PIN
+      const autoPinBtn = document.getElementById('workerAutoPinBtn');
+      if (autoPinBtn) {
+        const staffPin = staff.PIN || '1234';
+        autoPinBtn.textContent = `⚡ अटो PIN (${staffPin}) हान्नुहोस्`;
+        autoPinBtn.setAttribute('onclick', `quickFillWorkerPin('${staffPin}')`);
       }
 
       document.getElementById('loginTitle').textContent = `नमस्ते, ${staff.Name} जी!`;
       document.getElementById('loginSubtitle').textContent = `${staff.Role} • Ward ${staff.Ward || '-'}${staff.Tole ? ' • ' + staff.Tole : ''}`;
       document.getElementById('loginScreen').style.display = 'flex';
       document.getElementById('appShell').style.display = 'none';
-      document.getElementById('loginScreen').dataset.selectedUser = staff.UserID;
+
       pinBuffer = '';
       updatePinDots();
-      switchLoginMode('worker');
     }
 
     // Toggle Password Visibility
@@ -4494,10 +4539,27 @@
     });
 
     function submitPin() {
-      const selectedUserId = document.getElementById('loginScreen').dataset.selectedUser;
-      const masterPin = state.settings.admin_pin || '1234';
+      const selectedUserId = document.getElementById('loginScreen') ? document.getElementById('loginScreen').dataset.selectedUser : '';
+      const masterPin = (state.settings && state.settings.admin_pin) || '1234';
 
-      // 1. Check if candidate login
+      // 1. Check Field Staff / Worker / Coordinator FIRST
+      const targetUser = state.users.find(u => u.UserID === selectedUserId);
+      if (targetUser) {
+        const validPin = targetUser.PIN || masterPin || '1234';
+        if (String(pinBuffer) === String(validPin) || String(pinBuffer) === String(masterPin) || pinBuffer === '1234' || pinBuffer === '9999') {
+          currentUser = targetUser;
+          launchDashboard();
+          logActivity('login', `${currentUser.Name} (${currentUser.Role}) logged into field workspace.`);
+          showToast(`स्वागत छ, ${currentUser.Name} जी (${currentUser.Role})`, 'success');
+          return;
+        } else {
+          showToast(`गलत PIN कोड। (${targetUser.Name} को PIN: ${validPin} वा 1234)`, 'error');
+          clearPin();
+          return;
+        }
+      }
+
+      // 2. Check Candidate (CandidateID matches selectedUserId)
       const targetCandidate = (state.candidates || []).find(c => c.CandidateID === selectedUserId);
       if (targetCandidate) {
         const cPin = targetCandidate.PIN || '2026';
@@ -4514,7 +4576,6 @@
           };
           state.selectedCandidateId = targetCandidate.CandidateID;
           launchDashboard();
-          switchView('warRoom');
           logActivity('login', `🎯 उम्मेदवार ${targetCandidate.Name} (${targetCandidate.Post}) ले आफ्नो वार-रूम कन्सोल खोल्नुभयो।`);
           showToast(`Welcome Candidate, ${targetCandidate.Name}!`, 'success');
           return;
@@ -4525,18 +4586,17 @@
         }
       }
 
-      // 2. Check if field staff
-      const targetUser = state.users.find(u => u.UserID === selectedUserId) || state.users[0];
-      const validPin = targetUser ? (targetUser.PIN || masterPin) : masterPin;
-      if (String(pinBuffer) === String(validPin) || String(pinBuffer) === String(masterPin) || pinBuffer === '1234' || pinBuffer === '9999') {
-        currentUser = targetUser || state.users[0];
+      // 3. Fallback: Search any user whose PIN matches entered pinBuffer
+      const fallbackUser = state.users.find(u => String(u.PIN) === String(pinBuffer)) || state.users[0];
+      if (fallbackUser && (pinBuffer === '1234' || pinBuffer === '9999' || String(fallbackUser.PIN) === String(pinBuffer))) {
+        currentUser = fallbackUser;
         launchDashboard();
-        logActivity('login', `${currentUser.Name} (${currentUser.Role}) logged into field workspace.`);
         showToast(`Welcome, ${currentUser.Name} (${currentUser.Role})`, 'success');
-      } else {
-        showToast('Incorrect 4-digit PIN for ' + (targetUser ? targetUser.Name : 'Worker') + '. (Default: 1234)', 'error');
-        clearPin();
+        return;
       }
+
+      showToast('गलत ४-अङ्कको PIN कोड। कृपया सही PIN हान्नुहोस्। (Default: 1234)', 'error');
+      clearPin();
     }
 
     function emergencyResetPin() {
