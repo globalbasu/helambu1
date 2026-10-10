@@ -13,6 +13,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Election Ops">
   <meta name="format-detection" content="telephone=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <link rel="apple-touch-icon" href="icons/icon-192.svg">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1858,6 +1861,9 @@
           <div style="font-size: 11.5px; color: var(--slate-600); text-align: center;">
             Default Master PIN: <code>1234</code> वा <code>9999</code>
           </div>
+          <button type="button" onclick="forceAppHardReload()" style="background: none; border: none; color: #64748b; font-size: 11.5px; cursor: pointer; text-decoration: underline; margin-top: 4px;" title="नयाँ अपडेट भएको कोड लोड गर्न क्यास खाली गर्नुहोस्">
+            🔄 नयाँ अपडेट देखिएन? क्यास खाली गरी रिलोड गर्नुहोस्
+          </button>
         </div>
       </div>
 
@@ -3938,6 +3944,18 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      // Auto cache purging if build changed
+      const CURRENT_APP_BUILD = '20261010-v3';
+      const lastBuild = localStorage.getItem('election_app_build');
+      if (lastBuild && lastBuild !== CURRENT_APP_BUILD) {
+        localStorage.setItem('election_app_build', CURRENT_APP_BUILD);
+        if ('caches' in window) {
+          caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))));
+        }
+      } else {
+        localStorage.setItem('election_app_build', CURRENT_APP_BUILD);
+      }
+
       loadPersistedState();
       handleUrlRouting();
       
@@ -3950,13 +3968,36 @@
         if (mobNav) mobNav.style.display = 'none';
       }
 
-      // Register Service Worker
+      // Register Service Worker with cache-busting
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
-          .then(() => console.log('Election Ops PWA Service Worker Registered'))
+        navigator.serviceWorker.register('sw.js?v=3.0.2')
+          .then((reg) => {
+            console.log('Election Ops PWA Service Worker Registered (v3.0.2)');
+            reg.update();
+          })
           .catch(err => console.log('SW registration error:', err));
       }
     });
+
+    function forceAppHardReload() {
+      showToast('नयाँ संस्करण लोड गरिँदैछ, कृपया १ सेकेन्ड पर्खनुहोस्...', 'info');
+      if ('caches' in window) {
+        caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).then(() => {
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(regs => {
+              regs.forEach(r => r.unregister());
+              setTimeout(() => {
+                window.location.href = window.location.origin + window.location.pathname + '?_v=' + Date.now();
+              }, 250);
+            });
+          } else {
+            window.location.href = window.location.origin + window.location.pathname + '?_v=' + Date.now();
+          }
+        });
+      } else {
+        window.location.href = window.location.origin + window.location.pathname + '?_v=' + Date.now();
+      }
+    }
 
     function handleUrlRouting() {
       const params = new URLSearchParams(window.location.search);
