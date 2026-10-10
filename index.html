@@ -1372,13 +1372,57 @@
       background: rgba(255, 255, 255, 0.25);
     }
 
+    /* Strict Auth Lockdown: While on login screen, NEVER show App Shell, Sidebar or Bottom Nav */
+    body.login-active #appShell,
+    body.login-active .sidebar,
+    body.login-active .sidebar-backdrop,
+    body.login-active .mobile-bottom-nav,
+    body.login-active .topbar,
+    body.login-active .main-wrap,
+    body:not(.logged-in) #appShell,
+    body:not(.logged-in) .sidebar,
+    body:not(.logged-in) .sidebar-backdrop,
+    body:not(.logged-in) .mobile-bottom-nav,
+    body:not(.logged-in) .topbar,
+    body:not(.logged-in) .main-wrap,
+    #appShell[style*="display: none"],
+    #appShell.hidden {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      height: 0 !important;
+      max-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    body.login-active {
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      min-height: 100vh !important;
+      min-height: 100dvh !important;
+      background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #090d16 100%) !important;
+    }
+
     /* --- Tablet & Mobile Media Queries (<= 880px) --- */
     @media (max-width: 880px) {
-      .app-shell {
+      body.logged-in .app-shell,
+      body.logged-in #appShell {
         display: block !important;
         width: 100% !important;
+        max-width: 100vw !important;
         overflow-x: hidden !important;
         position: relative !important;
+      }
+      body.login-active #appShell,
+      body:not(.logged-in) #appShell,
+      #appShell[style*="display: none"] {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        height: 0 !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
       }
 
       /* Sidebar off-canvas mobile drawer with smooth hardware acceleration */
@@ -1399,7 +1443,14 @@
         padding-bottom: env(safe-area-inset-bottom, 0px) !important;
         will-change: transform;
       }
-      .sidebar.open {
+      body.login-active .sidebar,
+      body:not(.logged-in) .sidebar {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        transform: translate3d(-100%, 0, 0) !important;
+      }
+      body.logged-in .sidebar.open {
         transform: translate3d(0, 0, 0) !important;
         box-shadow: 16px 0 50px rgba(0, 0, 0, 0.55) !important;
       }
@@ -1423,12 +1474,12 @@
         display: inline-flex !important;
         align-items: center;
         justify-content: center;
-        width: 42px !important;
-        height: 42px !important;
-        min-width: 42px !important;
-        min-height: 42px !important;
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        min-height: 38px !important;
         border-radius: 10px !important;
-        font-size: 21px !important;
+        font-size: 20px !important;
         cursor: pointer !important;
         border: 1px solid #cbd5e1 !important;
         background: #ffffff !important;
@@ -1442,21 +1493,24 @@
       }
 
       /* Show native bottom navigation bar ONLY when logged in */
-      .mobile-bottom-nav {
+      body.logged-in .mobile-bottom-nav {
         display: flex !important;
       }
       body.login-active .mobile-bottom-nav,
+      body:not(.logged-in) .mobile-bottom-nav,
       #appShell[style*="display: none"] .mobile-bottom-nav,
       #loginScreen:not([style*="display: none"]) ~ * .mobile-bottom-nav,
       #loginScreen:not([style*="display: none"]) ~ .mobile-bottom-nav {
         display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
       }
 
-      /* Mobile Topbar - Sleek Native App Header with Safe-Area Insets */
+      /* Mobile Topbar - Sleek Native App Header with Safe-Area Insets (Zero Overflow Guaranteed) */
       .topbar {
-        padding: 8px 12px !important;
+        padding: 8px 10px !important;
         padding-top: calc(8px + env(safe-area-inset-top, 0px)) !important;
-        min-height: 54px !important;
+        min-height: 52px !important;
         height: auto !important;
         width: 100% !important;
         max-width: 100vw !important;
@@ -1465,11 +1519,11 @@
         justify-content: space-between !important;
         align-items: center !important;
         flex-wrap: nowrap !important;
-        gap: 8px !important;
+        gap: 6px !important;
         position: sticky !important;
         top: 0 !important;
         z-index: 900 !important;
-        background: rgba(255, 255, 255, 0.96) !important;
+        background: rgba(255, 255, 255, 0.98) !important;
         backdrop-filter: blur(18px) saturate(180%) !important;
         -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
         border-bottom: 1px solid rgba(226, 232, 240, 0.85) !important;
@@ -1486,16 +1540,18 @@
         overflow: hidden !important;
       }
       .topbar-title {
-        font-size: 14.5px !important;
+        font-size: 14px !important;
         font-weight: 800 !important;
-        max-width: 150px !important;
+        min-width: 0 !important;
+        flex: 1 1 auto !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
         line-height: 1.2 !important;
+        color: var(--navy-900) !important;
       }
       #electionModeBadge,
-      #topbarCandidateSwitcherContainer label {
+      #topbarCandidateSwitcherContainer {
         display: none !important;
       }
       .topbar-right {
@@ -1504,6 +1560,7 @@
         gap: 6px !important;
         flex-shrink: 0 !important;
         flex-wrap: nowrap !important;
+        min-width: 0 !important;
       }
       .topbar-right .online-badge,
       .topbar-right .sync-label,
@@ -1512,15 +1569,25 @@
       .hide-mobile, .btn-text-mobile-hide {
         display: none !important;
       }
-      .topbar-right .btn-sm {
-        font-size: 12px !important;
-        padding: 6px 10px !important;
+      .topbar-right .btn-sm,
+      #topbarSupabaseSyncBtn,
+      .topbar-right button[onclick="openQuickActionModal()"] {
+        font-size: 15px !important;
+        padding: 0 !important;
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
         min-height: 38px !important;
         border-radius: 10px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
         white-space: nowrap !important;
+        flex-shrink: 0 !important;
       }
       #topbarSupabaseSyncBtn {
-        padding: 6px 8px !important;
+        border: 1px solid #bbf7d0 !important;
+        background: #f0fdf4 !important;
       }
 
       /* Content Area compact padding & mobile container flow */
@@ -1598,15 +1665,60 @@
         font-size: 12px !important;
       }
 
-      /* Card header toolbar horizontal touch scrolling */
+      /* War Room hero & switcher mobile responsiveness - zero overflow */
+      .war-room-hero-grid {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+      }
+      .war-room-switcher-wrap {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        gap: 8px !important;
+      }
+      .war-room-switcher-wrap select {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .war-room-actions {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        width: 100% !important;
+      }
+      .war-room-actions .btn {
+        flex: 1 1 calc(50% - 6px) !important;
+        min-width: 90px !important;
+        text-align: center !important;
+        justify-content: center !important;
+      }
+
+      /* Card header mobile flex alignment & scrollable button toolbars */
+      .card-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+      }
+      .card-header > div:not(.card-title),
+      .card-header [style*="display: flex"] {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
       .card-header-actions, .toolbar-actions {
         display: flex !important;
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch !important;
         gap: 6px !important;
         width: 100% !important;
+        max-width: 100% !important;
         padding: 4px 0 6px !important;
         scrollbar-width: none !important;
+        box-sizing: border-box !important;
       }
       .card-header-actions::-webkit-scrollbar, .toolbar-actions::-webkit-scrollbar {
         display: none !important;
@@ -1887,7 +1999,7 @@
         </form>
         <div style="margin-top: 10px;">
           <button type="button" class="btn btn-secondary" onclick="quickFillAdminLogin('helambu_admin', 'helambu@123')" style="width: 100%; font-size: 12.5px; font-weight: 700; padding: 9px; background: #f0fdf4; color: #166534; border: 1.5px solid #bbf7d0; border-radius: 10px;">
-            ⚡ Demo Admin अटो भर्नुहोस् (Helambu)
+            ⚡ १-क्लिक पालिका Admin अटो भर्नुहोस् (Helambu HQ)
           </button>
         </div>
 
@@ -3569,7 +3681,7 @@
     let isSubmitting = false;
     let currentVoterViewMode = 'table'; // 'table' or 'card'
 
-    // In-memory Master Data (Initialized with Gokarneshwor pilot data)
+    // In-memory Master Data (Real Helambu Operations)
     let state = {
       settings: { ...DEFAULT_CONFIG },
       wards: [
@@ -3579,71 +3691,25 @@
         { WardNo: 4, Municipality: 'Helambu Rural Municipality' },
         { WardNo: 5, Municipality: 'Helambu Rural Municipality' },
         { WardNo: 6, Municipality: 'Helambu Rural Municipality' },
-        { WardNo: 7, Municipality: 'Helambu Rural Municipality' },
-        { WardNo: 8, Municipality: 'Helambu Rural Municipality' },
-        { WardNo: 9, Municipality: 'Helambu Rural Municipality' }
+        { WardNo: 7, Municipality: 'Helambu Rural Municipality' }
       ],
-      toles: [
-        { ToleID: 'TOL_01', WardNo: 5, ToleName: 'Jorpati Chowk' },
-        { ToleID: 'TOL_02', WardNo: 5, ToleName: 'Nayabasti' },
-        { ToleID: 'TOL_03', WardNo: 3, ToleName: 'Sundarijal' },
-        { ToleID: 'TOL_04', WardNo: 8, ToleName: 'Besigaon' }
-      ],
-      locations: [
-        { PollingLocationID: 'LOC_W5_1', WardNo: 5, LocationName: 'Chamuunda Secondary School', Address: 'Jorpati, Ward 5' },
-        { PollingLocationID: 'LOC_W3_1', WardNo: 3, LocationName: 'Sundarijal Community Hall', Address: 'Sundarijal, Ward 3' }
-      ],
-      booths: [
-        { BoothID: 'BTH_W5_A', WardNo: 5, PollingLocationID: 'LOC_W5_1', BoothCode: 'A', BoothName: 'Booth A', RegisteredCount: 820 },
-        { BoothID: 'BTH_W5_B', WardNo: 5, PollingLocationID: 'LOC_W5_1', BoothCode: 'B', BoothName: 'Booth B', RegisteredCount: 780 }
-      ],
+      toles: [],
+      locations: [],
+      booths: [],
       users: [
-        { UserID: 'USR_ADMIN', Name: 'System Admin', Phone: '9841234567', Role: 'Super Admin', PIN: '1234', AccessToken: 'TOKEN_ADMIN', Ward: 'All', Tole: '', BoothNo: '', Active: true },
-        { UserID: 'USR_RAM', Name: 'Ram Bahadur', Phone: '9841000001', Role: 'Field Worker', PIN: '1234', AccessToken: 'tok_ram_w5', Ward: '5', Tole: 'Jorpati Chowk', BoothNo: 'A', Active: true },
-        { UserID: 'USR_SITA', Name: 'Sita Maya Lama', Phone: '9841000002', Role: 'Ward Coordinator', PIN: '1234', AccessToken: 'tok_sita_w5', Ward: '5', Tole: 'Jorpati Chowk', BoothNo: '', Active: true }
+        { UserID: 'USR_ADMIN', Name: 'System Admin', Phone: '9841234567', Role: 'Super Admin', PIN: '1234', AccessToken: 'TOKEN_ADMIN', Ward: 'All', Tole: '', BoothNo: '', Active: true }
       ],
-      households: [
-        { HouseholdID: 'HHD_001', WardNo: 5, Tole: 'Jorpati Chowk', BlockCluster: 'Block A', HouseNo: '104', Address: 'Near Main Temple', PrimaryContactName: 'Ram Bahadur Thapa', PrimaryPhone: '9841000001', VerificationStatus: 'Verified' },
-        { HouseholdID: 'HHD_002', WardNo: 5, Tole: 'Nayabasti', BlockCluster: 'Block B', HouseNo: '205', Address: 'Nayabasti Marg', PrimaryContactName: 'Hari Prasad Adhikari', PrimaryPhone: '9841000003', VerificationStatus: 'Pending' }
-      ],
-      voters: [
-        { VoterID: 'VOT_001', Name: 'रामबहादुर थापा (Ram Bahadur)', Phone: '9841000001', Gender: 'Male', AgeGroup: '41-60', DOB: '1985-10-09', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '101', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Support', PartyLeaning: 'UML', FamilyRelation: 'घरमुली', RecordSource: 'Import' },
-        { VoterID: 'VOT_002', Name: 'सीतामाया लामा (Sita Maya)', Phone: '9841000002', Gender: 'Female', AgeGroup: '26-40', DOB: '1995-04-12', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '102', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Undecided', PartyLeaning: 'Undecided', FamilyRelation: 'पति / पत्नी', RecordSource: 'Import' },
-        { VoterID: 'VOT_006', Name: 'सुमन थापा (Suman Thapa)', Phone: '9841000006', Gender: 'Male', AgeGroup: '18-25', DOB: '2004-06-15', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '103', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Support', PartyLeaning: 'UML', FamilyRelation: 'छोरा', RecordSource: 'Field Collection' },
-        { VoterID: 'VOT_007', Name: 'पूजा थापा (Puja Thapa)', Phone: '9841000007', Gender: 'Female', AgeGroup: '18-25', DOB: '2006-02-18', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '104', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Undecided', PartyLeaning: 'RSP', FamilyRelation: 'छोरी', RecordSource: 'Field Collection' },
-        { VoterID: 'VOT_003', Name: 'हरिप्रसाद अधिकारी (Hari Prasad)', Phone: '9841000003', Gender: 'Male', AgeGroup: '60+', DOB: '1962-10-09', Ward: 5, Tole: 'Nayabasti', HouseholdID: 'HHD_002', HouseNo: '205', PollingLocationID: 'LOC_W5_1', BoothNo: 'B', VoterSerial: '201', ContactStatus: 'Not Contacted', VerificationStatus: 'Pending', SelfReportedResponse: 'Not Support', PartyLeaning: 'Congress', FamilyRelation: 'घरमुली', RecordSource: 'Field Collection' },
-        { VoterID: 'VOT_004', Name: 'गीता कार्की (Gita Karki)', Phone: '9841000004', Gender: 'Female', AgeGroup: '18-25', DOB: '2002-08-20', Ward: 3, Tole: 'Sundarijal', HouseholdID: '', HouseNo: '12', PollingLocationID: 'LOC_W3_1', BoothNo: 'A', VoterSerial: '301', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Support', PartyLeaning: 'UML', FamilyRelation: 'घरमुली', RecordSource: 'Manual' },
-        { VoterID: 'VOT_005', Name: 'बिकेश श्रेष्ठ (Bikash Shrestha)', Phone: '9841000005', Gender: 'Male', AgeGroup: '26-40', DOB: '1992-03-15', Ward: 1, Tole: 'Gokarna', HouseholdID: '', HouseNo: '45', PollingLocationID: '', BoothNo: 'A', VoterSerial: '501', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Support', PartyLeaning: 'RSP', FamilyRelation: 'घरमुली', RecordSource: 'Manual' }
-      ],
-      visits: [
-        { VisitID: 'VIS_001', VoterID: 'VOT_001', Date: new Date().toISOString().slice(0,10), VisitOutcome: 'Met', ContactStatus: 'Contacted', SelfReportedResponse: 'Support', FollowUpRequired: 'No', Notes: 'Supportive household' }
-      ],
-      followups: [
-        { FollowUpID: 'FUP_001', VoterID: 'VOT_002', DueDate: new Date(Date.now() + 86400000).toISOString().slice(0,10), Reason: 'Voter Information Slip', Status: 'Pending', Notes: 'Confirm booth details' }
-      ],
-      issues: [
-        { IssueID: 'ISS_001', WardNo: 5, BoothID: 'BTH_W5_A', Category: 'Logistics', Priority: 'Medium', Status: 'Open', Description: 'Need 2 extra voter list printouts for booth A' }
-      ],
-      notices: [
-        { NoticeID: 'NOT_001', Title: 'All Staff Briefing', Message: 'Briefing for all Ward Coordinators tomorrow at 10 AM.', Priority: 'Important', PublishedDate: new Date().toISOString().slice(0,10) }
-      ],
-      messages: [
-        { MessageID: 'MSG_001', Subject: 'Voter Slip Distribution', Sender: 'System Admin', Recipient: 'Ward 5 Team', Priority: 'Normal', Date: new Date().toISOString().slice(0,10), IsRead: false }
-      ],
-      smsLogs: [
-        { LogID: 'SMS_001', RecipientName: 'रामबहादुर थापा', Phone: '9841000001', Ward: 5, Tole: 'Jorpati Chowk', Type: 'मतदान केन्द्र र पर्चा', Text: 'आदरणीय रामबहादुर थापा ज्यू, तपाईंको मतदान केन्द्र बुथ A, वडा नं. ५, क्र.सं. १०१ रहेको जानकारी गराउँदछौं। मतदान दिन नागरिकता साथमा लैजानुहोला।', Credits: 2, SentAt: new Date(Date.now() - 3600000 * 4).toLocaleString('ne-NP'), Status: 'Delivered', TenantID: 'TNT_HELAMBU' },
-        { LogID: 'SMS_002', RecipientName: 'सीतामाया लामा', Phone: '9841000002', Ward: 5, Tole: 'Jorpati Chowk', Type: 'जन्मदिन शुभकामना', Text: 'आदरणीय सीतामाया लामा ज्यू, तपाईंलाई जन्मदिनको हार्दिक मंगलमय शुभकामना व्यक्त गर्दछौं!', Credits: 1, SentAt: new Date(Date.now() - 3600000 * 18).toLocaleString('ne-NP'), Status: 'Delivered', TenantID: 'TNT_HELAMBU' },
-        { LogID: 'SMS_003', RecipientName: 'सुमन थापा', Phone: '9841000006', Ward: 5, Tole: 'Jorpati Chowk', Type: 'भेला तथा आमसभा', Text: 'आदरणीय सुमन थापा ज्यू, भोलि बिहान ११ बजे जोरपाटी चोकमा हुने चुनावी भेलामा उपस्थितिको लागि हार्दिक निमन्त्रणा गर्दछौं।', Credits: 2, SentAt: new Date(Date.now() - 3600000 * 26).toLocaleString('ne-NP'), Status: 'Delivered', TenantID: 'TNT_HELAMBU' }
-      ],
-      publicSubs: [
-        { SubmissionID: 'PUB_001', FullName: 'Nabin Shrestha', Phone: '9841555555', WardNo: 5, Tole: 'Jorpati', SubmissionType: 'New Information', Status: 'Pending Review', CreatedDate: new Date().toISOString().slice(0,10) }
-      ],
+      households: [],
+      voters: [],
+      visits: [],
+      followups: [],
+      issues: [],
+      notices: [],
+      messages: [],
+      smsLogs: [],
+      publicSubs: [],
       electionReports: [],
-      activities: [
-        { ActivityID: 'ACT_001', Timestamp: new Date(Date.now() - 3600000 * 2).toISOString(), UserID: 'USR_RAM', UserName: 'Ram Bahadur', Role: 'Field Worker', Type: 'voter_verify', Description: 'Ram Bahadur Thapa (वडा ५, टोल: Jorpati Chowk) लाई Verified प्रमाणीकरण गरियो।' },
-        { ActivityID: 'ACT_002', Timestamp: new Date(Date.now() - 3600000 * 4).toISOString(), UserID: 'USR_SITA', UserName: 'Sita Maya Lama', Role: 'Ward Coordinator', Type: 'visit', Description: 'वडा ५ मा घरदैलो भेटघाट सम्पन्न (Household HHD_001)।' },
-        { ActivityID: 'ACT_003', Timestamp: new Date(Date.now() - 3600000 * 6).toISOString(), UserID: 'USR_ADMIN', UserName: 'System Admin', Role: 'Super Admin', Type: 'message', Description: 'वडा ५ टिमलाई "Voter Slip Distribution" आन्तरिक कार्य निर्देशन पठाइयो।' }
-      ],
+      activities: [],
       // Multi-Tenant SaaS Subscriptions & Palikas (Super Admin Management)
       tenants: [
         {
@@ -3748,30 +3814,41 @@
               postedAt: ''
             };
           }
-          if (!state.smsLogs || !state.smsLogs.length) {
-            state.smsLogs = [
-              { LogID: 'SMS_001', RecipientName: 'रामबहादुर थापा', Phone: '9841000001', Ward: 5, Tole: 'Jorpati Chowk', Type: 'मतदान केन्द्र र पर्चा', Text: 'आदरणीय रामबहादुर थापा ज्यू, तपाईंको मतदान केन्द्र बुथ A, वडा नं. ५, क्र.सं. १०१ रहेको जानकारी गराउँदछौं।', Credits: 2, SentAt: new Date(Date.now() - 3600000 * 4).toLocaleString('ne-NP'), Status: 'Delivered', TenantID: 'TNT_HELAMBU' },
-              { LogID: 'SMS_002', RecipientName: 'सीतामाया लामा', Phone: '9841000002', Ward: 5, Tole: 'Jorpati Chowk', Type: 'जन्मदिन शुभकामना', Text: 'आदरणीय सीतामाया लामा ज्यू, तपाईंलाई जन्मदिनको हार्दिक मंगलमय शुभकामना व्यक्त गर्दछौं!', Credits: 1, SentAt: new Date(Date.now() - 3600000 * 18).toLocaleString('ne-NP'), Status: 'Delivered', TenantID: 'TNT_HELAMBU' }
-            ];
-          }
+          if (!state.smsLogs) state.smsLogs = [];
           // Ensure all tenants have a valid URL Slug
           state.tenants.forEach(t => {
             if (!t.Slug) {
               t.Slug = t.TenantID === 'TNT_HELAMBU' ? 'helambu' : (t.TenantID === 'TNT_GOKARNESHWOR' ? 'gokarneshwor' : (t.PalikaName ? t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') : t.TenantID.toLowerCase()));
             }
           });
-          // Ensure family relations and seed relatives exist
-          if (state.voters) {
-            const v1 = state.voters.find(x => x.VoterID === 'VOT_001');
-            if (v1 && !v1.FamilyRelation) v1.FamilyRelation = 'घरमुली';
-            const v2 = state.voters.find(x => x.VoterID === 'VOT_002');
-            if (v2 && !v2.FamilyRelation) v2.FamilyRelation = 'पति / पत्नी';
-            if (!state.voters.find(x => x.VoterID === 'VOT_006')) {
-              state.voters.push({ VoterID: 'VOT_006', Name: 'सुमन थापा (Suman Thapa)', Phone: '9841000006', Gender: 'Male', AgeGroup: '18-25', DOB: '2004-06-15', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '103', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Support', PartyLeaning: 'UML', FamilyRelation: 'छोरा', RecordSource: 'Field Collection' });
-            }
-            if (!state.voters.find(x => x.VoterID === 'VOT_007')) {
-              state.voters.push({ VoterID: 'VOT_007', Name: 'पूजा थापा (Puja Thapa)', Phone: '9841000007', Gender: 'Female', AgeGroup: '18-25', DOB: '2006-02-18', Ward: 5, Tole: 'Jorpati Chowk', HouseholdID: 'HHD_001', HouseNo: '104', PollingLocationID: 'LOC_W5_1', BoothNo: 'A', VoterSerial: '104', ContactStatus: 'Contacted', VerificationStatus: 'Verified', SelfReportedResponse: 'Undecided', PartyLeaning: 'RSP', FamilyRelation: 'छोरी', RecordSource: 'Field Collection' });
-            }
+
+          // Purge legacy demo data to ensure 100% clean, real operations
+          if (state.voters && Array.isArray(state.voters)) {
+            state.voters = state.voters.filter(v => !String(v.VoterID).startsWith('VOT_00'));
+          }
+          if (state.visits && Array.isArray(state.visits)) {
+            state.visits = state.visits.filter(v => v.VisitID !== 'VIS_001');
+          }
+          if (state.followups && Array.isArray(state.followups)) {
+            state.followups = state.followups.filter(f => f.FollowUpID !== 'FUP_001');
+          }
+          if (state.issues && Array.isArray(state.issues)) {
+            state.issues = state.issues.filter(i => i.IssueID !== 'ISS_001');
+          }
+          if (state.smsLogs && Array.isArray(state.smsLogs)) {
+            state.smsLogs = state.smsLogs.filter(s => !['SMS_001', 'SMS_002', 'SMS_003'].includes(s.LogID));
+          }
+          if (state.publicSubs && Array.isArray(state.publicSubs)) {
+            state.publicSubs = state.publicSubs.filter(p => p.SubmissionID !== 'PUB_001');
+          }
+          if (state.activities && Array.isArray(state.activities)) {
+            state.activities = state.activities.filter(a => !['ACT_001', 'ACT_002', 'ACT_003'].includes(a.ActivityID));
+          }
+          if (state.households && Array.isArray(state.households)) {
+            state.households = state.households.filter(h => !['HHD_001', 'HHD_002'].includes(h.HouseholdID));
+          }
+          if (state.users && Array.isArray(state.users)) {
+            state.users = state.users.filter(u => !['USR_RAM', 'USR_SITA'].includes(u.UserID));
           }
 
           // Ensure default candidates exist
@@ -3945,7 +4022,7 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       // Auto cache purging if build changed
-      const CURRENT_APP_BUILD = '20261010-v3';
+      const CURRENT_APP_BUILD = '20261010-v4';
       const lastBuild = localStorage.getItem('election_app_build');
       if (lastBuild && lastBuild !== CURRENT_APP_BUILD) {
         localStorage.setItem('election_app_build', CURRENT_APP_BUILD);
@@ -3964,15 +4041,18 @@
 
       if (!currentUser) {
         document.body.classList.add('login-active');
+        document.body.classList.remove('logged-in');
         const mobNav = document.getElementById('mobileBottomNav');
         if (mobNav) mobNav.style.display = 'none';
+        const shell = document.getElementById('appShell');
+        if (shell) shell.style.display = 'none';
       }
 
       // Register Service Worker with cache-busting
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js?v=3.0.2')
+        navigator.serviceWorker.register('sw.js?v=4.0.0')
           .then((reg) => {
-            console.log('Election Ops PWA Service Worker Registered (v3.0.2)');
+            console.log('Election Ops PWA Service Worker Registered (v4.0.0)');
             reg.update();
           })
           .catch(err => console.log('SW registration error:', err));
@@ -4060,10 +4140,17 @@
     // STRICT 100% SUPER ADMIN MASTER SCREEN (Default on Root Domain)
     function showSuperAdminGatewayPrompt() {
       document.body.classList.add('login-active');
+      document.body.classList.remove('logged-in');
       document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('appShell').style.display = 'none';
+      const shell = document.getElementById('appShell');
+      if (shell) shell.style.display = 'none';
       const mobNav = document.getElementById('mobileBottomNav');
       if (mobNav) mobNav.style.display = 'none';
+      const sb = document.getElementById('sidebar');
+      const bd = document.getElementById('sidebarBackdrop');
+      if (sb) sb.classList.remove('open');
+      if (bd) bd.classList.remove('active');
+      document.body.style.overflow = '';
 
       // Brand icon and header
       const icon = document.querySelector('.pin-card .brand-icon');
@@ -4097,10 +4184,17 @@
     // DEDICATED PALIKA PORTAL (?palika=<slug>)
     function showPalikaPortalLogin(slug) {
       document.body.classList.add('login-active');
+      document.body.classList.remove('logged-in');
       document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('appShell').style.display = 'none';
+      const shell = document.getElementById('appShell');
+      if (shell) shell.style.display = 'none';
       const mobNav = document.getElementById('mobileBottomNav');
       if (mobNav) mobNav.style.display = 'none';
+      const sb = document.getElementById('sidebar');
+      const bd = document.getElementById('sidebarBackdrop');
+      if (sb) sb.classList.remove('open');
+      if (bd) bd.classList.remove('active');
+      document.body.style.overflow = '';
 
       // Find matching tenant
       const tenant = (state.tenants || []).find(t => 
@@ -4344,10 +4438,17 @@
       document.getElementById('loginTitle').textContent = `नमस्ते, ${staff.Name} जी!`;
       document.getElementById('loginSubtitle').textContent = `${staff.Role} • Ward ${staff.Ward || '-'}${staff.Tole ? ' • ' + staff.Tole : ''}`;
       document.body.classList.add('login-active');
+      document.body.classList.remove('logged-in');
       document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('appShell').style.display = 'none';
+      const shell = document.getElementById('appShell');
+      if (shell) shell.style.display = 'none';
       const mobNav = document.getElementById('mobileBottomNav');
       if (mobNav) mobNav.style.display = 'none';
+      const sb = document.getElementById('sidebar');
+      const bd = document.getElementById('sidebarBackdrop');
+      if (sb) sb.classList.remove('open');
+      if (bd) bd.classList.remove('active');
+      document.body.style.overflow = '';
 
       pinBuffer = '';
       updatePinDots();
@@ -4876,8 +4977,10 @@
 
     function launchDashboard() {
       document.body.classList.remove('login-active');
+      document.body.classList.add('logged-in');
       document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('appShell').style.display = 'flex';
+      const shell = document.getElementById('appShell');
+      if (shell) shell.style.display = 'flex';
       const mobNav = document.getElementById('mobileBottomNav');
       if (mobNav) mobNav.style.display = window.innerWidth <= 880 ? 'flex' : 'none';
       
@@ -4917,13 +5020,20 @@
 
     function logout() {
       document.body.classList.add('login-active');
+      document.body.classList.remove('logged-in');
       logActivity('logout', `${currentUser ? currentUser.Name : 'User'} logged out.`);
       const wasPalika = currentUser && currentUser.TenantID && currentUser.TenantID !== 'ALL';
       const tenant = wasPalika ? (state.tenants || []).find(t => t.TenantID === currentUser.TenantID) : null;
       currentUser = null;
-      document.getElementById('appShell').style.display = 'none';
+      const shell = document.getElementById('appShell');
+      if (shell) shell.style.display = 'none';
       const mobNav = document.getElementById('mobileBottomNav');
       if (mobNav) mobNav.style.display = 'none';
+      const sb = document.getElementById('sidebar');
+      const bd = document.getElementById('sidebarBackdrop');
+      if (sb) sb.classList.remove('open');
+      if (bd) bd.classList.remove('active');
+      document.body.style.overflow = '';
 
       if (tenant && tenant.Slug) {
         window.history.replaceState({}, document.title, `${window.location.pathname}?palika=${tenant.Slug}`);
@@ -5510,6 +5620,15 @@
     }
 
     function toggleSidebar(forceState) {
+      // Security guard: Sidebar cannot be opened while on login screen or unauthenticated
+      if (!currentUser || document.body.classList.contains('login-active')) {
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebarBackdrop');
+        if (sb) sb.classList.remove('open');
+        if (bd) bd.classList.remove('active');
+        document.body.style.overflow = '';
+        return;
+      }
       if (navigator.vibrate) try { navigator.vibrate(8); } catch(e) {}
       const sb = document.getElementById('sidebar');
       const bd = document.getElementById('sidebarBackdrop');
@@ -13114,11 +13233,13 @@
       const sb = document.getElementById('sidebar');
 
       document.addEventListener('touchstart', (e) => {
+        if (!currentUser || document.body.classList.contains('login-active')) return;
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
       }, { passive: true });
 
       document.addEventListener('touchend', (e) => {
+        if (!currentUser || document.body.classList.contains('login-active')) return;
         const touchEndX = e.changedTouches[0].clientX;
         const touchEndY = e.changedTouches[0].clientY;
         const diffX = touchEndX - touchStartX;
