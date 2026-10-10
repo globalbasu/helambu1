@@ -1439,6 +1439,87 @@
       .topbar-right { gap: 5px; }
       .topbar-right .btn-sm { padding: 4px 8px; font-size: 11px; min-height: 34px; }
     }
+  
+    /* ==========================================================================
+       MOBILE NATIVE APP EXPERIENCE: Pill Tabs, Haptic Feel, and Floating Action
+       ========================================================================== */
+    .mobile-native-fab {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .mobile-native-fab {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        position: fixed;
+        bottom: 80px;
+        right: 18px;
+        background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+        color: #ffffff;
+        padding: 12px 18px;
+        border-radius: 999px;
+        box-shadow: 0 8px 24px rgba(79, 70, 229, 0.45), 0 2px 6px rgba(0, 0, 0, 0.15);
+        z-index: 60;
+        cursor: pointer;
+        font-weight: 800;
+        font-size: 13.5px;
+        border: 1.5px solid rgba(255, 255, 255, 0.25);
+        transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .mobile-native-fab:active {
+        transform: scale(0.92);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      }
+      .mobile-native-fab .fab-icon {
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      /* Native App Bottom Tab Bar Enhancements */
+      .mobile-bottom-nav {
+        background: rgba(255, 255, 255, 0.96) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border-top: 1px solid rgba(203, 213, 225, 0.8) !important;
+        height: 64px !important;
+      }
+      .mob-nav-btn {
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        border-radius: 12px !important;
+        margin: 4px 2px !important;
+        padding: 4px 0 !important;
+      }
+      .mob-nav-btn.active {
+        color: #4338ca !important;
+        background: rgba(79, 70, 229, 0.08) !important;
+      }
+      .mob-nav-btn.active .icon {
+        transform: translateY(-2px) scale(1.15) !important;
+      }
+      .mob-nav-btn .icon {
+        font-size: 20px !important;
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      }
+      .mob-nav-btn span:last-child {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.01em !important;
+      }
+
+      /* Voter card native mobile look */
+      .voter-card {
+        background: #ffffff;
+        border: 1px solid rgba(226, 232, 240, 0.95);
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+        margin-bottom: 12px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -2052,6 +2133,18 @@
                 <option value="Pending">Pending</option>
                 <option value="Correction Required">Correction Required</option>
               </select>
+              <select id="voterSupportFilter" class="filter-select" onchange="renderVotersList()" style="font-weight: 700; color: #047857;">
+                <option value="">समर्थन सम्भाव्यता: सबै</option>
+                <option value="solid">🟢 पक्का समर्थक (100%)</option>
+                <option value="lean">🟩 सकारात्मक/झुकाव (75%)</option>
+                <option value="swing">🟡 दोधार/तटस्थ (50%)</option>
+                <option value="opponent_lean">🟠 विपक्षी झुकाव (25%)</option>
+                <option value="hard_opponent">🔴 कडा विरोधी (0%)</option>
+              </select>
+              <select id="voterInfluencerFilter" class="filter-select" onchange="renderVotersList()" style="font-weight: 700; color: #7c2d12;">
+                <option value="">प्रभावकारी व्यक्ति: सबै</option>
+                <option value="yes">🌟 प्रभावकारी व्यक्ति मात्र (VIP)</option>
+              </select>
               <select id="voterPartyFilter" class="filter-select" onchange="renderVotersList()">
                 <option value="">पार्टी झुकाव: सबै</option>
                 <option value="UML">नेकपा (एमाले)</option>
@@ -2074,7 +2167,7 @@
                     <th class="sortable" onclick="sortVotersBy('Ward')" title="वडा अनुसार क्रमबद्ध">वडा र टोल <span id="sortIconWard">⇅</span></th>
                     <th class="sortable" onclick="sortVotersBy('VoterSerial')" title="क्र.सं. अनुसार क्रमबद्ध">बुथ / क्र.सं. <span id="sortIconVoterSerial">⇅</span></th>
                     <th class="sortable" onclick="sortVotersBy('ContactStatus')" title="सम्पर्क अनुसार क्रमबद्ध">सम्पर्क <span id="sortIconContactStatus">⇅</span></th>
-                    <th class="sortable" onclick="sortVotersBy('PartyLeaning')" title="पार्टी अनुसार क्रमबद्ध">पार्टी झुकाव <span id="sortIconPartyLeaning">⇅</span></th>
+                    <th class="sortable" onclick="sortVotersBy('SupportTier')" title="समर्थन सम्भाव्यता अनुसार क्रमबद्ध">समर्थन सम्भाव्यता (५ स्ल्याब) <span id="sortIconSupportTier">⇅</span></th>
                     <th class="sortable" onclick="sortVotersBy('VerificationStatus')" title="प्रमाणीकरण अनुसार क्रमबद्ध">प्रमाणीकरण <span id="sortIconVerificationStatus">⇅</span></th>
                     <th style="min-width: 165px; text-align: center;">कार्य (Actions)</th>
                   </tr>
@@ -3015,6 +3108,13 @@
       </button>
     </div>
   </nav>
+
+  <!-- MOBILE NATIVE APP FLOATING ACTION BUTTON (QUICK ADD) -->
+  <div id="mobileNativeFab" class="mobile-native-fab" onclick="openRecordVisitModal()" title="नयाँ घरदैलो भ्रमण दर्ता">
+    <span class="fab-icon">➕</span>
+    <span class="fab-label">भिजिट</span>
+  </div>
+
 
   <!-- REUSABLE MODAL CONTAINER -->
   <div id="modalOverlay" class="modal-overlay" onclick="if(event.target===this) closeModal()">
@@ -4540,6 +4640,8 @@
       const contact = document.getElementById('voterContactFilter').value;
       const verify = document.getElementById('voterVerifyFilter').value;
       const party = document.getElementById('voterPartyFilter') ? document.getElementById('voterPartyFilter').value : '';
+      const supportFilter = document.getElementById('voterSupportFilter') ? document.getElementById('voterSupportFilter').value : '';
+      const influencerFilter = document.getElementById('voterInfluencerFilter') ? document.getElementById('voterInfluencerFilter').value : '';
 
       const list = state.voters.filter(v => {
         // Workspace Scope: If logged in as scoped staff (not Super Admin), auto-restrict to their ward
@@ -4555,6 +4657,8 @@
         if (contact && v.ContactStatus !== contact) return false;
         if (verify && v.VerificationStatus !== verify) return false;
         if (party && v.PartyLeaning !== party) return false;
+        if (supportFilter && getSupportTier(v).key !== supportFilter) return false;
+        if (influencerFilter === 'yes' && !v.IsInfluencer) return false;
         if (q) {
           const haystack = [v.Name, v.Phone, v.VoterSerial, v.Tole, v.HouseNo, v.PartyLeaning || ''].join(' ').toLowerCase();
           if (!haystack.includes(q)) return false;
@@ -4671,8 +4775,12 @@
             </span>
           </td>
           <td>
-            <div style="cursor: pointer;" onclick="quickCycleParty('${v.VoterID}')" title="क्लिक गरी पार्टी झुकाव परिवर्तन गर्नुहोस्">
-              ${getPartyLabel(v.PartyLeaning)} 🔄
+            <div style="margin-bottom: 3px;">
+              ${getSupportBadge(v)}
+            </div>
+            <div style="display: flex; align-items: center; gap: 4px; font-size: 11.5px; color: var(--slate-600);">
+              <span style="cursor: pointer;" onclick="quickCycleParty('${v.VoterID}')" title="पार्टी बदल्नुहोस्">${getPartyLabel(v.PartyLeaning)} 🔄</span>
+              ${v.IsInfluencer ? '<span class="badge" style="background: #fef3c7; color: #92400e; font-weight: 800; font-size: 10px; padding: 1px 5px;" title="टोलको प्रभावकारी व्यक्ति">🌟 VIP</span>' : ''}
             </div>
           </td>
           <td>
@@ -4732,8 +4840,12 @@
             </div>
             <div>Booth ${esc(v.BoothNo || '-')} • Serial: ${esc(v.VoterSerial || '-')}</div>
           </div>
-          <div style="margin-bottom: 10px; cursor: pointer;" onclick="quickCycleParty('${v.VoterID}')" title="क्लिक गरी पार्टी बदल्नुहोस्">
-            ${getPartyLabel(v.PartyLeaning)} 🔄
+          <div style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px;">
+            <div>${getSupportBadge(v)}</div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <span style="cursor: pointer; font-size: 12px; font-weight: 600;" onclick="quickCycleParty('${v.VoterID}')" title="पार्टी बदल्नुहोस्">${getPartyLabel(v.PartyLeaning)} 🔄</span>
+              ${v.IsInfluencer ? '<span class="badge" style="background: #fef3c7; color: #92400e; font-weight: 800; font-size: 10.5px; padding: 2px 6px;">🌟 VIP Influencer</span>' : ''}
+            </div>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; pt-2; border-top: 1px solid var(--slate-200); padding-top: 10px;">
             <span class="badge ${v.ContactStatus === 'Contacted' ? 'badge-contacted' : 'badge-notcontacted'}">${v.ContactStatus}</span>
@@ -4992,12 +5104,180 @@
           ${activeTab === 'overview' ? renderVoterOverviewTab(v, booth, household) : ''}
           ${activeTab === 'family' ? renderVoterFamilyTab(v, familyMembers, household) : ''}
           ${activeTab === 'timeline' ? renderVoterTimelineTab(v, visits, followups) : ''}
+          ${activeTab === 'influencer' ? renderVoterInfluencerTab(v) : ''}
           ${activeTab === 'comm' ? renderVoterCommTab(v, booth) : ''}
         </div>
         `,
         `<button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस् (Close)</button>`,
         'modal-xl'
       );
+    }
+
+    
+    // TAB: COMMUNITY INFLUENCER INTELLIGENCE & VIP MANAGEMENT
+    function renderVoterInfluencerTab(v) {
+      const isInf = !!v.IsInfluencer;
+      const sphere = v.InfluencerSphere || 'टोल सुधार / सामुदायिक अगुवा';
+      const reach = v.InfluencerReach || '२५-५० मत';
+      const handler = v.InfluencerHandler || 'उम्मेदवार आफैं';
+      const demands = v.InfluencerDemands || 'विकास बजेट र पूर्वाधार';
+      const stance = v.InfluencerStance || 'सकारात्मक';
+
+      return `
+        <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1.5px solid #fde68a; border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
+            <div>
+              <h3 style="margin: 0; color: #78350f; font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                🌟 टोल तथा समुदायको प्रभावकारी व्यक्ति (Key Opinion Leader)
+              </h3>
+              <p style="margin: 4px 0 0; color: #92400e; font-size: 13px;">
+                यस व्यक्तिको प्रभावले टोलका अन्य १० देखि ५०+ परिवारको मत निर्णय प्रभावित हुन्छ।
+              </p>
+            </div>
+            <div>
+              <button class="btn btn-sm ${isInf ? 'btn-primary' : 'btn-secondary'}" onclick="toggleVoterInfluencerStatus('${v.VoterID}')" style="font-weight: 800; font-size: 13px;">
+                ${isInf ? '✓ प्रभावकारी व्यक्ति (सक्रिय VIP)' : '+ प्रभावकारी व्यक्ति बनाउनुहोस्'}
+              </button>
+            </div>
+          </div>
+
+          ${isInf ? `
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; background: white; padding: 16px; border-radius: var(--radius-sm); border: 1px solid #fde68a;">
+              <div>
+                <span class="form-label" style="color: #78350f; font-size: 12px;">प्रभावको क्षेत्र (Sphere of Influence)</span>
+                <b style="font-size: 14px; color: #1e293b;">${esc(sphere)}</b>
+              </div>
+              <div>
+                <span class="form-label" style="color: #78350f; font-size: 12px;">अनुमानित मत प्रभाव (Influence Reach)</span>
+                <b style="font-size: 14px; color: #047857;">🎯 ${esc(reach)}</b>
+              </div>
+              <div>
+                <span class="form-label" style="color: #78350f; font-size: 12px;">जिम्मेवारी तोकिएको नेता (VIP Handler)</span>
+                <b style="font-size: 14px; color: #4338ca;">👤 ${esc(handler)}</b>
+              </div>
+              <div>
+                <span class="form-label" style="color: #78350f; font-size: 12px;">हालको राजनीतिक धारणा (Current Stance)</span>
+                <b style="font-size: 14px; color: #b45309;">${esc(stance)}</b>
+              </div>
+              <div style="grid-column: 1 / -1;">
+                <span class="form-label" style="color: #78350f; font-size: 12px;">मुख्य चाहना / माग / चासो (Key Demands)</span>
+                <div style="font-size: 13.5px; color: #334155; margin-top: 4px; background: #f8fafc; padding: 10px 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                  📝 ${esc(demands)}
+                </div>
+              </div>
+            </div>
+            <div style="margin-top: 14px; display: flex; gap: 8px; justify-content: flex-end;">
+              <button class="btn btn-sm btn-secondary" onclick="openEditInfluencerModal('${v.VoterID}')">✏️ प्रभावकारी विवरण सम्पादन</button>
+            </div>
+          ` : `
+            <div style="text-align: center; padding: 24px; background: white; border-radius: var(--radius-sm); border: 1px dashed #cbd5e1; color: var(--slate-600); font-size: 13.5px;">
+              ℹ️ हाल यो मतदातालाई सामान्य मतदाताको रूपमा राखिएको छ।<br>
+              यदि यिनी टोल अध्यक्ष, शिक्षक, क्लब अगुवा वा ठूलो परिवारका मूली हुन् भने माथिको <b>'+ प्रभावकारी व्यक्ति बनाउनुहोस्'</b> बटन थिच्नुहोस्।
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function toggleVoterInfluencerStatus(voterId) {
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+      v.IsInfluencer = !v.IsInfluencer;
+      if (v.IsInfluencer && !v.InfluencerSphere) {
+        v.InfluencerSphere = 'टोल सुधार / सामुदायिक अगुवा';
+        v.InfluencerReach = '२५-५० मत';
+        v.InfluencerHandler = 'उम्मेदवार आफैं';
+        v.InfluencerDemands = 'विकास योजना र स्थानीय पूर्वाधार';
+        v.InfluencerStance = 'सकारात्मक / सम्पर्कमा';
+      }
+      saveState();
+      showToast(v.IsInfluencer ? `${v.Name} लाई प्रभावकारी व्यक्ति (Influencer) मा दर्ता गरियो!` : `${v.Name} लाई सामान्य मतदातामा सारियो।`, 'success');
+      viewVoterProfile(voterId, 'influencer');
+      renderVotersList();
+      if (typeof renderCandidateWarRoom === 'function') renderCandidateWarRoom();
+    }
+
+    function openEditInfluencerModal(voterId) {
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+      openModal(
+        `प्रभावकारी व्यक्ति विवरण: ${v.Name}`,
+        `
+        <form id="editInfluencerForm" onsubmit="saveInfluencerDetails(event, '${v.VoterID}')">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">प्रभावको क्षेत्र (Sphere of Influence) *</label>
+              <select name="InfluencerSphere" required class="form-control">
+                <option value="टोल सुधार / सामुदायिक अगुवा" ${v.InfluencerSphere === 'टोल सुधार / सामुदायिक अगुवा' ? 'selected' : ''}>टोल सुधार / सामुदायिक अगुवा</option>
+                <option value="आमा समूह / महिला नेतृत्व" ${v.InfluencerSphere === 'आमा समूह / महिला नेतृत्व' ? 'selected' : ''}>आमा समूह / महिला नेतृत्व</option>
+                <option value="शिक्षक / बुद्धिजीवी / डाक्टर" ${v.InfluencerSphere === 'शिक्षक / बुद्धिजीवी / डाक्टर' ? 'selected' : ''}>शिक्षक / बुद्धिजीवी / डाक्टर</option>
+                <option value="व्यापारी / साहुजी / ठेकेदार" ${v.InfluencerSphere === 'व्यापारी / साहुजी / ठेकेदार' ? 'selected' : ''}>व्यापारी / साहुजी / ठेकेदार</option>
+                <option value="युवा क्लब / खेलकुद अगुवा" ${v.InfluencerSphere === 'युवा क्लब / खेलकुद अगुवा' ? 'selected' : ''}>युवा क्लब / खेलकुद अगुवा</option>
+                <option value="ठूलो खलक / वंशका मूली (मुखिया)" ${v.InfluencerSphere === 'ठूलो खलक / वंशका मूली (मुखिया)' ? 'selected' : ''}>ठूलो खलक / वंशका मूली (मुखिया)</option>
+                <option value="पूर्व जनप्रतिनिधि / पुराना नेता" ${v.InfluencerSphere === 'पूर्व जनप्रतिनिधि / पुराना नेता' ? 'selected' : ''}>पूर्व जनप्रतिनिधि / पुराना नेता</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">अनुमानित मत प्रभाव (Influence Reach) *</label>
+              <select name="InfluencerReach" required class="form-control">
+                <option value="१०-२५ मत" ${v.InfluencerReach === '१०-२५ मत' ? 'selected' : ''}>१०-२५ मत (साना क्लस्टर)</option>
+                <option value="२५-५० मत" ${v.InfluencerReach === '२५-५० मत' ? 'selected' : ''}>२५-५० मत (टोल स्तर)</option>
+                <option value="५०-१०० मत" ${v.InfluencerReach === '५०-१०० मत' ? 'selected' : ''}>५०-१०० मत (वडा स्तर)</option>
+                <option value="१००+ मत" ${v.InfluencerReach === '१००+ मत' ? 'selected' : ''}>१००+ मत (Game Changer)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">जिम्मेवारी तोकिएको नेता (VIP Handler) *</label>
+              <select name="InfluencerHandler" required class="form-control">
+                <option value="उम्मेदवार आफैं" ${v.InfluencerHandler === 'उम्मेदवार आफैं' ? 'selected' : ''}>उम्मेदवार आफैं (Direct Candidate)</option>
+                <option value="पार्टी नगर/पालिका अध्यक्ष" ${v.InfluencerHandler === 'पार्टी नगर/पालिका अध्यक्ष' ? 'selected' : ''}>पार्टी नगर/पालिका अध्यक्ष</option>
+                <option value="वडा अध्यक्ष उम्मेदवार" ${v.InfluencerHandler === 'वडा अध्यक्ष उम्मेदवार' ? 'selected' : ''}>वडा अध्यक्ष उम्मेदवार</option>
+                <option value="स्थानीय नाता पर्ने साथी" ${v.InfluencerHandler === 'स्थानीय नाता पर्ने साथी' ? 'selected' : ''}>स्थानीय नाता पर्ने साथी</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">हालको राजनीतिक धारणा (Current Stance)</label>
+              <select name="InfluencerStance" class="form-control">
+                <option value="हाम्रो पक्षमा सक्रिय" ${v.InfluencerStance === 'हाम्रो पक्षमा सक्रिय' ? 'selected' : ''}>🟢 हाम्रो पक्षमा सक्रिय (Active Backer)</option>
+                <option value="सकारात्मक / सम्पर्कमा" ${v.InfluencerStance === 'सकारात्मक / सम्पर्कमा' ? 'selected' : ''}>🟩 सकारात्मक / सम्पर्कमा (Lean)</option>
+                <option value="मध्यमार्गी / खुल्न नचाहेको" ${v.InfluencerStance === 'मध्यमार्गी / खुल्न नचाहेको' ? 'selected' : ''}>🟡 मध्यमार्गी / खुल्न नचाहेको (Neutral)</option>
+                <option value="असन्तुष्ट / मान-मनितो खोजेको" ${v.InfluencerStance === 'असन्तुष्ट / मान-मनितो खोजेको' ? 'selected' : ''}>🟠 असन्तुष्ट / मान-मनितो खोजेको</option>
+                <option value="विपक्षी क्याम्पमा" ${v.InfluencerStance === 'विपक्षी क्याम्पमा' ? 'selected' : ''}>🔴 विपक्षी क्याम्पमा</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label">मुख्य माग, चाहना वा चासो (Key Demands & Motivations)</label>
+              <textarea name="InfluencerDemands" class="form-control" rows="3" placeholder="उदा: टोलको बाटो पिच हुनुपर्ने, खानेपानी योजना, मन्दिर बजेट, छोरालाई तालिम...">${esc(v.InfluencerDemands || '')}</textarea>
+            </div>
+          </div>
+          <div style="margin-top: 18px; display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" class="btn btn-secondary" onclick="viewVoterProfile('${v.VoterID}', 'influencer')">रद्द</button>
+            <button type="submit" class="btn btn-primary">सुरक्षित गर्नुहोस्</button>
+          </div>
+        </form>
+        `
+      );
+    }
+
+    function saveInfluencerDetails(e, voterId) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+
+      v.IsInfluencer = true;
+      v.InfluencerSphere = formData.get('InfluencerSphere');
+      v.InfluencerReach = formData.get('InfluencerReach');
+      v.InfluencerHandler = formData.get('InfluencerHandler');
+      v.InfluencerStance = formData.get('InfluencerStance');
+      v.InfluencerDemands = formData.get('InfluencerDemands');
+
+      saveState();
+      logActivity('influencer_update', `🌟 प्रभावकारी व्यक्ति ${v.Name} को VIP रणनीति अपडेट गरियो।`);
+      showToast(`${v.Name} को प्रभावकारी विवरण सुरक्षित भयो!`, 'success');
+      viewVoterProfile(voterId, 'influencer');
+      renderVotersList();
     }
 
     // TAB 1: OVERVIEW & BIO
@@ -5990,7 +6270,13 @@
         v.VoterSerial = formData.get('VoterSerial').trim();
         v.DOB = formData.get('DOB') || '';
         v.VerificationStatus = formData.get('VerificationStatus');
-        v.SelfReportedResponse = formData.get('SelfReportedResponse');
+        const supportTier = formData.get('SupportTier');
+        if (supportTier) {
+          v.SupportTier = supportTier;
+          v.SelfReportedResponse = (supportTier === 'solid' || supportTier === 'lean') ? 'Support' : 
+                                   (supportTier === 'hard_opponent' ? 'Not Support' : 'Undecided');
+        }
+        v.IsInfluencer = formData.get('IsInfluencer') === 'Yes';
         v.PartyLeaning = formData.get('PartyLeaning') || '';
         v.CurrentLocation = formData.get('CurrentLocation') || 'गाउँमै उपस्थित (On-Ground)';
         v.ElectionDayTurnout = formData.get('ElectionDayTurnout') || 'पक्का स्थानीय उपस्थित (Confirmed)';
@@ -7827,6 +8113,61 @@
       Independent: { name: 'स्वतन्त्र / अन्य', short: 'अन्य', color: '#64748b', icon: '⚪' },
       Undecided: { name: 'दोधार / अनिर्णित', short: 'दोधार', color: '#f59e0b', icon: '❓' }
     };
+
+    
+    // 5-Tier Voter Support Probability Architecture
+    const SUPPORT_TIERS = {
+      'solid': { key: 'solid', label: 'पक्का समर्थक', shortLabel: 'पक्का', prob: 1.0, color: '#059669', bg: '#ecfdf5', border: '#a7f3d0', icon: '🟢' },
+      'lean': { key: 'lean', label: 'सकारात्मक/झुकाव', shortLabel: 'सकारात्मक', prob: 0.75, color: '#16a34a', bg: '#f0fdf4', border: '#bbf7d0', icon: '🟩' },
+      'swing': { key: 'swing', label: 'दोधार/तटस्थ', shortLabel: 'दोधार', prob: 0.50, color: '#d97706', bg: '#fffbeb', border: '#fde68a', icon: '🟡' },
+      'opponent_lean': { key: 'opponent_lean', label: 'विपक्षी झुकाव', shortLabel: 'विपक्षी', prob: 0.25, color: '#ea580c', bg: '#fff7ed', border: '#fed7aa', icon: '🟠' },
+      'hard_opponent': { key: 'hard_opponent', label: 'कडा विरोधी', shortLabel: 'विरोधी', prob: 0.0, color: '#dc2626', bg: '#fef2f2', border: '#fecaca', icon: '🔴' }
+    };
+
+    function getSupportTier(v) {
+      if (!v) return SUPPORT_TIERS.swing;
+      if (v.SupportTier && SUPPORT_TIERS[v.SupportTier]) return SUPPORT_TIERS[v.SupportTier];
+      
+      // Auto-fallback mapping based on legacy fields
+      if (v.SelfReportedResponse === 'Support') {
+        return SUPPORT_TIERS.solid;
+      } else if (v.PartyLeaning === 'UML') {
+        return SUPPORT_TIERS.solid;
+      } else if (v.PartyLeaning === 'Undecided' || v.SelfReportedResponse === 'Undecided' || !v.PartyLeaning) {
+        return SUPPORT_TIERS.swing;
+      } else if (v.SelfReportedResponse === 'Not Support') {
+        return SUPPORT_TIERS.hard_opponent;
+      } else {
+        return SUPPORT_TIERS.opponent_lean;
+      }
+    }
+
+    function getSupportBadge(v, isClickable = true) {
+      const tier = getSupportTier(v);
+      const clickAttr = isClickable ? `style="cursor: pointer; background: ${tier.bg}; color: ${tier.color}; border: 1.5px solid ${tier.border}; font-weight: 700;" onclick="quickCycleSupportTier('${v.VoterID}')" title="क्लिक गरी समर्थन तह बदल्नुहोस् (५ स्ल्याब)"` : `style="background: ${tier.bg}; color: ${tier.color}; border: 1.5px solid ${tier.border}; font-weight: 700;"`;
+      return `<span class="badge" ${clickAttr}>${tier.icon} ${tier.label} (${Math.round(tier.prob * 100)}%)</span>`;
+    }
+
+    function quickCycleSupportTier(voterId, activeTab = '') {
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+      const curTier = getSupportTier(v).key;
+      const order = ['solid', 'lean', 'swing', 'opponent_lean', 'hard_opponent'];
+      const nextIdx = (order.indexOf(curTier) + 1) % order.length;
+      v.SupportTier = order[nextIdx];
+      saveState();
+
+      const tier = SUPPORT_TIERS[v.SupportTier];
+      showToast(`${v.Name} को समर्थन: ${tier.icon} ${tier.label} (${Math.round(tier.prob * 100)}%)`, 'info');
+
+      // Refresh UI components
+      if (activeTab && typeof viewVoterProfile === 'function') {
+        viewVoterProfile(voterId, activeTab);
+      }
+      renderVotersList();
+      if (typeof renderCandidateWarRoom === 'function') renderCandidateWarRoom();
+      if (typeof updateDashboardStats === 'function') updateDashboardStats();
+    }
 
     function getPartyLabel(code) {
       if (!code) return '<span style="color: var(--slate-600);">-</span>';
