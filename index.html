@@ -6298,6 +6298,8 @@
         }
         v.IsInfluencer = formData.get('IsInfluencer') === 'Yes';
         v.PartyLeaning = formData.get('PartyLeaning') || '';
+        if (formData.get('CurrentLocation')) v.CurrentLocation = formData.get('CurrentLocation');
+        if (formData.get('ElectionDayTurnout')) v.ElectionDayTurnout = formData.get('ElectionDayTurnout');
         v.CurrentLocation = formData.get('CurrentLocation') || 'गाउँमै उपस्थित (On-Ground)';
         v.ElectionDayTurnout = formData.get('ElectionDayTurnout') || 'पक्का स्थानीय उपस्थित (Confirmed)';
         v.CityAddress = (formData.get('CityAddress') || '').trim();
