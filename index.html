@@ -1520,6 +1520,93 @@
       }
     }
 
+  
+    /* ==========================================================================
+       DYNAMIC MARQUEE TICKER (Breaking Announcement Bar)
+       ========================================================================== */
+    .dynamic-notice-marquee {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+      background: linear-gradient(90deg, #1e1b4b 0%, #312e81 100%);
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 700;
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.15);
+      position: sticky;
+      top: 56px;
+      z-index: 25;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
+    .dynamic-notice-marquee.urgent {
+      background: linear-gradient(90deg, #991b1b 0%, #dc2626 100%) !important;
+      color: #fff !important;
+      border-bottom-color: #fca5a5 !important;
+    }
+    .dynamic-notice-marquee.warning {
+      background: linear-gradient(90deg, #92400e 0%, #d97706 100%) !important;
+      color: #fff !important;
+      border-bottom-color: #fde68a !important;
+    }
+    .dynamic-notice-marquee.info {
+      background: linear-gradient(90deg, #075985 0%, #0284c7 100%) !important;
+      color: #fff !important;
+      border-bottom-color: #bae6fd !important;
+    }
+    .dynamic-notice-marquee.cheer {
+      background: linear-gradient(90deg, #065f46 0%, #059669 100%) !important;
+      color: #fff !important;
+      border-bottom-color: #a7f3d0 !important;
+    }
+
+    .marquee-badge {
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.22);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      flex-shrink: 0;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .marquee-track {
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+    .marquee-text {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marqueeScroll 22s linear infinite;
+    }
+    .marquee-text:hover {
+      animation-play-state: paused;
+    }
+    @keyframes marqueeScroll {
+      0%   { transform: translate(0, 0); }
+      100% { transform: translate(-100%, 0); }
+    }
+    .marquee-close {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .marquee-close:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
   </style>
 </head>
 <body>
@@ -1623,7 +1710,26 @@
 
       <!-- PANE 3: WORKER / COORDINATOR PIN LOGIN (Fast 4-Digit Keypad) -->
       <div id="paneWorkerLogin" style="display: none;">
-        <div style="margin-bottom: 14px; text-align: left;">
+        
+        <!-- Personalized Worker Welcome Card (Shown on Worker QR / Direct Link) -->
+        <div id="workerDirectWelcomeCard" style="display: none; margin-bottom: 16px; padding: 14px 16px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; border: 1.5px solid #86efac; text-align: center; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.12);">
+          <div id="workerWelcomeAvatar" style="width: 52px; height: 52px; border-radius: 50%; background: #16a34a; color: white; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; margin: 0 auto 8px; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.25);">
+            W
+          </div>
+          <div id="workerWelcomeName" style="font-size: 17px; font-weight: 800; color: #14532d;">कार्यकर्ता नाम</div>
+          <div style="display: flex; gap: 6px; justify-content: center; margin-top: 4px; flex-wrap: wrap;">
+            <span id="workerWelcomeRole" class="badge" style="background: #16a34a; color: white; font-weight: 700;">फिल्ड कार्यकर्ता</span>
+            <span id="workerWelcomeWard" class="badge" style="background: white; color: #166534; border: 1px solid #86efac; font-weight: 700;">वडा १</span>
+          </div>
+          <p style="font-size: 12.5px; color: #374151; margin: 10px 0 0; line-height: 1.4;">
+            🔒 एडमिनले तोकेको <b>४-अङ्कको PIN कोड</b> थिचेर कार्य डायरी खोल्नुहोस्:
+          </p>
+          <button type="button" class="btn btn-sm btn-link" onclick="switchWorkerToManualSelect()" style="font-size: 11.5px; margin-top: 6px; color: #4b5563; text-decoration: underline; background: none; border: none; cursor: pointer;">
+            (अर्को कार्यकर्ता छान्ने हो?)
+          </button>
+        </div>
+
+        <div id="workerManualSelectWrap" style="margin-bottom: 14px; text-align: left;">
           <label style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--slate-600); display: block; margin-bottom: 6px;">कार्यकर्ता छान्नुहोस् (Select Worker)</label>
           <select id="loginUserSelect" class="form-control" onchange="onLoginUserSelected(this.value)" style="background: white; font-weight: 600; font-size: 13.5px;">
             <!-- Dynamically populated -->
@@ -1724,9 +1830,16 @@
         <button class="nav-item palika-only" data-view="households" onclick="switchView('households')">
           <span class="icon">🏠</span> Households Layer
         </button>
+                <button class="nav-item palika-only" id="navItemDayBook" data-view="dayBook" onclick="switchView('dayBook')" style="background: rgba(16, 185, 129, 0.12); color: #047857; border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 700;">
+          <span class="icon">📖</span> <span>मेरो डे-बुक (Day-Book)</span>
+        </button>
         <button class="nav-item palika-only" data-view="visits" onclick="switchView('visits')">
           <span class="icon">📋</span> Field Visits
         </button>
+      <button class="mob-nav-btn" id="mobNavDayBook" onclick="switchView('dayBook')">
+        <span class="icon">📖</span>
+        <span>डे-बुक</span>
+      </button>
         <button class="nav-item palika-only" data-view="followups" onclick="switchView('followups')">
           <span class="icon">📅</span> Follow-ups
           <span class="nav-badge urgent" id="pendingFollowBadge">0</span>
@@ -1810,6 +1923,16 @@
           <button class="btn btn-sm btn-primary" onclick="openQuickActionModal()">⚡ Quick Action</button>
         </div>
       </header>
+
+      <!-- DYNAMIC TICKER / RUNNING MARQUEE NOTICE BAR -->
+      <div id="dynamicNoticeMarquee" class="dynamic-notice-marquee" style="display: none;">
+        <div class="marquee-badge" id="marqueeBadge">📢 ताजा सूचना</div>
+        <div class="marquee-track">
+          <div class="marquee-text" id="marqueeText">कुनै नयाँ सूचना छैन।</div>
+        </div>
+        <button class="marquee-close" onclick="dismissNoticeMarquee()" title="हटाउनुहोस्">✕</button>
+      </div>
+
 
       <!-- View Containers -->
       <div class="content-container">
@@ -2231,6 +2354,85 @@
                 </thead>
                 <tbody id="visitsTableRows"></tbody>
               </table>
+            </div>
+          </div>
+        </section>
+
+        
+        <!-- 4B. WORKER DAY-BOOK & FIELD ACTIVITY TIMELINE (दैनिक कार्य डायरी) -->
+        <section id="viewDayBook" class="view-section">
+          <!-- Worker Header Banner -->
+          <div class="card" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: white; border: 1.5px solid #4338ca; border-radius: var(--radius-md); padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 16px rgba(49, 46, 129, 0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div id="dayBookAvatar" style="width: 54px; height: 54px; border-radius: 50%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; border: 2.5px solid rgba(255,255,255,0.4); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);">
+                  W
+                </div>
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <h2 id="dayBookWorkerName" style="margin: 0; font-size: 20px; font-weight: 800; color: #fff;">कार्यकर्ता नाम</h2>
+                    <span id="dayBookWorkerRoleBadge" class="badge" style="background: rgba(16, 185, 129, 0.25); color: #a7f3d0; border: 1px solid #10b981; font-weight: 800;">Field Worker</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap;">
+                    <span id="dayBookWorkerScopeBadge" class="badge" style="background: #e0e7ff; color: #3730a3; font-weight: 800;">वडा १ • चालिसे</span>
+                    <span style="font-size: 12px; color: rgba(255,255,255,0.75);">📍 स्थलगत डाटा संकलन तथा घरदैलो</span>
+                  </div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-sm btn-secondary" onclick="showStaffQr(currentUser ? currentUser.UserID : '')" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); font-weight: 700;">
+                  📱 मेरो QR कोड / लिंक
+                </button>
+                <button class="btn btn-sm btn-secondary" onclick="openAddVoterModal()" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); font-weight: 700;">
+                  ➕ नयाँ मतदाता दर्ता
+                </button>
+                <button class="btn btn-sm btn-primary" onclick="openRecordVisitModal()" style="font-weight: 800; background: #10b981; border-color: #059669;">
+                  🚶 नयाँ भिजिट दर्ता
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Day-Book Summary Scorecards -->
+          <div class="kpi-grid" style="margin-bottom: 20px;">
+            <div class="kpi-card" style="border-top: 4px solid #4f46e5;">
+              <div class="kpi-label">आज पुगेका घरधुरी</div>
+              <div class="kpi-val" id="dbTodayHouseholds" style="color: #4f46e5;">0</div>
+              <div class="kpi-sub">🏠 प्रत्यक्ष घरदैलो भ्रमण</div>
+            </div>
+            <div class="kpi-card" style="border-top: 4px solid #059669;">
+              <div class="kpi-label">सम्पर्क भएका मतदाता</div>
+              <div class="kpi-val" id="dbTodayVoters" style="color: #059669;">0</div>
+              <div class="kpi-sub">👥 स्थलगत भेटघाट सम्पन्न</div>
+            </div>
+            <div class="kpi-card" style="border-top: 4px solid #16a34a;">
+              <div class="kpi-label">🟢 पक्का समर्थक सुरक्षित</div>
+              <div class="kpi-val" id="dbTodaySolid" style="color: #16a34a;">0</div>
+              <div class="kpi-sub">पक्का भोट प्रतिबद्धता</div>
+            </div>
+            <div class="kpi-card" style="border-top: 4px solid #d97706;">
+              <div class="kpi-label">🟡 दोधार / फलो-अप आवश्यक</div>
+              <div class="kpi-val" id="dbTodaySwing" style="color: #d97706;">0</div>
+              <div class="kpi-sub">थप छलफल र भेट आवश्यक</div>
+            </div>
+          </div>
+
+          <!-- Quick Actions & Day-Book Timeline Card -->
+          <div class="card">
+            <div class="card-header" style="flex-wrap: wrap; gap: 10px;">
+              <div>
+                <h3 class="card-title">📖 दैनिक कार्य डायरी र स्थलगत टाइमलाइन</h3>
+                <p style="margin: 4px 0 0; font-size: 13px; color: var(--slate-600);">
+                  तपाईंले संकलन गर्नुभएको मतदाता विवरण, घरदैलो भेटघाट र सम्पर्क डायरीको क्रमबद्ध विवरण।
+                </p>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <input type="text" id="dayBookSearchInput" placeholder="🔍 मतदाता नाम खोज्नुहोस्..." class="form-control" style="width: 200px; font-size: 12.5px; padding: 6px 10px;" oninput="renderWorkerDayBook()">
+                <button class="btn btn-sm btn-secondary" onclick="renderWorkerDayBook()">🔄 ताजा गर्नुहोस्</button>
+              </div>
+            </div>
+            <div id="workerDayBookTimelineContainer" style="margin-top: 10px;">
+              <!-- Timeline rows rendered here dynamically -->
             </div>
           </div>
         </section>
@@ -3572,15 +3774,34 @@
         return;
       }
 
-      // Route B: Staff Personal Login Link (?u=<token>)
+      // Route B: Staff Personal Login Link (?worker=<id_or_token> or ?u=<token>)
+      const workerParam = params.get('worker');
       const userToken = params.get('u');
-      if (userToken) {
-        const staff = state.users.find(u => u.AccessToken === userToken);
+      const lookupKey = workerParam || userToken;
+      if (lookupKey) {
+        // Also check if palikaParam is present to set palika context
+        const palikaParam = params.get('palika') || params.get('p');
+        if (palikaParam) {
+          const tenant = (state.tenants || []).find(t => 
+            (t.Slug && t.Slug.toLowerCase() === palikaParam.trim().toLowerCase()) ||
+            (t.TenantID && t.TenantID.toLowerCase() === palikaParam.trim().toLowerCase())
+          );
+          if (tenant) {
+            state.settings.MUNICIPALITY = tenant.PalikaName;
+            state.settings.PALIKA_SLUG = tenant.Slug;
+          }
+        }
+
+        const staff = state.users.find(u => 
+          u.UserID === lookupKey || 
+          u.AccessToken === lookupKey || 
+          (u.Phone && u.Phone.replace(/[^0-9]/g, '') === lookupKey.replace(/[^0-9]/g, ''))
+        );
         if (staff && staff.Active) {
           showStaffLoginPrompt(staff);
           return;
         } else {
-          showToast('Invalid or expired access token', 'error');
+          showToast('कार्यकर्ता खाता फेला परेन वा निष्क्रिय छ', 'error');
         }
       }
 
@@ -3794,14 +4015,40 @@
       }
     }
 
+    function switchWorkerToManualSelect() {
+      const card = document.getElementById('workerDirectWelcomeCard');
+      const wrap = document.getElementById('workerManualSelectWrap');
+      if (card) card.style.display = 'none';
+      if (wrap) wrap.style.display = 'block';
+      populateLoginUserSelector();
+    }
+
     function showStaffLoginPrompt(staff) {
+      if (!staff) return;
+
+      // Populate Worker Personalized Card
+      const welcomeCard = document.getElementById('workerDirectWelcomeCard');
+      const manualWrap = document.getElementById('workerManualSelectWrap');
+      const nameEl = document.getElementById('workerWelcomeName');
+      const roleEl = document.getElementById('workerWelcomeRole');
+      const wardEl = document.getElementById('workerWelcomeWard');
+      const avatarEl = document.getElementById('workerWelcomeAvatar');
+
+      if (welcomeCard) welcomeCard.style.display = 'block';
+      if (manualWrap) manualWrap.style.display = 'none';
+      if (nameEl) nameEl.textContent = staff.Name;
+      if (roleEl) roleEl.textContent = staff.Role === 'Field Worker' ? 'फिल्ड कार्यकर्ता (Data Collector)' : staff.Role;
+      if (wardEl) wardEl.textContent = `वडा नं. ${staff.Ward || '१'}${staff.Tole ? ' • ' + staff.Tole : ''}`;
+      if (avatarEl) avatarEl.textContent = staff.Name.charAt(0).toUpperCase();
+
       populateLoginUserSelector();
       const select = document.getElementById('loginUserSelect');
       if (select) {
         select.value = staff.UserID;
         onLoginUserSelected(staff.UserID);
       }
-      document.getElementById('loginTitle').textContent = `Welcome, ${staff.Name}`;
+
+      document.getElementById('loginTitle').textContent = `नमस्ते, ${staff.Name} जी!`;
       document.getElementById('loginSubtitle').textContent = `${staff.Role} • Ward ${staff.Ward || '-'}${staff.Tole ? ' • ' + staff.Tole : ''}`;
       document.getElementById('loginScreen').style.display = 'flex';
       document.getElementById('appShell').style.display = 'none';
@@ -4359,9 +4606,27 @@
       renderSupportModeBanner();
       renderGlobalBroadcastBanner();
 
+      // Strict UI Scoping for Field Workers
+      if (currentUser && currentUser.Role === 'Field Worker') {
+        const restrictedSelectors = [
+          '[data-view="warRoom"]',
+          '[data-view="team"]',
+          '[data-view="settings"]',
+          '[data-view="tenants"]',
+          '[data-view="reports"]',
+          '[data-view="messages"]',
+          '[data-view="areas"]'
+        ];
+        restrictedSelectors.forEach(sel => {
+          document.querySelectorAll(sel).forEach(el => el.style.display = 'none');
+        });
+      }
+
       // Auto route to appropriate landing view
       if (isSuper) {
         switchView('tenants');
+      } else if (currentUser && currentUser.Role === 'Field Worker') {
+        switchView('dayBook');
       } else {
         switchView('dashboard');
       }
@@ -4386,7 +4651,141 @@
     // ==========================================
     // 4. NAVIGATION & VIEWS
     // ==========================================
+    
+    // ==========================================
+    // WORKER DAY-BOOK LOGIC & FIELD TIMELINE
+    // ==========================================
+    function renderWorkerDayBook() {
+      if (!currentUser) return;
+
+      const workerNameEl = document.getElementById('dayBookWorkerName');
+      const workerRoleEl = document.getElementById('dayBookWorkerRoleBadge');
+      const workerScopeEl = document.getElementById('dayBookWorkerScopeBadge');
+      const workerAvatarEl = document.getElementById('dayBookAvatar');
+
+      if (workerNameEl) workerNameEl.textContent = currentUser.Name;
+      if (workerRoleEl) workerRoleEl.textContent = currentUser.Role === 'Field Worker' ? 'फिल्ड कार्यकर्ता' : currentUser.Role;
+      if (workerScopeEl) workerScopeEl.textContent = `वडा नं. ${currentUser.Ward || 'All'}${currentUser.Tole ? ' • ' + currentUser.Tole : ''}`;
+      if (workerAvatarEl) workerAvatarEl.textContent = currentUser.Name.charAt(0).toUpperCase();
+
+      // Filter visits recorded by this worker (or in this worker's ward)
+      const isSuper = currentUser.Role === 'Super Admin';
+      const myWard = currentUser.Ward || 'All';
+      const myTole = (currentUser.Tole || '').toLowerCase();
+
+      // Scoped voters
+      const myVoters = state.voters.filter(v => {
+        if (isSuper) return true;
+        if (myWard !== 'All' && String(v.Ward) !== String(myWard)) return false;
+        if (myTole && v.Tole && !v.Tole.toLowerCase().includes(myTole)) return false;
+        return true;
+      });
+
+      const myVoterIds = new Set(myVoters.map(v => v.VoterID));
+
+      // Scoped visits
+      let myVisits = state.visits.filter(vis => {
+        return myVoterIds.has(vis.VoterID);
+      });
+
+      // Filter by Search Query if present
+      const searchInput = document.getElementById('dayBookSearchInput');
+      const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+      if (query) {
+        myVisits = myVisits.filter(vis => {
+          const v = state.voters.find(x => x.VoterID === vis.VoterID);
+          const vName = v ? (v.Name || '').toLowerCase() : '';
+          const vNotes = (vis.Notes || '').toLowerCase();
+          return vName.includes(query) || vNotes.includes(query);
+        });
+      }
+
+      // Calculate Counters
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const todayVisits = myVisits.filter(vis => vis.Date === todayStr);
+
+      const visitedHhIds = new Set();
+      let solidCount = 0;
+      let swingCount = 0;
+
+      myVoters.forEach(v => {
+        if (v.ContactStatus === 'Contacted') {
+          if (v.HouseholdID) visitedHhIds.add(v.HouseholdID);
+          const tier = typeof getSupportTier === 'function' ? getSupportTier(v).key : (v.SupportTier || 'swing');
+          if (tier === 'solid') solidCount++;
+          if (tier === 'swing') swingCount++;
+        }
+      });
+
+      const elHh = document.getElementById('dbTodayHouseholds');
+      const elVot = document.getElementById('dbTodayVoters');
+      const elSol = document.getElementById('dbTodaySolid');
+      const elSw = document.getElementById('dbTodaySwing');
+
+      if (elHh) elHh.textContent = visitedHhIds.size || todayVisits.length;
+      if (elVot) elVot.textContent = myVoters.filter(v => v.ContactStatus === 'Contacted').length;
+      if (elSol) elSol.textContent = solidCount;
+      if (elSw) elSw.textContent = swingCount;
+
+      // Render Day-Book Timeline List
+      const container = document.getElementById('workerDayBookTimelineContainer');
+      if (!container) return;
+
+      if (!myVisits.length) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 40px 16px; color: var(--slate-500); font-size: 14px; border: 2px dashed var(--slate-200); border-radius: var(--radius-md); background: #f8fafc;">
+            <div style="font-size: 40px; margin-bottom: 8px;">📖</div>
+            <b>${query ? 'खोजिएको नामसँग मिल्ने भेटघाट भेटिएन।' : 'आजको कार्य डायरीमा कुनै भेटघाट दर्ता छैन।'}</b><br>
+            <span style="font-size: 12.5px; color: var(--slate-500);">माथिको <b>'🚶 नयाँ भिजिट दर्ता'</b> थिचेर स्थलगत घरदैलो विवरण भर्नुहोस्।</span>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = myVisits.slice(0, 30).map(vis => {
+        const v = state.voters.find(x => x.VoterID === vis.VoterID);
+        const voterName = v ? v.Name : vis.VoterID;
+        const voterWard = v ? v.Ward : '-';
+        const voterTole = v ? v.Tole : '-';
+        const tier = v ? getSupportTier(v) : null;
+
+        return `
+          <div style="display: flex; gap: 14px; padding: 14px; border-bottom: 1px solid var(--slate-200); align-items: flex-start; transition: background 0.15s ease;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+            <div style="width: 42px; height: 42px; border-radius: 50%; background: #e0e7ff; color: #4338ca; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(79, 70, 229, 0.15);">
+              🚶
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+                <b style="font-size: 15px; color: var(--navy-900); cursor: pointer;" onclick="viewVoterProfile('${vis.VoterID}')">
+                  👉 ${esc(voterName)}
+                </b>
+                <span style="font-size: 12px; color: var(--slate-500); font-weight: 700; background: #f1f5f9; padding: 2px 8px; border-radius: 4px;">${vis.Date}</span>
+              </div>
+              <div style="font-size: 13px; color: var(--slate-600); margin: 4px 0 7px;">
+                📍 वडा ${voterWard} • ${esc(voterTole)} • <b>${esc(vis.VisitOutcome || 'Met in Person')}</b>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                ${tier ? `<span class="badge" style="background: ${tier.bg}; color: ${tier.color}; border: 1px solid ${tier.border}; font-weight: 700;">${tier.icon} ${tier.label}</span>` : ''}
+                ${vis.Notes ? `<span style="font-size: 12.5px; color: var(--slate-700); background: #f8fafc; padding: 3px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">📝 ${esc(vis.Notes)}</span>` : ''}
+                <button class="btn btn-sm btn-link" onclick="openScheduleFollowupModal('${vis.VoterID}')" style="font-size: 11.5px; color: var(--indigo-600); padding: 0 4px; text-decoration: underline; background: none; border: none; cursor: pointer;">📅 फलो-अप थप्नुहोस्</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
     function switchView(viewName) {
+      // Strict Security Wall for Field Workers
+      if (currentUser && currentUser.Role === 'Field Worker') {
+        const workerRestricted = ['warRoom', 'settings', 'tenants', 'team', 'reports', 'messages', 'areas', 'electionReports'];
+        if (workerRestricted.includes(viewName)) {
+          showToast('🔒 यो खण्ड पालिका एडमिनका लागि मात्र हो। तपाईंको कार्यक्षेत्र: दैनिक कार्य डायरी र मतदाता भेटघाट।', 'warning');
+          if (viewName !== 'dayBook') switchView('dayBook');
+          return;
+        }
+      }
+
       // Permission protection
       if ((viewName === 'settings' || viewName === 'tenants') && currentUser && currentUser.Role !== 'Super Admin') {
         showToast('यो सेक्सन केवल SaaS Super Admin ले मात्र खोल्न मिल्छ।', 'error');
@@ -4435,6 +4834,8 @@
         }
       } else if (viewName === 'tenants') {
         renderTenantsManagement();
+      } else if (viewName === 'dayBook') {
+        renderWorkerDayBook();
       } else if (viewName === 'timeline') {
         renderActivityTimeline();
       } else if (viewName === 'reports') {
@@ -6921,25 +7322,43 @@
     // ==========================================
     function renderTeamList() {
       const tbody = document.getElementById('teamTableRows');
+      if (!tbody) return;
       tbody.innerHTML = state.users.map((u, idx) => {
-        const link = `${window.location.origin}${window.location.pathname}?u=${u.AccessToken}`;
+        const pin = u.PIN || '1234';
         return `
           <tr>
             <td style="text-align: center; font-weight: 700; color: var(--slate-600);">${idx + 1}</td>
-            <td><b>${esc(u.Name)}</b></td>
-            <td>${esc(u.Phone)}</td>
-            <td><span class="badge badge-contacted">${esc(u.Role)}</span></td>
-            <td>Ward ${esc(u.Ward || 'All')}</td>
             <td>
-              <div style="display: flex; gap: 6px; align-items: center;">
-                <button class="btn btn-sm btn-secondary" onclick="showStaffQr('${u.UserID}')">📱 View QR</button>
-                <button class="btn btn-sm btn-secondary" onclick="copyStaffLink('${link}')">Copy Link</button>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 34px; height: 34px; border-radius: 50%; background: #4f46e5; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px;">
+                  ${u.Name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <b style="color: #0f172a; font-size: 14px;">${esc(u.Name)}</b>
+                  <div style="font-size: 11px; color: var(--slate-500);">ID: ${esc(u.UserID)}</div>
+                </div>
+              </div>
+            </td>
+            <td><b>${esc(u.Phone || '-')}</b></td>
+            <td>
+              <span class="badge ${u.Role === 'Super Admin' ? 'badge-solid' : (u.Role === 'Field Worker' ? 'badge-verified' : 'badge-contacted')}" style="font-weight: 700;">
+                ${esc(u.Role)}
+              </span>
+            </td>
+            <td>वडा ${esc(u.Ward || 'All')}${u.Tole ? ' • ' + esc(u.Tole) : ''}</td>
+            <td>
+              <span style="font-family: monospace; font-weight: 800; background: #f1f5f9; padding: 2px 8px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 13px; color: #0f172a;">${pin}</span>
+            </td>
+            <td>
+              <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                <button class="btn btn-sm btn-secondary" onclick="showStaffQr('${u.UserID}')" title="व्यक्तिगत QR र लगइन लिङ्क" style="font-weight: 700;">📱 QR / लिङ्क</button>
+                <button class="btn btn-sm btn-secondary" onclick="openDirectNoticeToWorker('${u.UserID}')" title="यस कार्यकर्तालाई मात्र सूचना पठाउनुहोस्">📢 सूचना</button>
               </div>
             </td>
             <td><span class="badge ${u.Active ? 'badge-verified' : 'badge-pending'}">${u.Active ? 'Active' : 'Disabled'}</span></td>
             <td>
               <div style="display: flex; gap: 6px;">
-                <button class="btn btn-sm btn-secondary" onclick="resetUserPinPrompt('${u.UserID}')">Reset PIN</button>
+                <button class="btn btn-sm btn-secondary" onclick="resetUserPinPrompt('${u.UserID}')">🔑 PIN फेर्नुहोस्</button>
               </div>
             </td>
           </tr>
@@ -7022,27 +7441,123 @@
     }
 
     function showStaffQr(userId) {
-      const u = state.users.find(x => x.UserID === userId);
-      if (!u) return;
-      const link = `${window.location.origin}${window.location.pathname}?u=${u.AccessToken}`;
-      openQrModal(`Personal Login QR: ${u.Name}`, `${u.Role} • Ward ${u.Ward}`, link);
+      const u = state.users.find(x => x.UserID === userId) || (currentUser && currentUser.UserID === userId ? currentUser : null);
+      if (!u) {
+        showToast('प्रयोगकर्ता फेला परेन', 'error');
+        return;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const palikaSlug = params.get('palika') || params.get('p') || (state.settings && state.settings.PALIKA_SLUG) || 'helambu';
+      const link = `${window.location.origin}${window.location.pathname}?palika=${palikaSlug}&worker=${u.UserID}`;
+      const pinCode = u.PIN || '1234';
+
+      const whatsappText = encodeURIComponent(
+        `नमस्ते ${u.Name} जी!\n\nतपाईंको निर्वाचन फिल्ड कार्य डायरी लगइन लिङ्क:\n${link}\n\nतपाईंको ४-अङ्कको PIN कोड: ${pinCode}\n\nलिङ्क खोलेर पिन हानेपछि तपाईंको दैनिक कार्य डायरी सिधै खुल्नेछ।`
+      );
+      const cleanPhone = (u.Phone || '').replace(/[^0-9]/g, '');
+      const waUrl = cleanPhone.length >= 10 
+        ? `https://api.whatsapp.com/send?phone=977${cleanPhone.slice(-10)}&text=${whatsappText}`
+        : `https://api.whatsapp.com/send?text=${whatsappText}`;
+
+      const modalBody = `
+        <div style="text-align: center; padding: 10px 4px;">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 14px;">
+            <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%); color: white; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);">
+              ${u.Name.charAt(0).toUpperCase()}
+            </div>
+            <div style="text-align: left;">
+              <h3 style="margin: 0; font-size: 18px; color: #0f172a; font-weight: 800;">${esc(u.Name)}</h3>
+              <div style="display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap;">
+                <span class="badge" style="background: #e0e7ff; color: #4338ca; font-weight: 700;">${esc(u.Role)}</span>
+                <span class="badge" style="background: #ecfdf5; color: #047857; font-weight: 700;">वडा ${esc(u.Ward || 'All')}${u.Tole ? ' • ' + esc(u.Tole) : ''}</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: inline-block; padding: 16px; background: white; border: 2px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); margin-bottom: 14px;">
+            <div id="workerSpecificQrContainer" style="display: flex; justify-content: center;"></div>
+          </div>
+
+          <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase;">लगइन PIN कोड:</span>
+              <span style="font-size: 16px; font-weight: 800; color: #0f172a; background: #e2e8f0; padding: 2px 12px; border-radius: 6px; letter-spacing: 3px;">${pinCode}</span>
+            </div>
+            <div style="font-size: 12px; color: #64748b; line-height: 1.4;">
+              कार्यकर्ताले यो QR स्क्यान गर्दा वा लिङ्क खोल्दा सिधै यो ४-अङ्कको PIN मागेर कार्य डायरी खुल्नेछ।
+            </div>
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <input type="text" id="staffDirectLinkInput" class="form-control" readonly value="${link}" style="font-size: 12px; text-align: center; background: white; font-weight: 600; cursor: pointer;" onclick="this.select()">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <button class="btn btn-secondary" onclick="copyStaffDirectLink('${link}')" style="font-weight: 700;">
+              📋 लिङ्क कपी
+            </button>
+            <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="font-weight: 800; background: #25D366; border-color: #22c55e; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px;">
+              <span>📲 WhatsApp</span>
+            </a>
+          </div>
+        </div>
+      `;
+
+      openModal(
+        `📱 कार्यकर्ता लगइन QR: ${esc(u.Name)}`,
+        modalBody,
+        `
+        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <button class="btn btn-sm btn-secondary" onclick="resetUserPinPrompt('${u.UserID}')">🔑 PIN परिवर्तन गर्नुहोस्</button>
+          <button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>
+        </div>
+        `
+      );
+
+      // Render QR inside modal
+      setTimeout(() => {
+        const qrBox = document.getElementById('workerSpecificQrContainer');
+        if (qrBox) renderQrSvg(link, qrBox);
+      }, 50);
+    }
+
+    function copyStaffDirectLink(link) {
+      navigator.clipboard.writeText(link);
+      showToast('कार्यकर्ता लगइन लिङ्क कपी भयो!', 'success');
     }
 
     function copyStaffLink(link) {
       navigator.clipboard.writeText(link);
-      showToast('Personal login link copied to clipboard', 'success');
+      showToast('कार्यकर्ता लगइन लिङ्क कपी भयो!', 'success');
     }
 
     function resetUserPinPrompt(userId) {
-      const pin = prompt('Enter new 4-digit PIN for user (Default: 1234):', '1234');
+      const pin = prompt('कार्यकर्ताको नयाँ ४-अङ्कको PIN कोड राख्नुहोस् (Default: 1234):', '1234');
       if (pin && /^\d{4}$/.test(pin)) {
         const u = state.users.find(x => x.UserID === userId);
         if (u) {
           u.PIN = pin;
           saveState();
-          showToast(`PIN reset to ${pin}`, 'success');
+          showToast(`${u.Name} को PIN परिवर्तन भई ${pin} भयो।`, 'success');
+          renderTeamList();
         }
+      } else if (pin) {
+        showToast('PIN ठीक ४ अङ्कको हुनुपर्छ (उदा: 1234)', 'error');
       }
+    }
+
+    function openDirectNoticeToWorker(userId) {
+      openCreateNoticeModal();
+      setTimeout(() => {
+        const targetTypeSelect = document.querySelector('select[name="TargetType"]');
+        if (targetTypeSelect) {
+          targetTypeSelect.value = 'single';
+          toggleNoticeTargetDetails('single');
+          const targetUserSelect = document.querySelector('select[name="TargetUserID"]');
+          if (targetUserSelect) targetUserSelect.value = userId;
+        }
+      }, 100);
     }
 
     // ==========================================
@@ -7416,6 +7931,90 @@
     // ==========================================
     // 17. NOTICES & MESSAGING
     // ==========================================
+    
+    // ==========================================
+    // DYNAMIC NOTICES & WORKER MARQUEE ENGINE
+    // ==========================================
+    function checkAndDisplayWorkerNotices() {
+      if (!currentUser) return;
+      const marqueeEl = document.getElementById('dynamicNoticeMarquee');
+      const textEl = document.getElementById('marqueeText');
+      const badgeEl = document.getElementById('marqueeBadge');
+      if (!marqueeEl || !textEl) return;
+
+      const userWard = currentUser.Ward || 'All';
+      const userId = currentUser.UserID;
+      const isSuper = currentUser.Role === 'Super Admin';
+
+      // Find notices targeted to this user or all
+      const notices = state.notices || [];
+      const relevantNotices = notices.filter(n => {
+        if (!n.Active && n.Active === false) return false;
+        if (isSuper) return true;
+        // Targeted check
+        if (n.TargetType === 'single' && n.TargetUserID && n.TargetUserID !== userId) return false;
+        if (n.TargetType === 'ward' && n.TargetWard && n.TargetWard !== 'All' && String(n.TargetWard) !== String(userWard)) return false;
+        return true;
+      });
+
+      if (!relevantNotices.length) {
+        marqueeEl.style.display = 'none';
+        return;
+      }
+
+      // Get the latest notice
+      const topNotice = relevantNotices[0];
+
+      // Styling based on priority/color
+      marqueeEl.className = 'dynamic-notice-marquee ' + (topNotice.ColorStyle || 'info');
+      if (badgeEl) {
+        const badgeIcon = topNotice.Priority === 'Urgent' ? '🔴 जरुरी सूचना' : (topNotice.Priority === 'Important' ? '🟡 ध्यानाकर्षण' : '📢 जानकारी');
+        badgeEl.textContent = badgeIcon;
+      }
+
+      textEl.textContent = `${topNotice.Title}: ${topNotice.Message}  —  [${topNotice.PublishedDate}]`;
+      marqueeEl.style.display = 'flex';
+
+      // If Urgent and not dismissed in this session, show Priority Modal once
+      const dismissedKey = 'seen_notice_' + topNotice.NoticeID;
+      if (topNotice.Priority === 'Urgent' && !sessionStorage.getItem(dismissedKey)) {
+        sessionStorage.setItem(dismissedKey, '1');
+        setTimeout(() => {
+          showUrgentNoticeModal(topNotice);
+        }, 600);
+      }
+    }
+
+    function dismissNoticeMarquee() {
+      const el = document.getElementById('dynamicNoticeMarquee');
+      if (el) el.style.display = 'none';
+    }
+
+    function showUrgentNoticeModal(n) {
+      openModal(
+        `🚨 अति जरुरी सूचना: ${esc(n.Title)}`,
+        `
+        <div style="background: #fef2f2; border: 1.5px solid #fecaca; border-radius: 12px; padding: 18px; margin-bottom: 16px;">
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <div style="font-size: 26px;">📢</div>
+            <div>
+              <h4 style="margin: 0 0 6px; color: #991b1b; font-size: 16px; font-weight: 800;">${esc(n.Title)}</h4>
+              <p style="margin: 0; color: #7f1d1d; font-size: 14px; line-height: 1.5; white-space: pre-line;">${esc(n.Message)}</p>
+              <div style="margin-top: 10px; font-size: 12px; color: #b91c1c; font-weight: 600;">
+                प्रेषक: ${esc(n.PublishedBy || 'केन्द्रीय कमाण्ड')} • मिति: ${n.PublishedDate}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <button class="btn btn-primary" onclick="closeModal()" style="background: #dc2626; border-color: #dc2626; font-weight: 700; width: 100%;">
+            मैले पढेँ र बुझेँ (Dismiss & Continue)
+          </button>
+        </div>
+        `
+      );
+    }
+
     function renderNotices() {
       const container = document.getElementById('noticesListContainer');
       container.innerHTML = state.notices.map(n => `
