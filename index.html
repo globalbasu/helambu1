@@ -1438,29 +1438,37 @@
         display: flex !important;
       }
 
-      /* Mobile Topbar - Sleek App Header with safe areas */
+      /* Mobile Topbar - Sleek Native App Header with Safe-Area Insets */
       .topbar {
         padding: 8px 12px !important;
         padding-top: calc(8px + env(safe-area-inset-top, 0px)) !important;
         min-height: 54px !important;
+        height: auto !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
         gap: 8px !important;
         position: sticky !important;
         top: 0 !important;
-        z-index: 100 !important;
-        background: rgba(255, 255, 255, 0.95) !important;
-        backdrop-filter: blur(16px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+        z-index: 900 !important;
+        background: rgba(255, 255, 255, 0.96) !important;
+        backdrop-filter: blur(18px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.85) !important;
       }
       .topbar-left {
         gap: 8px !important;
-        flex: 1 !important;
+        flex: 1 1 auto !important;
         min-width: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
       }
       .topbar-title {
         font-size: 14.5px !important;
         font-weight: 800 !important;
-        max-width: 140px !important;
+        max-width: 150px !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
@@ -1474,19 +1482,23 @@
         align-items: center !important;
         gap: 6px !important;
         flex-shrink: 0 !important;
+        flex-wrap: nowrap !important;
       }
       .topbar-right .online-badge {
         display: none !important;
       }
       .topbar-right .btn-sm {
-        font-size: 11px !important;
-        padding: 6px 8px !important;
-        min-height: 36px !important;
-        border-radius: 8px !important;
+        font-size: 12px !important;
+        padding: 6px 10px !important;
+        min-height: 38px !important;
+        border-radius: 10px !important;
         white-space: nowrap !important;
       }
       .topbar-right button[onclick="openQrModal()"] {
-        display: none !important; /* Hide non-essential QR button from topbar on mobile to prevent overflow (accessible via menus) */
+        display: none !important;
+      }
+      .hide-mobile, .btn-text-mobile-hide {
+        display: none !important;
       }
 
       /* Content Area compact padding & mobile container flow */
@@ -1507,11 +1519,22 @@
         padding: 12px 10px !important;
         border-radius: 12px !important;
       }
-      .kpi-card .kpi-value {
+      .kpi-card .kpi-val {
         font-size: 20px !important;
+        line-height: 1.2 !important;
+        word-break: break-all !important;
       }
       .kpi-card .kpi-label {
-        font-size: 10.5px !important;
+        font-size: 11px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      .kpi-card .kpi-sub {
+        font-size: 11px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
       }
 
       /* Card and Container responsive full widths */
@@ -1537,11 +1560,30 @@
         font-size: 12px !important;
       }
 
+      /* Card header toolbar horizontal touch scrolling */
+      .card-header-actions, .toolbar-actions {
+        display: flex !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        gap: 6px !important;
+        width: 100% !important;
+        padding: 4px 0 6px !important;
+        scrollbar-width: none !important;
+      }
+      .card-header-actions::-webkit-scrollbar, .toolbar-actions::-webkit-scrollbar {
+        display: none !important;
+      }
+      .card-header-actions .btn, .toolbar-actions .btn {
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
+      }
+
       /* Mobile Native App Bottom Sheet Modals */
       .modal-overlay {
         align-items: flex-end !important;
         padding: 0 !important;
-        background: rgba(9, 13, 22, 0.7) !important;
+        background: rgba(9, 13, 22, 0.72) !important;
+        z-index: 1100 !important;
       }
       .modal-card {
         width: 100% !important;
@@ -1550,17 +1592,21 @@
         max-height: 92vh !important;
         max-height: 92dvh !important;
         border: none !important;
-        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3) !important;
+        box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.35) !important;
         animation: modalSlideMobile 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
         padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+        transform: translate3d(0, 0, 0);
+        will-change: transform;
       }
       .modal-drag-handle {
         display: block !important;
-        width: 48px !important;
+        width: 52px !important;
         height: 5px !important;
         background: #cbd5e1 !important;
         border-radius: 999px !important;
         margin: 10px auto 4px !important;
+        cursor: grab !important;
+        touch-action: none !important;
       }
       @keyframes modalSlideMobile {
         from { transform: translate3d(0, 100%, 0); }
@@ -1588,6 +1634,24 @@
         min-height: 42px !important;
       }
 
+      /* Toast Notification Placement on Mobile - Positioned Above Bottom Navigation */
+      .toast-box {
+        bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+        left: 12px !important;
+        right: 12px !important;
+        align-items: center !important;
+        z-index: 2100 !important;
+      }
+      .toast {
+        max-width: 380px !important;
+        width: 100% !important;
+        justify-content: center !important;
+        font-size: 12.5px !important;
+        padding: 10px 14px !important;
+        border-radius: 12px !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28) !important;
+      }
+
       /* War Room Banner & Candidate Card on Mobile */
       .war-room-hero {
         padding: 14px 12px !important;
@@ -1597,6 +1661,17 @@
         flex-direction: column !important;
         gap: 12px !important;
       }
+      .war-room-switcher-wrap {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        padding: 10px !important;
+        box-sizing: border-box !important;
+      }
+      .war-room-switcher-wrap select {
+        width: 100% !important;
+      }
       .war-room-actions {
         display: flex !important;
         flex-wrap: wrap !important;
@@ -1604,12 +1679,12 @@
         width: 100% !important;
       }
       .war-room-actions .btn {
-        flex: 1 1 calc(50% - 6px) !important;
+        flex: 1 1 calc(33.33% - 6px) !important;
         text-align: center !important;
         justify-content: center !important;
-        font-size: 11.5px !important;
-        padding: 9px 8px !important;
-        min-height: 40px !important;
+        font-size: 11px !important;
+        padding: 8px 4px !important;
+        min-height: 38px !important;
       }
       
       /* Profile tabs on mobile */
@@ -1644,9 +1719,20 @@
 
       /* Filter bar responsiveness on mobile */
       .filter-bar, .action-bar, .toolbar-row {
+        display: flex !important;
         flex-direction: column !important;
         align-items: stretch !important;
         gap: 8px !important;
+      }
+      .filter-bar .search-input-wrap {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+      }
+      .filter-bar-selects {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 6px !important;
+        width: 100% !important;
       }
       .filter-bar .form-control, .filter-bar .filter-select, .filter-bar .btn {
         width: 100% !important;
@@ -1656,7 +1742,7 @@
     /* Small Phone adjustments (<= 480px) */
     @media (max-width: 480px) {
       .topbar-title {
-        max-width: 115px !important;
+        max-width: 120px !important;
       }
       .kpi-grid {
         grid-template-columns: 1fr 1fr !important;
@@ -1967,8 +2053,8 @@
 
       <!-- Topbar Header -->
       <header class="topbar">
-        <div class="topbar-left" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-          <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+        <div class="topbar-left">
+          <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle Navigation Drawer">☰</button>
           <div class="topbar-title" id="pageTitle">Dashboard Overview</div>
           <span class="badge-mode" id="electionModeBadge">🟢 Normal Field Mode</span>
           <!-- 🎯 Candidate Switcher Dropdown (विकल्प १) -->
@@ -1981,11 +2067,11 @@
         </div>
         <div class="topbar-right">
           <button id="topbarSupabaseSyncBtn" class="btn btn-sm btn-secondary" onclick="syncSupabaseData(true)" style="display: flex; align-items: center; gap: 5px; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; font-weight: 600;" title="Supabase Cloud Database Sync">
-            🟢 Cloud Sync
+            <span>🟢</span> <span class="sync-label btn-text-mobile-hide">Cloud Sync</span>
           </button>
-          <button id="pwaInstallBtn" class="btn btn-sm btn-primary" style="display: none; background: #059669; border-color: #059669;" onclick="triggerPwaInstall()">📲 Install App</button>
-          <button class="btn btn-sm btn-secondary" onclick="openQrModal()">📱 Generate QR</button>
-          <button class="btn btn-sm btn-primary" onclick="openQuickActionModal()">⚡ Quick Action</button>
+          <button id="pwaInstallBtn" class="btn btn-sm btn-primary" style="display: none; background: #059669; border-color: #059669;" onclick="triggerPwaInstall()">📲 <span class="btn-text-mobile-hide">Install App</span></button>
+          <button class="btn btn-sm btn-secondary" onclick="openQrModal()">📱 <span class="btn-text-mobile-hide">QR</span></button>
+          <button class="btn btn-sm btn-primary" onclick="openQuickActionModal()" title="Quick Field Action">⚡ <span class="btn-text-mobile-hide">Quick Action</span></button>
         </div>
       </header>
 
@@ -2036,8 +2122,8 @@
         <!-- 1B. CANDIDATE INTELLIGENCE & WAR-ROOM (जित-हार विश्लेषण र स्थलगत डेटा) -->
         <section id="viewWarRoom" class="view-section">
           <!-- Candidate Profile & Switcher Hero Banner -->
-          <div class="card" style="margin-bottom: 24px; border: 2px solid #4338ca; background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: white; border-radius: var(--radius-md); padding: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+          <div class="card war-room-hero" style="margin-bottom: 24px; border: 2px solid #4338ca; background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: white; border-radius: var(--radius-md); padding: 20px;">
+            <div class="war-room-hero-grid" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
               <div style="display: flex; align-items: center; gap: 16px;">
                 <div id="warRoomCandidateAvatar" style="width: 56px; height: 56px; border-radius: 50%; background: #fbbf24; color: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);">
                   ☀️
@@ -2054,21 +2140,22 @@
                 </div>
               </div>
 
-              <!-- Top Candidate Switcher (Option 1) -->
-              <div style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
+              <div class="war-room-switcher-wrap" style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
                 <label style="font-size: 12px; font-weight: 700; color: #fbbf24; white-space: nowrap;">🎯 उम्मेदवार छान्नुहोस्:</label>
                 <select id="warRoomCandidateSelect" class="filter-select" onchange="onWarRoomCandidateSelected(this.value)" style="background: white; color: #0f172a; font-weight: 700; font-size: 12.5px;">
                   <!-- Dynamically populated -->
                 </select>
-                <button class="btn btn-sm btn-secondary" onclick="openAddCandidateModal()" style="font-size: 11.5px; padding: 4px 8px; font-weight: 700; background: #fbbf24; color: #0f172a; border: none;" title="नयाँ उम्मेदवार दर्ता गर्नुहोस्">
-                  + उम्मेदवार
-                </button>
-                <button class="btn btn-sm btn-secondary" onclick="openCandidateProfileModal(state.selectedCandidateId)" style="font-size: 11.5px; padding: 4px 10px; font-weight: 700; background: rgba(255,255,255,0.18); color: white; border: 1px solid rgba(255,255,255,0.3);" title="उम्मेदवार पूर्ण प्रोफाइल र कार्यक्रम टाइमलाइन">
-                  👤 प्रोफाइल र टाइमलाइन
-                </button>
-                <button class="btn btn-sm btn-primary" onclick="openCandidateBrochureModal(state.selectedCandidateId)" style="font-size: 11.5px; padding: 4px 12px; font-weight: 800; background: #10b981; border: 1px solid #059669; box-shadow: 0 2px 8px rgba(16,185,129,0.3);" title="सेयर गर्न मिल्ने डिजिटल ब्रोसर तथा PDF घोषणापत्र">
-                  📄 डिजिटल ब्रोसर / PDF
-                </button>
+                <div class="war-room-actions">
+                  <button class="btn btn-sm btn-secondary" onclick="openAddCandidateModal()" style="font-size: 11.5px; padding: 4px 8px; font-weight: 700; background: #fbbf24; color: #0f172a; border: none;" title="नयाँ उम्मेदवार दर्ता गर्नुहोस्">
+                    + उम्मेदवार
+                  </button>
+                  <button class="btn btn-sm btn-secondary" onclick="openCandidateProfileModal(state.selectedCandidateId)" style="font-size: 11.5px; padding: 4px 10px; font-weight: 700; background: rgba(255,255,255,0.18); color: white; border: 1px solid rgba(255,255,255,0.3);" title="उम्मेदवार पूर्ण प्रोफाइल र कार्यक्रम टाइमलाइन">
+                    👤 प्रोफाइल
+                  </button>
+                  <button class="btn btn-sm btn-primary" onclick="openCandidateBrochureModal(state.selectedCandidateId)" style="font-size: 11.5px; padding: 4px 12px; font-weight: 800; background: #10b981; border: 1px solid #059669; box-shadow: 0 2px 8px rgba(16,185,129,0.3);" title="सेयर गर्न मिल्ने डिजिटल ब्रोसर तथा PDF घोषणापत्र">
+                    📄 ब्रोसर
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -2142,7 +2229,7 @@
           </div>
 
           <!-- 2-COLUMN GRID: FIELD PRESENCE BASKETS & LIVE AREA TIMELINE -->
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; margin-bottom: 24px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; margin-bottom: 24px;">
             
             <!-- COLUMN A: REAL FIELD PRESENCE & MIGRATION BASKETS -->
             <div class="card" style="padding: 18px;">
@@ -2295,7 +2382,7 @@
                 <h3 class="card-title">👥 Voter & Contact Directory (मतदाता निर्देशिका) <span class="badge" style="background: #ecfdf5; color: #047857; font-size: 11px;">Live Field Sync</span></h3>
                 <div style="font-size: 13px; color: var(--slate-600); margin-top: 4px;" id="voterResultsCount">Loading...</div>
               </div>
-              <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <div class="card-header-actions">
                 <button class="btn btn-sm btn-primary" style="background: #25D366; border-color: #25D366;" onclick="openBroadcastModal()">📢 Broadcast / SMS</button>
                 <button class="btn btn-sm btn-secondary" id="toggleViewBtn" onclick="toggleVoterViewMode()">🔲 Card View</button>
                 <button class="btn btn-sm btn-secondary" id="voterDensityBtn" onclick="toggleVoterDensity()" title="कम्प्याक्ट वा सामान्य रो उचाइ">📑 कम्प्याक्ट</button>
@@ -2313,43 +2400,45 @@
                 <span class="search-icon">🔍</span>
                 <input type="search" id="voterSearch" class="search-input" name="voterSearchQuery" placeholder="Search by name, phone, serial, tole, household..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" oninput="debounceRenderVoters()">
               </div>
-              <select id="voterWardFilter" class="filter-select" onchange="renderVotersList()">
-                <option value="">All Wards</option>
-              </select>
-              <select id="voterContactFilter" class="filter-select" onchange="renderVotersList()">
-                <option value="">Contact Status: All</option>
-                <option value="Contacted">Contacted</option>
-                <option value="Not Contacted">Not Contacted</option>
-              </select>
-              <select id="voterVerifyFilter" class="filter-select" onchange="renderVotersList()">
-                <option value="">Verification: All</option>
-                <option value="Verified">Verified</option>
-                <option value="Pending">Pending</option>
-                <option value="Correction Required">Correction Required</option>
-              </select>
-              <select id="voterSupportFilter" class="filter-select" onchange="renderVotersList()" style="font-weight: 700; color: #047857;">
-                <option value="">समर्थन अवस्था: सबै</option>
-                <option value="solid">🟢 पक्का समर्थक</option>
-                <option value="lean">🟩 सकारात्मक</option>
-                <option value="swing">🟡 दोधार / तटस्थ</option>
-                <option value="opponent_lean">🟠 विपक्षी झुकाव</option>
-                <option value="hard_opponent">🔴 कडा विरोधी</option>
-              </select>
-              <select id="voterInfluencerFilter" class="filter-select" onchange="renderVotersList()" style="font-weight: 700; color: #7c2d12;">
-                <option value="">प्रभावकारी व्यक्ति: सबै</option>
-                <option value="yes">🌟 प्रभावकारी अगुवा मात्र</option>
-              </select>
-              <select id="voterPartyFilter" class="filter-select" onchange="renderVotersList()">
-                <option value="">पार्टी झुकाव: सबै</option>
-                <option value="UML">नेकपा (एमाले)</option>
-                <option value="Congress">नेपाली कांग्रेस</option>
-                <option value="RSP">रास्वपा</option>
-                <option value="Maoist">माओवादी केन्द्र</option>
-                <option value="RPP">राप्रपा</option>
-                <option value="Independent">स्वतन्त्र / अन्य</option>
-                <option value="Undecided">दोधार / अनिर्णित</option>
-              </select>
-              <button class="btn btn-sm btn-secondary" onclick="clearVoterFilters()">Reset</button>
+              <div class="filter-bar-selects">
+                <select id="voterWardFilter" class="filter-select" onchange="renderVotersList()">
+                  <option value="">All Wards</option>
+                </select>
+                <select id="voterContactFilter" class="filter-select" onchange="renderVotersList()">
+                  <option value="">Contact Status: All</option>
+                  <option value="Contacted">Contacted</option>
+                  <option value="Not Contacted">Not Contacted</option>
+                </select>
+                <select id="voterVerifyFilter" class="filter-select" onchange="renderVotersList()">
+                  <option value="">Verification: All</option>
+                  <option value="Verified">Verified</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Correction Required">Correction Required</option>
+                </select>
+                <select id="voterSupportFilter" class="filter-select" onchange="renderVotersList()" style="font-weight: 700; color: #047857;">
+                  <option value="">समर्थन अवस्था: सबै</option>
+                  <option value="solid">🟢 पक्का समर्थक</option>
+                  <option value="lean">🟩 सकारात्मक</option>
+                  <option value="swing">🟡 दोधार / तटस्थ</option>
+                  <option value="opponent_lean">🟠 विपक्षी झुकाव</option>
+                  <option value="hard_opponent">🔴 कडा विरोधी</option>
+                </select>
+                <select id="voterInfluencerFilter" class="filter-select" onchange="renderVotersList()" style="font-weight: 700; color: #7c2d12;">
+                  <option value="">प्रभावकारी: सबै</option>
+                  <option value="yes">🌟 प्रभावकारी मात्र</option>
+                </select>
+                <select id="voterPartyFilter" class="filter-select" onchange="renderVotersList()">
+                  <option value="">पार्टी झुकाव: सबै</option>
+                  <option value="UML">नेकपा (एमाले)</option>
+                  <option value="Congress">नेपाली कांग्रेस</option>
+                  <option value="RSP">रास्वपा</option>
+                  <option value="Maoist">माओवादी केन्द्र</option>
+                  <option value="RPP">राप्रपा</option>
+                  <option value="Independent">स्वतन्त्र / अन्य</option>
+                  <option value="Undecided">दोधार / अनिर्णित</option>
+                </select>
+                <button class="btn btn-sm btn-secondary" onclick="clearVoterFilters()" style="grid-column: 1 / -1;">🔄 फिल्टर रिसेट (Reset Filters)</button>
+              </div>
             </div>
 
             <div id="voterTableContainer" class="table-responsive">
@@ -4465,7 +4554,7 @@
         if (topBadge) {
           topBadge.style.background = '#f0fdf4';
           topBadge.style.color = '#166534';
-          topBadge.innerHTML = `🟢 Cloud Synced (${state.voters.length} Voters)`;
+          topBadge.innerHTML = `<span>🟢</span> <span class="sync-label btn-text-mobile-hide">Cloud Synced (${state.voters.length})</span>`;
         }
 
         if (interactive) showToast('⚡ Supabase Cloud Synced Successfully!', 'success');
@@ -4565,22 +4654,26 @@
 
     // Worker 4-Digit PIN Keypad
     function pressKey(num) {
+      if (navigator.vibrate) try { navigator.vibrate(10); } catch(e) {}
       if (pinBuffer.length < 4) {
         pinBuffer += num;
         updatePinDots();
         if (pinBuffer.length === 4) {
           document.getElementById('loginBtn').disabled = false;
+          setTimeout(submitPin, 120);
         }
       }
     }
 
     function clearPin() {
+      if (navigator.vibrate) try { navigator.vibrate(10); } catch(e) {}
       pinBuffer = '';
       updatePinDots();
       document.getElementById('loginBtn').disabled = true;
     }
 
     function backspacePin() {
+      if (navigator.vibrate) try { navigator.vibrate(10); } catch(e) {}
       if (pinBuffer.length > 0) {
         pinBuffer = pinBuffer.slice(0, -1);
         updatePinDots();
@@ -5314,6 +5407,7 @@
     }
 
     function toggleSidebar(forceState) {
+      if (navigator.vibrate) try { navigator.vibrate(8); } catch(e) {}
       const sb = document.getElementById('sidebar');
       const bd = document.getElementById('sidebarBackdrop');
       if (!sb) return;
@@ -5321,6 +5415,9 @@
       sb.classList.toggle('open', isOpen);
       if (bd) bd.classList.toggle('active', isOpen);
       
+      const menuBtn = document.getElementById('mobNavMenu') || document.querySelector('.mob-nav-btn[onclick*="toggleSidebar"]');
+      if (menuBtn) menuBtn.classList.toggle('active', isOpen);
+
       // Prevent body scroll behind off-canvas drawer on mobile
       if (window.innerWidth <= 880) {
         document.body.style.overflow = isOpen ? 'hidden' : '';
@@ -12907,7 +13004,7 @@
     // MOBILE NATIVE TOUCH GESTURE ENHANCEMENTS
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
-      // Touch swipe gestures for mobile sidebar drawer
+      // 1. Touch swipe gestures for mobile sidebar drawer
       let touchStartX = 0;
       let touchStartY = 0;
       const sb = document.getElementById('sidebar');
@@ -12935,7 +13032,85 @@
         }
       }, { passive: true });
 
-      // Close modal on Escape key
+      // 2. Native Bottom Sheet Drag-down to dismiss gesture
+      function attachBottomSheetDrag(overlayId) {
+        const overlay = document.getElementById(overlayId);
+        if (!overlay) return;
+        const card = overlay.querySelector('.modal-card');
+        if (!card) return;
+
+        let dragStartY = 0;
+        let isDragging = false;
+        let currentDelta = 0;
+
+        overlay.addEventListener('touchstart', (e) => {
+          if (window.innerWidth > 880) return;
+          const target = e.target;
+          // Drag initiates from drag-handle, header, or top 50px of card
+          if (target.classList.contains('modal-drag-handle') || target.closest('.modal-header') || (e.touches[0].clientY - card.getBoundingClientRect().top < 50)) {
+            dragStartY = e.touches[0].clientY;
+            isDragging = true;
+            card.style.transition = 'none';
+          }
+        }, { passive: true });
+
+        overlay.addEventListener('touchmove', (e) => {
+          if (!isDragging) return;
+          const currentY = e.touches[0].clientY;
+          currentDelta = currentY - dragStartY;
+          if (currentDelta > 0) {
+            // Dragging down
+            card.style.transform = `translate3d(0, ${currentDelta}px, 0)`;
+          }
+        }, { passive: true });
+
+        overlay.addEventListener('touchend', () => {
+          if (!isDragging) return;
+          isDragging = false;
+          card.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
+          if (currentDelta > 80) {
+            // Dismiss bottom sheet
+            if (navigator.vibrate) try { navigator.vibrate(10); } catch(err) {}
+            card.style.transform = 'translate3d(0, 100%, 0)';
+            setTimeout(() => {
+              if (overlayId === 'qrModalOverlay') closeQrModal();
+              else closeModal();
+              card.style.transform = '';
+              card.style.transition = '';
+            }, 200);
+          } else {
+            // Snap back
+            card.style.transform = 'translate3d(0, 0, 0)';
+            setTimeout(() => {
+              card.style.transform = '';
+              card.style.transition = '';
+            }, 220);
+          }
+          currentDelta = 0;
+        }, { passive: true });
+      }
+
+      attachBottomSheetDrag('modalOverlay');
+      attachBottomSheetDrag('qrModalOverlay');
+
+      // 3. Tactile Feedback on Mobile Bottom Nav
+      document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.mob-nav-btn');
+        if (btn && navigator.vibrate) {
+          try { navigator.vibrate(8); } catch(err) {}
+        }
+      });
+
+      // 4. Smooth keyboard view adjustment on focus
+      document.addEventListener('focusin', (e) => {
+        if (window.innerWidth <= 880 && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')) {
+          setTimeout(() => {
+            e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 280);
+        }
+      });
+
+      // 5. Close modal on Escape key
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           closeModal();

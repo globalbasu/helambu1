@@ -1,13 +1,13 @@
 {
-  "name": "गोकर्णेश्वर निर्वाचन परिचालन (Election Ops)",
+  "name": "निर्वाचन परिचालन प्रणाली (Election Ops)",
   "short_name": "Election Ops",
-  "description": "Gokarneshwor Municipality Election Operations, Field Visits, Voter Master & Real-time Predictions",
+  "description": "Election Operations, Field Visits, Voter Directory & War Room SaaS Platform",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#0f172a",
-  "theme_color": "#4f46e5",
+  "theme_color": "#0f172a",
   "icons": [
     {
       "src": "icons/icon-192.svg",
