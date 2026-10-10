@@ -2032,7 +2032,7 @@
             <div class="filter-bar">
               <div class="search-input-wrap">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="voterSearch" class="search-input" placeholder="Search by name, phone, serial, tole, household..." oninput="debounceRenderVoters()">
+                <input type="search" id="voterSearch" class="search-input" name="voterSearchQuery" placeholder="Search by name, phone, serial, tole, household..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" oninput="debounceRenderVoters()">
               </div>
               <select id="voterWardFilter" class="filter-select" onchange="renderVotersList()">
                 <option value="">All Wards</option>
@@ -4198,6 +4198,9 @@
 
       populateWardDropdowns();
       populateCandidateDropdowns();
+      // Ensure search input is clean on workspace launch and immune to browser autofill
+      const initVoterSearch = document.getElementById('voterSearch');
+      if (initVoterSearch) initVoterSearch.value = '';
       refreshDashboardMetrics();
       renderVotersList();
       renderHouseholdsList();
@@ -4285,7 +4288,13 @@
 
       document.getElementById('pageTitle').textContent = sideNavBtn ? sideNavBtn.textContent.trim() : 'Dashboard';
 
-      if (viewName === 'tenants') {
+      if (viewName === 'voters') {
+        const vs = document.getElementById('voterSearch');
+        if (vs && (vs.value === 'helambu_admin' || vs.value === 'admin' || (currentUser && vs.value === currentUser.UserID))) {
+          vs.value = '';
+          renderVotersList();
+        }
+      } else if (viewName === 'tenants') {
         renderTenantsManagement();
       } else if (viewName === 'timeline') {
         renderActivityTimeline();
@@ -4735,10 +4744,16 @@
     }
 
     function clearVoterFilters() {
-      document.getElementById('voterSearch').value = '';
-      document.getElementById('voterWardFilter').value = '';
-      document.getElementById('voterContactFilter').value = '';
-      document.getElementById('voterVerifyFilter').value = '';
+      const s = document.getElementById('voterSearch');
+      if (s) s.value = '';
+      const w = document.getElementById('voterWardFilter');
+      if (w) w.value = '';
+      const c = document.getElementById('voterContactFilter');
+      if (c) c.value = '';
+      const v = document.getElementById('voterVerifyFilter');
+      if (v) v.value = '';
+      const p = document.getElementById('voterPartyFilter');
+      if (p) p.value = '';
       renderVotersList();
     }
 
