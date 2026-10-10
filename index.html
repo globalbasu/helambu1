@@ -4037,36 +4037,57 @@
           }
         }
 
-        // 3. Fetch voters from Supabase Cloud (if any)
+        // 3. Bidirectional Sync for Voters Table
         const vRes = await fetch(`${url}/rest/v1/voters?select=*`, { headers });
         if (vRes.ok) {
           const vData = await vRes.json();
           if (Array.isArray(vData) && vData.length > 0) {
+            // Cloud has data: merge cloud records into local state
             vData.forEach(cloudVoter => {
+              let parsedNotes = {};
+              try {
+                if (cloudVoter.notes && cloudVoter.notes.startsWith('{')) {
+                  parsedNotes = JSON.parse(cloudVoter.notes);
+                }
+              } catch(e) {}
+
               const mappedVoter = {
                 VoterID: cloudVoter.voter_id,
                 Name: cloudVoter.full_name,
-                Gender: cloudVoter.gender,
-                Age: cloudVoter.age,
-                Phone: cloudVoter.phone,
+                Gender: cloudVoter.gender || 'Other',
+                AgeGroup: cloudVoter.age_group || '',
+                Phone: cloudVoter.phone || '',
                 Ward: Number(cloudVoter.ward_no || 1),
-                Tole: cloudVoter.tole,
-                BoothNo: cloudVoter.booth_no,
-                VoterSerial: cloudVoter.voter_serial,
+                Tole: cloudVoter.tole || '',
+                BoothNo: cloudVoter.booth_no || '',
+                VoterSerial: cloudVoter.serial_no || '',
                 PartyLeaning: cloudVoter.party_leaning || 'Undecided',
-                VerificationStatus: cloudVoter.verification_status || 'Pending',
-                ContactStatus: cloudVoter.contact_status || 'Not Contacted',
-                SelfReportedResponse: cloudVoter.self_reported_response || '',
-                AssignedUserID: cloudVoter.assigned_user_id || '',
-                Active: cloudVoter.active !== false
+                VerificationStatus: parsedNotes.verification_status || 'Pending',
+                ContactStatus: parsedNotes.contact_status || 'Not Contacted',
+                SelfReportedResponse: parsedNotes.self_reported_response || '',
+                SupportTier: parsedNotes.support_tier || cloudVoter.sentiment || 'swing',
+                IsInfluencer: !!parsedNotes.is_influencer,
+                InfluencerSphere: parsedNotes.influencer_sphere || '',
+                InfluencerReach: parsedNotes.influencer_reach || '',
+                InfluencerHandler: parsedNotes.influencer_handler || '',
+                InfluencerDemands: parsedNotes.influencer_demands || '',
+                InfluencerStance: parsedNotes.influencer_stance || '',
+                HouseNo: cloudVoter.address ? cloudVoter.address.replace('घर नं: ', '') : '',
+                Active: true
               };
               const idx = state.voters.findIndex(x => x.VoterID === mappedVoter.VoterID);
               if (idx >= 0) {
                 state.voters[idx] = { ...state.voters[idx], ...mappedVoter };
               } else {
-                state.voters.unshift(mappedVoter);
+                state.voters.push(mappedVoter);
               }
             });
+          } else if (Array.isArray(vData) && vData.length === 0 && state.voters && state.voters.length > 0) {
+            // Cloud is empty but local has initial voters: Push local voters to Supabase Cloud!
+            console.log('Seeding Supabase Cloud with initial ' + state.voters.length + ' voters...');
+            for (const v of state.voters) {
+              await pushVoterToSupabase(v);
+            }
           }
         }
 
@@ -4081,7 +4102,7 @@
         if (topBadge) {
           topBadge.style.background = '#f0fdf4';
           topBadge.style.color = '#166534';
-          topBadge.innerHTML = `🟢 Cloud Synced (${state.users.length} Users)`;
+          topBadge.innerHTML = `🟢 Cloud Synced (${state.voters.length} Voters)`;
         }
 
         if (interactive) showToast('⚡ Supabase Cloud Synced Successfully!', 'success');
@@ -4128,13 +4149,27 @@
       }
     }
 
-    // Push new voter to Supabase Cloud
+    // Push new or updated voter to Supabase Cloud
     async function pushVoterToSupabase(v) {
       const url = (state.settings && state.settings.SUPABASE_URL) || DEFAULT_CONFIG.SUPABASE_URL;
       const key = (state.settings && state.settings.SUPABASE_KEY) || DEFAULT_CONFIG.SUPABASE_KEY;
       if (!url || !key) return;
 
       try {
+        const tier = (typeof getSupportTier === 'function') ? getSupportTier(v).key : (v.SupportTier || 'swing');
+        const metadataNotes = JSON.stringify({
+          verification_status: v.VerificationStatus || 'Pending',
+          contact_status: v.ContactStatus || 'Not Contacted',
+          self_reported_response: v.SelfReportedResponse || '',
+          support_tier: tier,
+          is_influencer: !!v.IsInfluencer,
+          influencer_sphere: v.InfluencerSphere || '',
+          influencer_reach: v.InfluencerReach || '',
+          influencer_handler: v.InfluencerHandler || '',
+          influencer_demands: v.InfluencerDemands || '',
+          influencer_stance: v.InfluencerStance || ''
+        });
+
         await fetch(`${url}/rest/v1/voters`, {
           method: 'POST',
           headers: {
@@ -4150,14 +4185,14 @@
             ward_no: Number(v.Ward) || 1,
             tole: v.Tole || '',
             booth_no: v.BoothNo || '',
-            voter_serial: v.VoterSerial || '',
+            serial_no: String(v.VoterSerial || ''),
             gender: v.Gender || 'Other',
+            age_group: v.AgeGroup || '',
             dob: v.DOB ? v.DOB : null,
             party_leaning: v.PartyLeaning || 'Undecided',
-            verification_status: v.VerificationStatus || 'Pending',
-            contact_status: v.ContactStatus || 'Not Contacted',
-            self_reported_response: v.SelfReportedResponse || '',
-            active: true
+            sentiment: tier,
+            address: v.HouseNo ? `घर नं: ${v.HouseNo}` : '',
+            notes: metadataNotes
           })
         });
       } catch(e) {
@@ -5191,6 +5226,7 @@
         v.InfluencerStance = 'सकारात्मक / सम्पर्कमा';
       }
       saveState();
+      if (typeof pushVoterToSupabase === 'function') pushVoterToSupabase(v);
       showToast(v.IsInfluencer ? `${v.Name} लाई प्रभावकारी व्यक्ति (Influencer) मा दर्ता गरियो!` : `${v.Name} लाई सामान्य मतदातामा सारियो।`, 'success');
       viewVoterProfile(voterId, 'influencer');
       renderVotersList();
@@ -5274,6 +5310,7 @@
       v.InfluencerDemands = formData.get('InfluencerDemands');
 
       saveState();
+      if (typeof pushVoterToSupabase === 'function') pushVoterToSupabase(v);
       logActivity('influencer_update', `🌟 प्रभावकारी व्यक्ति ${v.Name} को VIP रणनीति अपडेट गरियो।`);
       showToast(`${v.Name} को प्रभावकारी विवरण सुरक्षित भयो!`, 'success');
       viewVoterProfile(voterId, 'influencer');
@@ -6382,6 +6419,10 @@
       };
 
       state.visits.unshift(visit);
+      if (typeof pushVoterToSupabase === 'function') {
+        const vToPush = state.voters.find(x => x.VoterID === voterId);
+        if (vToPush) pushVoterToSupabase(vToPush);
+      }
 
       // Workflow Automation 1: Update Voter record status and Auto-Verify if 'Support' & 'Met'
       let autoVerified = false;
@@ -8156,6 +8197,7 @@
       const nextIdx = (order.indexOf(curTier) + 1) % order.length;
       v.SupportTier = order[nextIdx];
       saveState();
+      if (typeof pushVoterToSupabase === 'function') pushVoterToSupabase(v);
 
       const tier = SUPPORT_TIERS[v.SupportTier];
       showToast(`${v.Name} को समर्थन: ${tier.icon} ${tier.label} (${Math.round(tier.prob * 100)}%)`, 'info');
