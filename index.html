@@ -1607,6 +1607,50 @@
       background: rgba(255, 255, 255, 0.2);
     }
 
+  
+    /* ==========================================================================
+       PRINT STYLES FOR ELECTION BROCHURE PDF & WORKER ID CARD
+       ========================================================================== */
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #printBrochureContainer, #printBrochureContainer * {
+        visibility: visible !important;
+      }
+      #printBrochureContainer {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 20px !important;
+        background: white !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+      #printWorkerIdCardContainer, #printWorkerIdCardContainer * {
+        visibility: visible !important;
+      }
+      #printWorkerIdCardContainer {
+        position: absolute !important;
+        left: 50% !important;
+        top: 20px !important;
+        transform: translateX(-50%) !important;
+        width: 380px !important;
+        background: white !important;
+        box-shadow: none !important;
+        border: 2px solid #0f172a !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      @page {
+        size: A4;
+        margin: 10mm;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -1994,6 +2038,12 @@
                 </select>
                 <button class="btn btn-sm btn-secondary" onclick="openAddCandidateModal()" style="font-size: 11.5px; padding: 4px 8px; font-weight: 700; background: #fbbf24; color: #0f172a; border: none;" title="नयाँ उम्मेदवार दर्ता गर्नुहोस्">
                   + उम्मेदवार
+                </button>
+                <button class="btn btn-sm btn-secondary" onclick="openCandidateProfileModal(state.selectedCandidateId)" style="font-size: 11.5px; padding: 4px 10px; font-weight: 700; background: rgba(255,255,255,0.18); color: white; border: 1px solid rgba(255,255,255,0.3);" title="उम्मेदवार पूर्ण प्रोफाइल र कार्यक्रम टाइमलाइन">
+                  👤 प्रोफाइल र टाइमलाइन
+                </button>
+                <button class="btn btn-sm btn-primary" onclick="openCandidateBrochureModal(state.selectedCandidateId)" style="font-size: 11.5px; padding: 4px 12px; font-weight: 800; background: #10b981; border: 1px solid #059669; box-shadow: 0 2px 8px rgba(16,185,129,0.3);" title="सेयर गर्न मिल्ने डिजिटल ब्रोसर तथा PDF घोषणापत्र">
+                  📄 डिजिटल ब्रोसर / PDF
                 </button>
               </div>
             </div>
@@ -3764,6 +3814,13 @@
 
     function handleUrlRouting() {
       const params = new URLSearchParams(window.location.search);
+
+      // Route P: Public Candidate Digital Brochure (?brochure=<cand_id> or ?candidate=<cand_id>)
+      const brochureParam = params.get('brochure') || params.get('candidate');
+      if (brochureParam) {
+        openPublicBrochureView(brochureParam.trim());
+        return;
+      }
 
       // Route A: Public Form (?public=1)
       if (params.get('public') === '1') {
@@ -7757,7 +7814,8 @@
             </td>
             <td>
               <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-                <button class="btn btn-sm btn-secondary" onclick="showStaffQr('${u.UserID}')" title="व्यक्तिगत QR र लगइन लिङ्क" style="font-weight: 700;">📱 QR / लिङ्क</button>
+                <button class="btn btn-sm btn-primary" onclick="openWorkerProfileModal('${u.UserID}')" title="कार्यकर्ता पूर्ण प्रोफाइल, कार्यसम्पादन र टाइमलाइन" style="font-weight: 700; background: #4f46e5; border-color: #4338ca;">👤 प्रोफाइल</button>
+                <button class="btn btn-sm btn-secondary" onclick="showStaffQr('${u.UserID}')" title="व्यक्तिगत QR र लगइन लिङ्क" style="font-weight: 700;">📱 QR</button>
                 <button class="btn btn-sm btn-secondary" onclick="openDirectNoticeToWorker('${u.UserID}')" title="यस कार्यकर्तालाई मात्र सूचना पठाउनुहोस्">📢 सूचना</button>
               </div>
             </td>
