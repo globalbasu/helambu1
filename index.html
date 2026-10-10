@@ -3853,7 +3853,7 @@
           // Ensure all tenants have a valid URL Slug
           state.tenants.forEach(t => {
             if (!t.Slug) {
-              t.Slug = t.TenantID === 'TNT_HELAMBU' ? 'helambu' : (t.TenantID === 'TNT_GOKARNESHWOR' ? 'gokarneshwor' : (t.PalikaName ? t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') : t.TenantID.toLowerCase()));
+              t.Slug = t.TenantID === 'TNT_HELAMBU' ? 'helambu' : (t.PalikaName ? t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') : t.TenantID.toLowerCase());
             }
           });
 
@@ -8076,7 +8076,7 @@
           </div>
           <div class="form-group" style="margin-bottom: 12px;">
             <label class="form-label">Location Name *</label>
-            <input type="text" name="LocationName" required class="form-control" placeholder="e.g. Gokarna Secondary School">
+            <input type="text" name="LocationName" required class="form-control" placeholder="उदा: सरस्वती माध्यमिक विद्यालय (सेर्माथाङ)">
           </div>
           <div class="form-group" style="margin-bottom: 16px;">
             <label class="form-label">Address</label>
