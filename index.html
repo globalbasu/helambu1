@@ -5495,6 +5495,8 @@
                 InfluencerDemands: parsedNotes.influencer_demands || '',
                 InfluencerStance: parsedNotes.influencer_stance || '',
                 HouseNo: cloudVoter.address ? cloudVoter.address.replace('घर नं: ', '') : '',
+                FacebookUrl: parsedNotes.facebook_url || '',
+                TiktokUrl: parsedNotes.tiktok_url || '',
                 Active: true
               };
               const idx = state.voters.findIndex(x => x.VoterID === mappedVoter.VoterID);
@@ -5596,7 +5598,9 @@
           influencer_reach: v.InfluencerReach || '',
           influencer_handler: v.InfluencerHandler || '',
           influencer_demands: v.InfluencerDemands || '',
-          influencer_stance: v.InfluencerStance || ''
+          influencer_stance: v.InfluencerStance || '',
+          facebook_url: v.FacebookUrl || '',
+          tiktok_url: v.TiktokUrl || ''
         });
 
         await fetch(`${url}/rest/v1/voters`, {
@@ -6914,6 +6918,8 @@
                   <a href="javascript:void(0)" onclick="openCustomMessageModal('${v.VoterID}')" title="कस्टम सन्देश" style="text-decoration: none; font-size: 13px;">💬</a>
                 </span>
               ` : ''}
+              ${v.FacebookUrl ? `<a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" onclick="event.stopPropagation()" title="Facebook Profile" style="text-decoration: none; font-size: 13px;">📘</a>` : ''}
+              ${v.TiktokUrl ? `<a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" onclick="event.stopPropagation()" title="TikTok Profile" style="text-decoration: none; font-size: 13px;">🎵</a>` : ''}
               ${isTodayBirthday(v.DOB) ? `<span title="आज जन्मदिन! (${calculateAge(v.DOB)} वर्ष)" style="cursor: pointer; font-size: 13px;" onclick="event.stopPropagation(); openBirthdayWishModal('${v.VoterID}')">🎂</span>` : ''}
               <span style="color: var(--slate-300);">•</span>
               <span style="font-size: 11.5px;">${esc(v.Gender || '-')}</span>
@@ -7267,6 +7273,16 @@
                 </a>
                 <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" class="btn btn-sm" style="text-decoration: none; background: #25D366; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(37,211,102,0.25);" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">
                   🟢 WhatsApp
+                </a>
+              ` : ''}
+              ${v.FacebookUrl ? `
+                <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" class="btn btn-sm" style="text-decoration: none; background: #1877F2; color: white; font-size: 12px; font-weight: 800; padding: 7px 11px; border-radius: 6px; box-shadow: 0 2px 6px rgba(24,119,242,0.25);" title="Facebook प्रोफाइल खोल्नुहोस्">
+                  📘 FB
+                </a>
+              ` : ''}
+              ${v.TiktokUrl ? `
+                <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" class="btn btn-sm" style="text-decoration: none; background: #000000; color: white; font-size: 12px; font-weight: 800; padding: 7px 11px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.25);" title="TikTok प्रोफाइल खोल्नुहोस्">
+                  🎵 TikTok
                 </a>
               ` : ''}
               <button class="btn btn-sm btn-primary" onclick="printVoterSlip('${v.VoterID}')" style="font-weight: 800; font-size: 12px; padding: 7px 12px; background: #1e3a8a; border-color: #1e3a8a;" title="मतदाता परिचय पर्चा हेर्नुहोस् र प्रिन्ट गर्नुहोस्">
@@ -8477,6 +8493,7 @@
         v.TiktokUrl = (formData.get('TiktokUrl') || '').trim();
 
         saveState();
+        if (typeof pushVoterToSupabase === 'function') pushVoterToSupabase(v);
         showToast('Contact and social links updated!', 'success');
         refreshDashboardMetrics();
         renderVotersList();
