@@ -410,15 +410,340 @@
     }
 
     .menu-toggle {
-      display: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
       background: #ffffff;
       border: 1px solid var(--slate-200);
-      padding: 8px 12px;
       border-radius: var(--radius-sm);
       cursor: pointer;
-      font-size: 18px;
+      font-size: 17px;
       color: var(--slate-700);
       box-shadow: var(--shadow-xs);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    .menu-toggle:hover {
+      background: var(--slate-100);
+      color: var(--navy-900);
+      border-color: var(--slate-300);
+    }
+
+    /* Desktop Sidebar Collapsed Mode (Compact 72px Icon Rail) */
+    @media (min-width: 881px) {
+      body.sidebar-collapsed .sidebar {
+        width: 72px !important;
+        transition: width 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      body.sidebar-collapsed .main-wrap {
+        margin-left: 72px !important;
+        width: calc(100% - 72px) !important;
+        transition: margin-left 0.24s cubic-bezier(0.16, 1, 0.3, 1), width 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      body.sidebar-collapsed .sidebar .brand-text,
+      body.sidebar-collapsed .sidebar .nav-group-title,
+      body.sidebar-collapsed .sidebar .nav-item span:not(.icon),
+      body.sidebar-collapsed .sidebar .nav-badge,
+      body.sidebar-collapsed .sidebar .user-meta,
+      body.sidebar-collapsed .sidebar .sidebar-footer button span {
+        display: none !important;
+      }
+      body.sidebar-collapsed .sidebar .sidebar-brand {
+        padding: 16px 8px;
+        justify-content: center;
+      }
+      body.sidebar-collapsed .sidebar .brand-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
+        margin: 0 auto;
+      }
+      body.sidebar-collapsed .sidebar .sidebar-nav {
+        padding: 12px 6px;
+        gap: 6px;
+      }
+      body.sidebar-collapsed .sidebar .nav-item {
+        justify-content: center;
+        padding: 10px 0;
+        gap: 0;
+        border-radius: 8px;
+        position: relative;
+      }
+      body.sidebar-collapsed .sidebar .nav-item .icon {
+        font-size: 19px;
+        width: auto;
+        margin: 0 auto;
+      }
+      body.sidebar-collapsed .sidebar .sidebar-footer {
+        justify-content: center;
+        padding: 12px 6px;
+      }
+      body.sidebar-collapsed .sidebar .user-avatar {
+        margin: 0 auto;
+      }
+      body.sidebar-collapsed .sidebar .nav-item:hover::after {
+        content: attr(title);
+        position: absolute;
+        left: 76px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #0f172a;
+        color: #ffffff;
+        font-size: 11.5px;
+        font-weight: 700;
+        white-space: nowrap;
+        padding: 5px 10px;
+        border-radius: 6px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+        z-index: 999;
+        pointer-events: none;
+        border: 1px solid rgba(255,255,255,0.15);
+      }
+    }
+
+    /* ==========================================================================
+       VOTER SLIP / PERCHA (मतदाता परिचय पर्चा - OFFICIAL BALLOT SLIP)
+       ========================================================================== */
+    .voter-slip-wrapper {
+      max-width: 650px;
+      margin: 0 auto;
+      font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+    }
+    .voter-slip-card {
+      background: #ffffff;
+      border: 3px double #1e3a8a;
+      outline: 2px dashed #b91c1c;
+      outline-offset: -6px;
+      border-radius: 12px;
+      padding: 24px;
+      position: relative;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      color: #0f172a;
+    }
+    .voter-slip-card::before {
+      content: "निर्वाचन २०८४";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-30deg);
+      font-size: 52px;
+      font-weight: 900;
+      color: rgba(30, 58, 138, 0.035);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .slip-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #1e3a8a;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    .slip-crest {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .slip-crest .crest-flag {
+      font-size: 32px;
+      line-height: 1;
+    }
+    .slip-crest-text h3 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .slip-crest-text p {
+      margin: 2px 0 0;
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .slip-party-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 13px;
+      color: #0f172a;
+    }
+    .slip-banner {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      color: #ffffff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .slip-banner .serial {
+      font-size: 18px;
+      font-weight: 900;
+      color: #fbbf24;
+      letter-spacing: 0.03em;
+    }
+    .slip-banner .booth-info {
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .slip-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    @media (max-width: 600px) {
+      .slip-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .slip-cell {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    .slip-cell .label {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 700;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .slip-cell .val {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0f172a;
+      word-break: break-word;
+    }
+    .slip-security-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .slip-security-note {
+      font-size: 11.5px;
+      color: #334155;
+      line-height: 1.4;
+      max-width: 75%;
+    }
+    .slip-qr-box {
+      text-align: center;
+      background: #ffffff;
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #475569;
+    }
+
+    /* ==========================================================================
+       CAMPAIGN EVENT INVITATION CARD (डिजिटल ई-निमन्त्रणा पत्र)
+       ========================================================================== */
+    .event-card-container {
+      max-width: 640px;
+      margin: 0 auto;
+      font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+    }
+    .event-invitation-card {
+      background: linear-gradient(180deg, #fffbeb 0%, #ffffff 60%, #fff7ed 100%);
+      border: 4px double #b91c1c;
+      outline: 2px solid #d97706;
+      outline-offset: -8px;
+      border-radius: 16px;
+      padding: 26px 22px;
+      box-shadow: 0 10px 30px rgba(185, 28, 28, 0.12);
+      text-align: center;
+      position: relative;
+    }
+    .event-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1.5px dashed #f59e0b;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .event-card-title {
+      font-size: 23px;
+      font-weight: 900;
+      color: #b91c1c;
+      letter-spacing: -0.02em;
+      margin: 10px 0 6px;
+      text-shadow: 0 1px 2px rgba(185, 28, 28, 0.1);
+    }
+    .event-card-body {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #1e293b;
+      margin-bottom: 18px;
+      padding: 0 10px;
+    }
+    .event-schedule-box {
+      background: #ffffff;
+      border: 1.5px solid #fde68a;
+      border-radius: 12px;
+      padding: 14px 18px;
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.08);
+      margin-bottom: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      text-align: left;
+    }
+    @media (max-width: 540px) {
+      .event-schedule-box {
+        grid-template-columns: 1fr;
+      }
+    }
+    .event-schedule-item {
+      font-size: 13px;
+      color: #334155;
+    }
+    .event-schedule-item b {
+      color: #78350f;
+    }
+    .event-card-footer {
+      border-top: 1.5px dashed #f59e0b;
+      padding-top: 14px;
+      font-size: 12px;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .topbar-title {
@@ -2394,6 +2719,9 @@
                   <button class="btn btn-sm btn-primary" onclick="openCandidateBrochureModal(state.selectedCandidateId)" style="font-size: 11.5px; padding: 4px 12px; font-weight: 800; background: #10b981; border: 1px solid #059669; box-shadow: 0 2px 8px rgba(16,185,129,0.3);" title="सेयर गर्न मिल्ने डिजिटल ब्रोसर तथा PDF घोषणापत्र">
                     📄 ब्रोसर
                   </button>
+                  <button class="btn btn-sm" onclick="openCandidateEventsTimelineModal(state.selectedCandidateId)" style="font-size: 11.5px; padding: 4px 12px; font-weight: 800; background: #f59e0b; color: #0f172a; border: 1px solid #d97706; box-shadow: 0 2px 8px rgba(245,158,11,0.3);" title="चुनावी कार्यक्रम तालिका र डिजिटल ई-निमन्त्रणा पत्र">
+                    🎴 चुनावी सभा / ई-कार्ड
+                  </button>
                 </div>
               </div>
             </div>
@@ -3462,23 +3790,25 @@
           <div class="card">
             <div class="card-header">
               <div>
-                <h3 class="card-title">⏱️ Field Activity Timeline & Worker Audit Trail</h3>
-                <p style="font-size: 13px; color: var(--slate-600); margin-top: 4px;">
+                <h3 class="card-title" id="auditTrailHeaderTitle">⏱️ Field Activity Timeline & Worker Audit Trail</h3>
+                <p id="auditTrailHeaderDesc" style="font-size: 13px; color: var(--slate-600); margin-top: 4px;">
                   प्रत्येक युजर र कार्यकर्ताले फिल्डमा गरेको कामको प्रत्यक्ष विवरण (लाइभ टाइमलाइन लग)।
                 </p>
               </div>
               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <select id="timelineWorkerFilter" class="filter-select" onchange="renderActivityTimeline()">
-                  <option value="">All Workers (सबै)</option>
+                  <option value="">All Workers (सबै युजर)</option>
                 </select>
                 <select id="timelineTypeFilter" class="filter-select" onchange="renderActivityTimeline()">
                   <option value="">All Activities (सबै कार्य)</option>
-                  <option value="saas_security">👑 SaaS & Security Events Only (प्रणाली लग)</option>
-                  <option value="voter_add">नयाँ मतदाता दर्ता</option>
-                  <option value="voter_verify">प्रमाणीकरण (Verify)</option>
-                  <option value="visit">घरदैलो भेटघाट</option>
-                  <option value="message">सन्देश प्रेषण (SMS/WhatsApp)</option>
-                  <option value="issue">समस्या रिपोर्टिङ</option>
+                  <option value="saas_security">👑 SaaS Platform & Security Logs</option>
+                  <option value="vote_cast">🗳️ मतदान ट्र्याकिङ लग (Polling Day)</option>
+                  <option value="finance">💰 आर्थिक / Day Book खर्च लग</option>
+                  <option value="voter_add">👤 नयाँ मतदाता दर्ता</option>
+                  <option value="voter_verify">✅ प्रमाणीकरण (Verify)</option>
+                  <option value="visit">📋 घरदैलो भेटघाट</option>
+                  <option value="message">💬 सन्देश प्रेषण (SMS/WhatsApp)</option>
+                  <option value="issue">⚠️ समस्या रिपोर्टिङ</option>
                 </select>
                 <button class="btn btn-sm btn-secondary" onclick="renderActivityTimeline()">🔄 Refresh</button>
               </div>
@@ -5872,6 +6202,18 @@
         return;
       }
       if (navigator.vibrate) try { navigator.vibrate(8); } catch(e) {}
+
+      // Desktop Collapse Mode (Screen width > 880px)
+      if (window.innerWidth > 880) {
+        const isCollapsed = (typeof forceState === 'boolean')
+          ? forceState
+          : !document.body.classList.contains('sidebar-collapsed');
+        document.body.classList.toggle('sidebar-collapsed', isCollapsed);
+        try { localStorage.setItem('sidebar_collapsed', isCollapsed ? 'true' : 'false'); } catch(e) {}
+        return;
+      }
+
+      // Mobile off-canvas drawer
       const sb = document.getElementById('sidebar');
       const bd = document.getElementById('sidebarBackdrop');
       if (!sb) return;
@@ -5883,9 +6225,7 @@
       if (menuBtn) menuBtn.classList.toggle('active', isOpen);
 
       // Prevent body scroll behind off-canvas drawer on mobile
-      if (window.innerWidth <= 880) {
-        document.body.style.overflow = isOpen ? 'hidden' : '';
-      }
+      document.body.style.overflow = isOpen ? 'hidden' : '';
     }
 
     function capitalize(str) {
@@ -6505,60 +6845,65 @@
       openModal(
         `मतदाता प्रोफाइल: ${v.Name}`,
         `
-        <!-- TOP PROFILE HEADER CARD -->
-        <div style="background: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px; border: 1px solid var(--slate-200);">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+        <!-- TOP PROFILE HEADER CARD (Material 3 Intelligence Dossier) -->
+        <div style="background: #ffffff; border-radius: var(--radius-md); padding: 18px 20px; margin-bottom: 16px; border: 1.5px solid var(--slate-200); box-shadow: 0 4px 16px rgba(0,0,0,0.05); position: relative; overflow: hidden;">
+          <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #1e3a8a, #dc2626, #fbbf24);"></div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; flex-wrap: wrap;">
             <div style="display: flex; gap: 14px; align-items: center;">
-              <div style="width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); color: white; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);">
+              <div style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; box-shadow: 0 4px 14px rgba(30, 58, 138, 0.3); border: 2px solid white; flex-shrink: 0;">
                 ${initial}
               </div>
               <div>
                 <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                  <h2 style="margin: 0; font-size: 19px; font-weight: 800; color: var(--navy-900);">${esc(v.Name)}</h2>
-                  <span style="font-size: 12px; color: var(--slate-500); font-weight: 600;">(${esc(v.VoterID)})</span>
+                  <h2 style="margin: 0; font-size: 20px; font-weight: 900; color: #0f172a; letter-spacing: -0.01em;">${esc(v.Name)}</h2>
+                  <span style="font-size: 12px; color: #64748b; font-weight: 700; font-family: monospace; background: #f1f5f9; padding: 2px 8px; border-radius: 6px;">${esc(v.VoterID)}</span>
                   ${bdayBadge}
                 </div>
-                <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap;">
+                
+                <!-- Clean Grouped Identity & Status Badges -->
+                <div style="display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
                   <!-- Clickable Ward Badge -->
-                  <span class="badge" style="cursor: pointer; background: #e0e7ff; color: #3730a3; font-weight: 700;" onclick="closeModal(); filterByWard(${v.Ward});" title="वडा ${v.Ward} का मतदाता फिल्टर गर्न क्लिक गर्नुहोस्">
-                    🏛️ वडा ${v.Ward} 🔍
+                  <span class="badge" style="cursor: pointer; background: #eff6ff; color: #1d4ed8; font-weight: 800; border: 1px solid #bfdbfe;" onclick="closeModal(); filterByWard(${v.Ward});" title="वडा ${v.Ward} का मतदाता फिल्टर गर्न क्लिक गर्नुहोस्">
+                    🏛️ वडा ${v.Ward}
                   </span>
                   <!-- Clickable Tole Badge -->
                   ${v.Tole ? `
-                    <span class="badge" style="cursor: pointer; background: #f1f5f9; color: #334155; font-weight: 600;" onclick="closeModal(); filterByTole('${esc(v.Tole)}');" title="टोल खोज्न क्लिक गर्नुहोस्">
-                      📍 ${esc(v.Tole)} 🔍
+                    <span class="badge" style="cursor: pointer; background: #f8fafc; color: #334155; font-weight: 700; border: 1px solid #cbd5e1;" onclick="closeModal(); filterByTole('${esc(v.Tole)}');" title="टोल खोज्न क्लिक गर्नुहोस्">
+                      📍 ${esc(v.Tole)}
                     </span>
                   ` : ''}
                   <!-- Booth & Serial -->
-                  <span class="badge" style="background: #f8fafc; border: 1px solid var(--slate-300); color: var(--slate-700);">
-                    🗳️ बुथ ${esc(v.BoothNo || '-')} • क्र.सं. ${esc(v.VoterSerial || '-')}
+                  <span class="badge" style="background: #fefce8; border: 1px solid #fef08a; color: #854d0e; font-weight: 800;">
+                    🗳️ बुथ ${esc(v.BoothNo || '-')} • क्र.सं. #${esc(v.VoterSerial || '-')}
                   </span>
-                  <!-- Clickable Party Leaning Badge (Cycles party on click) -->
-                  <span class="badge" style="cursor: pointer; background: white; border: 1.5px solid #94a3b8; font-weight: 700;" onclick="quickCycleParty('${v.VoterID}', '${activeTab}');" title="क्लिक गरी पार्टी झुकाव परिवर्तन गर्नुहोस्">
+                  <!-- Clickable Party Leaning Badge -->
+                  <span class="badge" style="cursor: pointer; background: white; border: 1.5px solid #94a3b8; font-weight: 800;" onclick="quickCycleParty('${v.VoterID}', '${activeTab}');" title="क्लिक गरी पार्टी झुकाव परिवर्तन गर्नुहोस्">
                     ${getPartyLabel(v.PartyLeaning)} 🔄
                   </span>
                   <!-- Clickable Verification Badge -->
-                  <span class="badge ${v.VerificationStatus === 'Verified' ? 'badge-verified' : 'badge-pending'}" style="cursor: pointer;" onclick="toggleVoterVerification('${v.VoterID}'); viewVoterProfile('${v.VoterID}', '${activeTab}');" title="क्लिक गरी स्थिति बदल्नुहोस्">
+                  <span class="badge ${v.VerificationStatus === 'Verified' ? 'badge-verified' : 'badge-pending'}" style="cursor: pointer; font-weight: 800;" onclick="toggleVoterVerification('${v.VoterID}'); viewVoterProfile('${v.VoterID}', '${activeTab}');" title="क्लिक गरी स्थिति बदल्नुहोस्">
                     ${v.VerificationStatus === 'Verified' ? '✓ प्रमाणित (Verified)' : '⏳ बाँकी (Pending)'} 🔄
                   </span>
                 </div>
               </div>
             </div>
-            <!-- Quick Action Buttons -->
-            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+
+            <!-- Modern 1-Tap Action Buttons -->
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
               ${v.Phone ? `
-                <a href="tel:${cleanPhone(v.Phone)}" class="btn btn-sm btn-primary" style="text-decoration: none; background: #059669; border-color: #059669; font-size: 12px; padding: 6px 10px;" title="सिधा फोन गर्नुहोस्">
+                <a href="tel:${cleanPhone(v.Phone)}" class="btn btn-sm" style="text-decoration: none; background: #059669; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(5,150,105,0.25);" title="सिधा फोन गर्नुहोस्">
                   📞 फोन
                 </a>
-                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" class="btn btn-sm btn-success" style="text-decoration: none; background: #25D366; border-color: #25D366; color: white; font-size: 12px; padding: 6px 10px;" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">
+                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" class="btn btn-sm" style="text-decoration: none; background: #25D366; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(37,211,102,0.25);" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">
                   🟢 WhatsApp
                 </a>
               ` : ''}
-              <button class="btn btn-sm btn-secondary" onclick="printVoterSlip('${v.VoterID}')" style="font-weight: 700; font-size: 12px; padding: 6px 10px;">
-                🖨️ पर्चा
+              <button class="btn btn-sm btn-primary" onclick="printVoterSlip('${v.VoterID}')" style="font-weight: 800; font-size: 12px; padding: 7px 12px; background: #1e3a8a; border-color: #1e3a8a;" title="मतदाता परिचय पर्चा हेर्नुहोस् र प्रिन्ट गर्नुहोस्">
+                🖨️ पर्चा हेर्नुहोस्
               </button>
-              <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; padding: 6px 10px;">
-                ✏️ Edit
+              <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 12px;">
+                ✏️ सम्पादन
               </button>
             </div>
           </div>
@@ -6767,95 +7112,103 @@
     function renderVoterOverviewTab(v, booth, household) {
       const age = calculateAge(v.DOB);
       return `
-        <div class="form-grid" style="margin-bottom: 18px;">
-          <div class="form-group">
-            <span class="form-label">पूरा नाम (Full Name)</span>
-            <b style="font-size: 15px; color: var(--navy-900);">${esc(v.Name)}</b>
-          </div>
-          <div class="form-group">
-            <span class="form-label">सम्पर्क फोन (Phone Number)</span>
-            <div>
-              ${v.Phone ? `
-                <a href="tel:${cleanPhone(v.Phone)}" style="color: #059669; font-weight: 700; text-decoration: none; font-size: 15px;">📞 ${esc(v.Phone)}</a>
-                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" style="margin-left: 6px; text-decoration: none;">🟢 WhatsApp</a>
-              ` : '<span style="color: var(--slate-500);">फोन उपलब्ध छैन</span>'}
+        <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px;">
+          
+          <!-- CARD 1: ELECTORAL IDENTITY & BOOTH DOSSIER -->
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+            <div style="font-size: 13px; font-weight: 800; color: #1e3a8a; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+              <span>🏛️</span> मतदाता परिचय तथा मतदान स्थल (Electoral Identity)
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+              <div style="background: #f8fafc; padding: 10px 12px; border-radius: 8px; border: 1px solid #f1f5f9;">
+                <span class="form-label" style="font-size: 11px; color: #64748b;">पूरा नाम</span>
+                <b style="font-size: 15px; color: #0f172a;">${esc(v.Name)}</b>
+              </div>
+              <div style="background: #f8fafc; padding: 10px 12px; border-radius: 8px; border: 1px solid #f1f5f9;">
+                <span class="form-label" style="font-size: 11px; color: #64748b;">जन्म मिति / उमेर / लिङ्ग</span>
+                <b style="font-size: 14px; color: #0f172a;">${v.DOB ? `${v.DOB} (${age ? `${age} वर्ष` : ''})` : (v.AgeGroup || '-')} • ${esc(v.Gender || '-')}</b>
+              </div>
+              <div style="background: #f8fafc; padding: 10px 12px; border-radius: 8px; border: 1px solid #f1f5f9;">
+                <span class="form-label" style="font-size: 11px; color: #64748b;">स्थानीय ठेगाना (वडा, टोल, घर)</span>
+                <b style="font-size: 14px; color: #0f172a;">वडा नं ${v.Ward} • ${esc(v.Tole || '-')} • घर #${esc(v.HouseNo || (household ? household.HouseNo : '-'))}</b>
+              </div>
+              <div style="background: #f8fafc; padding: 10px 12px; border-radius: 8px; border: 1px solid #f1f5f9;">
+                <span class="form-label" style="font-size: 11px; color: #64748b;">मतदान केन्द्र र बुथ (Booth & Serial)</span>
+                <b style="font-size: 14px; color: #1e3a8a;">बुथ ${esc(v.BoothNo || '-')} • क्र.सं. #${esc(v.VoterSerial || '-')}</b>
+                <div style="font-size: 11.5px; color: #64748b; margin-top: 2px;">${booth ? esc(booth.BoothName || booth.LocationName) : 'स्थानीय केन्द्र'}</div>
+              </div>
             </div>
           </div>
-          <div class="form-group">
-            <span class="form-label">🎂 जन्म मिति / उमेर (DOB & Age)</span>
-            <b>${v.DOB ? `${v.DOB} (${age ? `${age} वर्ष` : ''})` : (v.AgeGroup || '-')}</b>
-          </div>
-          <div class="form-group">
-            <span class="form-label">लिंग (Gender)</span>
-            <b>${esc(v.Gender || '-')}</b>
-          </div>
-          <div class="form-group">
-            <span class="form-label">स्थानीय ठेगाना (Ward, Tole, House)</span>
-            <b>वडा नं. ${v.Ward} • ${esc(v.Tole || '-')} • घर नं: ${esc(v.HouseNo || (household ? household.HouseNo : '-'))}</b>
-          </div>
-          <div class="form-group">
-            <span class="form-label">मतदान केन्द्र र बुथ (Booth & Serial)</span>
-            <b>बुथ ${esc(v.BoothNo || '-')} (${booth ? esc(booth.BoothName) : 'केन्द्र'}) • क्र.सं. ${esc(v.VoterSerial || '-')}</b>
-          </div>
-          <div class="form-group">
-            <span class="form-label">📍 हालको बसोबास र उपस्थिति (Presence & Turnout)</span>
-            <div>
-              <span class="badge" style="background:#f0fdf4; color:#166534; font-weight:700;">${esc(v.CurrentLocation || 'गाउँमै उपस्थित')}</span>
-              <span class="badge" style="background:#eff6ff; color:#1d4ed8; font-weight:700; margin-left:4px;">${esc(v.ElectionDayTurnout || 'पक्का स्थानीय')}</span>
-              ${v.CityAddress ? `<div style="font-size:12px; color:var(--slate-600); margin-top:3px;">🏙️ ठेगाना: <b>${esc(v.CityAddress)}</b> (${v.FamilyVotesCount || 1} मत प्रभाव)</div>` : ''}
-            </div>
-          </div>
-          <div class="form-group">
-            <span class="form-label">🚩 पार्टी झुकाव (Party Leaning)</span>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <b>${getPartyLabel(v.PartyLeaning)}</b>
-              <button class="btn btn-sm btn-secondary" onclick="quickCycleParty('${v.VoterID}', 'overview')" style="padding: 2px 8px; font-size: 11px;">🔄 बदल्नुहोस्</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <span class="form-label">स्व-घोषित अवस्था (Self-Reported Sentiment)</span>
-            <b>${esc(v.SelfReportedResponse || 'कुनै दर्ता नभएको')}</b>
-          </div>
-          <div class="form-group">
-            <span class="form-label">🏠 जोडिएको घरधुरी (Linked Household)</span>
-            <div>
-              ${household ? `
-                <a href="javascript:void(0)" onclick="viewVoterProfile('${v.VoterID}', 'family')" style="font-weight: 700; color: var(--indigo-600); text-decoration: underline;">
-                  🏠 ${esc(household.HouseholdID)} (घर नं: ${esc(household.HouseNo || '-')})
-                </a>
-              ` : `
-                <button class="btn btn-sm btn-secondary" onclick="openLinkFamilyModal('${v.VoterID}')">+ घरधुरी / परिवार जोड्नुहोस्</button>
-              `}
-            </div>
-          </div>
-          <div class="form-group">
-            <span class="form-label">सम्पर्क स्थिति (Field Contact)</span>
-            <div><span class="badge ${v.ContactStatus === 'Contacted' ? 'badge-contacted' : 'badge-notcontacted'}">${v.ContactStatus || 'Not Contacted'}</span></div>
-          </div>
-        </div>
 
-        <!-- Social Media Cards -->
-        <div style="background: var(--slate-100); border: 1px solid var(--slate-200); padding: 14px; border-radius: var(--radius-sm); margin-top: 10px;">
-          <div style="font-size: 12px; font-weight: 700; color: var(--slate-700); text-transform: uppercase; margin-bottom: 8px;">
-            🌐 सामाजिक सञ्जाल प्रोफाइल (Social Presence)
+          <!-- CARD 2: POLITICAL ALIGNMENT & FIELD TURNOUT INTELLIGENCE -->
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+            <div style="font-size: 13px; font-weight: 800; color: #b91c1c; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+              <span>🎯</span> राजनीतिक विश्लेषण तथा उपस्थिति (Political & Turnout Intelligence)
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+              <div style="background: #f8fafc; padding: 10px 12px; border-radius: 8px; border: 1px solid #f1f5f9;">
+                <span class="form-label" style="font-size: 11px; color: #64748b;">पार्टी झुकाव (Party Leaning)</span>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 3px;">
+                  <b style="font-size: 14.5px;">${getPartyLabel(v.PartyLeaning)}</b>
+                  <button class="btn btn-sm btn-secondary" onclick="quickCycleParty('${v.VoterID}', 'overview')" style="padding: 2px 8px; font-size: 11px; font-weight: 700;">🔄 बदल्नुहोस्</button>
+                </div>
+              </div>
+              <div style="background: #f8fafc; padding: 10px 12px; border-radius: 8px; border: 1px solid #f1f5f9;">
+                <span class="form-label" style="font-size: 11px; color: #64748b;">हालको बसोबास र चुनाव दिनको उपस्थिति</span>
+                <div style="margin-top: 3px;">
+                  <span class="badge" style="background:#f0fdf4; color:#166534; font-weight:800;">${esc(v.CurrentLocation || 'गाउँमै उपस्थित')}</span>
+                  <span class="badge" style="background:#eff6ff; color:#1d4ed8; font-weight:800; margin-left:4px;">${esc(v.ElectionDayTurnout || 'पक्का स्थानीय')}</span>
+                </div>
+                ${v.CityAddress ? `<div style="font-size:11.5px; color:#475569; margin-top:3px;">🏙️ शहर ठेगाना: <b>${esc(v.CityAddress)}</b> (${v.FamilyVotesCount || 1} मत प्रभाव)</div>` : ''}
+              </div>
+              <div style="background: #f8fafc; padding: 10px 12px; border-radius: 8px; border: 1px solid #f1f5f9;">
+                <span class="form-label" style="font-size: 11px; color: #64748b;">स्व-घोषित अवस्था / प्रतिक्रिया</span>
+                <b style="font-size: 13.5px; color: #334155; margin-top: 3px; display: block;">${esc(v.SelfReportedResponse || 'दर्ता नभएको')}</b>
+              </div>
+              <div style="background: #f8fafc; padding: 10px 12px; border-radius: 8px; border: 1px solid #f1f5f9;">
+                <span class="form-label" style="font-size: 11px; color: #64748b;">घरधुरी तथा फिल्ड सम्पर्क</span>
+                <div style="margin-top: 3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  ${household ? `
+                    <a href="javascript:void(0)" onclick="viewVoterProfile('${v.VoterID}', 'family')" style="font-weight: 800; color: #4338ca; font-size: 13px; text-decoration: underline;">
+                      🏠 ${esc(household.HouseholdID)}
+                    </a>
+                  ` : `
+                    <button class="btn btn-sm btn-secondary" onclick="openLinkFamilyModal('${v.VoterID}')" style="font-size: 11px; padding: 2px 6px;">+ घरधुरी जोड्नुहोस्</button>
+                  `}
+                  <span class="badge ${v.ContactStatus === 'Contacted' ? 'badge-contacted' : 'badge-notcontacted'}" style="font-size: 11px;">${v.ContactStatus || 'Not Contacted'}</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-            ${v.FacebookUrl ? `
-              <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" class="btn btn-sm btn-secondary" style="color: #1877F2; font-weight: 700; text-decoration: none;">
-                📘 Facebook Profile
-              </a>
-            ` : (v.Phone ? `
-              <a href="https://www.facebook.com/search/top/?q=${encodeURIComponent(cleanPhone(v.Phone))}" target="_blank" class="btn btn-sm btn-secondary" style="color: #1877F2; text-decoration: none;">
-                🌐 Facebook Search (${v.Phone})
-              </a>
-            ` : '<span style="color: var(--slate-500); font-size: 12px;">Facebook लिङ्क छैन</span>')}
-            ${v.TiktokUrl ? `
-              <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" class="btn btn-sm btn-secondary" style="color: #000; font-weight: 700; text-decoration: none;">
-                🎵 TikTok Profile
-              </a>
-            ` : '<span style="color: var(--slate-500); font-size: 12px;">TikTok लिङ्क छैन</span>'}
-            <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')">+ सम्पादन / थप</button>
+
+          <!-- CARD 3: CONTACT & DIGITAL PRESENCE -->
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+            <div style="font-size: 13px; font-weight: 800; color: #047857; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+              <span>📱</span> सम्पर्क तथा डिजिटल पहुँच (Contact & Social Outreach)
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+              ${v.Phone ? `
+                <a href="tel:${cleanPhone(v.Phone)}" class="btn btn-sm" style="background: #059669; color: white; text-decoration: none; font-weight: 800; padding: 6px 12px;">
+                  📞 ${esc(v.Phone)}
+                </a>
+                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" class="btn btn-sm" style="background: #25D366; color: white; text-decoration: none; font-weight: 800; padding: 6px 12px;">
+                  🟢 WhatsApp सन्देश
+                </a>
+              ` : '<span style="color: #64748b; font-size: 12px;">सम्पर्क नम्बर उपलब्ध छैन</span>'}
+              ${v.FacebookUrl ? `
+                <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" class="btn btn-sm btn-secondary" style="color: #1877F2; font-weight: 700; text-decoration: none;">
+                  📘 Facebook
+                </a>
+              ` : ''}
+              ${v.TiktokUrl ? `
+                <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" class="btn btn-sm btn-secondary" style="color: #000; font-weight: 700; text-decoration: none;">
+                  🎵 TikTok
+                </a>
+              ` : ''}
+              <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="margin-left: auto;">✏️ फोन/लिङ्क सम्पादन</button>
+            </div>
           </div>
+
         </div>
       `;
     }
@@ -9354,23 +9707,38 @@
               <!-- Events List -->
               <div style="display: flex; flex-direction: column; gap: 10px; max-height: 380px; overflow-y: auto; padding-right: 4px;">
                 ${(c.events || []).map(ev => `
-                  <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
-                    <div>
-                      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                        <span style="background: #dbeafe; color: #1e40af; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px;">
-                          ${esc(ev.type)}
-                        </span>
-                        <b style="color: #0f172a; font-size: 13.5px;">${esc(ev.title)}</b>
-                        <span style="background: #ecfdf5; color: #047857; font-size: 10.5px; font-weight: 700; padding: 2px 6px; border-radius: 4px;">
-                          ${esc(ev.status)}
-                        </span>
+                  <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+                      <div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                          <span style="background: #dbeafe; color: #1e40af; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px;">
+                            ${esc(ev.type)}
+                          </span>
+                          <b style="color: #0f172a; font-size: 14px;">${esc(ev.title)}</b>
+                          <span style="background: #ecfdf5; color: #047857; font-size: 10.5px; font-weight: 700; padding: 2px 6px; border-radius: 4px;">
+                            ${esc(ev.status)}
+                          </span>
+                        </div>
+                        <div style="font-size: 12.5px; color: #475569; margin-top: 5px;">
+                          📍 <b>स्थान:</b> ${esc(ev.venue)} | 🎙️ <b>प्रमुख वक्ता:</b> ${esc(ev.speaker || c.Name)} | 👥 ${esc(ev.attendees)}
+                        </div>
                       </div>
-                      <div style="font-size: 12px; color: #64748b; margin-top: 5px;">
-                        📍 <b>स्थान:</b> ${esc(ev.venue)} | 🎙️ <b>प्रमुख वक्ता:</b> ${esc(ev.speaker)} | 👥 ${esc(ev.attendees)}
+                      <div style="text-align: right; font-size: 12px; color: #1e3a8a; font-weight: 800; background: #eff6ff; padding: 4px 10px; border-radius: 6px; border: 1px solid #bfdbfe;">
+                        📅 ${esc(ev.date)}<br>${esc(ev.time)}
                       </div>
                     </div>
-                    <div style="text-align: right; font-size: 11.5px; color: #4338ca; font-weight: 700; background: #e0e7ff; padding: 4px 10px; border-radius: 6px;">
-                      📅 ${esc(ev.date)}<br>${esc(ev.time)}
+
+                    <!-- 1-Click Action Bar: E-Invitation, WhatsApp & Campaign SMS -->
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; border-top: 1px dashed #cbd5e1; padding-top: 8px;">
+                      <button class="btn btn-sm btn-primary" onclick="openEventInvitationCardModal('${c.CandidateID}', '${ev.id}')" style="font-size: 11.5px; font-weight: 800; background: #b91c1c; border-color: #991b1b; padding: 4px 10px;" title="डिजिटल ई-निमन्त्रणा पत्र हेर्नुहोस् र प्रिन्ट गर्नुहोस्">
+                        🎴 ई-निमन्त्रणा कार्ड
+                      </button>
+                      <button class="btn btn-sm btn-success" onclick="shareEventWhatsApp('${c.CandidateID}', '${ev.id}')" style="font-size: 11.5px; font-weight: 800; background: #25d366; border-color: #25d366; color: white; padding: 4px 10px;" title="WhatsApp मा निमन्त्रणा सेयर गर्नुहोस्">
+                        📱 WhatsApp सेयर
+                      </button>
+                      <button class="btn btn-sm btn-secondary" onclick="sendEventCampaignMessage('${c.CandidateID}', '${ev.id}')" style="font-size: 11.5px; font-weight: 700; padding: 4px 10px;" title="यस कार्यक्रमको सन्देश वडा कार्यकर्तालाई SMS Hub बाट पठाउनुहोस्">
+                        📢 क्याम्पेन SMS प्रसारण
+                      </button>
                     </div>
                   </div>
                 `).join('')}
@@ -9627,9 +9995,177 @@
       setTimeout(() => switchCandidateTab('timeline'), 100);
     }
 
+    // ==========================================================================
+    // CAMPAIGN EVENT DIGITAL INVITATION CARD & MESSAGING ENGINE
+    // ==========================================================================
+    function openEventInvitationCardModal(candId, eventId) {
+      const c = (state.candidates || []).find(x => x.CandidateID === candId) || (state.candidates && state.candidates[0]) || {
+        CandidateID: 'CND_001',
+        Name: 'राम बहादुर लामा',
+        Post: 'पालिका प्रमुख / मेयर',
+        Party: 'नेकपा (एमाले)',
+        Symbol: 'सूर्य ☀️',
+        Phone: '९८५१०१११११',
+        Slogan: 'समृद्ध हेलम्बु, सुशासन र जनमुखी विकास - हाम्रो संकल्प!'
+      };
+      const ev = (c.events || []).find(x => x.id === eventId) || (c.events && c.events[0]) || {
+        id: 'EV_DEF',
+        title: 'बृहत् चुनावी सभा तथा कार्यकर्ता संवाद',
+        venue: 'चनौटे बजार, वडा नं १',
+        date: '२०८४/०१/१५',
+        time: 'बिहान ११:०० बजे',
+        type: 'चुनावी सभा',
+        speaker: c.Name,
+        attendees: '५००+ नागरिक'
+      };
+
+      const municipality = state.settings.MUNICIPALITY || 'हेलम्बु गाउँपालिका';
+      const year = '२०८४';
+
+      const cardHtml = `
+        <div class="event-card-container">
+          <div class="event-invitation-card" id="printableInvitationCardArea">
+            <!-- Header -->
+            <div class="event-card-header">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 28px;">🇳🇵</span>
+                <div style="text-align: left;">
+                  <div style="font-size: 13px; font-weight: 800; color: #b91c1c; text-transform: uppercase;">${esc(municipality)}</div>
+                  <div style="font-size: 11px; color: #64748b; font-weight: 600;">स्थानीय तह निर्वाचन परिचालन सचिवालय (${year})</div>
+                </div>
+              </div>
+              <div style="background: #fef2f2; border: 1.5px solid #fecaca; border-radius: 8px; padding: 4px 10px; font-weight: 800; font-size: 12.5px; color: #991b1b; display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 18px;">${esc(c.Symbol || '☀️')}</span>
+                <span>${esc(c.Party || 'पार्टी')}</span>
+              </div>
+            </div>
+
+            <!-- Grand Festive Title -->
+            <div class="event-card-title">🌸 हार्दिक निमन्त्रणा 🌸</div>
+            <div style="font-size: 12.5px; color: #b45309; font-weight: 700; margin-bottom: 12px; letter-spacing: 0.04em;">
+              (आधिकारिक डिजिटल ई-निमन्त्रणा पत्र)
+            </div>
+
+            <!-- Formal Invitation Body -->
+            <div class="event-card-body">
+              आदरणीय आमाबुबा, दाजुभाइ तथा दिदीबहिनीहरू,<br>
+              आगामी <b>स्थानीय तह निर्वाचन २०८४</b> को ऐतिहासिक सन्दर्भमा ${esc(municipality)} को सर्वाङ्गीण विकास र जनमुखी नेतृत्व निर्माणका लागि <b>${esc(c.Post)}</b> पदका उम्मेदवार <b>${esc(c.Name)}</b> ज्यूको प्रमुख उपस्थितिमा आयोजना हुन गइरहेको निम्न कार्यक्रममा यहाँको गरिमामय एवं सक्रिय उपस्थितिका लागि सादर अनुरोध गर्दछौं।
+            </div>
+
+            <!-- Event Details Box -->
+            <div class="event-schedule-box">
+              <div class="event-schedule-item" style="grid-column: 1 / -1;">
+                <b>📌 कार्यक्रम:</b> <span style="font-weight: 800; color: #1e3a8a;">${esc(ev.title)}</span>
+              </div>
+              <div class="event-schedule-item">
+                <b>🎯 प्रकृति:</b> ${esc(ev.type || 'चुनावी सभा')}
+              </div>
+              <div class="event-schedule-item">
+                <b>👥 अपेक्षित सहभागिता:</b> ${esc(ev.attendees || 'नागरिकहरू')}
+              </div>
+              <div class="event-schedule-item">
+                <b>📅 मिति:</b> ${esc(ev.date)}
+              </div>
+              <div class="event-schedule-item">
+                <b>⏰ समय:</b> ${esc(ev.time)}
+              </div>
+              <div class="event-schedule-item" style="grid-column: 1 / -1;">
+                <b>📍 स्थान / भेन्यू:</b> <span style="font-weight: 700; color: #047857;">${esc(ev.venue)}</span>
+              </div>
+              <div class="event-schedule-item" style="grid-column: 1 / -1;">
+                <b>🎙️ प्रमुख वक्ता / अतिथि:</b> ${esc(ev.speaker || c.Name)}
+              </div>
+            </div>
+
+            <!-- Slogan & Appeal -->
+            <div style="background: #fffbeb; border: 1px dashed #f59e0b; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; font-weight: 800; color: #92400e;">
+              ✊ "${esc(c.Slogan || 'समृद्ध हेलम्बु, सुशासन र जनमुखी विकास - हाम्रो संकल्प!')}"
+            </div>
+
+            <!-- Footer -->
+            <div class="event-card-footer">
+              <span>आयोजक: निर्वाचन परिचालन समिति, ${esc(municipality)}</span>
+              <span>📞 सम्पर्क: ${esc(c.Phone || '९८५१०१११११')}</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const modalActions = `
+        <button class="btn btn-primary" onclick="window.print()" style="font-weight: 800; background: #b91c1c; border-color: #991b1b;">🖨️ कार्ड Print / PDF</button>
+        <button class="btn btn-success" onclick="shareEventWhatsApp('${c.CandidateID}', '${ev.id}')" style="font-weight: 800; background: #25d366; border-color: #25d366; color: white;">📱 WhatsApp मा सेयर</button>
+        <button class="btn btn-secondary" onclick="sendEventCampaignMessage('${c.CandidateID}', '${ev.id}')" style="font-weight: 700;">📢 क्याम्पेन SMS पठाउनुहोस्</button>
+        <button class="btn btn-secondary" onclick="closeModal()">✕ बन्द गर्नुहोस्</button>
+      `;
+
+      openModal(
+        `🎴 डिजिटल ई-निमन्त्रणा पत्र: ${esc(ev.title)}`,
+        cardHtml,
+        modalActions,
+        'modal-lg'
+      );
+    }
+
+    function shareEventWhatsApp(candId, eventId) {
+      const c = (state.candidates || []).find(x => x.CandidateID === candId) || (state.candidates && state.candidates[0]);
+      if (!c) return;
+      const ev = (c.events || []).find(x => x.id === eventId) || (c.events && c.events[0]);
+      if (!ev) return;
+      const municipality = state.settings.MUNICIPALITY || 'हेलम्बु गाउँपालिका';
+
+      const text = `🌸 *हार्दिक निमन्त्रणा! (E-Invitation)* 🌸\n` +
+        `🇳🇵 *${municipality} - स्थानीय तह निर्वाचन २०८४*\n` +
+        `━━━━━━━━━━━━━━━━━━━━\n` +
+        `आदरणीय साथीहरू,\n` +
+        `*${c.Post}* पदका उम्मेदवार *${c.Name}* (${c.Party || ''} - ${c.Symbol || '☀️'}) ज्यूको प्रमुख उपस्थितिमा आयोजना हुन गइरहेको *${ev.title}* मा यहाँको गरिमामय उपस्थितिका लागि सादर निमन्त्रणा गर्दछौं।\n\n` +
+        `📅 *मिति:* ${ev.date}\n` +
+        `⏰ *समय:* ${ev.time}\n` +
+        `📍 *स्थान:* ${ev.venue}\n` +
+        `🎙️ *प्रमुख वक्ता:* ${ev.speaker || c.Name}\n` +
+        `━━━━━━━━━━━━━━━━━━━━\n` +
+        `✊ *"समृद्ध गाउँपालिका, हाम्रो संकल्प!"*\n` +
+        `सम्पर्क: ${c.Phone || '९८५१०१११११'} | निर्वाचन परिचालन समिति`;
+
+      const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+      logActivity('message', `${c.Name} को "${ev.title}" कार्यक्रम WhatsApp मा सेयर गरियो।`);
+    }
+
+    function sendEventCampaignMessage(candId, eventId) {
+      const c = (state.candidates || []).find(x => x.CandidateID === candId) || (state.candidates && state.candidates[0]);
+      if (!c) return;
+      const ev = (c.events || []).find(x => x.id === eventId) || (c.events && c.events[0]);
+      if (!ev) return;
+
+      const template = `नमस्ते! स्थानीय निर्वाचन २०८४ को सन्दर्भमा उम्मेदवार ${c.Name} ज्यूको उपस्थितिमा मिति ${ev.date} (${ev.time}) मा ${ev.venue} मा हुने "${ev.title}" मा उपस्थितिका लागि हार्दिक निमन्त्रणा गर्दछौं। - निर्वाचन परिचालन समिति`;
+
+      closeModal();
+      switchView('viewMessages');
+
+      setTimeout(() => {
+        const textInput = document.getElementById('smsMessageText') || document.querySelector('textarea[name="messageText"]');
+        if (textInput) {
+          textInput.value = template;
+          textInput.focus();
+        }
+        const wardSelect = document.getElementById('smsWardFilter') || document.querySelector('select[name="targetWard"]');
+        if (wardSelect && c.Ward && c.Ward !== 'All') {
+          wardSelect.value = c.Ward;
+        }
+        showToast(`📢 "${ev.title}" को क्याम्पेन सन्देश SMS Hub मा तयार भयो!`, 'info');
+      }, 200);
+
+      logActivity('broadcast', `${c.Name} को "${ev.title}" को क्याम्पेन सन्देश प्रसारणका लागि तयार गरियो।`);
+    }
+
     function openCandidateBrochureModal(candId) {
       openCandidateProfileModal(candId);
       setTimeout(() => switchCandidateTab('brochure'), 100);
+    }
+
+    function openCandidateEventsTimelineModal(candId) {
+      openCandidateProfileModal(candId);
+      setTimeout(() => switchCandidateTab('timeline'), 100);
     }
 
     function openEditBrochureModal(candId) {
@@ -11879,6 +12415,21 @@
       if (!container) return;
       if (!state.activities) state.activities = [];
 
+      // Dynamic Role-Aware Audit Trail Context
+      const isSuper = currentUser && currentUser.Role === 'Super Admin';
+      const headerTitleEl = document.getElementById('auditTrailHeaderTitle');
+      const headerDescEl = document.getElementById('auditTrailHeaderDesc');
+      if (headerTitleEl) {
+        headerTitleEl.textContent = isSuper
+          ? '👑 Platform Multi-Tenant & Security Audit Trail'
+          : '⏱️ Palika Field Operations & Polling Day Audit Trail';
+      }
+      if (headerDescEl) {
+        headerDescEl.textContent = isSuper
+          ? 'सम्पूर्ण पालिकाहरूको सुरक्षा, लगइन गतिविधि, टिनेन्ट व्यवस्थापन, र बिलिङको डिजिटल प्रमाण लग।'
+          : 'बुथ प्रतिनिधिहरूको भोटिङ ट्र्याकिङ, मतदाता सम्पादन, Day Book खर्च र फिल्ड अपरेसनको लाइभ अभिलेख।';
+      }
+
       // Update badge
       const badge = document.getElementById('timelineCountBadge');
       if (badge) badge.textContent = state.activities.length;
@@ -11886,7 +12437,7 @@
       // Populate worker filter dropdown
       const workerFilter = document.getElementById('timelineWorkerFilter');
       if (workerFilter && workerFilter.options.length <= 1) {
-        workerFilter.innerHTML = '<option value="">All Workers (सबै)</option>' +
+        workerFilter.innerHTML = '<option value="">All Workers (सबै युजर)</option>' +
           state.users.map(u => `<option value="${u.UserID}">${esc(u.Name)} (${esc(u.Role)})</option>`).join('');
       }
 
@@ -11899,6 +12450,10 @@
           if (typeFilter === 'saas_security') {
             const secTypes = ['login', 'logout', 'user_manage', 'sms_alloc', 'broadcast', 'export'];
             if (!secTypes.includes(a.Type)) return false;
+          } else if (typeFilter === 'vote_cast') {
+            if (a.Type !== 'vote_cast' && a.Type !== 'voter_verify') return false;
+          } else if (typeFilter === 'finance') {
+            if (a.Type !== 'finance' && !a.Description.includes('खर्च') && !a.Description.includes('Day Book')) return false;
           } else if (a.Type !== typeFilter) {
             return false;
           }
@@ -11909,7 +12464,7 @@
       if (!list.length) {
         container.innerHTML = `
           <div style="padding: 30px; text-align: center; color: var(--slate-600); background: var(--slate-50); border-radius: var(--radius-md);">
-            अहिलेसम्म कुनै टाइमलाइन लग फेला परेन। कार्यकर्ताहरूले इन्ट्री वा भेटघाट गर्दा यहाँ स्वतः अपडेट हुनेछ।
+            अहिलेसम्म कुनै टाइमलाइन लग फेला परेन। कार्यकर्ताहरूले इन्ट्री वा कार्य गर्दा यहाँ स्वतः अपडेट हुनेछ।
           </div>
         `;
         return;
@@ -11920,6 +12475,8 @@
         let icon = '⚡';
         if (a.Type === 'voter_add') icon = '👤';
         else if (a.Type === 'voter_verify') icon = '✅';
+        else if (a.Type === 'vote_cast') icon = '🗳️';
+        else if (a.Type === 'finance') icon = '💰';
         else if (a.Type === 'visit') icon = '📋';
         else if (a.Type === 'message') icon = '💬';
         else if (a.Type === 'issue') icon = '⚠️';
@@ -11965,72 +12522,145 @@
       if (!v) return;
 
       const printArea = document.getElementById('printableSlipArea');
-      const municipality = state.settings.MUNICIPALITY || 'Helambu Rural Municipality';
-      const year = new Date().getFullYear();
+      const municipality = state.settings.MUNICIPALITY || 'हेलम्बु गाउँपालिका';
+      const year = '२०८४';
+      const booth = (state.booths || []).find(b => b.BoothCode === v.BoothNo && b.WardNo == v.Ward) || {
+        BoothName: `मतदान केन्द्र ${v.BoothNo || 'क'}`,
+        LocationName: 'राष्ट्रिय मा.वि. मतदान स्थल'
+      };
+      const curPartyId = state.currentPartyId || 'NC';
+      const palette = (typeof PARTY_PALETTES !== 'undefined' && PARTY_PALETTES[curPartyId]) ? PARTY_PALETTES[curPartyId] : { name: 'नेपाली काँग्रेस', symbol: '🌳' };
 
-      printArea.innerHTML = `
-        <div class="voter-slip-card">
-          <div class="slip-header">
-            <div style="font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">${municipality}</div>
-            <div style="font-size: 13.5px; font-weight: 700; margin-top: 2px;">स्थानीय निर्वाचन परिचालन तथा मतदाता जानकारी पर्चा (${year})</div>
-            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">(Official Field Voter Information Slip)</div>
-          </div>
+      const slipHtml = `
+        <div class="voter-slip-wrapper">
+          <div class="voter-slip-card">
+            <!-- Top Official Header -->
+            <div class="slip-top-row">
+              <div class="slip-crest">
+                <span class="crest-flag">🇳🇵</span>
+                <div class="slip-crest-text">
+                  <h3>${esc(municipality)}</h3>
+                  <p>स्थानीय तह निर्वाचन परिचालन तथा मतदाता परिचय पर्चा (${year})</p>
+                </div>
+              </div>
+              <div class="slip-party-badge">
+                <span style="font-size: 18px;">${palette.symbol}</span>
+                <span>${esc(palette.name)}</span>
+              </div>
+            </div>
 
-          <div style="margin-bottom: 14px;">
-            <div class="slip-row">
-              <span class="label">मतदाताको नाम (Name):</span>
-              <span class="val" style="font-size: 15px; color: #1e293b;">${esc(v.Name)}</span>
+            <!-- Serial Number & Booth Highlight Banner -->
+            <div class="slip-banner">
+              <div>
+                <span style="font-size: 11px; opacity: 0.9; text-transform: uppercase;">मतदाता नामावली क्रम संख्या</span>
+                <div class="serial">क्र.सं. #${esc(v.VoterSerial || 'N/A')}</div>
+              </div>
+              <div style="text-align: right;">
+                <span style="font-size: 11px; opacity: 0.9;">मतदान केन्द्र / बुथ</span>
+                <div class="booth-info">वडा नं ${v.Ward} • बुथ ${esc(v.BoothNo || 'क')}</div>
+              </div>
             </div>
-            <div class="slip-row">
-              <span class="label">वडा नं (Ward No):</span>
-              <span class="val">Ward ${v.Ward}</span>
-            </div>
-            <div class="slip-row">
-              <span class="label">टोल / बस्ती (Tole / Area):</span>
-              <span class="val">${esc(v.Tole || 'केन्द्र नजिक')}</span>
-            </div>
-            <div class="slip-row">
-              <span class="label">मतदान केन्द्र / बुथ (Polling Booth):</span>
-              <span class="val" style="color: #4f46e5;">बुथ नं: ${esc(v.BoothNo || 'A')}</span>
-            </div>
-            <div class="slip-row">
-              <span class="label">मतदाता नामावली क्रम संख्या (Serial No):</span>
-              <span class="val" style="font-size: 16px; color: #dc2626;"># ${esc(v.VoterSerial || 'N/A')}</span>
-            </div>
-            <div class="slip-row">
-              <span class="label">सम्पर्क फोन (Phone):</span>
-              <span class="val">${esc(v.Phone || 'उपलब्ध छैन')}</span>
-            </div>
-            <div class="slip-row">
-              <span class="label">जन्ममिति / उमेर (DOB / Age):</span>
-              <span class="val">${v.DOB ? `${v.DOB} (${calculateAge(v.DOB)} वर्ष)` : (v.AgeGroup || '-')}</span>
-            </div>
-          </div>
 
-          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; font-size: 12px; line-height: 1.5; color: #334155;">
-            <b>नोट:</b> मतदान गर्न जाँदा आफ्नो सक्कल मतदाता परिचयपत्र वा नागरिकताको प्रमाणपत्र अनिवार्य साथमा लैजानुहोला। समयमै आफ्नो अमूल्य मताधिकार प्रयोग गरौं।
-          </div>
+            <!-- 2-Column Tabular Details Grid -->
+            <div class="slip-grid">
+              <div class="slip-cell">
+                <span class="label">मतदाताको नाम (Full Name)</span>
+                <div class="val" style="font-size: 15px; color: #1e3a8a;">${esc(v.Name)}</div>
+              </div>
+              <div class="slip-cell">
+                <span class="label">मतदाता परिचयपत्र नं (Voter ID)</span>
+                <div class="val" style="font-family: monospace; font-size: 14.5px;">${esc(v.VoterID)}</div>
+              </div>
 
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 11px; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 8px;">
-            <span>वितरक: ${currentUser ? esc(currentUser.Name) : 'फिल्ड टोली'}</span>
-            <span>मुद्रण मिति: ${new Date().toLocaleDateString()}</span>
-          </div>
+              <div class="slip-cell">
+                <span class="label">उमेर / लिङ्ग (Age & Gender)</span>
+                <div class="val">${v.DOB ? `${calculateAge(v.DOB)} वर्ष` : (v.AgeGroup || '-')} / ${esc(v.Gender || '-')}</div>
+              </div>
+              <div class="slip-cell">
+                <span class="label">टोल / बस्ती (Tole / Village)</span>
+                <div class="val">${esc(v.Tole || 'केन्द्र टोल')}</div>
+              </div>
 
-          <div class="no-print" style="margin-top: 18px; display: flex; gap: 10px; justify-content: center;">
-            <button class="btn btn-primary" onclick="window.print()">🖨️ अहिले नै Print गर्नुहोस्</button>
-            <button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>
+              <div class="slip-cell">
+                <span class="label">बाबु / आमाको नाम (Parent's Name)</span>
+                <div class="val">${esc(v.ParentName || 'अभिलेख अनुसार')}</div>
+              </div>
+              <div class="slip-cell">
+                <span class="label">मतदान स्थल (Polling Station)</span>
+                <div class="val">${esc(booth.LocationName || booth.BoothName || 'स्थानीय विद्यालय प्राङ्गण')}</div>
+              </div>
+
+              <div class="slip-cell">
+                <span class="label">पति / पत्नीको नाम (Spouse)</span>
+                <div class="val">${esc(v.SpouseName || '-')}</div>
+              </div>
+              <div class="slip-cell">
+                <span class="label">सम्पर्क फोन (Contact Phone)</span>
+                <div class="val">${esc(v.Phone || 'उपलब्ध छैन')}</div>
+              </div>
+            </div>
+
+            <!-- Security & Notice Footer -->
+            <div class="slip-security-footer">
+              <div class="slip-security-note">
+                <b>📌 अनिवार्य सूचना:</b> मतदान गर्न जाँदा आफ्नो सक्कल <b>मतदाता परिचयपत्र</b> वा <b>नेपाली नागरिकताको प्रमाणपत्र</b> अनिवार्य साथमा लिएर जानुहोला। समयमै आफ्नो अमूल्य मताधिकार प्रयोग गरौं।
+              </div>
+              <div class="slip-qr-box">
+                <div style="font-size: 20px;">📱</div>
+                <div>ID: ${esc(v.VoterID)}</div>
+                <div style="font-size: 9px; color: #64748b;">BOOTH VERIFIED</div>
+              </div>
+            </div>
+
+            <!-- Metadata Print Line -->
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 8px;">
+              <span>जारीकर्ता: ${currentUser ? esc(currentUser.Name) : 'फिल्ड टोली'} (${currentUser ? esc(currentUser.Role) : 'प्रतिनिधि'})</span>
+              <span>मुद्रण मिति: ${new Date().toLocaleDateString('ne-NP')}</span>
+            </div>
           </div>
         </div>
       `;
 
-      // Also render preview in modal for convenient screen viewing
+      if (printArea) printArea.innerHTML = slipHtml;
+
+      // Clean single action modal footer (NO redundant buttons inside slip!)
+      const modalActions = `
+        <button class="btn btn-primary" onclick="window.print()" style="font-weight: 800; background: #1e3a8a; border-color: #1e3a8a;">🖨️ पर्चा Print गर्नुहोस्</button>
+        <button class="btn btn-success" onclick="shareVoterSlipWhatsApp('${v.VoterID}')" style="font-weight: 800; background: #25d366; border-color: #25d366; color: white;">📱 WhatsApp मा पर्चा पठाउनुहोस्</button>
+        <button class="btn btn-secondary" onclick="closeModal()">✕ बन्द गर्नुहोस्</button>
+      `;
+
       openModal(
-        `मतदाता जानकारी पर्चा: ${v.Name}`,
-        printArea.innerHTML,
-        `<button class="btn btn-primary" onclick="window.print()">🖨️ Print Slip</button><button class="btn btn-secondary" onclick="closeModal()">Close</button>`
+        `🇳🇵 आधिकारिक मतदाता परिचय पर्चा: ${esc(v.Name)}`,
+        slipHtml,
+        modalActions,
+        'modal-lg'
       );
 
-      logActivity('message', `${esc(v.Name)} को मतदाता पर्चा (Voter Slip #${v.VoterSerial || '-'}) तयार गरी Print गरियो।`);
+      logActivity('message', `${esc(v.Name)} को आधिकारिक मतदाता पर्चा (Slip #${v.VoterSerial || '-'}) तयार गरियो।`);
+    }
+
+    function shareVoterSlipWhatsApp(voterId) {
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+      const municipality = state.settings.MUNICIPALITY || 'हेलम्बु गाउँपालिका';
+      const text = `🇳🇵 *${municipality} - स्थानीय तह निर्वाचन २०८४*\n` +
+        `📋 *आधिकारिक मतदाता परिचय पर्चा (Voter Information Slip)*\n` +
+        `----------------------------------------\n` +
+        `👤 *मतदाताको नाम:* ${v.Name}\n` +
+        `🔢 *मतदाता क्र.सं.:* #${v.VoterSerial || 'N/A'}\n` +
+        `🆔 *परिचयपत्र नं:* ${v.VoterID}\n` +
+        `🏛️ *वडा नं:* वडा ${v.Ward}\n` +
+        `📍 *टोल / बस्ती:* ${v.Tole || '-'}\n` +
+        `🗳️ *मतदान बुथ:* केन्द्र ${v.BoothNo || 'क'}\n` +
+        `----------------------------------------\n` +
+        `📌 *स्मरण रहोस्:* मतदान गर्न जाँदा आफ्नो सक्कल मतदाता परिचयपत्र वा नेपाली नागरिकता अनिवार्य साथमा लिएर जानुहोला!\n` +
+        `सम्पर्क: ${currentUser ? currentUser.Name : 'फिल्ड टोली'}`;
+
+      const cleanP = cleanPhone(v.Phone);
+      const url = cleanP ? `https://wa.me/977${cleanP}?text=${encodeURIComponent(text)}` : `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+      logActivity('message', `${esc(v.Name)} लाई WhatsApp मार्फत मतदाता पर्चा पठाइयो।`);
     }
 
     // ==========================================
@@ -13498,6 +14128,13 @@
     // MOBILE NATIVE TOUCH GESTURE ENHANCEMENTS
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
+      // 0. Restore desktop sidebar collapse preference
+      try {
+        if (localStorage.getItem('sidebar_collapsed') === 'true' && window.innerWidth > 880) {
+          document.body.classList.add('sidebar-collapsed');
+        }
+      } catch(e) {}
+
       // 1. Touch swipe gestures for mobile sidebar drawer
       let touchStartX = 0;
       let touchStartY = 0;
