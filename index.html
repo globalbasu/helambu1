@@ -6973,8 +6973,8 @@
                   <a href="javascript:void(0)" onclick="openCustomMessageModal('${v.VoterID}')" title="कस्टम सन्देश" style="text-decoration: none; font-size: 13px;">💬</a>
                 </span>
               ` : ''}
-              ${v.FacebookUrl ? `<a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="Facebook प्रोफाइल सिधा खोल्नुहोस् (${esc(v.FacebookUrl)})" style="text-decoration: none; font-size: 13px;">📘</a>` : `<a href="javascript:void(0)" onclick="event.stopPropagation(); openEditVoterModal('${v.VoterID}')" title="+ Facebook लिङ्क थप्नुहोस्" style="text-decoration: none; font-size: 12px; opacity: 0.5;">📘</a>`}
-              ${v.TiktokUrl ? `<a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="TikTok प्रोफाइल सिधा खोल्नुहोस् (${esc(v.TiktokUrl)})" style="text-decoration: none; font-size: 13px;">🎵</a>` : `<a href="javascript:void(0)" onclick="event.stopPropagation(); openEditVoterModal('${v.VoterID}')" title="+ TikTok लिङ्क थप्नुहोस्" style="text-decoration: none; font-size: 12px; opacity: 0.5;">🎵</a>`}
+              ${v.FacebookUrl ? `<a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="Facebook प्रोफाइल सिधा खोल्नुहोस् (${esc(v.FacebookUrl)})" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;">${getFacebookIconSvg(16)}</a>` : `<a href="javascript:void(0)" onclick="event.stopPropagation(); openEditVoterModal('${v.VoterID}')" title="+ Facebook लिङ्क थप्नुहोस्" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; opacity: 0.45;">${getFacebookIconSvg(15)}</a>`}
+              ${v.TiktokUrl ? `<a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="TikTok प्रोफाइल सिधा खोल्नुहोस् (${esc(v.TiktokUrl)})" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;">${getTiktokIconSvg(16)}</a>` : `<a href="javascript:void(0)" onclick="event.stopPropagation(); openEditVoterModal('${v.VoterID}')" title="+ TikTok लिङ्क थप्नुहोस्" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; opacity: 0.45;">${getTiktokIconSvg(15)}</a>`}
               ${isTodayBirthday(v.DOB) ? `<span title="आज जन्मदिन! (${calculateAge(v.DOB)} वर्ष)" style="cursor: pointer; font-size: 13px;" onclick="event.stopPropagation(); openBirthdayWishModal('${v.VoterID}')">🎂</span>` : ''}
               <span style="color: var(--slate-300);">•</span>
               <span style="font-size: 11.5px;">${esc(v.Gender || '-')}</span>
@@ -7044,20 +7044,20 @@
                   ` : ''}
                   ${v.FacebookUrl ? `
                     <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" class="voter-action-menu-item" style="color: #1877f2;" onclick="closeAllVoterActionDropdowns()">
-                      <span>📘</span> <span>Facebook खोल्नुहोस्</span>
+                      <span style="display:inline-flex; align-items:center;">${getFacebookIconSvg(16)}</span> <span>Facebook खोल्नुहोस्</span>
                     </a>
                   ` : `
                     <button type="button" class="voter-action-menu-item" style="color: #64748b;" onclick="closeAllVoterActionDropdowns(); openEditVoterModal('${v.VoterID}')">
-                      <span>📘</span> <span>+ Facebook लिङ्क थप्नुहोस्</span>
+                      <span style="display:inline-flex; align-items:center; opacity:0.6;">${getFacebookIconSvg(16)}</span> <span>+ Facebook लिङ्क थप्नुहोस्</span>
                     </button>
                   `}
                   ${v.TiktokUrl ? `
                     <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" class="voter-action-menu-item" style="color: #000000;" onclick="closeAllVoterActionDropdowns()">
-                      <span>🎵</span> <span>TikTok खोल्नुहोस्</span>
+                      <span style="display:inline-flex; align-items:center;">${getTiktokIconSvg(16)}</span> <span>TikTok खोल्नुहोस्</span>
                     </a>
                   ` : `
                     <button type="button" class="voter-action-menu-item" style="color: #64748b;" onclick="closeAllVoterActionDropdowns(); openEditVoterModal('${v.VoterID}')">
-                      <span>🎵</span> <span>+ TikTok लिङ्क थप्नुहोस्</span>
+                      <span style="display:inline-flex; align-items:center; opacity:0.6;">${getTiktokIconSvg(16)}</span> <span>+ TikTok लिङ्क थप्नुहोस्</span>
                     </button>
                   `}
                   <button type="button" class="voter-action-menu-item" onclick="closeAllVoterActionDropdowns(); openEditVoterModal('${v.VoterID}')">
@@ -7095,14 +7095,22 @@
                     <a href="javascript:void(0)" onclick="openCustomMessageModal('${v.VoterID}')" title="कस्टम सन्देश (SMS/Message)" style="text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe;">💬</a>
                   ` : ''}
                   ${v.FacebookUrl ? `
-                    <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" title="Facebook प्रोफाइल सिधा खोल्नुहोस् (${esc(v.FacebookUrl)})" style="text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #eff6ff; color: #1877F2; border: 1.5px solid #bfdbfe; box-shadow: 0 1px 3px rgba(24,119,242,0.15); font-weight: 800;">📘</a>
+                    <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" title="Facebook प्रोफाइल सिधा खोल्नुहोस् (${esc(v.FacebookUrl)})" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #eff6ff; border: 1.5px solid #bfdbfe; box-shadow: 0 1px 3px rgba(24,119,242,0.2);">
+                      ${getFacebookIconSvg(18)}
+                    </a>
                   ` : `
-                    <a href="javascript:void(0)" onclick="openEditVoterModal('${v.VoterID}')" title="Facebook लिङ्क थप्नुहोस्" style="text-decoration: none; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #f8fafc; color: #94a3b8; border: 1px dashed #cbd5e1; opacity: 0.65;">📘</a>
+                    <a href="javascript:void(0)" onclick="openEditVoterModal('${v.VoterID}')" title="Facebook लिङ्क थप्नुहोस्" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #f8fafc; border: 1px dashed #cbd5e1; opacity: 0.5;">
+                      ${getFacebookIconSvg(16)}
+                    </a>
                   `}
                   ${v.TiktokUrl ? `
-                    <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" title="TikTok प्रोफाइल सिधा खोल्नुहोस् (${esc(v.TiktokUrl)})" style="text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #000000; color: #ffffff; border: 1px solid #000000; box-shadow: 0 1px 3px rgba(0,0,0,0.25); font-weight: 800;">🎵</a>
+                    <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" title="TikTok प्रोफाइल सिधा खोल्नुहोस् (${esc(v.TiktokUrl)})" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #000000; border: 1.5px solid #000000; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">
+                      ${getTiktokIconSvg(18)}
+                    </a>
                   ` : `
-                    <a href="javascript:void(0)" onclick="openEditVoterModal('${v.VoterID}')" title="TikTok लिङ्क थप्नुहोस्" style="text-decoration: none; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #f8fafc; color: #94a3b8; border: 1px dashed #cbd5e1; opacity: 0.65;">🎵</a>
+                    <a href="javascript:void(0)" onclick="openEditVoterModal('${v.VoterID}')" title="TikTok लिङ्क थप्नुहोस्" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #f8fafc; border: 1px dashed #cbd5e1; opacity: 0.5;">
+                      ${getTiktokIconSvg(16)}
+                    </a>
                   `}
                   ${isTodayBirthday(v.DOB) ? `<span title="आज जन्मदिन! (${calculateAge(v.DOB)} वर्ष)" style="cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #fffbeb; border: 1px solid #fde68a;" onclick="openBirthdayWishModal('${v.VoterID}')">🎂</span>` : ''}
                 </div>
@@ -7369,21 +7377,21 @@
                 </button>
               ` : ''}
               ${v.FacebookUrl ? `
-                <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #1877F2; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(24,119,242,0.25);" title="Facebook प्रोफाइल सिधा खोल्नुहोस् (${esc(v.FacebookUrl)})">
-                  📘 FB
+                <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #1877F2; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(24,119,242,0.25); display: inline-flex; align-items: center; gap: 6px;" title="Facebook प्रोफाइल सिधा खोल्नुहोस् (${esc(v.FacebookUrl)})">
+                  ${getFacebookIconSvg(15)} <span>FB</span>
                 </a>
               ` : `
-                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 11px; opacity: 0.85;" title="Facebook लिङ्क थप्नुहोस्">
-                  📘 + FB
+                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 11px; opacity: 0.85; display: inline-flex; align-items: center; gap: 6px;" title="Facebook लिङ्क थप्नुहोस्">
+                  ${getFacebookIconSvg(15)} <span>+ FB</span>
                 </button>
               `}
               ${v.TiktokUrl ? `
-                <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #000000; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.25);" title="TikTok प्रोफाइल सिधा खोल्नुहोस् (${esc(v.TiktokUrl)})">
-                  🎵 TikTok
+                <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #000000; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.25); display: inline-flex; align-items: center; gap: 6px;" title="TikTok प्रोफाइल सिधा खोल्नुहोस् (${esc(v.TiktokUrl)})">
+                  ${getTiktokIconSvg(15)} <span>TikTok</span>
                 </a>
               ` : `
-                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 11px; opacity: 0.85;" title="TikTok लिङ्क थप्नुहोस्">
-                  🎵 + TikTok
+                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 11px; opacity: 0.85; display: inline-flex; align-items: center; gap: 6px;" title="TikTok लिङ्क थप्नुहोस्">
+                  ${getTiktokIconSvg(15)} <span>+ TikTok</span>
                 </button>
               `}
               <button class="btn btn-sm btn-primary" onclick="printVoterSlip('${v.VoterID}')" style="font-weight: 800; font-size: 12px; padding: 7px 12px; background: #1e3a8a; border-color: #1e3a8a;" title="मतदाता परिचय पर्चा हेर्नुहोस् र प्रिन्ट गर्नुहोस्">
@@ -7686,21 +7694,21 @@
                 </button>
               ` : '<span style="color: #64748b; font-size: 12px;">सम्पर्क नम्बर उपलब्ध छैन</span>'}
               ${v.FacebookUrl ? `
-                <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background: #1877F2; color: white; font-weight: 800; text-decoration: none; padding: 7px 14px; border-radius: 6px; box-shadow: 0 2px 6px rgba(24,119,242,0.25);" title="Facebook प्रोफाइल सिधा खोल्नुहोस् (${esc(v.FacebookUrl)})">
-                  📘 Facebook प्रोफाइल
+                <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background: #1877F2; color: white; font-weight: 800; text-decoration: none; padding: 7px 14px; border-radius: 6px; box-shadow: 0 2px 6px rgba(24,119,242,0.25); display: inline-flex; align-items: center; gap: 7px;" title="Facebook प्रोफाइल सिधा खोल्नुहोस् (${esc(v.FacebookUrl)})">
+                  ${getFacebookIconSvg(18)} <span>Facebook प्रोफाइल</span>
                 </a>
               ` : `
-                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 12px; opacity: 0.85;" title="Facebook लिङ्क थप्नुहोस्">
-                  📘 + Facebook लिङ्क थप्नुहोस्
+                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 12px; opacity: 0.85; display: inline-flex; align-items: center; gap: 6px;" title="Facebook लिङ्क थप्नुहोस्">
+                  ${getFacebookIconSvg(16)} <span>+ Facebook लिङ्क थप्नुहोस्</span>
                 </button>
               `}
               ${v.TiktokUrl ? `
-                <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background: #000000; color: white; font-weight: 800; text-decoration: none; padding: 7px 14px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.25);" title="TikTok प्रोफाइल सिधा खोल्नुहोस् (${esc(v.TiktokUrl)})">
-                  🎵 TikTok प्रोफाइल
+                <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background: #000000; color: white; font-weight: 800; text-decoration: none; padding: 7px 14px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.25); display: inline-flex; align-items: center; gap: 7px;" title="TikTok प्रोफाइल सिधा खोल्नुहोस् (${esc(v.TiktokUrl)})">
+                  ${getTiktokIconSvg(18)} <span>TikTok प्रोफाइल</span>
                 </a>
               ` : `
-                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 12px; opacity: 0.85;" title="TikTok लिङ्क थप्नुहोस्">
-                  🎵 + TikTok लिङ्क थप्नुहोस्
+                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 12px; opacity: 0.85; display: inline-flex; align-items: center; gap: 6px;" title="TikTok लिङ्क थप्नुहोस्">
+                  ${getTiktokIconSvg(16)} <span>+ TikTok लिङ्क थप्नुहोस्</span>
                 </button>
               `}
               <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="margin-left: auto;">✏️ फोन/लिङ्क सम्पादन</button>
@@ -7787,8 +7795,8 @@
                       <a href="tel:${cleanPhone(m.Phone)}" style="color: #059669; text-decoration: none; font-weight: 600;">📞 ${esc(m.Phone)}</a>
                       <a href="https://wa.me/977${cleanPhone(m.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(m))}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;" title="WhatsApp">🟢</a>
                     ` : '<span style="color: var(--slate-400);">सम्पर्क फोन छैन</span>'}
-                    ${m.FacebookUrl ? `<a href="${formatSocialUrl(m.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;" title="Facebook प्रोफाइल">📘</a>` : ''}
-                    ${m.TiktokUrl ? `<a href="${formatSocialUrl(m.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;" title="TikTok प्रोफाइल">🎵</a>` : ''}
+                    ${m.FacebookUrl ? `<a href="${formatSocialUrl(m.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-flex; align-items: center; vertical-align: middle;" title="Facebook प्रोफाइल">${getFacebookIconSvg(15)}</a>` : ''}
+                    ${m.TiktokUrl ? `<a href="${formatSocialUrl(m.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-flex; align-items: center; vertical-align: middle;" title="TikTok प्रोफाइल">${getTiktokIconSvg(15)}</a>` : ''}
                   </div>
                 </div>
 
@@ -8339,11 +8347,11 @@
               <input type="number" name="FamilyVotesCount" class="form-control" value="1" min="1" max="25">
             </div>
             <div class="form-group">
-              <label class="form-label">📘 Facebook Profile Link / Username</label>
+              <label class="form-label" style="display: flex; align-items: center; gap: 6px;">${getFacebookIconSvg(15)} <span>Facebook Profile Link / Username</span></label>
               <input type="text" name="FacebookUrl" class="form-control" placeholder="e.g. facebook.com/arjun or arjun.shrestha">
             </div>
             <div class="form-group">
-              <label class="form-label">🎵 TikTok Profile Link / Handle</label>
+              <label class="form-label" style="display: flex; align-items: center; gap: 6px;">${getTiktokIconSvg(15)} <span>TikTok Profile Link / Handle</span></label>
               <input type="text" name="TiktokUrl" class="form-control" placeholder="e.g. @arjun or tiktok.com/@arjun">
             </div>
           </div>
@@ -8474,6 +8482,24 @@
         renderVotersList();
         showToast(`${v.Name} प्रमाणीकरण: ${v.VerificationStatus} (डाटाबेसमा सेभ भयो)`, 'success');
       }
+    }
+
+    function getFacebookIconSvg(size = 18) {
+      return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;flex-shrink:0;">
+        <circle cx="12" cy="12" r="12" fill="#1877F2"/>
+        <path d="M15.12 12.07l.42-2.74h-2.63V7.56c0-.75.37-1.48 1.55-1.48h1.2V3.75c-.67-.09-1.34-.14-2.01-.14-2.05 0-3.38 1.24-3.38 3.48v2.24H7.88v2.74h2.39v6.62a12.07 12.07 0 003.73 0v-6.62h2.12z" fill="#ffffff"/>
+      </svg>`;
+    }
+
+    function getTiktokIconSvg(size = 18) {
+      return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;flex-shrink:0;">
+        <circle cx="12" cy="12" r="12" fill="#010101"/>
+        <g transform="translate(4.2, 4.2) scale(0.65)">
+          <path fill="#25F4EE" d="M12.5.02c1.3-.02 2.6-.01 3.9-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.16 1.17 2.09 2.33 2.3 1.06.24 2.22-.05 3.01-.79.64-.58.98-1.42 1.01-2.28.04-3.95.01-7.9.02-11.85-.01-1.73-.01-3.46 0-5.19z" transform="translate(-0.8, -0.6)"/>
+          <path fill="#FE2C55" d="M12.5.02c1.3-.02 2.6-.01 3.9-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.16 1.17 2.09 2.33 2.3 1.06.24 2.22-.05 3.01-.79.64-.58.98-1.42 1.01-2.28.04-3.95.01-7.9.02-11.85-.01-1.73-.01-3.46 0-5.19z" transform="translate(0.8, 0.6)"/>
+          <path fill="#FFFFFF" d="M12.5.02c1.3-.02 2.6-.01 3.9-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.16 1.17 2.09 2.33 2.3 1.06.24 2.22-.05 3.01-.79.64-.58.98-1.42 1.01-2.28.04-3.95.01-7.9.02-11.85-.01-1.73-.01-3.46 0-5.19z"/>
+        </g>
+      </svg>`;
     }
 
     function formatSocialUrl(url, type) {
@@ -8679,11 +8705,11 @@
                 <input type="number" name="FamilyVotesCount" class="form-control" min="1" max="25" value="${v.FamilyVotesCount || 1}">
               </div>
               <div class="form-group">
-                <label class="form-label">📘 Facebook Profile Link / Username</label>
+                <label class="form-label" style="display: flex; align-items: center; gap: 6px;">${getFacebookIconSvg(15)} <span>Facebook Profile Link / Username</span></label>
                 <input type="text" name="FacebookUrl" class="form-control" value="${esc(v.FacebookUrl || '')}" placeholder="उदा: facebook.com/ram or ram.tamang">
               </div>
               <div class="form-group">
-                <label class="form-label">🎵 TikTok Profile Link / Handle</label>
+                <label class="form-label" style="display: flex; align-items: center; gap: 6px;">${getTiktokIconSvg(15)} <span>TikTok Profile Link / Handle</span></label>
                 <input type="text" name="TiktokUrl" class="form-control" value="${esc(v.TiktokUrl || '')}" placeholder="उदा: @ramtamang or tiktok.com/@ram">
               </div>
             </div>
