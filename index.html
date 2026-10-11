@@ -5476,8 +5476,9 @@
               const mappedVoter = {
                 VoterID: cloudVoter.voter_id,
                 Name: cloudVoter.full_name,
-                Gender: cloudVoter.gender || 'Other',
-                AgeGroup: cloudVoter.age_group || '',
+                Gender: cloudVoter.gender || parsedNotes.gender || 'Other',
+                DOB: cloudVoter.dob || parsedNotes.dob || '',
+                AgeGroup: cloudVoter.age_group || parsedNotes.age_group || '',
                 Phone: cloudVoter.phone || '',
                 Ward: Number(cloudVoter.ward_no || 1),
                 Tole: cloudVoter.tole || '',
@@ -5494,9 +5495,14 @@
                 InfluencerHandler: parsedNotes.influencer_handler || '',
                 InfluencerDemands: parsedNotes.influencer_demands || '',
                 InfluencerStance: parsedNotes.influencer_stance || '',
-                HouseNo: cloudVoter.address ? cloudVoter.address.replace('घर नं: ', '') : '',
-                FacebookUrl: parsedNotes.facebook_url || '',
-                TiktokUrl: parsedNotes.tiktok_url || '',
+                CurrentLocation: parsedNotes.current_location || 'गाउँमै उपस्थित (On-Ground)',
+                ElectionDayTurnout: parsedNotes.election_day_turnout || 'पक्का स्थानीय उपस्थित (Confirmed)',
+                CityAddress: parsedNotes.city_address || '',
+                FamilyRelation: parsedNotes.family_relation || 'घरमुली',
+                FamilyVotesCount: Number(parsedNotes.family_votes_count) || 1,
+                HouseNo: cloudVoter.address ? cloudVoter.address.replace(/^घर नं:\s*/, '').trim() : (parsedNotes.house_no || ''),
+                FacebookUrl: cloudVoter.facebook_url || parsedNotes.facebook_url || '',
+                TiktokUrl: cloudVoter.tiktok_url || parsedNotes.tiktok_url || '',
                 Active: true
               };
               const idx = state.voters.findIndex(x => x.VoterID === mappedVoter.VoterID);
@@ -5582,12 +5588,18 @@
 
     // Push new or updated voter to Supabase Cloud
     async function pushVoterToSupabase(v) {
+      if (!v || !v.VoterID) return false;
       const url = (state.settings && state.settings.SUPABASE_URL) || DEFAULT_CONFIG.SUPABASE_URL;
       const key = (state.settings && state.settings.SUPABASE_KEY) || DEFAULT_CONFIG.SUPABASE_KEY;
-      if (!url || !key) return;
+      if (!url || !key) return false;
 
       try {
         const tier = (typeof getSupportTier === 'function') ? getSupportTier(v).key : (v.SupportTier || 'swing');
+        let safeDob = null;
+        if (v.DOB && /^\d{4}-\d{2}-\d{2}$/.test(String(v.DOB).trim())) {
+          safeDob = String(v.DOB).trim();
+        }
+
         const metadataNotes = JSON.stringify({
           verification_status: v.VerificationStatus || 'Pending',
           contact_status: v.ContactStatus || 'Not Contacted',
@@ -5599,38 +5611,81 @@
           influencer_handler: v.InfluencerHandler || '',
           influencer_demands: v.InfluencerDemands || '',
           influencer_stance: v.InfluencerStance || '',
+          current_location: v.CurrentLocation || 'गाउँमै उपस्थित (On-Ground)',
+          election_day_turnout: v.ElectionDayTurnout || 'पक्का स्थानीय उपस्थित (Confirmed)',
+          city_address: v.CityAddress || '',
+          family_relation: v.FamilyRelation || 'घरमुली',
+          family_votes_count: Number(v.FamilyVotesCount) || 1,
+          house_no: v.HouseNo || '',
+          gender: v.Gender || 'Other',
+          age_group: v.AgeGroup || '',
           facebook_url: v.FacebookUrl || '',
           tiktok_url: v.TiktokUrl || ''
         });
 
-        await fetch(`${url}/rest/v1/voters`, {
-          method: 'POST',
-          headers: {
-            'apikey': key,
-            'Authorization': `Bearer ${key}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'resolution=merge-duplicates'
-          },
-          body: JSON.stringify({
-            voter_id: v.VoterID,
-            full_name: v.Name,
-            phone: v.Phone || '',
-            ward_no: Number(v.Ward) || 1,
-            tole: v.Tole || '',
-            booth_no: v.BoothNo || '',
-            serial_no: String(v.VoterSerial || ''),
-            gender: v.Gender || 'Other',
-            age_group: v.AgeGroup || '',
-            dob: v.DOB ? v.DOB : null,
-            party_leaning: v.PartyLeaning || 'Undecided',
-            sentiment: tier,
-            address: v.HouseNo ? `घर नं: ${v.HouseNo}` : '',
-            notes: metadataNotes
-          })
+        const houseAddress = v.HouseNo ? (String(v.HouseNo).startsWith('घर नं:') ? String(v.HouseNo) : 'घर नं: ' + String(v.HouseNo)) : (v.Address || '');
+
+        const payload = {
+          voter_id: String(v.VoterID),
+          full_name: v.Name || '',
+          phone: v.Phone || '',
+          ward_no: Number(v.Ward) || 1,
+          tole: v.Tole || '',
+          booth_no: v.BoothNo || '',
+          serial_no: String(v.VoterSerial || ''),
+          gender: v.Gender || 'Other',
+          age_group: v.AgeGroup || '',
+          dob: safeDob,
+          party_leaning: v.PartyLeaning || 'Undecided',
+          sentiment: tier,
+          support_level: v.SelfReportedResponse || (tier === 'solid' || tier === 'lean' ? 'Support' : (tier === 'hard_opponent' ? 'Not Support' : 'Neutral')),
+          influence_level: v.IsInfluencer ? 'High' : 'Normal',
+          facebook_url: v.FacebookUrl || '',
+          tiktok_url: v.TiktokUrl || '',
+          address: houseAddress,
+          notes: metadataNotes
+        };
+
+        const headers = {
+          'apikey': key,
+          'Authorization': `Bearer ${key}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        };
+
+        // 1. Try PATCH first (fastest and most reliable for existing voters)
+        const patchRes = await fetch(`${url}/rest/v1/voters?voter_id=eq.${encodeURIComponent(v.VoterID)}`, {
+          method: 'PATCH',
+          headers: headers,
+          body: JSON.stringify(payload)
         });
+
+        if (patchRes.ok) {
+          const patched = await patchRes.json();
+          if (Array.isArray(patched) && patched.length > 0) {
+            console.log('✅ Voter synced to Supabase (PATCH):', v.VoterID);
+            return true;
+          }
+        }
+
+        // 2. If PATCH updated 0 rows (new voter not yet in database), do POST
+        const postRes = await fetch(`${url}/rest/v1/voters`, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(payload)
+        });
+
+        if (postRes.ok) {
+          console.log('✅ New voter inserted into Supabase (POST):', v.VoterID);
+          return true;
+        } else {
+          const errText = await postRes.text();
+          console.warn('Supabase voter insert warning:', errText);
+        }
       } catch(e) {
         console.warn('Could not push voter to Supabase:', e);
       }
+      return false;
     }
 
     // Worker 4-Digit PIN Keypad
@@ -6939,9 +6994,13 @@
 
           <!-- Col 4: भेटघाट अवस्था -->
           <td>
-            <span class="badge ${v.ContactStatus === 'Contacted' ? 'badge-contacted' : 'badge-notcontacted'}" style="font-size: 11.5px; font-weight: 700; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px;">
+            <span class="badge ${v.ContactStatus === 'Contacted' ? 'badge-contacted' : 'badge-notcontacted'}" 
+                  style="font-size: 11.5px; font-weight: 700; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer;"
+                  onclick="event.stopPropagation(); toggleVoterContactStatus('${v.VoterID}')"
+                  title="क्लिक गरी सम्पर्क अवस्था बदल्नुहोस् (भेटिएको / भेट्न बाँकी)">
               <span>${v.ContactStatus === 'Contacted' ? '🟢' : '⚪'}</span>
               <span>${v.ContactStatus === 'Contacted' ? 'भेटिएको' : 'भेट्न बाँकी'}</span>
+              <span style="font-size: 9.5px; opacity: 0.6;">🔄</span>
             </span>
           </td>
 
@@ -7094,7 +7153,7 @@
       }
     }
 
-    function quickCycleParty(voterId, activeTab = '') {
+    async function quickCycleParty(voterId, activeTab = '') {
       const v = state.voters.find(x => x.VoterID === voterId);
       if (!v) return;
       const parties = ['UML', 'Congress', 'RSP', 'Maoist', 'RPP', 'Independent', 'Undecided'];
@@ -7102,9 +7161,10 @@
       const nextIdx = (curIdx + 1) % parties.length;
       v.PartyLeaning = parties[nextIdx];
       saveState();
+      if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
       refreshDashboardMetrics();
       renderVotersList();
-      showToast(`${v.Name} को पार्टी झुकाव: ${getPartyLabel(v.PartyLeaning)} मा सेट भयो।`, 'success');
+      showToast(`${v.Name} को पार्टी झुकाव: ${getPartyLabel(v.PartyLeaning)} (डाटाबेसमा सेभ भयो)`, 'success');
       
       const modal = document.getElementById('modalOverlay');
       if (modal && modal.classList.contains('active')) {
@@ -7391,7 +7451,7 @@
       `;
     }
 
-    function toggleVoterInfluencerStatus(voterId) {
+    async function toggleVoterInfluencerStatus(voterId) {
       const v = state.voters.find(x => x.VoterID === voterId);
       if (!v) return;
       v.IsInfluencer = !v.IsInfluencer;
@@ -7403,8 +7463,8 @@
         v.InfluencerStance = 'सकारात्मक / सम्पर्कमा';
       }
       saveState();
-      if (typeof pushVoterToSupabase === 'function') pushVoterToSupabase(v);
-      showToast(v.IsInfluencer ? `${v.Name} लाई प्रभावकारी व्यक्ति (Influencer) मा दर्ता गरियो!` : `${v.Name} लाई सामान्य मतदातामा सारियो।`, 'success');
+      if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
+      showToast(v.IsInfluencer ? `${v.Name} लाई प्रभावकारी व्यक्ति (Influencer) मा दर्ता गरियो (डाटाबेसमा सेभ भयो)!` : `${v.Name} लाई सामान्य मतदातामा सारियो (डाटाबेसमा सेभ भयो)।`, 'success');
       viewVoterProfile(voterId, 'influencer');
       renderVotersList();
       if (typeof renderCandidateWarRoom === 'function') renderCandidateWarRoom();
@@ -7472,7 +7532,7 @@
       );
     }
 
-    function saveInfluencerDetails(e, voterId) {
+    async function saveInfluencerDetails(e, voterId) {
       e.preventDefault();
       const form = e.target;
       const formData = new FormData(form);
@@ -7487,9 +7547,9 @@
       v.InfluencerDemands = formData.get('InfluencerDemands');
 
       saveState();
-      if (typeof pushVoterToSupabase === 'function') pushVoterToSupabase(v);
+      if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
       logActivity('influencer_update', `🌟 प्रभावकारी व्यक्ति ${v.Name} को VIP रणनीति अपडेट गरियो।`);
-      showToast(`${v.Name} को प्रभावकारी विवरण सुरक्षित भयो!`, 'success');
+      showToast(`${v.Name} को प्रभावकारी विवरण डाटाबेसमा सुरक्षित भयो!`, 'success');
       viewVoterProfile(voterId, 'influencer');
       renderVotersList();
     }
@@ -7561,7 +7621,7 @@
                   ` : `
                     <button class="btn btn-sm btn-secondary" onclick="openLinkFamilyModal('${v.VoterID}')" style="font-size: 11px; padding: 2px 6px;">+ घरधुरी जोड्नुहोस्</button>
                   `}
-                  <span class="badge ${v.ContactStatus === 'Contacted' ? 'badge-contacted' : 'badge-notcontacted'}" style="font-size: 11px;">${v.ContactStatus || 'Not Contacted'}</span>
+                  <span class="badge ${v.ContactStatus === 'Contacted' ? 'badge-contacted' : 'badge-notcontacted'}" style="font-size: 11px; cursor: pointer;" onclick="toggleVoterContactStatus('${v.VoterID}', 'overview')" title="क्लिक गरी सम्पर्क अवस्था बदल्नुहोस्">${v.ContactStatus === 'Contacted' ? '🟢 भेटिएको' : '⚪ भेट्न बाँकी'} 🔄</span>
                 </div>
               </div>
             </div>
@@ -8323,39 +8383,42 @@
       renderVotersList();
     }
 
-    function quickVerifyVoter(id) {
+    async function quickVerifyVoter(id) {
       const v = state.voters.find(x => x.VoterID === id);
       if (v) {
         v.VerificationStatus = 'Verified';
         saveState();
+        if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
         logActivity('voter_verify', `${v.Name} (वडा ${v.Ward}) लाई Verified प्रमाणीकरण गरियो।`);
         refreshDashboardMetrics();
         renderVotersList();
-        showToast(`${v.Name} marked as Verified!`, 'success');
+        showToast(`${v.Name} प्रमाणीकरण: Verified (डाटाबेसमा सेभ भयो)`, 'success');
       }
     }
 
-    function quickTogglePending(id) {
+    async function quickTogglePending(id) {
       const v = state.voters.find(x => x.VoterID === id);
       if (v) {
         v.VerificationStatus = 'Pending';
         saveState();
+        if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
         logActivity('voter_verify', `${v.Name} (वडा ${v.Ward}) को स्थिति Pending मा सारियो।`);
         refreshDashboardMetrics();
         renderVotersList();
-        showToast(`${v.Name} marked as Pending`, 'info');
+        showToast(`${v.Name} प्रमाणीकरण: Pending (डाटाबेसमा सेभ भयो)`, 'info');
       }
     }
 
-    function toggleVoterVerification(id) {
+    async function toggleVoterVerification(id) {
       const v = state.voters.find(x => x.VoterID === id);
       if (v) {
         v.VerificationStatus = v.VerificationStatus === 'Verified' ? 'Pending' : 'Verified';
         saveState();
+        if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
         logActivity('voter_verify', `${v.Name} को प्रमाणीकरण स्थिति परिवर्तन: ${v.VerificationStatus}`);
         refreshDashboardMetrics();
         renderVotersList();
-        showToast(`${v.Name} changed to ${v.VerificationStatus}!`, 'success');
+        showToast(`${v.Name} प्रमाणीकरण: ${v.VerificationStatus} (डाटाबेसमा सेभ भयो)`, 'success');
       }
     }
 
@@ -8377,114 +8440,251 @@
     function openEditVoterModal(id) {
       const v = state.voters.find(x => x.VoterID === id);
       if (!v) return;
+      const tier = (typeof getSupportTier === 'function') ? getSupportTier(v).key : (v.SupportTier || 'swing');
 
       openModal(
-        `Edit Contact & Social Links: ${v.Name}`,
+        `मतदाता प्रोफाइल तथा स्थिति सम्पादन: ${v.Name}`,
         `
         <form id="editVoterForm" onsubmit="updateVoter(event, '${v.VoterID}')">
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">Full Name *</label>
-              <input type="text" name="Name" required class="form-control" value="${esc(v.Name)}">
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;">
+            <div style="font-size: 13px; font-weight: 800; color: #1e3a8a; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+              <span>👤</span> १. व्यक्तिगत तथा पारिवारिक विवरण (Personal Info)
             </div>
-            <div class="form-group">
-              <label class="form-label">Phone Number</label>
-              <input type="text" name="Phone" class="form-control" value="${esc(v.Phone || '')}">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Ward *</label>
-              <select name="Ward" required class="form-control">
-                ${state.wards.map(w => `<option value="${w.WardNo}" ${w.WardNo === v.Ward ? 'selected' : ''}>Ward ${w.WardNo}</option>`).join('')}
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Tole</label>
-              <input type="text" name="Tole" class="form-control" value="${esc(v.Tole || '')}">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Booth No / Code</label>
-              <input type="text" name="BoothNo" class="form-control" value="${esc(v.BoothNo || '')}">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Voter Serial / Ref</label>
-              <input type="text" name="VoterSerial" class="form-control" value="${esc(v.VoterSerial || '')}">
-            </div>
-            <div class="form-group">
-              <label class="form-label">🎂 Date of Birth (जन्ममिति)</label>
-              <input type="date" name="DOB" class="form-control" value="${esc(v.DOB || '')}">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Verification Status</label>
-              <select name="VerificationStatus" class="form-control">
-                <option value="Verified" ${v.VerificationStatus === 'Verified' ? 'selected' : ''}>✓ प्रमाणित</option>
-                <option value="Pending" ${v.VerificationStatus === 'Pending' ? 'selected' : ''}>⏳ प्रमाणीकरण बाँकी</option>
-                <option value="Field Checked" ${v.VerificationStatus === 'Field Checked' ? 'selected' : ''}>Field Checked</option>
-                <option value="Correction Required" ${v.VerificationStatus === 'Correction Required' ? 'selected' : ''}>Correction Required</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Self-reported Response</label>
-              <select name="SelfReportedResponse" class="form-control">
-                <option value="" ${!v.SelfReportedResponse ? 'selected' : ''}>None / Not Provided</option>
-                <option value="Support" ${v.SelfReportedResponse === 'Support' ? 'selected' : ''}>Support (हाम्रो समर्थक)</option>
-                <option value="Undecided" ${v.SelfReportedResponse === 'Undecided' ? 'selected' : ''}>Undecided (दोधार)</option>
-                <option value="Not Support" ${v.SelfReportedResponse === 'Not Support' ? 'selected' : ''}>Not Support (विपक्षी)</option>
-                <option value="Declined to Answer" ${v.SelfReportedResponse === 'Declined to Answer' ? 'selected' : ''}>Declined to Answer</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">🚩 सम्भावित पार्टी झुकाव (Party Leaning)</label>
-              <select name="PartyLeaning" class="form-control">
-                <option value="" ${!v.PartyLeaning ? 'selected' : ''}>छान्नुहोस् / अज्ञात</option>
-                <option value="UML" ${v.PartyLeaning === 'UML' ? 'selected' : ''}>🔴 नेकपा (एमाले)</option>
-                <option value="Congress" ${v.PartyLeaning === 'Congress' ? 'selected' : ''}>🔵 नेपाली कांग्रेस</option>
-                <option value="RSP" ${v.PartyLeaning === 'RSP' ? 'selected' : ''}>🔔 राष्ट्रिय स्वतन्त्र पार्टी (रास्वपा)</option>
-                <option value="Maoist" ${v.PartyLeaning === 'Maoist' ? 'selected' : ''}>🔴 नेकपा (माओवादी केन्द्र)</option>
-                <option value="RPP" ${v.PartyLeaning === 'RPP' ? 'selected' : ''}>🟡 राष्ट्रिय प्रजातन्त्र पार्टी (राप्रपा)</option>
-                <option value="Independent" ${v.PartyLeaning === 'Independent' ? 'selected' : ''}>⚪ स्वतन्त्र / अन्य</option>
-                <option value="Undecided" ${v.PartyLeaning === 'Undecided' ? 'selected' : ''}>❓ दोधार / अनिर्णित</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">📘 Facebook Profile Link / Username</label>
-              <input type="text" name="FacebookUrl" class="form-control" value="${esc(v.FacebookUrl || '')}" placeholder="e.g. facebook.com/arjun or arjun.shrestha">
-            </div>
-            <div class="form-group">
-              <label class="form-label">🎵 TikTok Profile Link / Handle</label>
-              <input type="text" name="TiktokUrl" class="form-control" value="${esc(v.TiktokUrl || '')}" placeholder="e.g. @arjun or tiktok.com/@arjun">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">पूरा नाम (Full Name) *</label>
+                <input type="text" name="Name" required class="form-control" value="${esc(v.Name)}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">सम्पर्क फोन नम्बर (Phone)</label>
+                <input type="text" name="Phone" class="form-control" value="${esc(v.Phone || '')}" placeholder="उदा: 9841000000">
+              </div>
+              <div class="form-group">
+                <label class="form-label">लिङ्ग (Gender)</label>
+                <select name="Gender" class="form-control">
+                  <option value="Male" ${v.Gender === 'Male' ? 'selected' : ''}>पुरुष (Male)</option>
+                  <option value="Female" ${v.Gender === 'Female' ? 'selected' : ''}>महिला (Female)</option>
+                  <option value="Other" ${v.Gender === 'Other' ? 'selected' : ''}>अन्य (Other)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">🎂 जन्ममिति (DOB: YYYY-MM-DD)</label>
+                <input type="date" name="DOB" class="form-control" value="${esc(v.DOB || '')}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">उमेर समूह (Age Group)</label>
+                <select name="AgeGroup" class="form-control">
+                  <option value="18-25" ${v.AgeGroup === '18-25' ? 'selected' : ''}>१८-२५ वर्ष (युवा)</option>
+                  <option value="26-40" ${v.AgeGroup === '26-40' ? 'selected' : ''}>२६-४० वर्ष (वयस्क)</option>
+                  <option value="41-60" ${v.AgeGroup === '41-60' ? 'selected' : ''}>४१-६० वर्ष (प्रौढ)</option>
+                  <option value="60+" ${v.AgeGroup === '60+' ? 'selected' : ''}>६०+ वर्ष (ज्येष्ठ नागरिक)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">पारिवारिक नाता (Family Relation)</label>
+                <select name="FamilyRelation" class="form-control">
+                  <option value="घरमुली" ${v.FamilyRelation === 'घरमुली' ? 'selected' : ''}>👑 घरमुली (Household Head)</option>
+                  <option value="बुबा" ${v.FamilyRelation === 'बुबा' ? 'selected' : ''}>👨 बुबा</option>
+                  <option value="आमा" ${v.FamilyRelation === 'आमा' ? 'selected' : ''}>👩 आमा</option>
+                  <option value="पति/पत्नी" ${v.FamilyRelation === 'पति/पत्नी' ? 'selected' : ''}>💍 पति / पत्नी</option>
+                  <option value="छोरा" ${v.FamilyRelation === 'छोरा' ? 'selected' : ''}>👦 छोरा</option>
+                  <option value="छोरी" ${v.FamilyRelation === 'छोरी' ? 'selected' : ''}>👧 छोरी</option>
+                  <option value="दाजु/भाइ" ${v.FamilyRelation === 'दाजु/भाइ' ? 'selected' : ''}>👬 दाजु / भाइ</option>
+                  <option value="दिदी/बहिनी" ${v.FamilyRelation === 'दिदी/बहिनी' ? 'selected' : ''}>👭 दिदी / बहिनी</option>
+                  <option value="अन्य" ${v.FamilyRelation === 'अन्य' ? 'selected' : ''}>👥 अन्य सदस्य</option>
+                </select>
+              </div>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%;">Update Information</button>
+
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;">
+            <div style="font-size: 13px; font-weight: 800; color: #047857; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+              <span>📍</span> २. ठेगाना तथा मतदान केन्द्र (Location & Booth)
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">वडा नं. (Ward) *</label>
+                <select name="Ward" required class="form-control">
+                  ${state.wards.map(w => `<option value="${w.WardNo}" ${w.WardNo === v.Ward ? 'selected' : ''}>Ward ${w.WardNo}</option>`).join('')}
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">टोल (Tole)</label>
+                <input type="text" name="Tole" class="form-control" value="${esc(v.Tole || '')}" placeholder="टोलको नाम">
+              </div>
+              <div class="form-group">
+                <label class="form-label">घर नम्बर (House No.)</label>
+                <input type="text" name="HouseNo" class="form-control" value="${esc(v.HouseNo || '')}" placeholder="उदा: 104">
+              </div>
+              <div class="form-group">
+                <label class="form-label">मतदान बुथ / केन्द्र (Booth)</label>
+                <input type="text" name="BoothNo" class="form-control" value="${esc(v.BoothNo || '')}" placeholder="उदा: A, B, 1, 2">
+              </div>
+              <div class="form-group">
+                <label class="form-label">मतदाता क्र.सं. (Voter Serial / Ref)</label>
+                <input type="text" name="VoterSerial" class="form-control" value="${esc(v.VoterSerial || '')}" placeholder="उदा: 101">
+              </div>
+            </div>
+          </div>
+
+          <div style="background: #fefce8; border: 1.5px solid #fde047; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;">
+            <div style="font-size: 13px; font-weight: 800; color: #854d0e; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+              <span>🎯</span> ३. स्थिति तथा राजनीतिक विश्लेषण (Status & Political Dossier)
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">प्रमाणीकरण स्थिति (Verification Status) *</label>
+                <select name="VerificationStatus" class="form-control" style="font-weight: 700;">
+                  <option value="Verified" ${v.VerificationStatus === 'Verified' ? 'selected' : ''}>✓ प्रमाणित (Verified)</option>
+                  <option value="Pending" ${v.VerificationStatus === 'Pending' ? 'selected' : ''}>⏳ प्रमाणीकरण बाँकी (Pending)</option>
+                  <option value="Field Checked" ${v.VerificationStatus === 'Field Checked' ? 'selected' : ''}>🔍 फिल्ड रुजु भएको (Field Checked)</option>
+                  <option value="Correction Required" ${v.VerificationStatus === 'Correction Required' ? 'selected' : ''}>⚠️ सच्याउनुपर्ने (Correction Required)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">सम्पर्क / भेटघाट अवस्था (Contact Status) *</label>
+                <select name="ContactStatus" class="form-control" style="font-weight: 700;">
+                  <option value="Contacted" ${v.ContactStatus === 'Contacted' ? 'selected' : ''}>🟢 भेटिएको / सम्पर्क भएको (Contacted)</option>
+                  <option value="Not Contacted" ${v.ContactStatus === 'Not Contacted' ? 'selected' : ''}>⚪ भेट्न बाँकी (Not Contacted)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">समर्थन स्ल्याब तह (Support Tier - 5 Slabs) *</label>
+                <select name="SupportTier" class="form-control" style="font-weight: 700;">
+                  <option value="solid" ${tier === 'solid' ? 'selected' : ''}>🟢 पक्का समर्थक (Solid Base)</option>
+                  <option value="lean" ${tier === 'lean' ? 'selected' : ''}>🟩 समर्थन झुकाव (Lean / Positive)</option>
+                  <option value="swing" ${tier === 'swing' ? 'selected' : ''}>🟡 दोधार / स्विङ (Swing / Undecided)</option>
+                  <option value="opponent_lean" ${tier === 'opponent_lean' ? 'selected' : ''}>🟧 विपक्षी झुकाव (Opponent Lean)</option>
+                  <option value="hard_opponent" ${tier === 'hard_opponent' ? 'selected' : ''}>🔴 कडा विपक्षी (Hard Opponent)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">🚩 पार्टी झुकाव (Party Leaning) *</label>
+                <select name="PartyLeaning" class="form-control" style="font-weight: 700;">
+                  <option value="" ${!v.PartyLeaning ? 'selected' : ''}>छान्नुहोस् / अज्ञात</option>
+                  <option value="UML" ${v.PartyLeaning === 'UML' ? 'selected' : ''}>🔴 नेकपा (एमाले)</option>
+                  <option value="Congress" ${v.PartyLeaning === 'Congress' ? 'selected' : ''}>🔵 नेपाली कांग्रेस</option>
+                  <option value="RSP" ${v.PartyLeaning === 'RSP' ? 'selected' : ''}>🔔 राष्ट्रिय स्वतन्त्र पार्टी (रास्वपा)</option>
+                  <option value="Maoist" ${v.PartyLeaning === 'Maoist' ? 'selected' : ''}>🔴 नेकपा (माओवादी केन्द्र)</option>
+                  <option value="RPP" ${v.PartyLeaning === 'RPP' ? 'selected' : ''}>🟡 राष्ट्रिय प्रजातन्त्र पार्टी (राप्रपा)</option>
+                  <option value="Independent" ${v.PartyLeaning === 'Independent' ? 'selected' : ''}>⚪ स्वतन्त्र / अन्य</option>
+                  <option value="Undecided" ${v.PartyLeaning === 'Undecided' ? 'selected' : ''}>❓ दोधार / अनिर्णित</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">स्व-घोषित अवस्था (Self Response)</label>
+                <select name="SelfReportedResponse" class="form-control">
+                  <option value="" ${!v.SelfReportedResponse ? 'selected' : ''}>None / Not Provided</option>
+                  <option value="Support" ${v.SelfReportedResponse === 'Support' ? 'selected' : ''}>Support (हाम्रो समर्थक)</option>
+                  <option value="Undecided" ${v.SelfReportedResponse === 'Undecided' ? 'selected' : ''}>Undecided (दोधार)</option>
+                  <option value="Not Support" ${v.SelfReportedResponse === 'Not Support' ? 'selected' : ''}>Not Support (विपक्षी)</option>
+                  <option value="Declined to Answer" ${v.SelfReportedResponse === 'Declined to Answer' ? 'selected' : ''}>Declined to Answer</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">टोलको प्रभावकारी व्यक्ति (VIP Influencer)?</label>
+                <select name="IsInfluencer" class="form-control" style="font-weight: 700;">
+                  <option value="No" ${!v.IsInfluencer ? 'selected' : ''}>सामान्य मतदाता (No)</option>
+                  <option value="Yes" ${v.IsInfluencer ? 'selected' : ''}>⭐ प्रभावकारी व्यक्ति / VIP Influencer (Yes)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;">
+            <div style="font-size: 13px; font-weight: 800; color: #4338ca; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+              <span>🚌</span> ४. बसोबास, मोबिलिटी तथा डिजिटल सम्पर्क (Mobility & Social)
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">हालको बसोबास (Current Location)</label>
+                <select name="CurrentLocation" class="form-control">
+                  <option value="गाउँमै उपस्थित (On-Ground)" ${v.CurrentLocation === 'गाउँमै उपस्थित (On-Ground)' ? 'selected' : ''}>गाउँमै उपस्थित (On-Ground)</option>
+                  <option value="काठमाडौँ/सहरमा (In-City)" ${v.CurrentLocation === 'काठमाडौँ/सहरमा (In-City)' ? 'selected' : ''}>काठमाडौँ/सहरमा (In-City)</option>
+                  <option value="विदेश/प्रवास (Abroad)" ${v.CurrentLocation === 'विदेश/प्रवास (Abroad)' ? 'selected' : ''}>विदेश/प्रवास (Abroad)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">चुनाव दिनको उपस्थिति (Election Day Turnout)</label>
+                <select name="ElectionDayTurnout" class="form-control">
+                  <option value="पक्का स्थानीय उपस्थित (Confirmed)" ${v.ElectionDayTurnout === 'पक्का स्थानीय उपस्थित (Confirmed)' ? 'selected' : ''}>पक्का स्थानीय उपस्थित (Confirmed)</option>
+                  <option value="गाडी व्यवस्था गरे आउने (Transport Needed)" ${v.ElectionDayTurnout === 'गाडी व्यवस्था गरे आउने (Transport Needed)' ? 'selected' : ''}>गाडी व्यवस्था गरे आउने (Transport Needed)</option>
+                  <option value="आउन नसक्ने/शंकास्पद (Unlikely)" ${v.ElectionDayTurnout === 'आउन नसक्ने/शंकास्पद (Unlikely)' ? 'selected' : ''}>आउन नसक्ने/शंकास्पद (Unlikely)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">सहरको ठेगाना (City Address)</label>
+                <input type="text" name="CityAddress" class="form-control" value="${esc(v.CityAddress || '')}" placeholder="उदा: चाबहिल, काठमाडौँ">
+              </div>
+              <div class="form-group">
+                <label class="form-label">परिवार मत प्रभाव (Family Votes Count)</label>
+                <input type="number" name="FamilyVotesCount" class="form-control" min="1" max="25" value="${v.FamilyVotesCount || 1}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">📘 Facebook Profile Link / Username</label>
+                <input type="text" name="FacebookUrl" class="form-control" value="${esc(v.FacebookUrl || '')}" placeholder="उदा: facebook.com/ram or ram.tamang">
+              </div>
+              <div class="form-group">
+                <label class="form-label">🎵 TikTok Profile Link / Handle</label>
+                <input type="text" name="TiktokUrl" class="form-control" value="${esc(v.TiktokUrl || '')}" placeholder="उदा: @ramtamang or tiktok.com/@ram">
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 18px; display: flex; gap: 10px; justify-content: flex-end;">
+            <button type="button" class="btn btn-secondary" onclick="viewVoterProfile('${v.VoterID}')">रद्द (Cancel)</button>
+            <button type="submit" id="saveVoterSubmitBtn" class="btn btn-primary" style="font-weight: 800; font-size: 14px; padding: 10px 20px;">
+              💾 डाटाबेसमा सुरक्षित गर्नुहोस् (Save to Database)
+            </button>
+          </div>
         </form>
         `,
-        `<button class="btn btn-secondary" onclick="viewVoterProfile('${v.VoterID}')">Back to Profile</button>`
+        `<button class="btn btn-secondary" onclick="viewVoterProfile('${v.VoterID}')">Back to Profile</button>`,
+        'modal-lg'
       );
     }
 
-    function updateVoter(e, id) {
+    async function updateVoter(e, id) {
       e.preventDefault();
       const form = e.target;
+      const submitBtn = form.querySelector('#saveVoterSubmitBtn') || form.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '⏳ डाटाबेसमा सुरक्षित हुँदैछ...';
+      }
+
       const formData = new FormData(form);
       const v = state.voters.find(x => x.VoterID === id);
       if (v) {
         v.Name = formData.get('Name').trim();
         v.Phone = formData.get('Phone').trim();
+        v.Gender = formData.get('Gender') || v.Gender || 'Other';
+        v.DOB = formData.get('DOB') || '';
+        v.AgeGroup = formData.get('AgeGroup') || v.AgeGroup || '';
         v.Ward = Number(formData.get('Ward'));
         v.Tole = formData.get('Tole').trim();
+        v.HouseNo = (formData.get('HouseNo') || '').trim();
+        v.FamilyRelation = formData.get('FamilyRelation') || v.FamilyRelation || 'घरमुली';
         v.BoothNo = formData.get('BoothNo').trim();
         v.VoterSerial = formData.get('VoterSerial').trim();
-        v.DOB = formData.get('DOB') || '';
-        v.VerificationStatus = formData.get('VerificationStatus');
+        v.VerificationStatus = formData.get('VerificationStatus') || 'Pending';
+        v.ContactStatus = formData.get('ContactStatus') || 'Not Contacted';
+
         const supportTier = formData.get('SupportTier');
         if (supportTier) {
           v.SupportTier = supportTier;
+        }
+
+        const selfResponse = formData.get('SelfReportedResponse');
+        if (selfResponse) {
+          v.SelfReportedResponse = selfResponse;
+        } else if (supportTier) {
           v.SelfReportedResponse = (supportTier === 'solid' || supportTier === 'lean') ? 'Support' : 
                                    (supportTier === 'hard_opponent' ? 'Not Support' : 'Undecided');
         }
+
         v.IsInfluencer = formData.get('IsInfluencer') === 'Yes';
-        v.PartyLeaning = formData.get('PartyLeaning') || '';
-        if (formData.get('CurrentLocation')) v.CurrentLocation = formData.get('CurrentLocation');
-        if (formData.get('ElectionDayTurnout')) v.ElectionDayTurnout = formData.get('ElectionDayTurnout');
+        v.PartyLeaning = formData.get('PartyLeaning') || 'Undecided';
         v.CurrentLocation = formData.get('CurrentLocation') || 'गाउँमै उपस्थित (On-Ground)';
         v.ElectionDayTurnout = formData.get('ElectionDayTurnout') || 'पक्का स्थानीय उपस्थित (Confirmed)';
         v.CityAddress = (formData.get('CityAddress') || '').trim();
@@ -8493,11 +8693,38 @@
         v.TiktokUrl = (formData.get('TiktokUrl') || '').trim();
 
         saveState();
-        if (typeof pushVoterToSupabase === 'function') pushVoterToSupabase(v);
-        showToast('Contact and social links updated!', 'success');
+
+        let cloudSynced = false;
+        if (typeof pushVoterToSupabase === 'function') {
+          cloudSynced = await pushVoterToSupabase(v);
+        }
+
+        logActivity('voter_update', `✏️ मतदाता ${v.Name} (वडा ${v.Ward}) को प्रोफाइल र स्थिति अद्यावधिक गरियो।`);
+        if (cloudSynced) {
+          showToast(`✅ ${v.Name} को प्रोफाइल र स्थिति Supabase डाटाबेसमा सुरक्षित भयो!`, 'success');
+        } else {
+          showToast(`✅ ${v.Name} को प्रोफाइल स्थानीय क्यासमा सुरक्षित भयो।`, 'info');
+        }
+
         refreshDashboardMetrics();
         renderVotersList();
+        closeModal();
         viewVoterProfile(id);
+      }
+    }
+
+    async function toggleVoterContactStatus(id, activeTab = '') {
+      const v = state.voters.find(x => x.VoterID === id);
+      if (!v) return;
+      v.ContactStatus = v.ContactStatus === 'Contacted' ? 'Not Contacted' : 'Contacted';
+      saveState();
+      if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
+      logActivity('voter_contact', `${v.Name} को सम्पर्क अवस्था परिवर्तन: ${v.ContactStatus === 'Contacted' ? 'भेटिएको' : 'भेट्न बाँकी'}`);
+      refreshDashboardMetrics();
+      renderVotersList();
+      showToast(`${v.Name} सम्पर्क अवस्था: ${v.ContactStatus === 'Contacted' ? '🟢 भेटिएको' : '⚪ भेट्न बाँकी'} (डाटाबेसमा सेभ भयो)`, 'success');
+      if (activeTab && typeof viewVoterProfile === 'function') {
+        viewVoterProfile(id, activeTab);
       }
     }
 
@@ -8568,7 +8795,7 @@
       document.getElementById('nextDateFieldWrap').style.display = val === 'Yes' ? 'block' : 'none';
     }
 
-    function saveVisit(e) {
+    async function saveVisit(e) {
       e.preventDefault();
       const form = e.target;
       const formData = new FormData(form);
@@ -8593,10 +8820,6 @@
       };
 
       state.visits.unshift(visit);
-      if (typeof pushVoterToSupabase === 'function') {
-        const vToPush = state.voters.find(x => x.VoterID === voterId);
-        if (vToPush) pushVoterToSupabase(vToPush);
-      }
 
       // Workflow Automation 1: Update Voter record status and Auto-Verify if 'Support' & 'Met'
       let autoVerified = false;
@@ -8632,11 +8855,17 @@
       }
 
       saveState();
+
+      // Push updated voter status to Supabase Cloud
+      if (v && typeof pushVoterToSupabase === 'function') {
+        await pushVoterToSupabase(v);
+      }
+
       const verificationNote = autoVerified ? ' [स्वतः Verified गरियो]' : '';
       const followNote = (scheduledDate && (followReq === 'Yes' || isUndecided)) ? ' [३ दिनपछिको Follow-up तय भयो]' : '';
       logActivity('visit', `${v ? v.Name : 'मतदाता'} (वडा ${v ? v.Ward : '-'}) सँग घरदैलो भेटघाट सम्पन्न (नतिजा: ${visit.VisitOutcome}, प्रतिक्रिया: ${visit.SelfReportedResponse || 'तटस्थ'})${verificationNote}${followNote}।`);
       closeModal();
-      showToast(`Field visit recorded! ${autoVerified ? '✓ Voter Verified' : ''} ${isUndecided ? '✓ 3-day Follow-up scheduled' : ''}`.trim(), 'success');
+      showToast(`Field visit recorded & synced to database! ${autoVerified ? '✓ Voter Verified' : ''} ${isUndecided ? '✓ 3-day Follow-up scheduled' : ''}`.trim(), 'success');
       refreshDashboardMetrics();
       renderVotersList();
       renderVisitsList();
@@ -11829,7 +12058,7 @@
       return `<span class="badge" ${clickAttr}>${tier.icon} ${tier.label}</span>`;
     }
 
-    function quickCycleSupportTier(voterId, activeTab = '') {
+    async function quickCycleSupportTier(voterId, activeTab = '') {
       const v = state.voters.find(x => x.VoterID === voterId);
       if (!v) return;
       const curTier = getSupportTier(v).key;
@@ -11837,10 +12066,10 @@
       const nextIdx = (order.indexOf(curTier) + 1) % order.length;
       v.SupportTier = order[nextIdx];
       saveState();
-      if (typeof pushVoterToSupabase === 'function') pushVoterToSupabase(v);
+      if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
 
       const tier = SUPPORT_TIERS[v.SupportTier];
-      showToast(`${v.Name} को समर्थन: ${tier.icon} ${tier.label}`, 'info');
+      showToast(`${v.Name} को समर्थन: ${tier.icon} ${tier.label} (डाटाबेसमा सेभ भयो)`, 'info');
 
       // Refresh UI components
       if (activeTab && typeof viewVoterProfile === 'function') {
