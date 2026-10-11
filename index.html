@@ -6973,8 +6973,8 @@
                   <a href="javascript:void(0)" onclick="openCustomMessageModal('${v.VoterID}')" title="कस्टम सन्देश" style="text-decoration: none; font-size: 13px;">💬</a>
                 </span>
               ` : ''}
-              ${v.FacebookUrl ? `<a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" onclick="event.stopPropagation()" title="Facebook Profile" style="text-decoration: none; font-size: 13px;">📘</a>` : ''}
-              ${v.TiktokUrl ? `<a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" onclick="event.stopPropagation()" title="TikTok Profile" style="text-decoration: none; font-size: 13px;">🎵</a>` : ''}
+              ${v.FacebookUrl ? `<a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="Facebook प्रोफाइल सिधा खोल्नुहोस् (${esc(v.FacebookUrl)})" style="text-decoration: none; font-size: 13px;">📘</a>` : `<a href="javascript:void(0)" onclick="event.stopPropagation(); openEditVoterModal('${v.VoterID}')" title="+ Facebook लिङ्क थप्नुहोस्" style="text-decoration: none; font-size: 12px; opacity: 0.5;">📘</a>`}
+              ${v.TiktokUrl ? `<a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="TikTok प्रोफाइल सिधा खोल्नुहोस् (${esc(v.TiktokUrl)})" style="text-decoration: none; font-size: 13px;">🎵</a>` : `<a href="javascript:void(0)" onclick="event.stopPropagation(); openEditVoterModal('${v.VoterID}')" title="+ TikTok लिङ्क थप्नुहोस्" style="text-decoration: none; font-size: 12px; opacity: 0.5;">🎵</a>`}
               ${isTodayBirthday(v.DOB) ? `<span title="आज जन्मदिन! (${calculateAge(v.DOB)} वर्ष)" style="cursor: pointer; font-size: 13px;" onclick="event.stopPropagation(); openBirthdayWishModal('${v.VoterID}')">🎂</span>` : ''}
               <span style="color: var(--slate-300);">•</span>
               <span style="font-size: 11.5px;">${esc(v.Gender || '-')}</span>
@@ -7042,6 +7042,24 @@
                       <span>📞</span> <span>कल गर्नुहोस्</span>
                     </a>
                   ` : ''}
+                  ${v.FacebookUrl ? `
+                    <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" class="voter-action-menu-item" style="color: #1877f2;" onclick="closeAllVoterActionDropdowns()">
+                      <span>📘</span> <span>Facebook खोल्नुहोस्</span>
+                    </a>
+                  ` : `
+                    <button type="button" class="voter-action-menu-item" style="color: #64748b;" onclick="closeAllVoterActionDropdowns(); openEditVoterModal('${v.VoterID}')">
+                      <span>📘</span> <span>+ Facebook लिङ्क थप्नुहोस्</span>
+                    </button>
+                  `}
+                  ${v.TiktokUrl ? `
+                    <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" class="voter-action-menu-item" style="color: #000000;" onclick="closeAllVoterActionDropdowns()">
+                      <span>🎵</span> <span>TikTok खोल्नुहोस्</span>
+                    </a>
+                  ` : `
+                    <button type="button" class="voter-action-menu-item" style="color: #64748b;" onclick="closeAllVoterActionDropdowns(); openEditVoterModal('${v.VoterID}')">
+                      <span>🎵</span> <span>+ TikTok लिङ्क थप्नुहोस्</span>
+                    </button>
+                  `}
                   <button type="button" class="voter-action-menu-item" onclick="closeAllVoterActionDropdowns(); openEditVoterModal('${v.VoterID}')">
                     <span>✏️</span> <span>विवरण सम्पादन</span>
                   </button>
@@ -7068,14 +7086,26 @@
               <div class="voter-card-title" style="cursor: pointer;" onclick="viewVoterProfile('${v.VoterID}')" title="प्रोफाइल हेर्न क्लिक गर्नुहोस्">
                 👉 ${esc(v.Name)}
               </div>
-              <div class="voter-card-phone" style="display: flex; align-items: center; gap: 8px;">
-                <span>📞 ${esc(v.Phone || 'No Phone')}</span>
-                ${v.Phone ? `
-                  <a href="tel:${cleanPhone(v.Phone)}" title="Call" style="text-decoration: none; font-size: 14px;">📞</a>
-                  <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" title="WhatsApp" style="text-decoration: none; font-size: 14px;" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">🟢</a>
-                  <a href="javascript:void(0)" onclick="openCustomMessageModal('${v.VoterID}')" title="Custom Message" style="text-decoration: none; font-size: 14px;">💬</a>
-                ` : ''}
-                ${isTodayBirthday(v.DOB) ? `<span title="आज जन्मदिन!" style="cursor: pointer; font-size: 14px;" onclick="openBirthdayWishModal('${v.VoterID}')">🎂</span>` : ''}
+              <div class="voter-card-phone" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+                <span style="font-family: monospace; font-weight: 700; color: var(--slate-700); font-size: 13px;">📞 ${esc(v.Phone || 'No Phone')}</span>
+                <div style="display: inline-flex; align-items: center; gap: 6px;" onclick="event.stopPropagation()">
+                  ${v.Phone ? `
+                    <a href="tel:${cleanPhone(v.Phone)}" title="कल गर्नुहोस् (Call)" style="text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">📞</a>
+                    <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" rel="noopener noreferrer" title="WhatsApp सन्देश पठाउनुहोस्" style="text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0;" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">🟢</a>
+                    <a href="javascript:void(0)" onclick="openCustomMessageModal('${v.VoterID}')" title="कस्टम सन्देश (SMS/Message)" style="text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe;">💬</a>
+                  ` : ''}
+                  ${v.FacebookUrl ? `
+                    <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" title="Facebook प्रोफाइल सिधा खोल्नुहोस् (${esc(v.FacebookUrl)})" style="text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #eff6ff; color: #1877F2; border: 1.5px solid #bfdbfe; box-shadow: 0 1px 3px rgba(24,119,242,0.15); font-weight: 800;">📘</a>
+                  ` : `
+                    <a href="javascript:void(0)" onclick="openEditVoterModal('${v.VoterID}')" title="Facebook लिङ्क थप्नुहोस्" style="text-decoration: none; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #f8fafc; color: #94a3b8; border: 1px dashed #cbd5e1; opacity: 0.65;">📘</a>
+                  `}
+                  ${v.TiktokUrl ? `
+                    <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" title="TikTok प्रोफाइल सिधा खोल्नुहोस् (${esc(v.TiktokUrl)})" style="text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #000000; color: #ffffff; border: 1px solid #000000; box-shadow: 0 1px 3px rgba(0,0,0,0.25); font-weight: 800;">🎵</a>
+                  ` : `
+                    <a href="javascript:void(0)" onclick="openEditVoterModal('${v.VoterID}')" title="TikTok लिङ्क थप्नुहोस्" style="text-decoration: none; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #f8fafc; color: #94a3b8; border: 1px dashed #cbd5e1; opacity: 0.65;">🎵</a>
+                  `}
+                  ${isTodayBirthday(v.DOB) ? `<span title="आज जन्मदिन! (${calculateAge(v.DOB)} वर्ष)" style="cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #fffbeb; border: 1px solid #fde68a;" onclick="openBirthdayWishModal('${v.VoterID}')">🎂</span>` : ''}
+                </div>
               </div>
             </div>
             <span class="badge ${v.VerificationStatus === 'Verified' ? 'badge-verified' : 'badge-pending'}"
@@ -7100,7 +7130,7 @@
             </div>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; pt-2; border-top: 1px solid var(--slate-200); padding-top: 10px;">
-            <span class="badge ${v.ContactStatus === 'Contacted' ? 'badge-contacted' : 'badge-notcontacted'}">${v.ContactStatus}</span>
+            <span class="badge ${v.ContactStatus === 'Contacted' ? 'badge-contacted' : 'badge-notcontacted'}" style="cursor: pointer;" onclick="toggleVoterContactStatus('${v.VoterID}')" title="क्लिक गरी सम्पर्क अवस्था बदल्नुहोस्">${v.ContactStatus} 🔄</span>
             <div style="display: flex; gap: 6px;">
               <button class="btn btn-sm btn-secondary" onclick="viewVoterProfile('${v.VoterID}')">View</button>
               <button class="btn btn-sm btn-secondary" onclick="printVoterSlip('${v.VoterID}')" title="Print Slip">🖨️ पर्चा</button>
@@ -7331,22 +7361,33 @@
                 <a href="tel:${cleanPhone(v.Phone)}" class="btn btn-sm" style="text-decoration: none; background: #059669; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(5,150,105,0.25);" title="सिधा फोन गर्नुहोस्">
                   📞 फोन
                 </a>
-                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" class="btn btn-sm" style="text-decoration: none; background: #25D366; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(37,211,102,0.25);" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">
+                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #25D366; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(37,211,102,0.25);" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">
                   🟢 WhatsApp
                 </a>
+                <button class="btn btn-sm" onclick="openCustomMessageModal('${v.VoterID}')" style="background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px;" title="कस्टम सन्देश (SMS)">
+                  💬 सन्देश
+                </button>
               ` : ''}
               ${v.FacebookUrl ? `
-                <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" class="btn btn-sm" style="text-decoration: none; background: #1877F2; color: white; font-size: 12px; font-weight: 800; padding: 7px 11px; border-radius: 6px; box-shadow: 0 2px 6px rgba(24,119,242,0.25);" title="Facebook प्रोफाइल खोल्नुहोस्">
+                <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #1877F2; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(24,119,242,0.25);" title="Facebook प्रोफाइल सिधा खोल्नुहोस् (${esc(v.FacebookUrl)})">
                   📘 FB
                 </a>
-              ` : ''}
+              ` : `
+                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 11px; opacity: 0.85;" title="Facebook लिङ्क थप्नुहोस्">
+                  📘 + FB
+                </button>
+              `}
               ${v.TiktokUrl ? `
-                <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" class="btn btn-sm" style="text-decoration: none; background: #000000; color: white; font-size: 12px; font-weight: 800; padding: 7px 11px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.25);" title="TikTok प्रोफाइल खोल्नुहोस्">
+                <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #000000; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.25);" title="TikTok प्रोफाइल सिधा खोल्नुहोस् (${esc(v.TiktokUrl)})">
                   🎵 TikTok
                 </a>
-              ` : ''}
+              ` : `
+                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 11px; opacity: 0.85;" title="TikTok लिङ्क थप्नुहोस्">
+                  🎵 + TikTok
+                </button>
+              `}
               <button class="btn btn-sm btn-primary" onclick="printVoterSlip('${v.VoterID}')" style="font-weight: 800; font-size: 12px; padding: 7px 12px; background: #1e3a8a; border-color: #1e3a8a;" title="मतदाता परिचय पर्चा हेर्नुहोस् र प्रिन्ट गर्नुहोस्">
-                🖨️ पर्चा हेर्नुहोस्
+                🖨️ पर्चा
               </button>
               <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 12px;">
                 ✏️ सम्पादन
@@ -7634,23 +7675,34 @@
             </div>
             <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
               ${v.Phone ? `
-                <a href="tel:${cleanPhone(v.Phone)}" class="btn btn-sm" style="background: #059669; color: white; text-decoration: none; font-weight: 800; padding: 6px 12px;">
+                <a href="tel:${cleanPhone(v.Phone)}" class="btn btn-sm" style="background: #059669; color: white; text-decoration: none; font-weight: 800; padding: 7px 14px; border-radius: 6px;" title="सिधा कल गर्नुहोस्">
                   📞 ${esc(v.Phone)}
                 </a>
-                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" class="btn btn-sm" style="background: #25D366; color: white; text-decoration: none; font-weight: 800; padding: 6px 12px;">
+                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background: #25D366; color: white; text-decoration: none; font-weight: 800; padding: 7px 14px; border-radius: 6px;" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">
                   🟢 WhatsApp सन्देश
                 </a>
+                <button class="btn btn-sm" onclick="openCustomMessageModal('${v.VoterID}')" style="background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; font-weight: 700; padding: 7px 12px; border-radius: 6px;" title="कस्टम सन्देश (SMS)">
+                  💬 कस्टम सन्देश
+                </button>
               ` : '<span style="color: #64748b; font-size: 12px;">सम्पर्क नम्बर उपलब्ध छैन</span>'}
               ${v.FacebookUrl ? `
-                <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" class="btn btn-sm btn-secondary" style="color: #1877F2; font-weight: 700; text-decoration: none;">
-                  📘 Facebook
+                <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background: #1877F2; color: white; font-weight: 800; text-decoration: none; padding: 7px 14px; border-radius: 6px; box-shadow: 0 2px 6px rgba(24,119,242,0.25);" title="Facebook प्रोफाइल सिधा खोल्नुहोस् (${esc(v.FacebookUrl)})">
+                  📘 Facebook प्रोफाइल
                 </a>
-              ` : ''}
+              ` : `
+                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 12px; opacity: 0.85;" title="Facebook लिङ्क थप्नुहोस्">
+                  📘 + Facebook लिङ्क थप्नुहोस्
+                </button>
+              `}
               ${v.TiktokUrl ? `
-                <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" class="btn btn-sm btn-secondary" style="color: #000; font-weight: 700; text-decoration: none;">
-                  🎵 TikTok
+                <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background: #000000; color: white; font-weight: 800; text-decoration: none; padding: 7px 14px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.25);" title="TikTok प्रोफाइल सिधा खोल्नुहोस् (${esc(v.TiktokUrl)})">
+                  🎵 TikTok प्रोफाइल
                 </a>
-              ` : ''}
+              ` : `
+                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 12px; opacity: 0.85;" title="TikTok लिङ्क थप्नुहोस्">
+                  🎵 + TikTok लिङ्क थप्नुहोस्
+                </button>
+              `}
               <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="margin-left: auto;">✏️ फोन/लिङ्क सम्पादन</button>
             </div>
           </div>
@@ -7730,11 +7782,13 @@
                   <div style="font-size: 12.5px; color: var(--slate-600); margin-top: 4px;">
                     ${mAge ? `उमेर: <b>${mAge} वर्ष</b> • ` : ''} लिंग: ${esc(m.Gender || '-')}
                   </div>
-                  <div style="font-size: 12.5px; margin-top: 4px;">
+                  <div style="font-size: 12.5px; margin-top: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                     ${m.Phone ? `
                       <a href="tel:${cleanPhone(m.Phone)}" style="color: #059669; text-decoration: none; font-weight: 600;">📞 ${esc(m.Phone)}</a>
-                      <a href="https://wa.me/977${cleanPhone(m.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(m))}" target="_blank" style="text-decoration: none; margin-left: 4px;">🟢</a>
+                      <a href="https://wa.me/977${cleanPhone(m.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(m))}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;" title="WhatsApp">🟢</a>
                     ` : '<span style="color: var(--slate-400);">सम्पर्क फोन छैन</span>'}
+                    ${m.FacebookUrl ? `<a href="${formatSocialUrl(m.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;" title="Facebook प्रोफाइल">📘</a>` : ''}
+                    ${m.TiktokUrl ? `<a href="${formatSocialUrl(m.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;" title="TikTok प्रोफाइल">🎵</a>` : ''}
                   </div>
                 </div>
 
@@ -8424,17 +8478,21 @@
 
     function formatSocialUrl(url, type) {
       if (!url) return '';
-      url = url.trim();
+      url = String(url).trim();
+      if (!url) return '';
       if (type === 'facebook') {
         if (/^https?:\/\//i.test(url)) return url;
-        return 'https://facebook.com/' + url.replace(/^@/, '');
+        if (/^(www\.)?facebook\.com/i.test(url) || /^(www\.)?fb\.com/i.test(url)) return 'https://' + url;
+        return 'https://www.facebook.com/' + url.replace(/^@/, '');
       }
       if (type === 'tiktok') {
         if (/^https?:\/\//i.test(url)) return url;
+        if (/^(www\.)?tiktok\.com/i.test(url)) return 'https://' + url;
         const handle = url.startsWith('@') ? url : '@' + url;
         return 'https://www.tiktok.com/' + handle;
       }
-      return url;
+      if (/^https?:\/\//i.test(url)) return url;
+      return 'https://' + url;
     }
 
     function openEditVoterModal(id) {
