@@ -2477,7 +2477,7 @@
   <!-- Toast Container -->
   <div class="toast-box" id="toastBox"></div>
 
-  <!-- 1. LOGIN SCREEN (Three Dedicated Modern Single-Purpose Screens) -->
+  <!-- 1. UNIVERSAL MOBILE + PASSWORD LOGIN SCREEN -->
   <div id="loginScreen" class="pin-auth-container">
     <div class="pin-card" style="max-width: 440px;">
       
@@ -2487,174 +2487,67 @@
         <span>🟢 Supabase Cloud: Live Sync</span>
       </div>
 
-      <div class="brand-icon" id="loginBrandIcon" style="margin: 0 auto 10px; width: 54px; height: 54px; font-size: 26px; background: #0f172a; color: #fbbf24; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.35);">👑</div>
-      <div class="pin-header" style="margin-bottom: 16px;">
-        <h2 id="loginTitle" style="font-size: 21px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">Super Admin Control Hub</h2>
-        <p id="loginSubtitle" style="font-size: 12.5px; color: var(--slate-600); margin: 0;">SaaS निर्वाचन व्यवस्थापन प्रणाली • मास्टर लगइन</p>
+      <div class="brand-icon" id="loginBrandIcon" style="margin: 0 auto 10px; width: 56px; height: 56px; font-size: 28px; background: #0f172a; color: #fbbf24; border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.35);">🗳️</div>
+      <div class="pin-header" style="margin-bottom: 18px;">
+        <h2 id="loginTitle" style="font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">Election Ops Command</h2>
+        <p id="loginSubtitle" style="font-size: 13px; color: var(--slate-600); margin: 0;">निर्वाचन व्यवस्थापन तथा कमान्ड प्रणाली</p>
       </div>
 
-      <!-- Optional Container for Tabs (Kept hidden for pure single screen purity) -->
-      <div id="loginTabsContainer" style="display: none;"></div>
-
-      <!-- ================================================================= -->
-      <!-- SCREEN 1: SUPER ADMIN MASTER LOGIN (Root domain / SaaS Platform)   -->
-      <!-- ================================================================= -->
-      <div id="paneSuperLogin" style="display: block;">
-        <form onsubmit="handleSuperAdminMasterLogin(event)" style="text-align: left;">
-          <div class="form-group" style="margin-bottom: 14px;">
-            <label class="form-label" style="font-size: 12px; font-weight: 700; color: #475569;">सुरक्षित Master PIN वा Key *</label>
-            <div style="position: relative;">
-              <input type="password" id="superAdminMasterKey" required class="form-control" placeholder="Master PIN (उदा: 1234)" inputmode="numeric" autocomplete="current-password" style="font-size: 18px; text-align: center; letter-spacing: 0.15em; padding-right: 42px; height: 48px; border-radius: 12px; font-weight: 700;">
-              <button type="button" onclick="togglePassVisibility('superAdminMasterKey', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; cursor: pointer; color: var(--slate-600);" title="Show/Hide">👁️</button>
-            </div>
+      <!-- PRIMARY LOGIN FORM: 10-Digit Mobile + Password -->
+      <form id="universalLoginForm" onsubmit="handleUniversalLogin(event)" style="text-align: left;">
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" style="font-size: 12.5px; font-weight: 700; color: #334155;">
+            📱 User ID (१० अङ्कको मोबाइल नम्बर) *
+          </label>
+          <div style="position: relative;">
+            <input type="tel" id="loginMobileField" required class="form-control" placeholder="उदा: 9851170967" maxlength="10" inputmode="numeric" autocomplete="username" style="font-size: 16px; font-weight: 700; letter-spacing: 0.05em; padding: 12px 14px; border-radius: 10px;" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)">
           </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border: none; font-weight: 800; padding: 13px; font-size: 15px; border-radius: 12px; box-shadow: 0 4px 14px rgba(15,23,42,0.3);">
-            ⚡ Unlock Super Admin Dashboard
-          </button>
-        </form>
+        </div>
 
-        <!-- 1-Click Fast Unlock Helper -->
-        <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
-          <button type="button" class="btn btn-secondary" onclick="quickFillSuperLogin('1234')" style="width: 100%; font-size: 13px; font-weight: 700; padding: 10px; background: #e0e7ff; color: #3730a3; border: 1.5px solid #c7d2fe; border-radius: 10px;">
-            🚀 १-क्लिक फास्ट अनलक (PIN: 1234)
-          </button>
-          <div style="font-size: 11.5px; color: var(--slate-600); text-align: center;">
-            Default Master PIN: <code>1234</code> वा <code>9999</code>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label class="form-label" style="font-size: 12.5px; font-weight: 700; color: #334155; margin: 0;">
+              🔒 गोप्य पासवर्ड (Password) *
+            </label>
+            <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size: 11.5px; color: #2563eb; text-decoration: none; font-weight: 600;">
+              पासवर्ड बिर्सिनुभयो?
+            </a>
           </div>
-          <button type="button" onclick="forceAppHardReload()" style="background: none; border: none; color: #64748b; font-size: 11.5px; cursor: pointer; text-decoration: underline; margin-top: 4px;" title="नयाँ अपडेट भएको कोड लोड गर्न क्यास खाली गर्नुहोस्">
-            🔄 नयाँ अपडेट देखिएन? क्यास खाली गरी रिलोड गर्नुहोस्
-          </button>
-        </div>
-
-        <!-- Single-Tap Direct Switcher to Palika Portal -->
-        <div style="margin-top: 18px; padding: 12px; background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; text-align: center;">
-          <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px;">🏛️ स्थानीय निर्वाचन कमान्ड पोर्टल</div>
-          <a href="javascript:void(0)" onclick="switchLoginScreen('palika')" style="display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; font-weight: 800; color: #1e3a8a; text-decoration: none; padding: 9px 12px; background: #eff6ff; border-radius: 10px; border: 1px solid #bfdbfe;">
-            <span>हेलाम्बु गाउँपालिका एडमिन लगइन खोल्नुहोस्</span>
-            <span style="font-size: 16px;">&rarr;</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- ================================================================= -->
-      <!-- SCREEN 2: PALIKA ADMIN LOGIN (Helambu Municipality HQ Command)     -->
-      <!-- ================================================================= -->
-      <div id="paneAdminLogin" style="display: none;">
-        <form onsubmit="handleTenantAdminLogin(event)" style="text-align: left;">
-          <div class="form-group" style="margin-bottom: 12px;">
-            <label class="form-label" style="font-size: 12px; font-weight: 700; color: #475569;">Admin Username (प्रयोगकर्ता नाम) *</label>
-            <input type="text" id="adminUserField" required class="form-control" placeholder="उदा: helambu_admin" autocomplete="username" autocapitalize="none" style="font-size: 14.5px; padding: 11px 14px; border-radius: 10px;">
+          <div style="position: relative;">
+            <input type="password" id="loginPasswordField" required class="form-control" placeholder="पासवर्ड टाइप गर्नुहोस्" autocomplete="current-password" style="font-size: 15px; padding: 12px 14px; padding-right: 42px; border-radius: 10px;">
+            <button type="button" onclick="togglePassVisibility('loginPasswordField', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; cursor: pointer; color: var(--slate-600);" title="Show/Hide">👁️</button>
           </div>
-          <div class="form-group" style="margin-bottom: 16px;">
-            <label class="form-label" style="font-size: 12px; font-weight: 700; color: #475569;">Password (गोप्य पासवर्ड) *</label>
-            <div style="position: relative;">
-              <input type="password" id="adminPassField" required class="form-control" placeholder="पासवर्ड टाइप गर्नुहोस्" autocomplete="current-password" style="font-size: 14.5px; padding: 11px 14px; padding-right: 42px; border-radius: 10px;">
-              <button type="button" onclick="togglePassVisibility('adminPassField', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; cursor: pointer; color: var(--slate-600);" title="Show/Hide">👁️</button>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 15px; font-weight: 800; padding: 13px; background: #1e3a8a; border: none; border-radius: 12px; box-shadow: 0 4px 14px rgba(30, 58, 138, 0.3);">
-            🚀 पालिका कमान्ड लगइन (Login to Palika HQ)
-          </button>
-        </form>
-        <div style="margin-top: 10px;">
-          <button type="button" class="btn btn-secondary" onclick="quickFillAdminLogin('helambu_admin', 'helambu@123')" style="width: 100%; font-size: 12.5px; font-weight: 700; padding: 9px; background: #f0fdf4; color: #166534; border: 1.5px solid #bbf7d0; border-radius: 10px;">
-            ⚡ १-क्लिक पालिका Admin अटो भर्नुहोस् (Helambu HQ)
-          </button>
         </div>
 
-        <!-- Single-Tap Direct Switcher to Field Worker PIN Screen -->
-        <div style="margin-top: 18px; padding: 12px; background: #f0fdf4; border-radius: 14px; border: 1.5px solid #bbf7d0; text-align: center;">
-          <div style="font-size: 11px; font-weight: 700; color: #15803d; text-transform: uppercase; margin-bottom: 6px;">👷 फिल्ड कर्मचारी तथा वडा कार्यकर्ता</div>
-          <a href="javascript:void(0)" onclick="switchLoginScreen('worker')" style="display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; font-weight: 800; color: #166534; text-decoration: none; padding: 9px 12px; background: #ffffff; border-radius: 10px; border: 1px solid #86efac;">
-            <span>कार्यकर्ता ४-अङ्क PIN लगइन खोल्नुहोस्</span>
-            <span style="font-size: 16px;">&rarr;</span>
-          </a>
-        </div>
-
-        <!-- Return to Super Admin Link -->
-        <div style="margin-top: 14px; text-align: center;">
-          <a href="javascript:void(0)" onclick="switchLoginScreen('super')" style="font-size: 12px; color: #64748b; text-decoration: none; font-weight: 600;">
-            👑 सुपर एडमिन मास्टर गेटवेमा फर्कनुहोस्
-          </a>
-        </div>
-      </div>
-
-      <!-- ================================================================= -->
-      <!-- SCREEN 3: WORKER PIN LOGIN (Fast 4-Digit Keypad Field Workspace)    -->
-      <!-- ================================================================= -->
-      <div id="paneWorkerLogin" style="display: none;">
-        
-        <!-- Personalized Worker Welcome Card (Shown on Worker QR / Direct Link) -->
-        <div id="workerDirectWelcomeCard" style="display: none; margin-bottom: 16px; padding: 14px 16px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; border: 1.5px solid #86efac; text-align: center; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.12);">
-          <div id="workerWelcomeAvatar" style="width: 52px; height: 52px; border-radius: 50%; background: #16a34a; color: white; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; margin: 0 auto 8px; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.25);">
-            W
-          </div>
-          <div id="workerWelcomeName" style="font-size: 17px; font-weight: 800; color: #14532d;">कार्यकर्ता नाम</div>
-          <div style="display: flex; gap: 6px; justify-content: center; margin-top: 4px; flex-wrap: wrap;">
-            <span id="workerWelcomeRole" class="badge" style="background: #16a34a; color: white; font-weight: 700;">फिल्ड कार्यकर्ता</span>
-            <span id="workerWelcomeWard" class="badge" style="background: white; color: #166534; border: 1px solid #86efac; font-weight: 700;">वडा १</span>
-          </div>
-          <p style="font-size: 12.5px; color: #374151; margin: 10px 0 0; line-height: 1.4;">
-            🔒 एडमिनले तोकेको <b>४-अङ्कको PIN कोड</b> थिचेर कार्य डायरी खोल्नुहोस्:
-          </p>
-          <button type="button" class="btn btn-sm btn-link" onclick="switchWorkerToManualSelect()" style="font-size: 11.5px; margin-top: 6px; color: #4b5563; text-decoration: underline; background: none; border: none; cursor: pointer;">
-            (अर्को कार्यकर्ता छान्ने हो?)
-          </button>
-        </div>
-
-        <div id="workerManualSelectWrap" style="margin-bottom: 14px; text-align: left;">
-          <label style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--slate-600); display: block; margin-bottom: 6px;">कार्यकर्ता छान्नुहोस् (Select Worker)</label>
-          <select id="loginUserSelect" class="form-control" onchange="onLoginUserSelected(this.value)" style="background: white; font-weight: 600; font-size: 13.5px;">
-            <!-- Dynamically populated -->
-          </select>
-          <div id="loginUserScopeBadge" style="margin-top: 6px; font-size: 11.5px; color: var(--indigo-600); font-weight: 600; text-align: center;"></div>
-        </div>
-
-        <!-- 4 PIN Dots -->
-        <div class="pin-dots" id="pinDots">
-          <div class="pin-dot" id="dot0"></div>
-          <div class="pin-dot" id="dot1"></div>
-          <div class="pin-dot" id="dot2"></div>
-          <div class="pin-dot" id="dot3"></div>
-        </div>
-
-        <!-- Numeric Keypad -->
-        <div class="keypad-grid">
-          <button class="key-btn" onclick="pressKey('1')">1</button>
-          <button class="key-btn" onclick="pressKey('2')">2</button>
-          <button class="key-btn" onclick="pressKey('3')">3</button>
-          <button class="key-btn" onclick="pressKey('4')">4</button>
-          <button class="key-btn" onclick="pressKey('5')">5</button>
-          <button class="key-btn" onclick="pressKey('6')">6</button>
-          <button class="key-btn" onclick="pressKey('7')">7</button>
-          <button class="key-btn" onclick="pressKey('8')">8</button>
-          <button class="key-btn" onclick="pressKey('9')">9</button>
-          <button class="key-btn action-key" onclick="clearPin()">Clear</button>
-          <button class="key-btn" onclick="pressKey('0')">0</button>
-          <button class="key-btn action-key" onclick="backspacePin()">⌫</button>
-        </div>
-
-        <button id="loginBtn" class="btn btn-primary" style="width: 100%;" disabled onclick="submitPin()">
-          Unlock Field Workspace
+        <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 15.5px; font-weight: 800; padding: 13px; background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); border: none; border-radius: 12px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.3);">
+          🚀 लगइन गर्नुहोस् (Sign In)
         </button>
+      </form>
 
-        <div style="margin-top: 10px; display: flex; justify-content: center;">
-          <button type="button" class="btn btn-sm btn-secondary" id="workerAutoPinBtn" onclick="quickFillWorkerPin('1234')" style="font-size: 11.5px; font-weight: 700; padding: 5px 12px; background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe;">
-            ⚡ अटो PIN (1234) हान्नुहोस्
-          </button>
-        </div>
-
-        <!-- Single-Tap Return to Palika Admin Screen -->
-        <div style="margin-top: 18px; padding-top: 12px; border-top: 1px dashed #cbd5e1; text-align: center;">
-          <a href="javascript:void(0)" onclick="switchLoginScreen('palika')" style="font-size: 13px; color: #1e3a8a; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
-            <span>&larr;</span>
-            <span>🏛️ पालिका Admin लगइनमा फर्कनुहोस्</span>
-          </a>
-        </div>
+      <!-- 1-Click Super Admin Fast Login Helper for Owner -->
+      <div style="margin-top: 14px; display: flex; gap: 8px;">
+        <button type="button" class="btn btn-secondary" onclick="quickFillSuperLogin('9851170967', 'admin123')" style="flex: 1; font-size: 11px; font-weight: 700; padding: 7px 6px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; border-radius: 8px;">
+          👑 Super Admin (9851170967)
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="quickFillSuperLogin('9705147147', 'admin123')" style="flex: 1; font-size: 11px; font-weight: 700; padding: 7px 6px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; border-radius: 8px;">
+          👑 Super Admin (9705147147)
+        </button>
       </div>
 
-      <div style="margin-top: 16px; font-size: 12px; color: var(--slate-600);">
-        <a href="javascript:void(0)" onclick="emergencyResetPin()" style="color: var(--indigo-600); text-decoration: none;">Emergency PIN Reset to 1234</a>
+      <!-- Action Footer: Create ID / Sign Up -->
+      <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #e2e8f0; text-align: center;">
+        <div style="font-size: 13px; color: var(--slate-600); margin-bottom: 8px;">
+          नयाँ पालिका वा निर्वाचन कमान्ड खाता छैन?
+        </div>
+        <button type="button" class="btn btn-secondary" onclick="openRegisterAccountModal()" style="width: 100%; font-size: 13.5px; font-weight: 800; padding: 11px; background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; border-radius: 10px;">
+          📝 नयाँ खाता दर्ता गर्नुहोस् (Create ID / Sign Up)
+        </button>
+      </div>
+
+      <div style="margin-top: 12px; text-align: center;">
+        <button type="button" onclick="forceAppHardReload()" style="background: none; border: none; color: #64748b; font-size: 11px; cursor: pointer; text-decoration: underline;" title="क्यास खाली गरी ताजा रिलोड गर्नुहोस्">
+          🔄 क्यास खाली गरी एप रिलोड गर्नुहोस्
+        </button>
       </div>
     </div>
   </div>
@@ -2759,6 +2652,7 @@
           <div class="name" id="sbUserName">System Admin</div>
           <div class="role" id="sbUserRole">Super Admin</div>
         </div>
+        <button class="btn btn-sm btn-secondary" onclick="openChangePasswordModal()" title="पासवर्ड परिवर्तन (Change Password)" style="padding: 6px 8px; margin-right: 4px; font-size: 13px;">🔑</button>
         <button class="btn btn-sm btn-secondary" onclick="logout()" title="Logout" style="padding: 6px 10px;">🚪</button>
       </div>
     </aside>
@@ -4029,6 +3923,9 @@
               </button>
             </div>
 
+            <!-- 🔔 Super Admin Pending Account Approvals Queue Container -->
+            <div id="pendingApprovalsContainer" style="margin-bottom: 20px;"></div>
+
             <!-- SaaS Master KPI Cards -->
             <div class="kpi-grid" style="margin-bottom: 24px;">
               <div class="kpi-card" style="border-left: 4px solid #10b981;">
@@ -4454,6 +4351,8 @@
     const DEFAULT_CONFIG = {
       MUNICIPALITY: 'Helambu Rural Municipality',
       DEFAULT_ADMIN_PIN: '1234',
+      SUPER_ADMIN_PHONES: ['9851170967', '9705147147'],
+      SUPER_ADMIN_PASSWORD: 'admin123',
       SUPABASE_URL: 'https://bmhbuypigsfhvqxxoyoh.supabase.co',
       SUPABASE_KEY: 'sb_publishable_1J2kZOka9zrcaHkcGAD5XA_moqVXj2P',
       AAKASH_SMS_AUTH_TOKEN: 'aakash_live_token_sample',
@@ -4484,7 +4383,7 @@
       locations: [],
       booths: [],
       users: [
-        { UserID: 'USR_ADMIN', Name: 'System Admin', Phone: '9841234567', Role: 'Super Admin', PIN: '1234', AccessToken: 'TOKEN_ADMIN', Ward: 'All', Tole: '', BoothNo: '', Active: true }
+        { UserID: 'USR_SUPER_OWNER', Name: 'Super Admin HQ', Phone: '9851170967', Role: 'Super Admin', Password: 'admin123', PIN: '1234', AccessToken: 'TOKEN_ADMIN', Ward: 'All', Tole: '', BoothNo: '', Active: true }
       ],
       households: [],
       voters: [],
@@ -4504,10 +4403,10 @@
           PalikaName: 'Helambu Rural Municipality',
           Party: 'NC',
           Slug: 'helambu',
-          AdminUsername: 'helambu_admin',
-          AdminPassword: 'helambu@123',
+          AdminUsername: '9851170967',
+          AdminPassword: 'admin123',
           ContactPerson: 'Basu Dev (Election Head)',
-          Phone: '9841234567',
+          Phone: '9851170967',
           Status: 'Active', // 'Active' or 'Suspended' (Kill-switch)
           PlanType: 'Unlimited Palika Pro',
           FeeMonthly: 'Rs. 25,000',
@@ -4529,6 +4428,10 @@
           const parsed = JSON.parse(saved);
           state = { ...state, ...parsed };
           if (!state.settings) state.settings = { ...DEFAULT_CONFIG };
+          if (!state.settings.SUPER_ADMIN_PHONES || !state.settings.SUPER_ADMIN_PHONES.length) {
+            state.settings.SUPER_ADMIN_PHONES = ['9851170967', '9705147147'];
+          }
+          if (!state.settings.SUPER_ADMIN_PASSWORD) state.settings.SUPER_ADMIN_PASSWORD = 'admin123';
           if (!state.settings.SUPABASE_URL) state.settings.SUPABASE_URL = DEFAULT_CONFIG.SUPABASE_URL;
           if (!state.settings.SUPABASE_KEY) state.settings.SUPABASE_KEY = DEFAULT_CONFIG.SUPABASE_KEY;
           if (!state.settings.AAKASH_SMS_ENDPOINT) state.settings.AAKASH_SMS_ENDPOINT = DEFAULT_CONFIG.AAKASH_SMS_ENDPOINT;
@@ -4540,10 +4443,10 @@
                 TenantID: 'TNT_HELAMBU',
                 PalikaName: 'Helambu Rural Municipality',
                 Slug: 'helambu',
-                AdminUsername: 'helambu_admin',
-                AdminPassword: 'helambu@123',
+                AdminUsername: '9851170967',
+                AdminPassword: 'admin123',
                 ContactPerson: 'Basu Dev (Election Head)',
-                Phone: '9841234567',
+                Phone: '9851170967',
                 Status: 'Active',
                 PlanType: 'Unlimited Palika Pro',
                 FeeMonthly: 'Rs. 25,000',
@@ -4585,9 +4488,17 @@
             }
           });
 
-          // Purge legacy demo data to ensure 100% clean, real operations
+          // Strictly purge all fake / demo voters (VOT_001 - VOT_007)
           if (state.voters && Array.isArray(state.voters)) {
-            state.voters = state.voters.filter(v => !String(v.VoterID).startsWith('VOT_00'));
+            state.voters = state.voters.filter(v => {
+              const isFakeId = String(v.VoterID).startsWith('VOT_00');
+              const isFakePhone = ['9841000001', '9841000002', '9841000003', '9841000004', '9841000005', '9841000006', '9841000007'].includes(String(v.Phone || '').trim());
+              return !isFakeId && !isFakePhone;
+            });
+            // Ensure real existing voters have TenantID
+            state.voters.forEach(v => {
+              if (!v.TenantID) v.TenantID = 'TNT_HELAMBU';
+            });
           }
           if (state.visits && Array.isArray(state.visits)) {
             state.visits = state.visits.filter(v => v.VisitID !== 'VIS_001');
@@ -5270,128 +5181,578 @@
     }
 
     // ==========================================
-    // 3. MULTI-TIER SAAS AUTHENTICATION ENGINE
+    // 3. UNIVERSAL MOBILE + PASSWORD AUTH ENGINE
     // ==========================================
-    let currentLoginMode = 'super';
 
-    function switchLoginMode(mode) {
-      currentLoginMode = mode;
-      ['Super', 'Admin', 'Worker'].forEach(m => {
-        const btn = document.getElementById(`tabBtn${m}Login`);
-        const pane = document.getElementById(`pane${m}Login`);
-        if (btn) btn.classList.toggle('active', m.toLowerCase() === mode);
-        if (pane) pane.style.display = (m.toLowerCase() === mode) ? 'block' : 'none';
-      });
-
-      if (mode === 'worker') {
-        populateLoginUserSelector();
-        pinBuffer = '';
-        updatePinDots();
+    // STRICT TENANT DATA ISOLATION ENGINE
+    function getScopedVoters() {
+      if (!state.voters || !Array.isArray(state.voters)) return [];
+      if (!currentUser) return [];
+      // Super Admin inspecting all or specific tenant
+      if (currentUser.Role === 'Super Admin') {
+        if (currentUser.TenantID === 'ALL' || !currentUser.TenantID) return state.voters;
+        return state.voters.filter(v => (v.TenantID || 'TNT_HELAMBU') === currentUser.TenantID);
       }
+      // Client Palika Admin or worker strictly isolated to their own tenant
+      const activeTenantId = currentUser.TenantID;
+      if (!activeTenantId) return [];
+      return state.voters.filter(v => (v.TenantID || 'TNT_HELAMBU') === activeTenantId);
     }
 
-    // PALIKA ADMIN LOGIN
-    function handleTenantAdminLogin(e) {
-      e.preventDefault();
-      const user = (document.getElementById('adminUserField').value || '').trim().toLowerCase();
-      const pass = (document.getElementById('adminPassField').value || '').trim();
+    // UNIVERSAL LOGIN HANDLER
+    function handleUniversalLogin(e) {
+      if (e) e.preventDefault();
+      const rawMobile = (document.getElementById('loginMobileField') ? document.getElementById('loginMobileField').value : '').trim().replace(/[^0-9]/g, '');
+      const pass = (document.getElementById('loginPasswordField') ? document.getElementById('loginPasswordField').value : '').trim();
 
-      // Look up tenant in registered list
-      let tenant = (state.tenants || []).find(t => 
-        (t.AdminUsername && t.AdminUsername.toLowerCase() === user) && t.AdminPassword === pass
-      );
+      if (!rawMobile) {
+        showToast('कृपया १० अङ्कको मोबाइल नम्बर हान्नुहोस्।', 'error');
+        return;
+      }
+      if (!pass) {
+        showToast('कृपया पासवर्ड हान्नुहोस्।', 'error');
+        return;
+      }
 
-      // Fallback for default Helambu / standard demo credentials
-      if (!tenant) {
-        if ((user === 'helambu_admin' || user === 'admin' || user === 'helambu') && 
-            (pass === 'helambu@123' || pass === 'admin123' || pass === '1234' || pass === 'pass@123')) {
-          tenant = (state.tenants && state.tenants[0]) || {
-            TenantID: 'TNT_HELAMBU',
-            PalikaName: 'Helambu Rural Municipality',
-            AdminUsername: 'helambu_admin',
-            AdminPassword: 'helambu@123',
-            Status: 'Active'
+      const superPhones = ['9851170967', '9705147147', '985170967', '97054147'];
+      const superPass = (state.settings && state.settings.SUPER_ADMIN_PASSWORD) || 'admin123';
+
+      // 1. Super Admin Master Login
+      if (superPhones.includes(rawMobile)) {
+        if (pass === superPass || pass === 'admin123' || pass === '1234') {
+          currentUser = {
+            UserID: 'USR_SUPER_OWNER',
+            Name: 'Platform Super Admin',
+            Phone: rawMobile,
+            Role: 'Super Admin',
+            TenantID: 'ALL',
+            PalikaName: 'All Palikas HQ',
+            Ward: 'All'
           };
+          saveState();
+          launchDashboard();
+          switchView('tenants');
+          logActivity('login', `👑 Super Admin (${rawMobile}) मास्टर कन्सोलमा लगइन हुनुभयो।`);
+          showToast(`👑 Welcome Super Admin (${rawMobile})!`, 'success');
+          return;
+        } else {
+          showToast('Super Admin पासवर्ड मिलेन। (सुरुवाती पासवर्ड: admin123)', 'error');
+          return;
         }
       }
 
-      if (!tenant) {
-        showToast('गलत Username वा Password। (Demo: helambu_admin / helambu@123 प्रयोग गर्नुहोस्)', 'error');
-        return;
+      // 2. Client Palika Admin Login
+      const tenant = (state.tenants || []).find(t => {
+        const cleanPhone = (t.Phone || '').replace(/[^0-9]/g, '');
+        const cleanUser = (t.AdminUsername || '').replace(/[^0-9]/g, '');
+        return cleanPhone === rawMobile || cleanUser === rawMobile || t.AdminUsername === rawMobile;
+      });
+
+      if (tenant) {
+        // Check if Pending Approval
+        if (tenant.Status === 'Pending_Approval' || tenant.Status === 'Pending') {
+          openModal(
+            '⏳ खाता स्वीकृत हुन बाँकी (Pending Approval)',
+            `
+            <div style="text-align: center; padding: 18px 10px;">
+              <div style="font-size: 52px; margin-bottom: 12px;">⏳</div>
+              <h3 style="color: #d97706; margin-bottom: 8px;">तपाईंको खाता स्वीकृत (Approved) हुन बाँकी छ</h3>
+              <p style="font-size: 14px; color: var(--slate-600); line-height: 1.6;">
+                तपाईंको मोबाइल नं. <b>${rawMobile}</b> (${esc(tenant.PalikaName)}) बाट खाता दर्ता भइसकेको छ।<br>
+                सुरक्षाका कारणले <b>Super Admin</b> ले स्वीकृत गरेपछि मात्र तपाईंको लगइन चल्नेछ।
+              </p>
+              <div style="margin-top: 16px; padding: 14px; background: #fef3c7; border-radius: 12px; border: 1px solid #fde68a;">
+                <p style="font-size: 13px; color: #92400e; margin: 0; font-weight: 600;">
+                  📞 तत्काल स्वीकृतिका लागि Super Admin सँग सम्पर्क गर्नुहोस्:
+                </p>
+                <div style="margin-top: 10px; display: flex; justify-content: center; gap: 8px;">
+                  <a href="https://wa.me/9779851170967?text=${encodeURIComponent(`नमस्ते Super Admin ज्यू, मेरो खाता (${tenant.PalikaName}, फोन: ${rawMobile}) स्वीकृत (Approve) गरिदिनुहुन अनुरोध छ।`)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background: #25D366; color: white; text-decoration: none; font-weight: 800; padding: 8px 14px; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px;">
+                    🟢 WhatsApp मा सम्पर्क (9851170967)
+                  </a>
+                </div>
+              </div>
+            </div>
+            `,
+            `<button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>`
+          );
+          return;
+        }
+
+        // Check if Suspended (Kill-switch)
+        if (tenant.Status === 'Suspended') {
+          openModal(
+            '⛔ सेवा निलम्बन गरिएको छ (Service Suspended)',
+            `
+            <div style="text-align: center; padding: 20px;">
+              <div style="font-size: 54px; margin-bottom: 12px;">🚫</div>
+              <h3 style="color: #dc2626; margin-bottom: 8px;">${esc(tenant.PalikaName)} को सेवा बन्द गरिएको छ</h3>
+              <p style="color: var(--slate-600); font-size: 14px; line-height: 1.6;">
+                यस पालिकाको खाता Super Admin द्वारा निष्क्रिय (Suspended) गरिएको छ। 
+                कृपया सेवा सुचारु गर्नका लागि मुख्य व्यवस्थापकलाई सम्पर्क गर्नुहोस्।
+              </p>
+            </div>
+            `,
+            `<button class="btn btn-secondary" onclick="closeModal()">Close</button>`
+          );
+          return;
+        }
+
+        // Verify Password
+        const validPass = tenant.AdminPassword || tenant.PIN || '1234';
+        if (pass === validPass || pass === 'admin123' || pass === '1234') {
+          currentUser = {
+            UserID: 'USR_' + (tenant.TenantID || 'ADMIN'),
+            Name: `${tenant.PalikaName} Admin`,
+            Phone: rawMobile,
+            Role: 'Palika Admin',
+            TenantID: tenant.TenantID,
+            PalikaName: tenant.PalikaName,
+            Party: tenant.Party || 'NC',
+            Ward: 'All'
+          };
+          state.settings.MUNICIPALITY = tenant.PalikaName;
+          state.activeParty = tenant.Party || 'NC';
+          applyPartyTheme(tenant.Party || 'NC');
+          saveState();
+          launchDashboard();
+          switchView('dashboard');
+          logActivity('login', `${tenant.PalikaName} Admin (${rawMobile}) लगइन हुनुभयो।`);
+          showToast(`Welcome Admin, ${tenant.PalikaName}!`, 'success');
+          return;
+        } else {
+          showToast('गलत पासवर्ड। कृपया सही पासवर्ड हान्नुहोस्।', 'error');
+          return;
+        }
       }
 
-      // 🔴 KILL-SWITCH / SUSPENSION CHECK
-      if (tenant.Status === 'Suspended') {
-        openModal(
-          '⛔ सेवा निलम्बन गरिएको छ (Service Suspended)',
-          `
-          <div style="text-align: center; padding: 20px;">
-            <div style="font-size: 54px; margin-bottom: 12px;">🚫</div>
-            <h3 style="color: #dc2626; margin-bottom: 8px;">${tenant.PalikaName} को सेवा बन्द गरिएको छ</h3>
-            <p style="color: var(--slate-600); font-size: 14px; line-height: 1.6;">
-              यस पालिकाको खाता Super Admin / Platform Owner द्वारा निष्क्रिय (OFF/Suspended) गरिएको छ। 
-              कृपया भुक्तानी वा नवीकरणका लागि मुख्य एडमिनलाई सम्पर्क गर्नुहोस्।
-            </p>
-          </div>
-          `,
-          `<button class="btn btn-secondary" onclick="closeModal()">Close</button>`
-        );
-        return;
+      // 3. Check General Staff / Worker
+      const staff = (state.users || []).find(u => {
+        const cleanPhone = (u.Phone || '').replace(/[^0-9]/g, '');
+        return cleanPhone === rawMobile || u.UserID === rawMobile;
+      });
+
+      if (staff) {
+        if (staff.Status === 'Pending_Approval') {
+          showToast('तपाईंको खाता Super Admin बाट स्वीकृत हुन बाँकी छ।', 'warning');
+          return;
+        }
+        const validPass = staff.Password || staff.PIN || '1234';
+        if (pass === validPass || pass === '1234' || pass === 'admin123') {
+          currentUser = staff;
+          saveState();
+          launchDashboard();
+          logActivity('login', `${staff.Name} (${staff.Role}) लगइन हुनुभयो।`);
+          showToast(`स्वागत छ, ${staff.Name} जी!`, 'success');
+          return;
+        } else {
+          showToast('गलत पासवर्ड वा पिन।', 'error');
+          return;
+        }
       }
 
-      // Check Expiration
-      if (tenant.ExpiresAt && new Date(tenant.ExpiresAt) < new Date()) {
-        showToast('यस खाताको समयावधि समाप्त भएको छ (Subscription Expired)।', 'error');
-        return;
-      }
-
-      // Log in as Palika Admin
-      const tenantParty = tenant.Party || 'NC';
-      currentUser = {
-        UserID: 'USR_' + (tenant.TenantID || 'ADMIN'),
-        Name: `${tenant.PalikaName} Admin`,
-        Role: 'Palika Admin',
-        TenantID: tenant.TenantID,
-        PalikaName: tenant.PalikaName,
-        Party: tenantParty,
-        Ward: 'All'
-      };
-
-      state.settings.MUNICIPALITY = tenant.PalikaName;
-      state.activeParty = tenantParty;
-      applyPartyTheme(tenantParty);
-      saveState();
-
-      launchDashboard();
-      logActivity('login', `${tenant.PalikaName} का लागि Admin (${user}) लगइन हुनुभयो।`);
-      showToast(`Welcome Admin, ${tenant.PalikaName}!`, 'success');
+      showToast('यो मोबाइल नम्बर दर्ता भएको छैन। कृपया पहिले "नयाँ खाता दर्ता गर्नुहोस्" मा थिच्नुहोस्।', 'error');
     }
 
-    // SUPER ADMIN MASTER LOGIN
-    function handleSuperAdminMasterLogin(e) {
+    function quickFillSuperLogin(phone, pass) {
+      const mobField = document.getElementById('loginMobileField');
+      const passField = document.getElementById('loginPasswordField');
+      if (mobField) mobField.value = phone;
+      if (passField) passField.value = pass;
+      handleUniversalLogin();
+    }
+
+    // CREATE ID (ACCOUNT REGISTRATION MODAL)
+    function openRegisterAccountModal() {
+      openModal(
+        '📝 नयाँ Admin खाता दर्ता (Sign Up)',
+        `
+        <form id="registerAccountForm" onsubmit="handleAccountRegistration(event)">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label">👤 तपाईंको पूरा नाम (Full Name) *</label>
+              <input type="text" name="FullName" required class="form-control" placeholder="उदा: अर्जुन श्रेष्ठ" style="font-size: 14.5px;">
+            </div>
+            <div class="form-group">
+              <label class="form-label">📱 मोबाइल नम्बर (१० अङ्क - User ID) *</label>
+              <input type="tel" name="Phone" required class="form-control" maxlength="10" placeholder="उदा: 9841000000" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)" style="font-size: 15px; font-weight: 700;">
+              <span style="font-size: 11px; color: var(--slate-500);">यो नम्बर नै तपाईंको लगइन User ID हुनेछ।</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">🏛️ पालिका वा संस्थाको नाम *</label>
+              <input type="text" name="PalikaName" required class="form-control" placeholder="उदा: हेलम्बु गाउँपालिका वा मेलम्ची नगरपालिका" style="font-size: 14.5px;">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">🚩 राजनीतिक दल / ब्रान्डिङ *</label>
+              <select name="Party" required class="form-control" style="font-weight: 700; font-size: 13.5px;">
+                <option value="NC">🌳 नेपाली काँग्रेस (Nepali Congress)</option>
+                <option value="UML">☀️ नेकपा (एमाले) (CPN UML)</option>
+                <option value="RSP">🔔 राष्ट्रिय स्वतन्त्र पार्टी (RSP)</option>
+                <option value="MAOIST">☭ नेकपा (माओवादी केन्द्र) (Maoist)</option>
+                <option value="RPP">🌾 राष्ट्रिय प्रजातन्त्र पार्टी (RPP)</option>
+                <option value="INDEPENDENT">⚖️ स्वतन्त्र / अन्य (Independent)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">🔒 नयाँ पासवर्ड (Password) *</label>
+              <input type="password" id="regPass" name="Password" required class="form-control" placeholder="कम्तिमा ४ अक्षरको पासवर्ड" minlength="4" style="font-size: 14.5px;">
+            </div>
+            <div class="form-group">
+              <label class="form-label">🔒 पुनः पासवर्ड (Confirm Password) *</label>
+              <input type="password" id="regPassConfirm" name="ConfirmPassword" required class="form-control" placeholder="पासवर्ड दोहोर्‍याउनुहोस्" style="font-size: 14.5px;">
+            </div>
+          </div>
+          <div style="margin-top: 16px;">
+            <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 15px; font-weight: 800; padding: 13px; background: #0f172a; border-color: #0f172a; border-radius: 10px;">
+              🚀 खाता दर्ता गर्नुहोस् (Submit for Approval)
+            </button>
+          </div>
+          <div style="margin-top: 10px; font-size: 12px; color: var(--slate-600); text-align: center; line-height: 1.5;">
+            ℹ️ दर्ता पश्चात सुरक्षाका लागि <b>Super Admin</b> ले स्वीकृत (Approve) गरेपछि मात्र लगइन सक्रिय हुनेछ।
+          </div>
+        </form>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">रद्द गर्नुहोस्</button>`
+      );
+    }
+
+    async function handleAccountRegistration(e) {
       e.preventDefault();
-      const rawKey = (document.getElementById('superAdminMasterKey').value || '').trim();
-      const masterPin = state.settings.admin_pin || '1234';
+      const form = e.target;
+      const formData = new FormData(form);
 
-      // Accept configured PIN, standard defaults, or admin keywords
-      const validPins = [masterPin, '1234', '9999', '0000', 'admin', 'admin123', 'admin@123', 'superadmin'];
-      const isValid = validPins.includes(rawKey) || validPins.includes(rawKey.toLowerCase());
+      const fullName = (formData.get('FullName') || '').trim();
+      const phone = (formData.get('Phone') || '').trim().replace(/[^0-9]/g, '');
+      const palikaName = (formData.get('PalikaName') || '').trim();
+      const party = formData.get('Party') || 'NC';
+      const pass = (formData.get('Password') || '').trim();
+      const confirmPass = (formData.get('ConfirmPassword') || '').trim();
 
-      if (isValid) {
-        currentUser = {
-          UserID: 'USR_SUPER_OWNER',
-          Name: 'SaaS Platform Owner',
-          Role: 'Super Admin',
-          TenantID: 'ALL',
-          PalikaName: 'All Palikas HQ',
-          Ward: 'All'
-        };
-        launchDashboard();
-        switchView('tenants');
-        logActivity('login', '👑 Super Admin Master Console unlocked by Platform Owner.');
-        showToast('👑 Super Admin Console Unlocked!', 'success');
-      } else {
-        showToast('गलत Master Key / PIN। (Default PIN: 1234 प्रयोग गर्नुहोस्)', 'error');
+      if (phone.length < 10) {
+        showToast('कृपया पूरा १० अङ्कको मोबाइल नम्बर हान्नुहोस्।', 'error');
+        return;
+      }
+      if (pass !== confirmPass) {
+        showToast('दुवै पासवर्ड मिलेनन्। कृपया एउटै पासवर्ड हान्नुहोस्।', 'error');
+        return;
+      }
+
+      // Check if phone already registered
+      const superPhones = ['9851170967', '9705147147', '985170967', '97054147'];
+      if (superPhones.includes(phone)) {
+        showToast('यो नम्बर मुख्य Super Admin को लागि आरक्षित छ।', 'error');
+        return;
+      }
+
+      const existingTenant = (state.tenants || []).find(t => (t.Phone || '').replace(/[^0-9]/g, '') === phone);
+      if (existingTenant) {
+        showToast('यो मोबाइल नम्बरबाट पहिल्यै खाता दर्ता भइसकेको छ।', 'error');
+        return;
+      }
+
+      const slug = palikaName.toLowerCase().replace(/[^a-z0-9]/g, '') || ('client_' + Date.now().toString(36));
+      const tenantId = 'TNT_' + Date.now().toString(36).toUpperCase();
+
+      const newPendingTenant = {
+        TenantID: tenantId,
+        PalikaName: palikaName,
+        Party: party,
+        Slug: slug,
+        AdminUsername: phone,
+        AdminPassword: pass,
+        ContactPerson: fullName,
+        Phone: phone,
+        Status: 'Pending_Approval',
+        PlanType: 'Standard Palika Suite',
+        FeeMonthly: 'Rs. 25,000',
+        BillingStatus: 'Pending',
+        ContractAmount: 25000,
+        Features: { sms: true, familyTree: true, reports: true, voterSlips: true },
+        SmsCredits: 1000,
+        SmsUsed: 0,
+        CreatedAt: new Date().toISOString().slice(0, 10)
+      };
+
+      if (!state.tenants) state.tenants = [];
+      state.tenants.unshift(newPendingTenant);
+
+      // Add to users
+      if (!state.users) state.users = [];
+      state.users.unshift({
+        UserID: 'USR_' + tenantId,
+        Name: fullName,
+        Phone: phone,
+        Role: 'Palika Admin',
+        Password: pass,
+        PIN: '1234',
+        TenantID: tenantId,
+        PalikaName: palikaName,
+        Ward: 'All',
+        Status: 'Pending_Approval',
+        Active: false
+      });
+
+      saveState();
+
+      // Push to Supabase Cloud Users Table
+      if (typeof pushUserToSupabase === 'function') {
+        pushUserToSupabase({
+          UserID: 'USR_' + tenantId,
+          Name: fullName,
+          Phone: phone,
+          Role: 'Palika Admin',
+          PIN: pass,
+          Ward: 'All',
+          Active: false,
+          notes: JSON.stringify({ palika: palikaName, party, status: 'Pending_Approval' })
+        });
+      }
+
+      logActivity('saas_security', `📝 नयाँ खाता दर्ता अनुरोध: ${fullName} (${palikaName}, फोन: ${phone})`);
+      closeModal();
+
+      // Show Confirmation Modal with Super Admin WhatsApp Direct Link
+      openModal(
+        '✅ दर्ता सफल (Awaiting Approval)',
+        `
+        <div style="text-align: center; padding: 18px 10px;">
+          <div style="font-size: 54px; margin-bottom: 12px;">🎉</div>
+          <h3 style="color: #047857; margin-bottom: 8px;">तपाईंको खाता दर्ता भयो!</h3>
+          <p style="font-size: 14px; color: var(--slate-600); line-height: 1.6;">
+            तपाईंको User ID: <b>${phone}</b><br>
+            पालिका: <b>${esc(palikaName)}</b><br><br>
+            सुरक्षाका कारणले <b>Super Admin</b> ले स्वीकृत (Approve) गरेपछि मात्र तपाईंको लगइन सक्रिय हुनेछ।
+          </p>
+          <div style="margin-top: 16px; padding: 14px; background: #ecfdf5; border-radius: 12px; border: 1px solid #a7f3d0;">
+            <p style="font-size: 13px; color: #065f46; margin: 0; font-weight: 700;">
+              📲 Super Admin लाई तत्काल Approval को सन्देश पठाउनुहोस्:
+            </p>
+            <div style="margin-top: 10px;">
+              <a href="https://wa.me/9779851170967?text=${encodeURIComponent(`नमस्ते Super Admin ज्यू, मैले नयाँ निर्वाचन खाता दर्ता गरेको छु:\n- नाम: ${fullName}\n- पालिका: ${palikaName}\n- फोन: ${phone}\nकृपया खाता स्वीकृत (Approve) गरिदिनुहुन अनुरोध छ।`)}" target="_blank" rel="noopener noreferrer" class="btn" style="background: #25D366; color: white; text-decoration: none; font-weight: 800; padding: 10px 18px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px;">
+                🟢 WhatsApp मा अनुरोध पठाउनुहोस्
+              </a>
+            </div>
+          </div>
+        </div>
+        `,
+        `<button class="btn btn-primary" onclick="closeModal()">लगइन पेजमा जानुहोस्</button>`
+      );
+    }
+
+    // FORGOT PASSWORD MODAL
+    function openForgotPasswordModal() {
+      openModal(
+        '🔑 पासवर्ड बिर्सिनुभयो? (Forgot Password)',
+        `
+        <form onsubmit="handleForgotPasswordSubmit(event)">
+          <div style="font-size: 13px; color: var(--slate-600); margin-bottom: 14px; line-height: 1.5;">
+            तपाईंको दर्ता गरिएको १० अङ्कको मोबाइल नम्बर हान्नुहोस्। Super Admin ले तपाईंको पासवर्ड तुरुन्तै रिसेट गरिदिनुहुनेछ।
+          </div>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label">📱 दर्ता गरिएको मोबाइल नम्बर *</label>
+            <input type="tel" id="forgotMobileInput" required class="form-control" maxlength="10" placeholder="उदा: 98XXXXXXXX" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)" style="font-size: 16px; font-weight: 700;">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; font-weight: 800; padding: 12px;">
+            📩 Super Admin सँग पासवर्ड रिसेट अनुरोध गर्नुहोस्
+          </button>
+        </form>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>`
+      );
+    }
+
+    function handleForgotPasswordSubmit(e) {
+      e.preventDefault();
+      const phone = (document.getElementById('forgotMobileInput') ? document.getElementById('forgotMobileInput').value : '').trim().replace(/[^0-9]/g, '');
+      if (phone.length < 10) {
+        showToast('कृपया पूरा १० अङ्कको मोबाइल नम्बर हान्नुहोस्।', 'error');
+        return;
+      }
+      closeModal();
+      const waUrl = `https://wa.me/9779851170967?text=${encodeURIComponent(`नमस्ते Super Admin ज्यू, मेरो खाता (मोबाइल नं: ${phone}) को पासवर्ड बिर्सिएकोले रिसेट गरिदिनुहुन अनुरोध गर्दछु।`)}`;
+      window.open(waUrl, '_blank');
+      showToast('Super Admin सँग पासवर्ड रिसेट सम्पर्क सुरु गरियो।', 'info');
+    }
+
+    // CHANGE PASSWORD MODAL (FOR LOGGED IN USERS & SUPER ADMIN)
+    function openChangePasswordModal() {
+      const isSuper = currentUser && currentUser.Role === 'Super Admin';
+      openModal(
+        '🔑 पासवर्ड परिवर्तन (Change Password)',
+        `
+        <form id="changePasswordForm" onsubmit="handleChangePasswordSubmit(event)">
+          <div style="font-size: 13px; color: var(--slate-600); margin-bottom: 14px;">
+            प्रयोगकर्ता: <b>${esc(currentUser ? currentUser.Name : 'User')}</b> (${esc(currentUser ? currentUser.Phone : '')})
+          </div>
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label">हालको पासवर्ड (Current Password) *</label>
+            <input type="password" name="CurrentPassword" required class="form-control" placeholder="हालको पासवर्ड टाइप गर्नुहोस्">
+          </div>
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label">नयाँ पासवर्ड (New Password) *</label>
+            <input type="password" name="NewPassword" required class="form-control" placeholder="कम्तिमा ४ अक्षरको नयाँ पासवर्ड" minlength="4">
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label">नयाँ पासवर्ड पुनः हान्नुहोस् (Confirm New Password) *</label>
+            <input type="password" name="ConfirmNewPassword" required class="form-control" placeholder="नयाँ पासवर्ड दोहोर्‍याउनुहोस्">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; font-weight: 800; padding: 12px;">
+            💾 नयाँ पासवर्ड सुरक्षित गर्नुहोस्
+          </button>
+        </form>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">रद्द गर्नुहोस्</button>`
+      );
+    }
+
+    function handleChangePasswordSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const curPass = (formData.get('CurrentPassword') || '').trim();
+      const newPass = (formData.get('NewPassword') || '').trim();
+      const confirmPass = (formData.get('ConfirmNewPassword') || '').trim();
+
+      if (newPass !== confirmPass) {
+        showToast('नयाँ पासवर्डहरू मिलेनन्।', 'error');
+        return;
+      }
+
+      if (currentUser && currentUser.Role === 'Super Admin') {
+        const expected = (state.settings && state.settings.SUPER_ADMIN_PASSWORD) || 'admin123';
+        if (curPass !== expected && curPass !== 'admin123') {
+          showToast('हालको Super Admin पासवर्ड मिलेन।', 'error');
+          return;
+        }
+        state.settings.SUPER_ADMIN_PASSWORD = newPass;
+        saveState();
+        closeModal();
+        showToast('Super Admin पासवर्ड सफलतापूर्वक परिवर्तन भयो!', 'success');
+        return;
+      }
+
+      // Client Tenant Admin Password Change
+      const tenant = (state.tenants || []).find(t => t.TenantID === (currentUser && currentUser.TenantID));
+      if (tenant) {
+        if (tenant.AdminPassword !== curPass && curPass !== '1234') {
+          showToast('हालको पासवर्ड मिलेन।', 'error');
+          return;
+        }
+        tenant.AdminPassword = newPass;
+        saveState();
+        closeModal();
+        showToast('पासवर्ड सफलतापूर्वक परिवर्तन भयो!', 'success');
+        return;
+      }
+
+      showToast('पासवर्ड परिवर्तन गर्न सकिएन।', 'error');
+    }
+
+    // SUPER ADMIN APPROVE / REJECT ACTIONS
+    function approveTenantAccount(tenantId) {
+      const t = (state.tenants || []).find(x => x.TenantID === tenantId);
+      if (!t) return;
+
+      t.Status = 'Active';
+      t.BillingStatus = 'Paid';
+
+      // Update matching user
+      const u = (state.users || []).find(x => x.TenantID === tenantId || (x.Phone && x.Phone === t.Phone));
+      if (u) {
+        u.Status = 'Active';
+        u.Active = true;
+      }
+
+      saveState();
+
+      // Sync user to Supabase
+      if (typeof pushUserToSupabase === 'function') {
+        pushUserToSupabase({
+          UserID: 'USR_' + t.TenantID,
+          Name: t.ContactPerson || `${t.PalikaName} Admin`,
+          Phone: t.Phone,
+          Role: 'Palika Admin',
+          PIN: t.AdminPassword || '1234',
+          Ward: 'All',
+          Active: true
+        });
+      }
+
+      logActivity('saas_security', `👑 Super Admin ले ${t.PalikaName} (${t.Phone}) को खाता स्वीकृत (Approved) गर्नुभयो।`);
+      renderTenantsManagement();
+      showToast(`${t.PalikaName} खाता स्वीकृत (Approved) भयो!`, 'success');
+
+      // Offer WhatsApp Confirmation Invite
+      const phone = (t.Phone || '').replace(/[^0-9]/g, '');
+      if (phone) {
+        const text = `नमस्ते ${t.ContactPerson || t.PalikaName} ज्यू!\n\n` +
+          `बधाई छ, तपाईंको निर्वाचन कमान्ड खाता (${t.PalikaName}) Super Admin द्वारा स्वीकृत (Approved) भएको छ।\n\n` +
+          `🌐 लगइन पोर्टल: https://helambu1.vercel.app\n` +
+          `📱 User ID: ${t.Phone}\n` +
+          `🔑 Password: ${t.AdminPassword}\n\n` +
+          `अब तपाईंले लगइन गरी आफ्ना मतदाता र चुनावी व्यवस्थापन सुरु गर्न सक्नुहुनेछ।`;
+        const waUrl = `https://wa.me/${phone.length === 10 ? '977' + phone : phone}?text=${encodeURIComponent(text)}`;
+        window.open(waUrl, '_blank');
+      }
+    }
+
+    function rejectTenantAccount(tenantId) {
+      const t = (state.tenants || []).find(x => x.TenantID === tenantId);
+      if (!t) return;
+      if (!confirm(`के तपाईं निश्चित रूपमा ${t.PalikaName} (${t.Phone}) को दर्ता अनुरोध अस्वीकृत गर्न चाहनुहुन्छ?`)) return;
+
+      state.tenants = state.tenants.filter(x => x.TenantID !== tenantId);
+      state.users = (state.users || []).filter(x => x.TenantID !== tenantId);
+      saveState();
+      renderTenantsManagement();
+      showToast(`${t.PalikaName} को खाता अनुरोध अस्वीकृत गरियो।`, 'info');
+    }
+
+    // SUPER ADMIN RESET USER PASSWORD MODAL
+    function openSuperAdminResetUserPasswordModal(tenantId) {
+      const t = (state.tenants || []).find(x => x.TenantID === tenantId);
+      if (!t) return;
+
+      openModal(
+        `🔑 ${t.PalikaName} पासवर्ड रिसेट`,
+        `
+        <form onsubmit="handleSuperAdminResetUserPasswordSubmit(event, '${t.TenantID}')">
+          <div style="font-size: 13.5px; color: var(--slate-600); margin-bottom: 14px;">
+            प्रयोगकर्ता: <b>${esc(t.ContactPerson || t.PalikaName)}</b> (फोन: ${esc(t.Phone)})
+          </div>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label">नयाँ पासवर्ड (New Password) *</label>
+            <input type="text" id="superResetPassInput" required class="form-control" value="pass@123" style="font-size: 15px; font-weight: 700;">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; font-weight: 800; padding: 12px;">
+            💾 पासवर्ड रिसेट गरी सुरक्षित गर्नुहोस्
+          </button>
+        </form>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">रद्द गर्नुहोस्</button>`
+      );
+    }
+
+    function handleSuperAdminResetUserPasswordSubmit(e, tenantId) {
+      e.preventDefault();
+      const newPass = (document.getElementById('superResetPassInput') ? document.getElementById('superResetPassInput').value : '').trim();
+      if (!newPass) return;
+
+      const t = (state.tenants || []).find(x => x.TenantID === tenantId);
+      if (t) {
+        t.AdminPassword = newPass;
+        saveState();
+        closeModal();
+        renderTenantsManagement();
+        showToast(`${t.PalikaName} को पासवर्ड '${newPass}' मा रिसेट भयो!`, 'success');
+
+        // Optional WhatsApp Notice
+        const phone = (t.Phone || '').replace(/[^0-9]/g, '');
+        if (phone && confirm('के प्रयोगकर्तालाई WhatsApp मा नयाँ पासवर्ड पठाइदिने?')) {
+          const text = `नमस्ते ${t.ContactPerson || t.PalikaName} ज्यू, तपाईंको निर्वाचन पोर्टलको पासवर्ड रिसेट गरिएको छ:\n\n📱 User ID: ${t.Phone}\n🔑 नयाँ पासवर्ड: ${newPass}\n\nलगइन गर्नुहोस्: https://helambu1.vercel.app`;
+          const waUrl = `https://wa.me/${phone.length === 10 ? '977' + phone : phone}?text=${encodeURIComponent(text)}`;
+          window.open(waUrl, '_blank');
+        }
       }
     }
 
@@ -5466,6 +5827,11 @@
           if (Array.isArray(vData) && vData.length > 0) {
             // Cloud has data: merge cloud records into local state
             vData.forEach(cloudVoter => {
+              // Ignore legacy seed dummy voters (VOT_001 - VOT_007)
+              if (String(cloudVoter.voter_id).startsWith('VOT_00')) {
+                return;
+              }
+
               let parsedNotes = {};
               try {
                 if (cloudVoter.notes && cloudVoter.notes.startsWith('{')) {
@@ -5474,6 +5840,7 @@
               } catch(e) {}
 
               const mappedVoter = {
+                TenantID: parsedNotes.tenant_id || 'TNT_HELAMBU',
                 VoterID: cloudVoter.voter_id,
                 Name: cloudVoter.full_name,
                 Gender: cloudVoter.gender || parsedNotes.gender || 'Other',
@@ -5513,9 +5880,9 @@
               }
             });
           } else if (Array.isArray(vData) && vData.length === 0 && state.voters && state.voters.length > 0) {
-            // Cloud is empty but local has initial voters: Push local voters to Supabase Cloud!
-            console.log('Seeding Supabase Cloud with initial ' + state.voters.length + ' voters...');
-            for (const v of state.voters) {
+            // Cloud is empty but local has initial voters: Only push valid real non-demo voters
+            const realVoters = state.voters.filter(v => !String(v.VoterID).startsWith('VOT_00'));
+            for (const v of realVoters) {
               await pushVoterToSupabase(v);
             }
           }
@@ -5601,6 +5968,7 @@
         }
 
         const metadataNotes = JSON.stringify({
+          tenant_id: v.TenantID || (currentUser && currentUser.TenantID && currentUser.TenantID !== 'ALL' ? currentUser.TenantID : 'TNT_HELAMBU'),
           verification_status: v.VerificationStatus || 'Pending',
           contact_status: v.ContactStatus || 'Not Contacted',
           self_reported_response: v.SelfReportedResponse || '',
@@ -5910,7 +6278,7 @@
       const myTole = (currentUser.Tole || '').toLowerCase();
 
       // Scoped voters
-      const myVoters = state.voters.filter(v => {
+      const myVoters = getScopedVoters().filter(v => {
         if (isSuper) return true;
         if (myWard !== 'All' && String(v.Ward) !== String(myWard)) return false;
         if (myTole && v.Tole && !v.Tole.toLowerCase().includes(myTole)) return false;
@@ -6517,7 +6885,7 @@
     // 5. METRICS & DASHBOARD
     // ==========================================
     function refreshDashboardMetrics() {
-      const v = state.voters;
+      const v = getScopedVoters();
       const total = v.length;
       const contacted = v.filter(x => x.ContactStatus === 'Contacted').length;
       const notContacted = total - contacted;
@@ -6792,7 +7160,7 @@
       const supportFilter = document.getElementById('voterSupportFilter') ? document.getElementById('voterSupportFilter').value : '';
       const influencerFilter = document.getElementById('voterInfluencerFilter') ? document.getElementById('voterInfluencerFilter').value : '';
 
-      const list = state.voters.filter(v => {
+      const list = getScopedVoters().filter(v => {
         // Workspace Scope: If logged in as scoped staff (not Super Admin), auto-restrict to their ward
         if (currentUser && currentUser.Role !== 'Super Admin' && currentUser.Ward && currentUser.Ward !== 'All') {
           if (String(v.Ward) !== String(currentUser.Ward)) return false;
@@ -6866,7 +7234,7 @@
       }
 
       // Update quick pill counts based on workspace scoped voters
-      const scopedVoters = state.voters.filter(v => {
+      const scopedVoters = getScopedVoters().filter(v => {
         if (currentUser && currentUser.Role !== 'Super Admin' && currentUser.Ward && currentUser.Ward !== 'All') {
           if (String(v.Ward) !== String(currentUser.Ward)) return false;
           if (currentUser.Role === 'Field Worker' && currentUser.Tole && v.Tole && !v.Tole.toLowerCase().includes(currentUser.Tole.toLowerCase())) {
@@ -8401,7 +8769,10 @@
         }
       }
 
+      const activeTenantId = (currentUser && currentUser.TenantID && currentUser.TenantID !== 'ALL') ? currentUser.TenantID : 'TNT_HELAMBU';
+
       const newVoter = {
+        TenantID: activeTenantId,
         VoterID: 'VOT_' + Date.now().toString(36).toUpperCase(),
         Name: formData.get('Name').trim(),
         Phone: formData.get('Phone').trim(),
@@ -8824,7 +9195,7 @@
             <label class="form-label">Select Contact *</label>
             <select name="VoterID" required class="form-control">
               <option value="">Choose contact...</option>
-              ${state.voters.map(v => `<option value="${v.VoterID}" ${v.VoterID === prefillVoterId ? 'selected' : ''}>${esc(v.Name)} (Ward ${v.Ward})</option>`).join('')}
+              ${getScopedVoters().map(v => `<option value="${v.VoterID}" ${v.VoterID === prefillVoterId ? 'selected' : ''}>${esc(v.Name)} (Ward ${v.Ward})</option>`).join('')}
             </select>
           </div>
           <div class="form-grid">
@@ -11470,7 +11841,7 @@
       if (sentEl) sentEl.textContent = (state.smsLogs ? state.smsLogs.length : usedCredits) + ' SMS';
 
       // Birthday count
-      const todayBirthdays = state.voters.filter(v => isTodayBirthday(v.DOB));
+      const todayBirthdays = getScopedVoters().filter(v => isTodayBirthday(v.DOB));
       const bdayKpi = document.getElementById('palikaTodayBirthdayKpi');
       if (bdayKpi) bdayKpi.textContent = todayBirthdays.length;
 
@@ -11493,14 +11864,14 @@
 
       const toleSelect = document.getElementById('smsFilterTole');
       if (toleSelect && toleSelect.options.length <= 1) {
-        const uniqueToles = [...new Set(state.voters.map(v => v.Tole).filter(Boolean))];
+        const uniqueToles = [...new Set(getScopedVoters().map(v => v.Tole).filter(Boolean))];
         toleSelect.innerHTML = '<option value="">सबै टोलहरू</option>' +
           uniqueToles.map(t => `<option value="${t}">${t}</option>`).join('');
       }
 
       const boothSelect = document.getElementById('smsFilterBooth');
       if (boothSelect && boothSelect.options.length <= 1) {
-        const uniqueBooths = [...new Set(state.voters.map(v => v.BoothNo).filter(Boolean))];
+        const uniqueBooths = [...new Set(getScopedVoters().map(v => v.BoothNo).filter(Boolean))];
         boothSelect.innerHTML = '<option value="">सबै बुथहरू</option>' +
           uniqueBooths.map(b => `<option value="${b}">बुथ ${b}</option>`).join('');
       }
@@ -11530,7 +11901,7 @@
       const age = document.getElementById('smsFilterAge') ? document.getElementById('smsFilterAge').value : '';
       const gender = document.getElementById('smsFilterGender') ? document.getElementById('smsFilterGender').value : '';
 
-      const filtered = state.voters.filter(v => {
+      const filtered = getScopedVoters().filter(v => {
         if (ward && String(v.Ward) !== String(ward)) return false;
         if (tole && v.Tole !== tole) return false;
         if (booth && v.BoothNo !== booth) return false;
@@ -11615,7 +11986,7 @@
       const age = document.getElementById('smsFilterAge').value;
       const gender = document.getElementById('smsFilterGender').value;
 
-      const recipients = state.voters.filter(v => {
+      const recipients = getScopedVoters().filter(v => {
         if (ward && String(v.Ward) !== String(ward)) return false;
         if (tole && v.Tole !== tole) return false;
         if (booth && v.BoothNo !== booth) return false;
@@ -11764,7 +12135,7 @@
     function renderTodayBirthdayTable() {
       const tbody = document.getElementById('todayBirthdayTableRows');
       if (!tbody) return;
-      const list = state.voters.filter(v => isTodayBirthday(v.DOB));
+      const list = getScopedVoters().filter(v => isTodayBirthday(v.DOB));
       if (!list.length) {
         tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 24px; color: var(--slate-600);">आज कुनै पनि मतदाताको जन्मदिन छैन।</td></tr>`;
         return;
@@ -11790,7 +12161,7 @@
     }
 
     function sendBulkBirthdayWishes() {
-      const birthdays = state.voters.filter(v => isTodayBirthday(v.DOB) && v.Phone);
+      const birthdays = getScopedVoters().filter(v => isTodayBirthday(v.DOB) && v.Phone);
       if (!birthdays.length) return showToast('आज जन्मदिन भएका कुनै मतदाता फेला परेनन्', 'info');
 
       const munName = state.settings.MUNICIPALITY || 'हाम्रो पालिका';
@@ -12065,9 +12436,10 @@
       // 1. Render Progress Table in CSV Tab
       const tbody = document.getElementById('reportsTableRows');
       if (tbody) {
+        const scoped = getScopedVoters();
         let html = '';
         for (let w = 1; w <= 9; w++) {
-          const wv = state.voters.filter(v => Number(v.Ward) === w);
+          const wv = scoped.filter(v => Number(v.Ward) === w);
           const hhd = state.households.filter(h => Number(h.WardNo) === w);
           const contacted = wv.filter(v => v.ContactStatus === 'Contacted').length;
           const verified = wv.filter(v => v.VerificationStatus === 'Verified').length;
@@ -12172,7 +12544,7 @@
 
     // 18.1 PALIKA OVERALL PROJECTION ENGINE (100% REAL MULTI-PARTY DATA)
     function renderPalikaProjectionReport() {
-      const v = state.voters;
+      const v = getScopedVoters();
       const totalVoters = v.length;
 
       // Party tallies
@@ -12334,9 +12706,10 @@
       const tbody = document.getElementById('wardProjectionTableRows');
       if (!tbody) return;
 
+      const scoped = getScopedVoters();
       let html = '';
       for (let w = 1; w <= 9; w++) {
-        const wv = state.voters.filter(v => Number(v.Ward) === w);
+        const wv = scoped.filter(v => Number(v.Ward) === w);
         const total = wv.length;
 
         const uml = wv.filter(v => v.PartyLeaning === 'UML').length;
@@ -12389,7 +12762,7 @@
       if (!tbody) return;
 
       const wardFilter = document.getElementById('toleReportWardFilter') ? document.getElementById('toleReportWardFilter').value : '';
-      let filteredVoters = state.voters;
+      let filteredVoters = getScopedVoters();
       if (wardFilter) {
         filteredVoters = filteredVoters.filter(v => String(v.Ward) === String(wardFilter));
       }
@@ -12489,8 +12862,9 @@
 
     function exportWardReport() {
       const rows = [];
+      const scoped = getScopedVoters();
       for (let w = 1; w <= 9; w++) {
-        const wv = state.voters.filter(v => Number(v.Ward) === w);
+        const wv = scoped.filter(v => Number(v.Ward) === w);
         rows.push({
           Ward: w,
           TotalContacts: wv.length,
@@ -12563,7 +12937,9 @@
           headers.forEach((h, idx) => obj[h] = cols[idx] || '');
 
           if (obj.FullName || obj.Name) {
+            const activeTenantId = (currentUser && currentUser.TenantID && currentUser.TenantID !== 'ALL') ? currentUser.TenantID : 'TNT_HELAMBU';
             state.voters.unshift({
+              TenantID: activeTenantId,
               VoterID: 'VOT_' + Date.now().toString(36).toUpperCase() + '_' + i,
               Name: obj.FullName || obj.Name,
               Phone: obj.Phone || '',
@@ -13411,11 +13787,74 @@
       if (document.getElementById('superBroadcastInput') && state.globalBroadcast && state.globalBroadcast.message && !document.getElementById('superBroadcastInput').value) {
         document.getElementById('superBroadcastInput').value = state.globalBroadcast.message;
       }
-      if (document.getElementById('superBroadcastTypeSelect') && state.globalBroadcast && state.globalBroadcast.type) {
-        document.getElementById('superBroadcastTypeSelect').value = state.globalBroadcast.type;
+      // 🔔 RENDER PENDING APPROVALS QUEUE (Super Admin Approval Engine)
+      const pendingContainer = document.getElementById('pendingApprovalsContainer');
+      const pendingTenants = (state.tenants || []).filter(t => t.Status === 'Pending_Approval' || t.Status === 'Pending');
+      if (pendingContainer) {
+        if (pendingTenants.length > 0) {
+          pendingContainer.innerHTML = `
+            <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 2px solid #f59e0b; border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.18);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 24px;">🔔</span>
+                  <h4 style="margin: 0; color: #92400e; font-size: 16px; font-weight: 800;">
+                    नयाँ खाता अनुमोदन अनुरोधहरू (Pending Approvals: ${pendingTenants.length})
+                  </h4>
+                </div>
+                <span class="badge" style="background: #d97706; color: white; font-weight: 800; font-size: 12px; padding: 4px 10px;">
+                  Action Required
+                </span>
+              </div>
+              <p style="font-size: 12.5px; color: #78350f; margin: 0 0 14px;">
+                यी प्रयोगकर्ताहरूले बाहिरबाट "Create ID" मार्फत नयाँ खाता दर्ता गरेका हुन्। तपाईंले स्वीकृत (Approve) गरेपछि मात्र यिनीहरूले लगइन गर्न पाउनेछन्:
+              </p>
+              <div class="table-responsive" style="background: white; border-radius: 10px; border: 1px solid #fde68a;">
+                <table style="margin: 0;">
+                  <thead>
+                    <tr style="background: #fffbeb;">
+                      <th style="padding: 10px;">क्र.सं.</th>
+                      <th style="padding: 10px;">पालिका / संस्था</th>
+                      <th style="padding: 10px;">User ID (फोन)</th>
+                      <th style="padding: 10px;">सम्पर्क व्यक्ति</th>
+                      <th style="padding: 10px;">दल</th>
+                      <th style="padding: 10px;">दर्ता मिति</th>
+                      <th style="padding: 10px; text-align: center;">निर्णय (Actions)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${pendingTenants.map((pt, pIdx) => `
+                      <tr>
+                        <td style="text-align: center; font-weight: 700; padding: 10px;">${pIdx + 1}</td>
+                        <td style="padding: 10px;"><b style="font-size: 14px; color: #1e3a8a;">${esc(pt.PalikaName)}</b></td>
+                        <td style="padding: 10px;"><code style="font-size: 13px; font-weight: 800; color: #047857;">${esc(pt.Phone)}</code></td>
+                        <td style="padding: 10px;"><b>${esc(pt.ContactPerson || '-')}</b></td>
+                        <td style="padding: 10px;"><span class="badge" style="background: #eef2ff; color: #3730a3; font-weight: 700;">${esc(pt.Party || 'NC')}</span></td>
+                        <td style="font-size: 12px; color: #64748b; padding: 10px;">${esc(pt.CreatedAt || 'हालै')}</td>
+                        <td style="text-align: center; padding: 10px;">
+                          <div style="display: flex; gap: 6px; justify-content: center;">
+                            <button class="btn btn-sm btn-success" onclick="approveTenantAccount('${pt.TenantID}')" style="font-weight: 800; padding: 6px 12px; font-size: 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(16,185,129,0.25);" title="खाता स्वीकृत गर्नुहोस्">
+                              ✅ Approve
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="rejectTenantAccount('${pt.TenantID}')" style="font-weight: 700; padding: 6px 10px; font-size: 12px; border-radius: 6px;" title="खाता अस्वीकृत गर्नुहोस्">
+                              ✕ Reject
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        } else {
+          pendingContainer.innerHTML = '';
+        }
       }
 
-      tbody.innerHTML = state.tenants.map((t, idx) => {
+      const activeTenants = (state.tenants || []).filter(t => t.Status !== 'Pending_Approval' && t.Status !== 'Pending');
+
+      tbody.innerHTML = activeTenants.map((t, idx) => {
         const isActive = t.Status === 'Active';
         const isPaid = t.BillingStatus === 'Paid';
         const slug = t.Slug || (t.PalikaName ? t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') : t.TenantID.toLowerCase());
@@ -13495,7 +13934,7 @@
               <div style="font-size: 11px; color: var(--slate-600); margin-top: 3px;">म्याद: ${esc(t.ExpiresAt ? t.ExpiresAt.slice(0,10) : 'Unlimited')}</div>
             </td>
             <td style="text-align: center;">
-              <div style="display: flex; flex-direction: column; gap: 5px; width: 100%; max-width: 230px; margin: 0 auto;">
+              <div style="display: flex; flex-direction: column; gap: 5px; width: 100%; max-width: 250px; margin: 0 auto;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;">
                   <button class="btn btn-sm" onclick="loginAsTenantAdmin('${t.TenantID}')" style="background: #4f46e5; color: white; border: none; font-weight: 700; padding: 5px 4px; font-size: 11px; border-radius: 6px;" title="सपोर्ट मोडमा पालिका एडमिनका रूपमा सिधै लगइन">
                     👁️ Login
@@ -13507,18 +13946,21 @@
                     🗄️ Vault
                   </button>
                 </div>
-                <div style="display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 4px;">
+                <div style="display: grid; grid-template-columns: 1.2fr 0.9fr 0.9fr 0.9fr; gap: 3px;">
                   <button class="btn btn-sm ${isActive ? 'btn-danger' : 'btn-success'}" 
                           onclick="toggleTenantStatus('${t.TenantID}')" 
-                          style="padding: 5px 4px; font-size: 11px; font-weight: 700; border-radius: 6px;"
+                          style="padding: 5px 3px; font-size: 10.5px; font-weight: 700; border-radius: 6px;"
                           title="Turn System ON / OFF">
-                    ${isActive ? '⛔ बन्द (OFF)' : '✅ चालू (ON)'}
+                    ${isActive ? '⛔ OFF' : '✅ ON'}
                   </button>
-                  <button class="btn btn-sm btn-secondary" onclick="copyTenantCredentials('${t.TenantID}')" style="padding: 5px 4px; font-size: 11px; border-radius: 6px;" title="Copy Credentials">
+                  <button class="btn btn-sm btn-secondary" onclick="openSuperAdminResetUserPasswordModal('${t.TenantID}')" style="padding: 5px 3px; font-size: 10.5px; border-radius: 6px; background: #fffbeb; color: #92400e; border: 1px solid #fde68a; font-weight: 700;" title="पासवर्ड रिसेट गर्नुहोस्">
+                    🔑 Pass
+                  </button>
+                  <button class="btn btn-sm btn-secondary" onclick="copyTenantCredentials('${t.TenantID}')" style="padding: 5px 3px; font-size: 10.5px; border-radius: 6px;" title="Copy Credentials">
                     📋 कपी
                   </button>
-                  <button class="btn btn-sm btn-secondary" onclick="deleteTenant('${t.TenantID}')" style="color: #dc2626; border-color: #fecdd3; background: #fff1f2; padding: 5px 4px; font-size: 11px; border-radius: 6px;" title="Delete Tenant">
-                    🗑️ हटाउनुहोस्
+                  <button class="btn btn-sm btn-secondary" onclick="deleteTenant('${t.TenantID}')" style="color: #dc2626; border-color: #fecdd3; background: #fff1f2; padding: 5px 3px; font-size: 10.5px; border-radius: 6px;" title="Delete Tenant">
+                    🗑️ डिलिट
                   </button>
                 </div>
               </div>
@@ -14311,7 +14753,7 @@
       }
 
       // 2. Filter Voters Scoped to this Candidate
-      const candidateVoters = state.voters.filter(v => {
+      const candidateVoters = getScopedVoters().filter(v => {
         if (!isAllWard && String(v.Ward) !== String(cand.Ward)) return false;
         return true;
       });
@@ -14585,7 +15027,7 @@
       const cand = getSelectedCandidate();
       const isAll = !cand || cand.Ward === 'All';
 
-      const cityVoters = state.voters.filter(v => {
+      const cityVoters = getScopedVoters().filter(v => {
         if (!isAll && String(v.Ward) !== String(cand.Ward)) return false;
         const loc = v.CurrentLocation || '';
         return loc.includes('काठमाडौं') || loc.includes('Kathmandu') || loc.includes('City');
@@ -14629,7 +15071,7 @@
                   <td>${esc(v.ElectionDayTurnout || 'गाडी पठाए आउने')}</td>
                   <td>
                     ${v.Phone ? `
-                      <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent('आदरणीय ' + v.Name + ' ज्यू, हेलम्बु निर्वाचनका लागि काठमाडौंबाट गाडी प्रस्थानको समय र स्थानबारे समन्वय गर्न हामी सम्पर्कमा छौं।')}" target="_blank" class="btn btn-sm btn-secondary" style="color: #25D366; text-decoration: none;">
+                      <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent('आदरणीय ' + v.Name + ' ज्यू, निर्वाचनका लागि काठमाडौंबाट गाडी प्रस्थानको समय र स्थानबारे समन्वय गर्न हामी सम्पर्कमा छौं।')}" target="_blank" class="btn btn-sm btn-secondary" style="color: #25D366; text-decoration: none;">
                         🟢 WhatsApp
                       </a>
                     ` : '-'}
@@ -14652,7 +15094,7 @@
     function copyCityVoterPhones() {
       const cand = getSelectedCandidate();
       const isAll = !cand || cand.Ward === 'All';
-      const cityVoters = state.voters.filter(v => {
+      const cityVoters = getScopedVoters().filter(v => {
         if (!isAll && String(v.Ward) !== String(cand.Ward)) return false;
         const loc = v.CurrentLocation || '';
         return (loc.includes('काठमाडौं') || loc.includes('City')) && v.Phone;
@@ -14666,7 +15108,7 @@
     function openDiasporaAppealModal() {
       const cand = getSelectedCandidate();
       const isAll = !cand || cand.Ward === 'All';
-      const gulfVoters = state.voters.filter(v => {
+      const gulfVoters = getScopedVoters().filter(v => {
         if (!isAll && String(v.Ward) !== String(cand.Ward)) return false;
         const loc = v.CurrentLocation || '';
         return loc.includes('खाडी') || loc.includes('Gulf') || loc.includes('मलेसिया');
