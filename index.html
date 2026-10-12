@@ -4117,7 +4117,7 @@
                 </select>
                 <select id="timelineTypeFilter" class="filter-select" onchange="renderActivityTimeline()">
                   <option value="">All Activities (सबै कार्य)</option>
-                  <option value="saas_security">👑 SaaS Platform & Security Logs</option>
+                  <option value="saas_security" id="optSaasSecurity">👑 SaaS Platform & Security Logs</option>
                   <option value="vote_cast">🗳️ मतदान ट्र्याकिङ लग (Polling Day)</option>
                   <option value="finance">💰 आर्थिक / Day Book खर्च लग</option>
                   <option value="voter_add">👤 नयाँ मतदाता दर्ता</option>
@@ -4276,6 +4276,37 @@
                 </thead>
                 <tbody id="tenantsTableRows"></tbody>
               </table>
+            </div>
+
+            <!-- 👑 SUPER ADMIN SECURITY & PLATFORM AUDIT TRAIL (DEDICATED MASTER AUDIT) -->
+            <div class="card" style="margin-top: 24px; border: 1.5px solid #334155; background: #ffffff; border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 4px 16px rgba(15,23,42,0.06);">
+              <div class="card-header" style="background: #0f172a; color: white; padding: 14px 18px; margin: -16px -16px 16px; border-radius: var(--radius-md) var(--radius-md) 0 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <h4 style="color: #fbbf24; margin: 0; font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                    <span>🛡️</span> Super Admin Platform & Security Audit Trail
+                  </h4>
+                  <p style="font-size: 12px; color: #94a3b8; margin: 3px 0 0 0;">
+                    मास्टर कन्सोल लगइन, नयाँ पालिका स्वीकृति, SMS कोटा वितरण, Kill-Switch स्थिति र डेटा भल्ट एक्सपोर्टको केन्द्रीय डिजिटल अभिलेख।
+                  </p>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                  <select id="superAdminAuditFilter" class="filter-select" onchange="renderSuperAdminAuditTrail()" style="background: #1e293b; color: white; border: 1px solid #475569; font-size: 12px; padding: 5px 10px; border-radius: 6px;">
+                    <option value="">All Master Events (सबै सुरक्षा लग)</option>
+                    <option value="login">🔑 Master Logins & Sessions</option>
+                    <option value="user_manage">👑 Tenant / Palika Admin Management</option>
+                    <option value="saas_security">🛡️ Approvals & Security</option>
+                    <option value="sms_alloc">📡 SMS Quota Allocations</option>
+                    <option value="broadcast">📢 Global Announcements</option>
+                    <option value="export">🗄️ Full Tenant Vault Exports</option>
+                  </select>
+                  <button class="btn btn-sm" onclick="renderSuperAdminAuditTrail()" style="font-size: 12px; padding: 5px 10px; background: #334155; color: white; border: 1px solid #475569; border-radius: 6px; cursor: pointer;">
+                    🔄 Refresh
+                  </button>
+                </div>
+              </div>
+              <div id="superAdminAuditTrailList" class="timeline-container" style="max-height: 480px; overflow-y: auto; padding: 6px 4px;">
+                <!-- Super Admin audit items dynamically rendered here -->
+              </div>
             </div>
           </div>
         </section>
@@ -4875,6 +4906,7 @@
           }
           if (state.activities && Array.isArray(state.activities)) {
             state.activities = state.activities.filter(a => !['ACT_001', 'ACT_002', 'ACT_003'].includes(a.ActivityID));
+            if (typeof normalizeActivity === 'function') state.activities.forEach(normalizeActivity);
           }
           if (state.households && Array.isArray(state.households)) {
             state.households = state.households.filter(h => !['HHD_001', 'HHD_002'].includes(h.HouseholdID));
@@ -5729,8 +5761,13 @@
       applyPartyTheme('INDEPENDENT');
       saveState();
       launchDashboard();
+      logActivity('login', `👑 Super Admin (${user}) मास्टर कन्सोलमा लगइन हुनुभयो।`, {
+        Scope: 'SUPER_ADMIN',
+        TenantID: 'SUPER_ADMIN_HQ',
+        PalikaSlug: 'PLATFORM',
+        Role: 'Super Admin'
+      });
       switchView('tenants');
-      logActivity('login', `👑 Super Admin (${user}) मास्टर कन्सोलमा लगइन हुनुभयो।`);
       showToast(`👑 स्वागत छ Super Admin! Master Control Hub अनलक भयो।`, 'success');
     }
 
@@ -6073,7 +6110,11 @@
         });
       }
 
-      logActivity('saas_security', `👑 Super Admin ले ${t.PalikaName} (${t.Phone}) को खाता स्वीकृत (Approved) गर्नुभयो।`);
+      logActivity('saas_security', `👑 Super Admin ले ${t.PalikaName} (${t.Phone}) को खाता स्वीकृत (Approved) गर्नुभयो।`, {
+        Scope: 'SUPER_ADMIN',
+        TenantID: 'SUPER_ADMIN_HQ',
+        Role: 'Super Admin'
+      });
       renderTenantsManagement();
       showToast(`${t.PalikaName} खाता स्वीकृत (Approved) भयो!`, 'success');
 
@@ -6098,6 +6139,11 @@
 
       state.tenants = state.tenants.filter(x => x.TenantID !== tenantId);
       state.users = (state.users || []).filter(x => x.TenantID !== tenantId);
+      logActivity('saas_security', `👑 Super Admin ले ${t.PalikaName} (${t.Phone}) को दर्ता अनुरोध अस्वीकृत गर्नुभयो।`, {
+        Scope: 'SUPER_ADMIN',
+        TenantID: 'SUPER_ADMIN_HQ',
+        Role: 'Super Admin'
+      });
       saveState();
       renderTenantsManagement();
       showToast(`${t.PalikaName} को खाता अनुरोध अस्वीकृत गरियो।`, 'info');
@@ -6137,6 +6183,11 @@
       if (t) {
         t.AdminPassword = newPass;
         saveState();
+        logActivity('user_manage', `👑 Super Admin ले ${t.PalikaName} (${t.Phone}) को पासवर्ड रिसेट गर्नुभयो।`, {
+          Scope: 'SUPER_ADMIN',
+          TenantID: 'SUPER_ADMIN_HQ',
+          Role: 'Super Admin'
+        });
         closeModal();
         renderTenantsManagement();
         showToast(`${t.PalikaName} को पासवर्ड '${newPass}' मा रिसेट भयो!`, 'success');
@@ -6630,9 +6681,14 @@
       document.body.classList.remove('logged-in');
       document.body.classList.remove('role-super-admin');
       document.querySelectorAll('.super-admin-only').forEach(el => el.style.display = 'none');
-      logActivity('logout', `${currentUser ? currentUser.Name : 'User'} logged out.`);
       const wasSuper = currentUser && currentUser.Role === 'Super Admin';
       const wasPalika = currentUser && currentUser.TenantID && currentUser.TenantID !== 'ALL';
+      logActivity('logout', `${currentUser ? currentUser.Name : 'User'} logged out.`, {
+        Scope: wasSuper ? 'SUPER_ADMIN' : 'PALIKA',
+        TenantID: wasSuper ? 'SUPER_ADMIN_HQ' : ((currentUser && currentUser.TenantID) || (state.settings && state.settings.PALIKA_SLUG) || 'TNT_HELAMBU'),
+        PalikaSlug: wasSuper ? 'PLATFORM' : ((state.settings && state.settings.PALIKA_SLUG) || 'helambu'),
+        Role: currentUser ? currentUser.Role : (wasSuper ? 'Super Admin' : 'Field Worker')
+      });
       const tenant = wasPalika ? (state.tenants || []).find(t => t.TenantID === currentUser.TenantID) : null;
       currentUser = null;
       const shell = document.getElementById('appShell');
@@ -12903,6 +12959,11 @@
       if (t) {
         t.SmsCredits = (t.SmsCredits || 0) + credits;
         saveState();
+        logActivity('sms_alloc', `📡 Super Admin ले ${t.PalikaName} लाई ${credits} SMS क्रेडिट थप (Top-up) गर्नुभयो।`, {
+          Scope: 'SUPER_ADMIN',
+          TenantID: 'SUPER_ADMIN_HQ',
+          Role: 'Super Admin'
+        });
         closeModal();
         renderTenantsManagement();
         showToast(`✅ ${t.PalikaName} लाई ${credits} SMS क्रेडिट सफलतापूर्वक थपियो! (नयाँ ब्यालेन्स: ${t.SmsCredits})`, 'success');
@@ -12914,6 +12975,11 @@
       if (!token) return showToast('कृपया Aakash Auth Token हाल्नुहोस्', 'error');
       state.settings.AAKASH_SMS_AUTH_TOKEN = token;
       saveState();
+      logActivity('saas_security', '🔑 Super Admin ले Aakash SMS Gateway Token अपडेट गर्नुभयो।', {
+        Scope: 'SUPER_ADMIN',
+        TenantID: 'SUPER_ADMIN_HQ',
+        Role: 'Super Admin'
+      });
       showToast('Aakash SMS Gateway Token सेभ गरियो!', 'success');
     }
 
@@ -14066,65 +14132,190 @@
     }
 
     // ==========================================
-    // 22. ACTIVITY TIMELINE & AUDIT TRAIL ENGINE
+    // 22. ACTIVITY TIMELINE & AUDIT TRAIL ENGINE (MULTI-TENANT ISOLATED)
     // ==========================================
-    function logActivity(type, description) {
+
+    // Helper: Determine if an activity is Super Admin platform level
+    function isSuperAdminActivity(a) {
+      if (!a) return false;
+      if (a.Scope === 'SUPER_ADMIN') return true;
+      if (a.Role === 'Super Admin') return true;
+      if (a.UserID === 'USR_SUPER_OWNER') return true;
+      if (a.TenantID === 'SUPER_ADMIN_HQ' || a.TenantID === 'PLATFORM_SUPER') return true;
+      const desc = a.Description || '';
+      if (
+        desc.includes('मास्टर कन्सोल') ||
+        desc.includes('Master Console') ||
+        desc.includes('Full Tenant Vault') ||
+        desc.includes('ग्लोबल सूचना जारी') ||
+        desc.includes('ग्लोबल सूचना प्रसारण') ||
+        desc.includes('Super Admin ले') ||
+        desc.includes('Super Admin (')
+      ) {
+        return true;
+      }
+      return false;
+    }
+
+    // Helper: Normalize activities for backward compatibility
+    function normalizeActivity(a) {
+      if (!a) return null;
+      if (!a.Scope) {
+        if (isSuperAdminActivity(a)) {
+          a.Scope = 'SUPER_ADMIN';
+          a.TenantID = 'SUPER_ADMIN_HQ';
+          a.PalikaSlug = 'PLATFORM';
+        } else {
+          a.Scope = 'PALIKA';
+          a.TenantID = a.TenantID || (state.settings && state.settings.PALIKA_SLUG) || 'TNT_HELAMBU';
+          a.PalikaSlug = a.PalikaSlug || (state.settings && state.settings.PALIKA_SLUG) || 'helambu';
+        }
+      }
+      return a;
+    }
+
+    // Helper: Check if activity strictly belongs to current Palika
+    function doesActivityBelongToCurrentPalika(a) {
+      if (!a) return false;
+      // Super Admin activities are strictly excluded from Palika view
+      if (isSuperAdminActivity(a)) return false;
+
+      const currentSlug = ((state.settings && state.settings.PALIKA_SLUG) || 'helambu').toLowerCase();
+      const currentTenantId = (currentUser && currentUser.TenantID) || '';
+
+      // If activity has an explicit TenantID matching current user's TenantID
+      if (a.TenantID && currentTenantId && a.TenantID === currentTenantId) return true;
+      // If activity has PalikaSlug matching current settings PalikaSlug
+      if (a.PalikaSlug && a.PalikaSlug.toLowerCase() === currentSlug) return true;
+
+      // If legacy activity without tenant tag, allow if not Super Admin
+      if (!a.TenantID && !a.PalikaSlug) return true;
+
+      // If explicitly tagged with different palika, isolate it out!
+      if (a.PalikaSlug && a.PalikaSlug.toLowerCase() !== currentSlug) return false;
+      if (a.TenantID && currentTenantId && a.TenantID !== currentTenantId) return false;
+
+      return true;
+    }
+
+    function logActivity(type, description, extra = {}) {
       if (!state.activities) state.activities = [];
       const user = currentUser || { UserID: 'USR_ADMIN', Name: 'System Admin', Role: 'Super Admin' };
+      const isSuper = user.Role === 'Super Admin' || user.UserID === 'USR_SUPER_OWNER';
+
+      let tenantId = 'SUPER_ADMIN_HQ';
+      let palikaSlug = 'PLATFORM';
+      let scope = 'SUPER_ADMIN';
+
+      if (!isSuper) {
+        scope = 'PALIKA';
+        tenantId = user.TenantID || (state.settings && state.settings.PALIKA_SLUG) || 'TNT_HELAMBU';
+        palikaSlug = (state.settings && state.settings.PALIKA_SLUG) || 'helambu';
+      }
+
+      if (extra.Scope) scope = extra.Scope;
+      if (extra.TenantID) tenantId = extra.TenantID;
+      if (extra.PalikaSlug) palikaSlug = extra.PalikaSlug;
+
       const newAct = {
-        ActivityID: 'ACT_' + Date.now().toString(36).toUpperCase(),
+        ActivityID: 'ACT_' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 5).toUpperCase(),
         Timestamp: new Date().toISOString(),
         UserID: user.UserID,
         UserName: user.Name,
         Role: user.Role,
+        TenantID: tenantId,
+        PalikaSlug: palikaSlug,
+        Scope: scope,
         Type: type,
-        Description: description
+        Description: description,
+        ...extra
       };
       state.activities.unshift(newAct);
-      // Keep last 150 activities
-      if (state.activities.length > 150) state.activities.pop();
+      // Keep last 300 activities
+      if (state.activities.length > 300) state.activities.pop();
       saveState();
 
+      updateTimelineCountBadges();
+    }
+
+    function updateTimelineCountBadges() {
+      if (!state.activities) state.activities = [];
+      state.activities.forEach(normalizeActivity);
+
+      const isSuper = currentUser && currentUser.Role === 'Super Admin';
       const badge = document.getElementById('timelineCountBadge');
-      if (badge) badge.textContent = state.activities.length;
+      if (badge) {
+        if (isSuper) {
+          badge.textContent = state.activities.filter(isSuperAdminActivity).length;
+        } else {
+          badge.textContent = state.activities.filter(doesActivityBelongToCurrentPalika).length;
+        }
+      }
     }
 
     function renderActivityTimeline() {
       const container = document.getElementById('timelineListContainer');
       if (!container) return;
       if (!state.activities) state.activities = [];
+      state.activities.forEach(normalizeActivity);
 
-      // Dynamic Role-Aware Audit Trail Context
       const isSuper = currentUser && currentUser.Role === 'Super Admin';
+      const palikaName = (state.settings && state.settings.MUNICIPALITY) || 'हेलम्बु गाउँपालिका';
       const headerTitleEl = document.getElementById('auditTrailHeaderTitle');
       const headerDescEl = document.getElementById('auditTrailHeaderDesc');
+
       if (headerTitleEl) {
         headerTitleEl.textContent = isSuper
           ? '👑 Platform Multi-Tenant & Security Audit Trail'
-          : '⏱️ Palika Field Operations & Polling Day Audit Trail';
+          : `⏱️ ${palikaName} Field Operations Audit Trail`;
       }
       if (headerDescEl) {
         headerDescEl.textContent = isSuper
           ? 'सम्पूर्ण पालिकाहरूको सुरक्षा, लगइन गतिविधि, टिनेन्ट व्यवस्थापन, र बिलिङको डिजिटल प्रमाण लग।'
-          : 'बुथ प्रतिनिधिहरूको भोटिङ ट्र्याकिङ, मतदाता सम्पादन, Day Book खर्च र फिल्ड अपरेसनको लाइभ अभिलेख।';
+          : 'यस पालिकाका बुथ प्रतिनिधि, वडा कमाण्डर, मतदाता सम्पादन, Day Book खर्च र फिल्ड अपरेसनको प्रत्यक्ष अभिलेख।';
       }
 
       // Update badge
-      const badge = document.getElementById('timelineCountBadge');
-      if (badge) badge.textContent = state.activities.length;
+      updateTimelineCountBadges();
 
-      // Populate worker filter dropdown
+      // Populate worker filter dropdown (Strictly role & tenant scoped)
       const workerFilter = document.getElementById('timelineWorkerFilter');
-      if (workerFilter && workerFilter.options.length <= 1) {
+      if (workerFilter) {
+        const curVal = workerFilter.value;
+        let workerList = [];
+        if (isSuper) {
+          workerList = (state.users || []);
+        } else {
+          // Strictly exclude Super Admin HQ and non-palika staff
+          workerList = (state.users || []).filter(u => u.Role !== 'Super Admin' && u.UserID !== 'USR_SUPER_OWNER');
+        }
         workerFilter.innerHTML = '<option value="">All Workers (सबै युजर)</option>' +
-          state.users.map(u => `<option value="${u.UserID}">${esc(u.Name)} (${esc(u.Role)})</option>`).join('');
+          workerList.map(u => `<option value="${u.UserID}">${esc(u.Name)} (${esc(u.Role)})</option>`).join('');
+        if (curVal && workerList.some(u => u.UserID === curVal)) {
+          workerFilter.value = curVal;
+        }
+      }
+
+      // Hide SaaS Platform filter option from Palika Admin / Workers
+      const saasOpt = document.getElementById('optSaasSecurity');
+      if (saasOpt) {
+        saasOpt.style.display = isSuper ? '' : 'none';
       }
 
       const selectedWorker = workerFilter ? workerFilter.value : '';
       const typeFilter = document.getElementById('timelineTypeFilter') ? document.getElementById('timelineTypeFilter').value : '';
 
+      // STRICT MULTI-TENANT ISOLATION:
       let list = state.activities.filter(a => {
+        if (isSuper) {
+          // Super Admin can view all or filter by selected user
+        } else {
+          // Palika Admin / Worker: ZERO Super Admin logs, only this Palika's logs
+          if (!doesActivityBelongToCurrentPalika(a)) return false;
+        }
+
         if (selectedWorker && a.UserID !== selectedWorker) return false;
+
         if (typeFilter) {
           if (typeFilter === 'saas_security') {
             const secTypes = ['login', 'logout', 'user_manage', 'sms_alloc', 'broadcast', 'export'];
@@ -14141,9 +14332,12 @@
       });
 
       if (!list.length) {
+        const emptyMsg = isSuper
+          ? '👑 हालसम्म कुनै Platform Audit लग फेला परेन।'
+          : `⏱️ ${palikaName} को फिल्ड टाइमलाइन लग फेला परेन। कार्यकर्ताहरूले इन्ट्री वा कार्य गर्दा यहाँ स्वतः अपडेट हुनेछ।`;
         container.innerHTML = `
           <div style="padding: 30px; text-align: center; color: var(--slate-600); background: var(--slate-50); border-radius: var(--radius-md);">
-            अहिलेसम्म कुनै टाइमलाइन लग फेला परेन। कार्यकर्ताहरूले इन्ट्री वा कार्य गर्दा यहाँ स्वतः अपडेट हुनेछ।
+            ${emptyMsg}
           </div>
         `;
         return;
@@ -14175,6 +14369,69 @@
                 <span title="${a.Timestamp}">🕒 ${timeAgo}</span>
               </div>
               <div class="timeline-text">${esc(a.Description)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // 👑 DEDICATED SUPER ADMIN MASTER AUDIT TRAIL
+    // ==========================================
+    function renderSuperAdminAuditTrail() {
+      const container = document.getElementById('superAdminAuditTrailList');
+      if (!container) return;
+      if (!state.activities) state.activities = [];
+      state.activities.forEach(normalizeActivity);
+
+      const filterType = document.getElementById('superAdminAuditFilter') ? document.getElementById('superAdminAuditFilter').value : '';
+
+      // STRICTLY ONLY Super Admin / Platform Security Activities
+      const list = state.activities.filter(a => {
+        if (!isSuperAdminActivity(a)) return false;
+        if (filterType) {
+          if (filterType === 'login') return a.Type === 'login' || a.Type === 'logout';
+          if (filterType === 'user_manage') return a.Type === 'user_manage';
+          if (filterType === 'saas_security') return a.Type === 'saas_security' || a.Type === 'user_manage';
+          if (filterType === 'sms_alloc') return a.Type === 'sms_alloc';
+          if (filterType === 'broadcast') return a.Type === 'broadcast';
+          if (filterType === 'export') return a.Type === 'export';
+          if (a.Type !== filterType) return false;
+        }
+        return true;
+      });
+
+      if (!list.length) {
+        container.innerHTML = `
+          <div style="padding: 24px; text-align: center; color: var(--slate-500); font-size: 13px; background: #f8fafc; border-radius: 8px;">
+            🛡️ हालसम्म कुनै Super Admin सुरक्षा लग रेकर्ड भएको छैन। मास्टर कन्सोल लगइन तथा व्यवस्थापन गतिविधिहरू यहाँ स्वतः अभिलेख हुनेछन्।
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(a => {
+        const timeAgo = formatTimeAgo(a.Timestamp);
+        let icon = '👑';
+        if (a.Type === 'login') icon = '🔑';
+        else if (a.Type === 'logout') icon = '🚪';
+        else if (a.Type === 'sms_alloc') icon = '📡';
+        else if (a.Type === 'broadcast') icon = '📢';
+        else if (a.Type === 'export') icon = '🗄️';
+        else if (a.Type === 'saas_security') icon = '🛡️';
+
+        return `
+          <div class="timeline-item" style="border-left: 2px solid #cbd5e1; padding-left: 14px; margin-bottom: 12px;">
+            <div class="timeline-dot" style="background: #0f172a; color: #fbbf24; box-shadow: 0 0 0 3px #e2e8f0;">${icon}</div>
+            <div class="timeline-content" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px;">
+              <div class="timeline-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="timeline-user" style="font-weight: 800; color: #0f172a; font-size: 13px;">
+                  ${esc(a.UserName || 'Platform Super Admin')} 
+                  <span class="badge" style="background: #0f172a; color: #fbbf24; font-size: 10.5px; padding: 2px 7px; margin-left: 4px; border: 1px solid #334155;">Super Admin</span>
+                </span>
+                <span style="font-size: 11.5px; color: #64748b;" title="${a.Timestamp}">🕒 ${timeAgo}</span>
+              </div>
+              <div class="timeline-text" style="color: #334155; font-size: 13px; line-height: 1.5;">${esc(a.Description)}</div>
             </div>
           </div>
         `;
@@ -14522,6 +14779,9 @@
           </tr>
         `;
       }).join('');
+
+      // Render dedicated Super Admin Master Audit Trail
+      renderSuperAdminAuditTrail();
     }
 
     // =========================================================================
@@ -15958,6 +16218,9 @@
       const isAll = cand.Ward === 'All';
 
       const scopedActivities = activities.filter(act => {
+        // Exclude Super Admin activities and cross-palika activities
+        if (isSuperAdminActivity(act)) return false;
+        if (!doesActivityBelongToCurrentPalika(act)) return false;
         if (isAll) return true;
         // Check if activity mentions candidate's ward
         const desc = act.Description || '';
