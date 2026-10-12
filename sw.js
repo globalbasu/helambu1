@@ -1,5 +1,5 @@
-// Service Worker for Offline & Installable App Experience (v6 - Auto Cache Busting)
-const CACHE_NAME = 'election-ops-v6';
+// Service Worker for Offline & Installable App Experience (v8 - Force Cache Purge)
+const CACHE_NAME = 'election-ops-v8';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
