@@ -29,13 +29,18 @@
       /* ==========================================================
          MATERIAL UI (MUI FREE) & DYNAMIC PARTY COLOR TOKENS
          ========================================================== */
-      --mui-primary: #1d4ed8;
-      --mui-primary-dark: #1e40af;
-      --mui-primary-light: #3b82f6;
-      --mui-primary-glow: rgba(29, 78, 216, 0.25);
+      --mui-primary: #059669;
+      --mui-primary-dark: #047857;
+      --mui-primary-light: #10b981;
+      --mui-primary-glow: rgba(5, 150, 105, 0.25);
       --mui-secondary: #dc2626;
-      --mui-accent-bg: #eff6ff;
-      --mui-card-border: #bfdbfe;
+      --mui-accent-bg: #ecfdf5;
+      --mui-card-border: #a7f3d0;
+      --mui-sidebar-bg: linear-gradient(180deg, #064e3b 0%, #022c22 100%);
+      --mui-sidebar-surface: rgba(6, 78, 59, 0.6);
+      --mui-hero-gradient: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+      --mui-hero-border: #059669;
+      --mui-gradient: linear-gradient(135deg, #059669 0%, #047857 100%);
       --mui-party-symbol: '🌳';
       --mui-party-name: 'नेपाली काँग्रेस';
 
@@ -53,14 +58,6 @@
       --navy-850: #141e33;
       --navy-800: #1e293b;
       --navy-700: #334155;
-      
-      /* Vibrant Electric Brand Colors */
-      --indigo-600: #4f46e5;
-      --indigo-700: #4338ca;
-      --indigo-800: #3730a3;
-      --indigo-50: #eef2ff;
-      --indigo-100: #e0e7ff;
-      --indigo-glow: rgba(79, 70, 229, 0.18);
       
       --cyan-500: #06b6d4;
       --cyan-600: #0891b2;
@@ -140,8 +137,8 @@
     body {
       font-family: 'Noto Sans Devanagari', 'Inter', 'Plus Jakarta Sans', 'Mukta', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-color: #f8fafc;
-      background-image: radial-gradient(at 100% 0%, rgba(79, 70, 229, 0.03) 0px, transparent 50%),
-                        radial-gradient(at 0% 100%, rgba(6, 182, 212, 0.03) 0px, transparent 50%);
+      background-image: radial-gradient(at 100% 0%, var(--mui-primary-glow, rgba(5, 150, 105, 0.05)) 0px, transparent 50%),
+                        radial-gradient(at 0% 100%, var(--mui-primary-glow, rgba(5, 150, 105, 0.03)) 0px, transparent 50%);
       background-attachment: fixed;
       color: var(--slate-900);
       min-height: 100vh;
@@ -177,7 +174,7 @@
        ========================================================================== */
     .sidebar {
       width: 250px;
-      background: linear-gradient(180deg, var(--navy-950) 0%, var(--navy-900) 100%);
+      background: var(--mui-sidebar-bg, linear-gradient(180deg, #064e3b 0%, #022c22 100%));
       color: #f8fafc;
       display: flex;
       flex-direction: column;
@@ -189,33 +186,33 @@
       height: 100vh;
       height: 100dvh;
       z-index: 100;
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      border-right: 1px solid rgba(255, 255, 255, 0.07);
-      box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
       overflow-y: auto;
     }
 
     .sidebar-brand {
       padding: 22px 20px 18px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       align-items: center;
       gap: 12px;
-      background: rgba(255, 255, 255, 0.02);
+      background: rgba(0, 0, 0, 0.15);
     }
 
     .brand-icon {
       width: 42px;
       height: 42px;
       border-radius: var(--radius-md);
-      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+      background: var(--mui-gradient, linear-gradient(135deg, #059669 0%, #047857 100%));
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 20px;
       font-weight: 800;
-      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 14px var(--mui-primary-glow, rgba(5, 150, 105, 0.45));
+      border: 1px solid rgba(255, 255, 255, 0.25);
       flex-shrink: 0;
     }
 
@@ -277,10 +274,10 @@
     }
 
     .nav-item.active {
-      background: linear-gradient(90deg, rgba(79, 70, 229, 0.9) 0%, rgba(67, 56, 202, 0.95) 100%);
+      background: var(--mui-gradient, linear-gradient(90deg, #059669 0%, #047857 100%));
       color: #ffffff;
-      box-shadow: 0 4px 16px rgba(79, 70, 229, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 16px var(--mui-primary-glow, rgba(5, 150, 105, 0.4));
+      border: 1px solid rgba(255, 255, 255, 0.25);
       font-weight: 700;
     }
 
@@ -1246,8 +1243,8 @@
     }
     .filter-select:focus {
       outline: none;
-      border-color: var(--indigo-600);
-      box-shadow: 0 0 0 3.5px rgba(79, 70, 229, 0.15);
+      border-color: var(--mui-primary);
+      box-shadow: 0 0 0 3.5px var(--mui-primary-glow);
     }
 
     /* ==========================================================================
@@ -1280,14 +1277,14 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+      background: var(--mui-gradient, linear-gradient(135deg, var(--mui-primary) 0%, var(--mui-primary-dark) 100%));
       color: #ffffff;
-      border-color: #4338ca;
-      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+      border-color: var(--mui-primary-dark);
+      box-shadow: 0 2px 8px var(--mui-primary-glow, rgba(5, 150, 105, 0.35));
     }
     .btn-primary:hover {
-      background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%);
-      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.45);
+      background: linear-gradient(135deg, var(--mui-primary-dark) 0%, var(--mui-primary-dark) 100%);
+      box-shadow: 0 4px 14px var(--mui-primary-glow, rgba(5, 150, 105, 0.45));
     }
 
     .btn-secondary {
@@ -1527,8 +1524,8 @@
     }
     .form-control:focus {
       outline: none;
-      border-color: var(--indigo-600);
-      box-shadow: 0 0 0 3.5px rgba(79, 70, 229, 0.16);
+      border-color: var(--mui-primary);
+      box-shadow: 0 0 0 3.5px var(--mui-primary-glow);
       background-color: #ffffff;
     }
     select.form-control {
@@ -2898,19 +2895,19 @@
         <!-- 1B. CANDIDATE INTELLIGENCE & WAR-ROOM (जित-हार विश्लेषण र स्थलगत डेटा) -->
         <section id="viewWarRoom" class="view-section">
           <!-- Candidate Profile & Switcher Hero Banner -->
-          <div class="card war-room-hero" style="margin-bottom: 24px; border: 2px solid #4338ca; background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: white; border-radius: var(--radius-md); padding: 20px;">
+          <div class="card war-room-hero" style="margin-bottom: 24px; border: 2px solid var(--mui-hero-border, #059669); background: var(--mui-hero-gradient, linear-gradient(135deg, #064e3b 0%, #047857 100%)); color: white; border-radius: var(--radius-md); padding: 20px;">
             <div class="war-room-hero-grid" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
               <div style="display: flex; align-items: center; gap: 16px;">
-                <div id="warRoomCandidateAvatar" style="width: 56px; height: 56px; border-radius: 50%; background: #fbbf24; color: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);">
-                  ☀️
+                <div id="warRoomCandidateAvatar" style="width: 56px; height: 56px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);">
+                  🌳
                 </div>
                 <div>
                   <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                     <h2 id="warRoomCandidateName" style="margin: 0; font-size: 19px; font-weight: 800; color: #fff;">राम बहादुर लामा</h2>
-                    <span id="warRoomCandidatePostBadge" class="badge" style="background: #fbbf24; color: #0f172a; font-weight: 800; font-size: 11.5px;">पालिका प्रमुख / मेयर</span>
-                    <span id="warRoomCandidatePartyBadge" class="badge" style="background: rgba(255,255,255,0.15); color: #e0e7ff; font-weight: 700; font-size: 11.5px;">नेकपा (एमाले) • सूर्य ☀️</span>
+                    <span id="warRoomCandidatePostBadge" class="badge" style="background: rgba(255, 255, 255, 0.2); color: #ffffff; font-weight: 800; font-size: 11.5px; border: 1px solid rgba(255,255,255,0.3);">पालिका प्रमुख / मेयर</span>
+                    <span id="warRoomCandidatePartyBadge" class="badge" style="background: rgba(255,255,255,0.18); color: #ffffff; font-weight: 700; font-size: 11.5px; border: 1px solid rgba(255,255,255,0.25);">नेपाली काँग्रेस • रुख 🌳</span>
                   </div>
-                  <p id="warRoomCandidateScopeText" style="margin: 4px 0 0; font-size: 12.5px; color: #cbd5e1;">
+                  <p id="warRoomCandidateScopeText" style="margin: 4px 0 0; font-size: 12.5px; color: #d1fae5;">
                     📍 कार्यक्षेत्र: हेलम्बु गाउँपालिका (समग्र वडा १–९) | 🎯 विजय लक्ष्य: ४,८०० मत
                   </p>
                 </div>
@@ -4336,6 +4333,9 @@
         secondary: '#dc2626',      // Crimson Four Stars
         accentBg: '#ecfdf5',
         border: '#a7f3d0',
+        sidebarBg: 'linear-gradient(180deg, #064e3b 0%, #022c22 100%)',
+        heroGradient: 'linear-gradient(135deg, #064e3b 0%, #047857 100%)',
+        heroBorder: '#059669',
         gradient: 'linear-gradient(135deg, #059669 0%, #047857 100%)'
       },
       UML: {
@@ -4350,6 +4350,9 @@
         secondary: '#fbbf24',      // Sun Gold
         accentBg: '#fef2f2',
         border: '#fecaca',
+        sidebarBg: 'linear-gradient(180deg, #7f1d1d 0%, #450a0a 100%)',
+        heroGradient: 'linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%)',
+        heroBorder: '#dc2626',
         gradient: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)'
       },
       RSP: {
@@ -4364,6 +4367,9 @@
         secondary: '#eab308',      // Gold / Yellow
         accentBg: '#f0f9ff',
         border: '#bae6fd',
+        sidebarBg: 'linear-gradient(180deg, #0c4a6e 0%, #082f49 100%)',
+        heroGradient: 'linear-gradient(135deg, #0c4a6e 0%, #0284c7 100%)',
+        heroBorder: '#0284c7',
         gradient: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)'
       },
       MAOIST: {
@@ -4378,6 +4384,9 @@
         secondary: '#fbbf24',      // Golden Hammer & Sickle
         accentBg: '#fef2f2',
         border: '#fca5a5',
+        sidebarBg: 'linear-gradient(180deg, #701a1a 0%, #3f0d0d 100%)',
+        heroGradient: 'linear-gradient(135deg, #701a1a 0%, #991b1b 100%)',
+        heroBorder: '#991b1b',
         gradient: 'linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%)'
       },
       RPP: {
@@ -4392,6 +4401,9 @@
         secondary: '#15803d',      // Forest Green
         accentBg: '#fffbeb',
         border: '#fde68a',
+        sidebarBg: 'linear-gradient(180deg, #78350f 0%, #451a03 100%)',
+        heroGradient: 'linear-gradient(135deg, #78350f 0%, #d97706 100%)',
+        heroBorder: '#d97706',
         gradient: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)'
       },
       INDEPENDENT: {
@@ -4406,6 +4418,9 @@
         secondary: '#4f46e5',      // Indigo
         accentBg: '#f8fafc',
         border: '#cbd5e1',
+        sidebarBg: 'linear-gradient(180deg, #070b14 0%, #0f172a 100%)',
+        heroGradient: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+        heroBorder: '#334155',
         gradient: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
       }
     };
@@ -4445,8 +4460,20 @@
       root.style.setProperty('--mui-secondary', p.secondary);
       root.style.setProperty('--mui-accent-bg', p.accentBg);
       root.style.setProperty('--mui-card-border', p.border);
+      root.style.setProperty('--mui-sidebar-bg', p.sidebarBg);
+      root.style.setProperty('--mui-hero-gradient', p.heroGradient);
+      root.style.setProperty('--mui-hero-border', p.heroBorder);
+      root.style.setProperty('--mui-gradient', p.gradient);
       root.style.setProperty('--mui-party-symbol', '"' + p.symbol + '"');
       root.style.setProperty('--mui-party-name', '"' + p.name + '"');
+
+      // Sync core color variables to party tokens
+      root.style.setProperty('--indigo-600', p.primary);
+      root.style.setProperty('--indigo-700', p.primaryDark);
+      root.style.setProperty('--indigo-800', p.primaryDark);
+      root.style.setProperty('--indigo-50', p.accentBg);
+      root.style.setProperty('--indigo-100', p.border);
+      root.style.setProperty('--indigo-glow', p.glow);
 
       // Update Topbar Party Badge
       const sym = document.getElementById('topbarPartySymbol');
@@ -4459,6 +4486,28 @@
         badge.style.color = p.primary;
         badge.style.borderColor = p.border;
         badge.title = `${p.name} (${p.symbol}) - पालिकाको आधिकारिक दल`;
+      }
+
+      // Update Sidebar Brand Icon
+      const sbIcon = document.querySelector('.sidebar .brand-icon');
+      if (sbIcon) {
+        sbIcon.textContent = p.symbol;
+      }
+
+      // Automatically sync candidates of active tenant to party
+      const activeTenantId = (currentUser && currentUser.TenantID) || (state && state.tenants && state.tenants[0] && state.tenants[0].TenantID) || 'TNT_HELAMBU';
+      if (state && state.candidates && Array.isArray(state.candidates) && activeTenantId !== 'ALL') {
+        state.candidates.forEach(c => {
+          if (!c.TenantID || c.TenantID === activeTenantId) {
+            c.Party = p.name;
+            c.Symbol = `${p.symbol}`;
+          }
+        });
+      }
+
+      // Refresh candidate dropdowns if ready
+      if (typeof populateCandidateDropdowns === 'function') {
+        try { populateCandidateDropdowns(); } catch (e) {}
       }
     }
 
@@ -4686,7 +4735,7 @@
             state.users = state.users.filter(u => !['USR_RAM', 'USR_SITA'].includes(u.UserID));
           }
 
-          // Ensure default candidates exist
+          // Ensure default candidates exist for Helambu (Nepali Congress)
           if (!state.candidates || !state.candidates.length) {
             state.candidates = [
               {
@@ -4695,8 +4744,8 @@
                 Post: 'पालिका प्रमुख / मेयर (Mayor)',
                 Level: 'स्थानीय तह (Local Level)',
                 Ward: 'All',
-                Party: 'नेकपा (एमाले)',
-                Symbol: 'सूर्य ☀️',
+                Party: 'नेपाली काँग्रेस',
+                Symbol: 'रुख 🌳',
                 PIN: '2026',
                 Phone: '9851011111',
                 TargetVotes: 4800,
@@ -4708,8 +4757,8 @@
                 Post: 'पालिका उपप्रमुख / उपमेयर (Deputy Mayor)',
                 Level: 'स्थानीय तह (Local Level)',
                 Ward: 'All',
-                Party: 'नेकपा (एमाले)',
-                Symbol: 'सूर्य ☀️',
+                Party: 'नेपाली काँग्रेस',
+                Symbol: 'रुख 🌳',
                 PIN: '2027',
                 Phone: '9851022222',
                 TargetVotes: 4600,
@@ -4721,8 +4770,8 @@
                 Post: 'वडा अध्यक्ष (वडा २)',
                 Level: 'स्थानीय तह (Local Level)',
                 Ward: '2',
-                Party: 'नेकपा (एमाले)',
-                Symbol: 'सूर्य ☀️',
+                Party: 'नेपाली काँग्रेस',
+                Symbol: 'रुख 🌳',
                 PIN: '1002',
                 Phone: '9841022233',
                 TargetVotes: 620,
@@ -4734,8 +4783,8 @@
                 Post: 'वडा अध्यक्ष (वडा ५)',
                 Level: 'स्थानीय तह (Local Level)',
                 Ward: '5',
-                Party: 'नेकपा (एमाले)',
-                Symbol: 'सूर्य ☀️',
+                Party: 'नेपाली काँग्रेस',
+                Symbol: 'रुख 🌳',
                 PIN: '1005',
                 Phone: '9841055566',
                 TargetVotes: 750,
@@ -4747,7 +4796,7 @@
                 Post: 'प्रदेश सभा सदस्य (क्षेत्र नं २ \'क\')',
                 Level: 'प्रदेश सभा (Province Assembly)',
                 Ward: 'All',
-                Party: 'नेपाली कांग्रेस',
+                Party: 'नेपाली काँग्रेस',
                 Symbol: 'रुख 🌳',
                 PIN: '2028',
                 Phone: '9851088899',
@@ -4755,6 +4804,16 @@
                 TenantID: 'TNT_HELAMBU'
               }
             ];
+          }
+
+          // Migrate and synchronize any existing stored Helambu candidates to Nepali Congress
+          if (state.candidates && Array.isArray(state.candidates)) {
+            state.candidates.forEach(c => {
+              if (c.TenantID === 'TNT_HELAMBU' || !c.TenantID) {
+                c.Party = 'नेपाली काँग्रेस';
+                c.Symbol = 'रुख 🌳';
+              }
+            });
           }
 
           // Ensure default field presence/location for voters
@@ -5126,9 +5185,10 @@
       const currentSelected = document.getElementById('loginScreen') ? document.getElementById('loginScreen').dataset.selectedUser : null;
 
       let html = '';
-      if (state.candidates && state.candidates.length) {
+      const scopedCands = typeof getScopedCandidates === 'function' ? getScopedCandidates() : (state.candidates || []);
+      if (scopedCands && scopedCands.length) {
         html += '<optgroup label="🎯 उम्मेदवारहरू (Candidates - War Room)">';
-        state.candidates.forEach(c => {
+        scopedCands.forEach(c => {
           html += `<option value="${c.CandidateID}">🎯 ${c.Name} (${c.Post} • ${c.Symbol})</option>`;
         });
         html += '</optgroup>';
@@ -6350,6 +6410,9 @@
       const mobNav = document.getElementById('mobileBottomNav');
       if (mobNav) mobNav.style.display = window.innerWidth <= 880 ? 'flex' : 'none';
       
+      // Dynamically apply party theme and color tokens based on active user / tenant
+      applyPartyTheme();
+
       // Apply Complete Role-Based Navigation & UI Boundaries
       applyRoleBasedNavigation(currentUser);
 
@@ -10778,23 +10841,25 @@
 
     // Rich WhatsApp & Clipboard Share Message Generator (Ensures COMPLETE content)
     function getFullBrochureSharePayload(candId) {
+      const pal = getActivePartyPalette();
       const c = (state.candidates || []).find(x => x.CandidateID === candId) || 
+          (typeof getScopedCandidates === 'function' && getScopedCandidates()[0]) || 
           (state.candidates && state.candidates[0]) || {
             CandidateID: 'CND_001',
             Name: 'राम बहादुर लामा (Ram B. Lama)',
             Post: 'पालिका प्रमुख / मेयर (Mayor)',
-            Party: 'नेकपा (एमाले)',
-            Symbol: 'सूर्य ☀️',
+            Party: pal.name,
+            Symbol: pal.symbol,
             Phone: '9851011111',
             TargetVotes: 4800,
             Slogan: 'समृद्ध हेलम्बु, सुशासन र जनमुखी विकास - हाम्रो अटल संकल्प!',
-            Appeal: 'आदरणीय मतदाता आमाबुबा तथा दाजुभाइ-दिदीबहिनीहरूमा सूर्य चिन्हमा अमूल्य मतदान गरी विजयी गराउनुहुन विनम्र अपिल!'
+            Appeal: `आदरणीय मतदाता आमाबुबा तथा दाजुभाइ-दिदीबहिनीहरूमा ${pal.symbol} चिन्हमा अमूल्य मतदान गरी विजयी गराउनुहुन विनम्र अपिल!`
           };
       const slogan = c.Slogan || 'समृद्ध हेलम्बु, सुशासन र जनमुखी विकास - हाम्रो अटल संकल्प!';
-      const appeal = c.Appeal || 'आदरणीय मतदाता आमाबुबा तथा दाजुभाइ-दिदीबहिनीहरूमा सूर्य चिन्हमा अमूल्य मतदान गरी विजयी गराउनुहुन विनम्र अपिल!';
+      const appeal = c.Appeal || `आदरणीय मतदाता आमाबुबा तथा दाजुभाइ-दिदीबहिनीहरूमा ${c.Symbol || pal.symbol} चिन्हमा अमूल्य मतदान गरी विजयी गराउनुहुन विनम्र अपिल!`;
       const shareUrl = window.location.origin + window.location.pathname + '?brochure=' + encodeURIComponent(c.CandidateID);
 
-      const text = `🇳🇵 *हेलम्बु गाउँपालिका स्थानीय तह निर्वाचन २०८४*\n━━━━━━━━━━━━━━━━━━━━\n👤 *उम्मेदवार:* ${c.Name} (${c.Post})\n🗳️ *दल / चिन्ह:* ${c.Party || 'नेकपा (एमाले)'} - *${c.Symbol || 'सूर्य ☀️'}*\n📢 *मुख्य चुनावी नारा:* "${slogan}"\n\n📌 *हाम्रा प्रमुख ६ विकास तथा जनसेवा प्रतिबद्धताहरू:*\n१. 🏥 *स्वास्थ्य:* प्रत्येक वडामा १५ शय्याको प्राथमिक अस्पताल र निःशुल्क एम्बुलेन्स सेवा।\n२. 🎓 *शिक्षा:* स्मार्ट कक्षाकोठा, प्राविधिक शिक्षा र गरिब विद्यार्थीलाई पूर्ण छात्रवृत्ति।\n३. 🛣️ *सडक/पूर्वाधार:* सबै वडा र बस्ती जोड्ने बाह्रैमास चल्ने पक्की सडक सञ्जाल।\n४. 💧 *खानेपानी:* 'एक घर - एक धारा' अभियान र स्वच्छ पिउने पानीको ग्यारेन्टी।\n५. 🌾 *कृषि र पर्यटन:* हेलम्बु स्याउ तथा ट्राउट माछा प्रवर्द्धन र स्थानीय युवा स्वरोजगार कोष।\n६. ⚖️ *सुशासन:* डिजिटल वडा कार्यालय र भ्रष्टाचारमा शून्य सहनशीलता।\n\n💌 *उम्मेदवारको विनम्र अपिल:*\n"${appeal}"\n\n🌐 *डिजिटल ब्रोसर पूर्ण रूपमा हेर्न तलको लिङ्क खोल्नुहोस्:*\n${shareUrl}\n━━━━━━━━━━━━━━━━━━━━\n🏢 *केन्द्रीय निर्वाचन परिचालन कमिटी, हेलम्बु* | सम्पर्क: ${c.Phone || '9851011111'}`;
+      const text = `🇳🇵 *हेलम्बु गाउँपालिका स्थानीय तह निर्वाचन २०८४*\n━━━━━━━━━━━━━━━━━━━━\n👤 *उम्मेदवार:* ${c.Name} (${c.Post})\n🗳️ *दल / चिन्ह:* ${c.Party || pal.name} - *${c.Symbol || pal.symbol}*\n📢 *मुख्य चुनावी नारा:* "${slogan}"\n\n📌 *हाम्रा प्रमुख ६ विकास तथा जनसेवा प्रतिबद्धताहरू:*\n१. 🏥 *स्वास्थ्य:* प्रत्येक वडामा १५ शय्याको प्राथमिक अस्पताल र निःशुल्क एम्बुलेन्स सेवा।\n२. 🎓 *शिक्षा:* स्मार्ट कक्षाकोठा, प्राविधिक शिक्षा र गरिब विद्यार्थीलाई पूर्ण छात्रवृत्ति।\n३. 🛣️ *सडक/पूर्वाधार:* सबै वडा र बस्ती जोड्ने बाह्रैमास चल्ने पक्की सडक सञ्जाल।\n४. 💧 *खानेपानी:* 'एक घर - एक धारा' अभियान र स्वच्छ पिउने पानीको ग्यारेन्टी।\n५. 🌾 *कृषि र पर्यटन:* हेलम्बु स्याउ तथा ट्राउट माछा प्रवर्द्धन र स्थानीय युवा स्वरोजगार कोष।\n६. ⚖️ *सुशासन:* डिजिटल वडा कार्यालय र भ्रष्टाचारमा शून्य सहनशीलता।\n\n💌 *उम्मेदवारको विनम्र अपिल:*\n"${appeal}"\n\n🌐 *डिजिटल ब्रोसर पूर्ण रूपमा हेर्न तलको लिङ्क खोल्नुहोस्:*\n${shareUrl}\n━━━━━━━━━━━━━━━━━━━━\n🏢 *केन्द्रीय निर्वाचन परिचालन कमिटी, हेलम्बु* | सम्पर्क: ${c.Phone || '9851011111'}`;
 
       return { text, url: shareUrl };
     }
@@ -11362,11 +11427,12 @@
       if (!ev) return;
       const municipality = state.settings.MUNICIPALITY || 'हेलम्बु गाउँपालिका';
 
+      const pal = getActivePartyPalette();
       const text = `🌸 *हार्दिक निमन्त्रणा! (E-Invitation)* 🌸\n` +
         `🇳🇵 *${municipality} - स्थानीय तह निर्वाचन २०८४*\n` +
         `━━━━━━━━━━━━━━━━━━━━\n` +
         `आदरणीय साथीहरू,\n` +
-        `*${c.Post}* पदका उम्मेदवार *${c.Name}* (${c.Party || ''} - ${c.Symbol || '☀️'}) ज्यूको प्रमुख उपस्थितिमा आयोजना हुन गइरहेको *${ev.title}* मा यहाँको गरिमामय उपस्थितिका लागि सादर निमन्त्रणा गर्दछौं।\n\n` +
+        `*${c.Post}* पदका उम्मेदवार *${c.Name}* (${c.Party || pal.name} - ${c.Symbol || pal.symbol}) ज्यूको प्रमुख उपस्थितिमा आयोजना हुन गइरहेको *${ev.title}* मा यहाँको गरिमामय उपस्थितिका लागि सादर निमन्त्रणा गर्दछौं।\n\n` +
         `📅 *मिति:* ${ev.date}\n` +
         `⏰ *समय:* ${ev.time}\n` +
         `📍 *स्थान:* ${ev.venue}\n` +
@@ -15246,13 +15312,36 @@
     // ==========================================
     // 23. CANDIDATE WAR-ROOM & VICTORY INTELLIGENCE ENGINE
     // ==========================================
-    function getSelectedCandidate() {
-      if (!state.candidates || !state.candidates.length) return null;
-      if (currentUser && currentUser.Role === 'Candidate' && currentUser.CandidateID) {
-        return state.candidates.find(c => c.CandidateID === currentUser.CandidateID) || state.candidates[0];
+    function getScopedCandidates() {
+      if (!state.candidates || !Array.isArray(state.candidates)) return [];
+      const activePal = getActivePartyPalette();
+      const activeTenantId = (currentUser && currentUser.TenantID) || (state.tenants && state.tenants[0] && state.tenants[0].TenantID) || 'TNT_HELAMBU';
+
+      if (currentUser && currentUser.Role === 'Super Admin' && currentUser.TenantID === 'ALL') {
+        return state.candidates;
       }
-      const selId = state.selectedCandidateId || 'CND_001';
-      return state.candidates.find(c => c.CandidateID === selId) || state.candidates[0];
+
+      return state.candidates.filter(c => {
+        const matchesTenant = !c.TenantID || c.TenantID === activeTenantId || c.TenantID === 'ALL';
+        const cParty = (c.Party || '').toLowerCase();
+        const matchesParty = cParty.includes(activePal.name.toLowerCase()) || 
+                             cParty.includes(activePal.id.toLowerCase()) ||
+                             (activePal.id === 'NC' && (cParty.includes('काँग्रेस') || cParty.includes('congress') || cParty.includes('रुख'))) ||
+                             (activePal.id === 'UML' && (cParty.includes('एमाले') || cParty.includes('uml') || cParty.includes('सूर्य'))) ||
+                             (activePal.id === 'RSP' && (cParty.includes('स्वतन्त्र') || cParty.includes('rsp') || cParty.includes('घण्टी'))) ||
+                             (activePal.id === 'MAOIST' && (cParty.includes('माओवादी') || cParty.includes('maoist')));
+        return matchesTenant && matchesParty;
+      });
+    }
+
+    function getSelectedCandidate() {
+      const candidates = getScopedCandidates();
+      if (!candidates || !candidates.length) return (state.candidates && state.candidates[0]) || null;
+      if (currentUser && currentUser.Role === 'Candidate' && currentUser.CandidateID) {
+        return candidates.find(c => c.CandidateID === currentUser.CandidateID) || candidates[0];
+      }
+      const selId = state.selectedCandidateId;
+      return candidates.find(c => c.CandidateID === selId) || candidates[0];
     }
 
     function populateCandidateDropdowns() {
@@ -15260,9 +15349,14 @@
       const warSelect = document.getElementById('warRoomCandidateSelect');
       const topContainer = document.getElementById('topbarCandidateSwitcherContainer');
 
-      if (!state.candidates || !state.candidates.length) return;
+      const candidates = getScopedCandidates();
+      if (!candidates || !candidates.length) {
+        if (warSelect) warSelect.innerHTML = '<option value="">कुनै उम्मेदवार छैन</option>';
+        if (topSelect) topSelect.innerHTML = '<option value="ALL">🏛️ समग्र पालिका (केन्द्रीय कमान्ड)</option>';
+        return;
+      }
 
-      const optsHtml = state.candidates.map(c => {
+      const optsHtml = candidates.map(c => {
         const areaLabel = c.Ward === 'All' ? 'समग्र पालिका' : ('वडा ' + c.Ward);
         return `<option value="${c.CandidateID}">${esc(c.Symbol)} ${esc(c.Name)} (${esc(c.Post)} • ${areaLabel})</option>`;
       }).join('');
@@ -15278,8 +15372,10 @@
         const curCand = getSelectedCandidate();
         if (currentUser && currentUser.Role === 'Candidate' && curCand) {
           topSelect.value = curCand.CandidateID;
-        } else if (state.selectedCandidateId) {
+        } else if (state.selectedCandidateId && candidates.some(c => c.CandidateID === state.selectedCandidateId)) {
           topSelect.value = state.selectedCandidateId;
+        } else if (curCand) {
+          topSelect.value = curCand.CandidateID;
         }
       }
 
@@ -15295,7 +15391,7 @@
       const topSelect = document.getElementById('topbarCandidateSelect');
       if (topSelect) topSelect.value = candId;
       renderCandidateWarRoom();
-      const cand = state.candidates.find(c => c.CandidateID === candId);
+      const cand = (state.candidates || []).find(c => c.CandidateID === candId);
       if (cand) {
         showToast(`🎯 War-Room switched to: ${cand.Name} (${cand.Post})`, 'info');
       }
@@ -15312,7 +15408,7 @@
         if (warSelect) warSelect.value = candId;
         switchView('warRoom');
         renderCandidateWarRoom();
-        const cand = state.candidates.find(c => c.CandidateID === candId);
+        const cand = (state.candidates || []).find(c => c.CandidateID === candId);
         if (cand) {
           showToast(`🎯 उम्मेदवार वार-रूम: ${cand.Name} (${cand.Post})`, 'success');
         }
@@ -15334,7 +15430,11 @@
       if (nameEl) nameEl.textContent = cand.Name;
       if (postEl) postEl.textContent = cand.Post;
       if (partyEl) partyEl.textContent = `${cand.Symbol} ${cand.Party}`;
-      if (avatarEl) avatarEl.textContent = cand.Name.charAt(0);
+      if (avatarEl) {
+        avatarEl.textContent = cand.Symbol ? cand.Symbol.slice(0, 2) : '🌳';
+        avatarEl.style.background = 'rgba(255, 255, 255, 0.2)';
+        avatarEl.style.color = '#ffffff';
+      }
 
       const isAllWard = cand.Ward === 'All';
       const wardScopeText = isAllWard ? 'हेलम्बु गाउँपालिका (समग्र वडा १–९)' : `हेलम्बु वडा नं. ${cand.Ward} कार्यक्षेत्र`;
@@ -15378,20 +15478,18 @@
       const magicTarget = Math.floor(projectedTurnout / 2) + 1;
 
       // Calculate candidate's current votes:
-      // If candidate is UML, UML leanings are Sure, Soft leanings are partial, etc.
       let sureVotes = 0;
       let softVotes = 0;
       let oppVotes = 0;
 
       candidateVoters.forEach(v => {
         const isAbroad = (v.CurrentLocation && (v.CurrentLocation.includes('खाडी') || v.CurrentLocation.includes('भारत') || v.CurrentLocation.includes('युरोप')));
-        // Only count voters likely to be present or mobilizable
         if (isAbroad) return;
 
         const p = v.PartyLeaning || '';
-        const candPartyKey = cand.Party.includes('एमाले') ? 'UML' : cand.Party.includes('कांग्रेस') ? 'Congress' : cand.Party.includes('रास्वपा') ? 'RSP' : cand.Party.includes('माओवादी') ? 'Maoist' : cand.Party.includes('राप्रपा') ? 'RPP' : 'Independent';
+        const candPartyKey = cand.Party.includes('एमाले') ? 'UML' : (cand.Party.includes('कांग्रेस') || cand.Party.includes('काँग्रेस')) ? 'NC' : cand.Party.includes('रास्वपा') ? 'RSP' : cand.Party.includes('माओवादी') ? 'MAOIST' : cand.Party.includes('राप्रपा') ? 'RPP' : 'INDEPENDENT';
 
-        if (p === candPartyKey || v.SelfReportedResponse === 'Support') {
+        if (p === candPartyKey || (candPartyKey === 'NC' && (p === 'NC' || p === 'Congress')) || v.SelfReportedResponse === 'Support') {
           sureVotes += (v.FamilyVotesCount || 1);
         } else if (p === 'Undecided' || !p || v.SelfReportedResponse === 'Undecided') {
           softVotes += 1;
