@@ -1356,39 +1356,50 @@
     /* Card View Grid */
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 16px;
+    }
+    @media (max-width: 640px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
     }
 
     .voter-card {
+      position: relative;
       background: #ffffff;
-      border: 1px solid rgba(226, 232, 240, 0.9);
-      border-radius: var(--radius-md);
-      padding: 18px;
-      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
-      transition: all 0.2s ease;
+      background-image: 
+        radial-gradient(ellipse at 10% 0%, rgba(167, 243, 208, 0.45) 0%, transparent 55%),
+        radial-gradient(ellipse at 90% 0%, rgba(254, 215, 170, 0.5) 0%, transparent 55%);
+      background-repeat: no-repeat;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 14px;
     }
     .voter-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
       border-color: #cbd5e1;
     }
-
-    .voter-card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
+    .vcard-act-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease;
+      flex-shrink: 0;
     }
-    .voter-card-title {
-      font-weight: 800;
-      font-size: 15px;
-      color: var(--navy-900);
-    }
-    .voter-card-phone {
-      font-size: 13px;
-      color: #64748b;
-      margin-top: 3px;
+    .vcard-act-btn:active {
+      transform: scale(0.92);
     }
 
     /* ==========================================================================
@@ -3238,7 +3249,7 @@
               </div>
               <div class="filter-bar-selects">
                 <select id="voterWardFilter" class="filter-select" onchange="renderVotersList()">
-                  <option value="">All Wards</option>
+                  <option value="">सबै वडा (All Wards)</option>
                 </select>
                 <select id="voterContactFilter" class="filter-select" onchange="renderVotersList()">
                   <option value="">Contact Status: All</option>
@@ -4294,17 +4305,17 @@
           <span class="nav-icon">📊</span>
           <span class="nav-label">ड्यासबोर्ड</span>
         </button>
-        <button class="mob-nav-btn" data-view="warRoom" onclick="switchView('warRoom')">
-          <span class="nav-icon">🎯</span>
-          <span class="nav-label">वार-रूम</span>
-        </button>
         <button class="mob-nav-btn" data-view="voters" onclick="switchView('voters')">
           <span class="nav-icon">👥</span>
           <span class="nav-label">मतदाता</span>
         </button>
+        <button class="mob-nav-btn" data-view="warRoom" onclick="switchView('warRoom')">
+          <span class="nav-icon">⚔️</span>
+          <span class="nav-label">वार रूम</span>
+        </button>
         <button class="mob-nav-btn" data-view="visits" onclick="switchView('visits')">
-          <span class="nav-icon">🚶</span>
-          <span class="nav-label">घरदैलो</span>
+          <span class="nav-icon">👣</span>
+          <span class="nav-label">भेटघाट</span>
         </button>
         <button class="mob-nav-btn" id="mobNavMenu" onclick="toggleSidebar()">
           <span class="nav-icon">☰</span>
@@ -7471,8 +7482,8 @@
             el.disabled = true;
           } else {
             el.disabled = false;
-            el.innerHTML = '<option value="">All Wards</option>' +
-              state.wards.map(w => `<option value="${w.WardNo}">Ward ${w.WardNo}</option>`).join('');
+            el.innerHTML = '<option value="">सबै वडा (All Wards)</option>' +
+              state.wards.map(w => `<option value="${w.WardNo}">वडा ${w.WardNo}</option>`).join('');
           }
         }
       });
@@ -7827,78 +7838,249 @@
     function renderVotersCards(list) {
       const container = document.getElementById('voterCardsContainer');
       if (!list.length) {
-        container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--slate-600);">No matching contacts found.</div>`;
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 48px 20px; color: var(--slate-600); background: #ffffff; border-radius: 18px; border: 1.5px dashed #cbd5e1;">
+          <div style="font-size: 36px; margin-bottom: 8px;">🔍</div>
+          <div style="font-size: 16px; font-weight: 800; color: #0f172a;">कुनै मतदाता भेटिएन</div>
+          <div style="font-size: 13px; color: #64748b; margin-top: 4px;">कृपया फिल्टर वा खोज शब्द परिवर्तन गर्नुहोस्।</div>
+        </div>`;
         return;
       }
 
-      container.innerHTML = list.map(v => `
+      container.innerHTML = list.map(v => {
+        const isSureVote = (v.SupportTier === 'solid') || (v.SelfReportedResponse === 'Support');
+        const tier = getSupportTier(v);
+
+        // Stance full-width button styling based on tier
+        let stanceBg = '#16a34a';
+        let stanceGlow = 'rgba(22, 163, 74, 0.25)';
+        let stanceLabel = '✓ पक्का समर्थक (Sure Vote)';
+
+        if (tier.key === 'solid') {
+          stanceBg = '#16a34a';
+          stanceGlow = 'rgba(22, 163, 74, 0.25)';
+          stanceLabel = '✓ पक्का समर्थक (Sure Vote)';
+        } else if (tier.key === 'lean') {
+          stanceBg = '#059669';
+          stanceGlow = 'rgba(5, 150, 105, 0.25)';
+          stanceLabel = '👍 सकारात्मक (Lean Vote)';
+        } else if (tier.key === 'swing') {
+          stanceBg = '#f59e0b';
+          stanceGlow = 'rgba(245, 158, 11, 0.25)';
+          stanceLabel = '👥 तटस्थ / दोधार (Swing)';
+        } else if (tier.key === 'opponent_lean') {
+          stanceBg = '#ea580c';
+          stanceGlow = 'rgba(234, 88, 12, 0.25)';
+          stanceLabel = '⚠️ विपक्षी झुकाव (Lean Opponent)';
+        } else if (tier.key === 'hard_opponent') {
+          stanceBg = '#dc2626';
+          stanceGlow = 'rgba(220, 38, 38, 0.25)';
+          stanceLabel = '⛔ कडा विरोधी (Opponent)';
+        }
+
+        // Party pill label & dot
+        let partyDot = '⚪';
+        let partyLabel = 'तटस्थ';
+        if (v.PartyLeaning === 'Congress') { partyDot = '🔵'; partyLabel = 'काँग्रेस'; }
+        else if (v.PartyLeaning === 'UML') { partyDot = '🔴'; partyLabel = 'एमाले'; }
+        else if (v.PartyLeaning === 'RSP') { partyDot = '🔔'; partyLabel = 'रास्वपा'; }
+        else if (v.PartyLeaning === 'Maoist') { partyDot = '☭'; partyLabel = 'माओवादी'; }
+        else if (v.PartyLeaning === 'RPP') { partyDot = '🌾'; partyLabel = 'राप्रपा'; }
+        else if (v.PartyLeaning === 'Independent') { partyDot = '⚪'; partyLabel = 'स्वतन्त्र'; }
+        else if (v.PartyLeaning === 'Undecided' || !v.PartyLeaning) { partyDot = '⚪'; partyLabel = 'तटस्थ'; }
+        else { partyDot = '⚪'; partyLabel = esc(v.PartyLeaning); }
+
+        const avatarBg = isSureVote ? '#10b981' : '#2563eb';
+        const hasPhone = !!(v.Phone && cleanPhone(v.Phone));
+
+        return `
         <div class="voter-card">
-          <div class="voter-card-top">
-            <div>
-              <div class="voter-card-title" style="cursor: pointer;" onclick="viewVoterProfile('${v.VoterID}')" title="प्रोफाइल हेर्न क्लिक गर्नुहोस्">
-                👉 ${esc(v.Name)}
+          <!-- TOP ROW: Avatar + Name / Phone + Sure Vote Button -->
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1;">
+              <div onclick="viewVoterProfile('${v.VoterID}')" style="width: 48px; height: 48px; border-radius: 50%; background: ${avatarBg}; color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; box-shadow: 0 3px 8px rgba(0,0,0,0.12);" title="प्रोफाइल हेर्नुहोस्">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
               </div>
-              <div class="voter-card-phone" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
-                <span style="font-family: monospace; font-weight: 700; color: var(--slate-700); font-size: 13px;">📞 ${esc(v.Phone || 'No Phone')}</span>
-                <div style="display: inline-flex; align-items: center; gap: 6px;" onclick="event.stopPropagation()">
-                  ${v.Phone ? `
-                    <a href="tel:${cleanPhone(v.Phone)}" title="कल गर्नुहोस् (Call)" style="text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">📞</a>
-                    <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" rel="noopener noreferrer" title="WhatsApp सन्देश पठाउनुहोस्" style="text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0;" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">🟢</a>
-                    <a href="javascript:void(0)" onclick="openCustomMessageModal('${v.VoterID}')" title="कस्टम सन्देश (SMS/Message)" style="text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe;">💬</a>
-                  ` : ''}
-                  ${v.FacebookUrl ? `
-                    <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" title="Facebook प्रोफाइल सिधा खोल्नुहोस् (${esc(v.FacebookUrl)})" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #eff6ff; border: 1.5px solid #bfdbfe; box-shadow: 0 1px 3px rgba(24,119,242,0.2);">
-                      ${getFacebookIconSvg(18)}
-                    </a>
-                  ` : `
-                    <a href="javascript:void(0)" onclick="openEditVoterModal('${v.VoterID}')" title="Facebook लिङ्क थप्नुहोस्" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #f8fafc; border: 1px dashed #cbd5e1; opacity: 0.5;">
-                      ${getFacebookIconSvg(16)}
-                    </a>
-                  `}
-                  ${v.TiktokUrl ? `
-                    <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" title="TikTok प्रोफाइल सिधा खोल्नुहोस् (${esc(v.TiktokUrl)})" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #000000; border: 1.5px solid #000000; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">
-                      ${getTiktokIconSvg(18)}
-                    </a>
-                  ` : `
-                    <a href="javascript:void(0)" onclick="openEditVoterModal('${v.VoterID}')" title="TikTok लिङ्क थप्नुहोस्" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #f8fafc; border: 1px dashed #cbd5e1; opacity: 0.5;">
-                      ${getTiktokIconSvg(16)}
-                    </a>
-                  `}
-                  ${isTodayBirthday(v.DOB) ? `<span title="आज जन्मदिन! (${calculateAge(v.DOB)} वर्ष)" style="cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; background: #fffbeb; border: 1px solid #fde68a;" onclick="openBirthdayWishModal('${v.VoterID}')">🎂</span>` : ''}
+              <div style="min-width: 0;">
+                <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                  <span onclick="viewVoterProfile('${v.VoterID}')" style="font-weight: 800; font-size: 17px; color: #0f172a; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    ${esc(v.Name)}
+                  </span>
+                  ${isSureVote ? '<span style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block;"></span>' : ''}
+                  ${v.IsInfluencer ? '<span title="VIP Influencer" style="font-size: 13px;">🌟</span>' : ''}
+                  ${isTodayBirthday(v.DOB) ? `<span title="आज जन्मदिन! (${calculateAge(v.DOB)} वर्ष)" style="font-size: 14px; cursor: pointer;" onclick="event.stopPropagation(); openBirthdayWishModal('${v.VoterID}')">🎂</span>` : ''}
+                </div>
+                ${hasPhone ? `
+                  <div style="margin-top: 4px;">
+                    <span style="display: inline-flex; align-items: center; gap: 5px; background: #eff6ff; color: #1e40af; padding: 2.5px 10px; border-radius: 20px; font-size: 12.5px; font-weight: 700; font-family: monospace;">
+                      <span style="font-size: 11px;">📞</span> ${esc(v.Phone)}
+                    </span>
+                  </div>
+                ` : `
+                  <div style="display: flex; align-items: center; gap: 4px; font-size: 12.5px; color: #64748b; margin-top: 4px;">
+                    <span style="font-size: 11px;">📞</span> <span>सम्पर्क छैन</span>
+                  </div>
+                `}
+              </div>
+            </div>
+
+            <!-- Top-Right Sure Vote Pill / Button -->
+            <div style="flex-shrink: 0;">
+              ${isSureVote ? `
+                <button type="button" onclick="toggleSureVote('${v.VoterID}')" style="background: #15803d; color: #ffffff; border: none; border-radius: 20px; padding: 7px 14px; font-weight: 700; font-size: 12.5px; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; box-shadow: 0 2px 6px rgba(21, 128, 61, 0.25);" title="पक्का मत चिन्हित (क्लिक गरी परिवर्तन गर्नुहोस्)">
+                  <span style="font-size: 13px;">🛡️</span> <span>पक्का मत</span> <span style="font-weight: 900;">✓</span>
+                </button>
+              ` : `
+                <button type="button" onclick="toggleSureVote('${v.VoterID}')" style="background: #ffffff; color: #475569; border: 1.5px solid #cbd5e1; border-radius: 20px; padding: 6px 13px; font-weight: 700; font-size: 12.5px; display: inline-flex; align-items: center; gap: 5px; cursor: pointer;" title="क्लिक गरी पक्का मत बनाउनुहोस्">
+                  <span style="font-size: 13px;">🛡️</span> <span>+ पक्का मत</span>
+                </button>
+              `}
+            </div>
+          </div>
+
+          <!-- SECOND ROW: Communication 5 Action Icons + Stance Pill -->
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 14px; margin-bottom: 12px;">
+            <div style="display: flex; align-items: center; gap: 7px;">
+              <!-- 1. Call -->
+              ${hasPhone ? `
+                <a href="tel:${cleanPhone(v.Phone)}" class="vcard-act-btn" style="background: #22c55e; color: #ffffff; box-shadow: 0 2px 5px rgba(34,197,94,0.25);" title="कल गर्नुहोस् (${esc(v.Phone)})">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></svg>
+                </a>
+              ` : `
+                <button type="button" onclick="showToast('सम्पर्क नम्बर उपलब्ध छैन। प्रोफाइलमा गएर थप्नुहोस्।', 'info')" class="vcard-act-btn" style="background: #22c55e; color: #ffffff; opacity: 0.55;" title="सम्पर्क नम्बर छैन">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></svg>
+                </button>
+              `}
+
+              <!-- 2. SMS -->
+              <button type="button" onclick="openCustomMessageModal('${v.VoterID}')" class="vcard-act-btn" style="background: #3b82f6; color: #ffffff; box-shadow: 0 2px 5px rgba(59,130,246,0.25);" title="SMS / सन्देश पठाउनुहोस्">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-12 9a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm4 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm4 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
+              </button>
+
+              <!-- 3. WhatsApp -->
+              ${hasPhone ? `
+                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" rel="noopener noreferrer" class="vcard-act-btn" style="background: #25d366; color: #ffffff; box-shadow: 0 2px 5px rgba(37,211,102,0.25);" title="WhatsApp मा सन्देश पठाउनुहोस्" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp')">
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.5 0-9.98 4.47-9.98 9.97 0 1.76.46 3.48 1.34 5L2 22l5.22-1.37a9.96 9.96 0 004.82 1.24h.01c5.5 0 9.98-4.48 9.98-9.98 0-2.66-1.04-5.17-2.92-7.05A9.92 9.92 0 0012.04 2zm5.83 14.12c-.24.68-1.21 1.25-1.72 1.33-.49.07-1.12.1-3.26-.78-2.74-1.13-4.51-3.89-4.65-4.07-.13-.19-1.13-1.5-1.13-2.87 0-1.36.71-2.03.96-2.31.25-.28.55-.35.73-.35.18 0 .37 0 .53.01.17.01.4.07.61.57.24.58.82 2 .89 2.15.07.15.12.33.02.53-.1.2-.15.33-.3.51-.15.18-.32.4-.46.54-.15.15-.31.32-.13.63.18.31.8 1.31 1.71 2.12 1.17 1.05 2.16 1.37 2.47 1.52.31.15.49.13.67-.08.18-.21.78-.91.99-1.22.21-.31.42-.26.7-.16.28.1.78.84 2.16 1.52.28.14.47.23.54.34.07.11.07.65-.17 1.33z"/></svg>
+                </a>
+              ` : `
+                <button type="button" onclick="showToast('WhatsApp का लागि सम्पर्क नम्बर उपलब्ध हुनुपर्छ।', 'info')" class="vcard-act-btn" style="background: #25d366; color: #ffffff; opacity: 0.55;" title="WhatsApp">
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.5 0-9.98 4.47-9.98 9.97 0 1.76.46 3.48 1.34 5L2 22l5.22-1.37a9.96 9.96 0 004.82 1.24h.01c5.5 0 9.98-4.48 9.98-9.98 0-2.66-1.04-5.17-2.92-7.05A9.92 9.92 0 0012.04 2zm5.83 14.12c-.24.68-1.21 1.25-1.72 1.33-.49.07-1.12.1-3.26-.78-2.74-1.13-4.51-3.89-4.65-4.07-.13-.19-1.13-1.5-1.13-2.87 0-1.36.71-2.03.96-2.31.25-.28.55-.35.73-.35.18 0 .37 0 .53.01.17.01.4.07.61.57.24.58.82 2 .89 2.15.07.15.12.33.02.53-.1.2-.15.33-.3.51-.15.18-.32.4-.46.54-.15.15-.31.32-.13.63.18.31.8 1.31 1.71 2.12 1.17 1.05 2.16 1.37 2.47 1.52.31.15.49.13.67-.08.18-.21.78-.91.99-1.22.21-.31.42-.26.7-.16.28.1.78.84 2.16 1.52.28.14.47.23.54.34.07.11.07.65-.17 1.33z"/></svg>
+                </button>
+              `}
+
+              <!-- 4. Facebook -->
+              ${v.FacebookUrl ? `
+                <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" class="vcard-act-btn" style="background: #1877f2; color: #ffffff; box-shadow: 0 2px 5px rgba(24,119,242,0.25);" title="Facebook प्रोफाइल खोल्नुहोस्">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </a>
+              ` : `
+                <button type="button" onclick="openEditVoterModal('${v.VoterID}')" class="vcard-act-btn" style="background: #1877f2; color: #ffffff; opacity: 0.85;" title="+ Facebook प्रोफाइल लिङ्क थप्नुहोस्">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </button>
+              `}
+
+              <!-- 5. TikTok -->
+              ${v.TiktokUrl ? `
+                <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" class="vcard-act-btn" style="background: #000000; color: #ffffff; box-shadow: 0 2px 5px rgba(0,0,0,0.3);" title="TikTok प्रोफाइल खोल्नुहोस्">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.27 1.76-.23.99-.04 2.09.6 2.89.6.78 1.58 1.25 2.58 1.22.97-.01 1.89-.54 2.37-1.37.38-.63.53-1.38.54-2.11.02-3.75.01-7.5.02-11.25z"/></svg>
+                </a>
+              ` : `
+                <button type="button" onclick="openEditVoterModal('${v.VoterID}')" class="vcard-act-btn" style="background: #000000; color: #ffffff; opacity: 0.85;" title="+ TikTok लिङ्क थप्नुहोस्">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.27 1.76-.23.99-.04 2.09.6 2.89.6.78 1.58 1.25 2.58 1.22.97-.01 1.89-.54 2.37-1.37.38-.63.53-1.38.54-2.11.02-3.75.01-7.5.02-11.25z"/></svg>
+                </button>
+              `}
+            </div>
+
+            <!-- Right Party Stance Pill Dropdown -->
+            <div onclick="quickCycleParty('${v.VoterID}')" style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 20px; padding: 6px 12px; font-size: 13px; font-weight: 700; color: #334155; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.03); flex-shrink: 0;" title="पार्टी झुकाव बदल्नुहोस् (क्लिक गर्नुहोस्)">
+              <span>${partyDot}</span>
+              <span>${partyLabel}</span>
+              <span style="font-size: 10px; color: #94a3b8; font-weight: 800;">∨</span>
+            </div>
+          </div>
+
+          <!-- THIRD ROW: Two Side-by-Side Information Cards -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <!-- Left: Ward & Tole -->
+            <div onclick="filterByWard(${v.Ward})" style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: all 0.15s ease;" title="वडा ${v.Ward} का मतदाता फिल्टर गर्नुहोस्">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: #2563eb; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(37,99,235,0.25);">📍</div>
+              <div style="min-width: 0; overflow: hidden;">
+                <div style="font-weight: 800; font-size: 13.5px; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  वडा ${v.Ward || '-'} <span style="font-size: 11px; opacity: 0.65;">👤</span>
+                </div>
+                <div style="font-size: 11.5px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  ${esc(v.Tole || 'गाउँ / टोल')}
                 </div>
               </div>
             </div>
-            <span class="badge ${v.VerificationStatus === 'Verified' ? 'badge-verified' : 'badge-pending'}"
-                  style="cursor: pointer;"
-                  title="क्लिक गरी Verified / Pending बदल्नुहोस्"
-                  onclick="toggleVoterVerification('${v.VoterID}')">
-              ${v.VerificationStatus === 'Verified' ? '✓ Verified' : '⏳ Pending'} 🔄
-            </span>
-          </div>
-          <div style="font-size: 13px; color: var(--slate-600); margin-bottom: 8px;">
-            <div>
-              <span style="cursor: pointer; font-weight: 700; color: var(--indigo-600);" onclick="filterByWard(${v.Ward})">वडा ${v.Ward} 🔍</span> • 
-              <span style="cursor: pointer; text-decoration: underline dotted;" onclick="filterByTole('${esc(v.Tole)}')">${esc(v.Tole || 'Area')}</span>
-            </div>
-            <div>Booth ${esc(v.BoothNo || '-')} • Serial: ${esc(v.VoterSerial || '-')}</div>
-          </div>
-          <div style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px;">
-            <div>${getSupportBadge(v)}</div>
-            <div style="display: flex; align-items: center; gap: 5px;">
-              <span style="cursor: pointer; font-size: 12px; font-weight: 600;" onclick="quickCycleParty('${v.VoterID}')" title="पार्टी बदल्नुहोस्">${getPartyLabel(v.PartyLeaning)} 🔄</span>
-              ${v.IsInfluencer ? '<span class="badge" style="background: #fef3c7; color: #92400e; font-weight: 800; font-size: 10.5px; padding: 2px 6px;">🌟 VIP Influencer</span>' : ''}
+
+            <!-- Right: Booth & Serial -->
+            <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 10px 12px; display: flex; align-items: center; gap: 10px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: #0284c7; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(2,132,199,0.25);">🗳️</div>
+              <div style="min-width: 0; overflow: hidden;">
+                <div style="font-weight: 800; font-size: 13.5px; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  Booth ${esc(v.BoothNo || '01')}
+                </div>
+                <div style="font-size: 11.5px; color: #64748b; font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  Serial: ${esc(v.VoterSerial || '-')}
+                </div>
+              </div>
             </div>
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; pt-2; border-top: 1px solid var(--slate-200); padding-top: 10px;">
-            <span class="badge ${v.ContactStatus === 'Contacted' ? 'badge-contacted' : 'badge-notcontacted'}" style="cursor: pointer;" onclick="toggleVoterContactStatus('${v.VoterID}')" title="क्लिक गरी सम्पर्क अवस्था बदल्नुहोस्">${v.ContactStatus} 🔄</span>
-            <div style="display: flex; gap: 6px;">
-              <button class="btn btn-sm btn-secondary" onclick="viewVoterProfile('${v.VoterID}')">View</button>
-              <button class="btn btn-sm btn-secondary" onclick="printVoterSlip('${v.VoterID}')" title="Print Slip">🖨️ पर्चा</button>
-              <button class="btn btn-sm btn-primary" onclick="openRecordVisitModal('${v.VoterID}')">Visit</button>
+
+          <!-- FOURTH ROW: Full-Width Support Stance Bar -->
+          <div style="margin-bottom: 12px;">
+            <div onclick="quickCycleSupportTier('${v.VoterID}')" style="background: ${stanceBg}; color: #ffffff; border-radius: 14px; padding: 11px 16px; display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; font-weight: 800; cursor: pointer; box-shadow: 0 2px 8px ${stanceGlow}; transition: transform 0.15s ease;" title="क्लिक गरी समर्थन स्थिति परिवर्तन गर्नुहोस्">
+              <span>${stanceLabel}</span>
+              <span style="font-size: 11px; opacity: 0.85;">∨</span>
             </div>
+          </div>
+
+          <!-- FIFTH ROW: Three Bottom Action Buttons -->
+          <div style="display: grid; grid-template-columns: 1.4fr 1fr 1.1fr; gap: 8px; align-items: center;">
+            <!-- Left: Contact Status Toggle -->
+            ${v.ContactStatus === 'Contacted' ? `
+              <button type="button" onclick="toggleVoterContactStatus('${v.VoterID}')" style="background: #ecfdf5; border: 1.5px solid #a7f3d0; color: #047857; border-radius: 12px; padding: 10px 8px; font-size: 12.5px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer; width: 100%; transition: all 0.15s ease;" title="सम्पर्क अवस्था बदल्नुहोस्">
+                <span>✓ Contacted</span> <span style="font-size: 11px;">🔄</span>
+              </button>
+            ` : `
+              <button type="button" onclick="toggleVoterContactStatus('${v.VoterID}')" style="background: #f8fafc; border: 1.5px solid #e2e8f0; color: #475569; border-radius: 12px; padding: 10px 8px; font-size: 12.5px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer; width: 100%; transition: all 0.15s ease;" title="सम्पर्क अवस्था बदल्नुहोस्">
+                <span>👤 Uncontacted</span> <span style="font-size: 11px;">🔄</span>
+              </button>
+            `}
+
+            <!-- Middle: View Profile -->
+            <button type="button" onclick="viewVoterProfile('${v.VoterID}')" style="background: #ffffff; border: 1.5px solid #cbd5e1; color: #0f172a; border-radius: 12px; padding: 10px 10px; font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; width: 100%; transition: all 0.15s ease;" title="पूर्ण विवरण (Dossier) हेर्नुहोस्">
+              <span>👁️</span> <span>View</span>
+            </button>
+
+            <!-- Right: Record Visit -->
+            <button type="button" onclick="openRecordVisitModal('${v.VoterID}')" style="background: #2563eb; border: none; color: #ffffff; border-radius: 12px; padding: 10px 10px; font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; width: 100%; box-shadow: 0 2px 6px rgba(37, 99, 235, 0.28); transition: all 0.15s ease;" title="घरदैलो / भेटघाट रेकर्ड गर्नुहोस्">
+              <span>➔]</span> <span>Visit</span>
+            </button>
           </div>
         </div>
-      `).join('');
+        `;
+      }).join('');
+    }
+
+    async function toggleSureVote(voterId) {
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+      const isSure = (v.SupportTier === 'solid') || (v.SelfReportedResponse === 'Support');
+      if (isSure) {
+        v.SupportTier = 'swing';
+        v.SelfReportedResponse = 'Undecided';
+        showToast(`${v.Name} लाई 'तटस्थ / दोधार (Swing)' मा सारियो।`, 'info');
+      } else {
+        v.SupportTier = 'solid';
+        v.SelfReportedResponse = 'Support';
+        showToast(`🛡️ ${v.Name} लाई 'पक्का मत (Sure Vote)' मा दर्ता गरियो!`, 'success');
+      }
+      saveState();
+      if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
+      logActivity('voter_update', `🛡️ ${v.Name} को मत स्थिति बदलिएर: ${v.SupportTier === 'solid' ? 'पक्का मत (Sure Vote)' : 'तटस्थ'}`);
+      refreshDashboardMetrics();
+      renderVotersList();
     }
 
     function clearVoterFilters() {
