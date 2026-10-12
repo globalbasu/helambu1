@@ -3535,30 +3535,85 @@
           </div>
         </section>
 
-        <!-- 7. TEAM & WORKERS -->
+        <!-- 7. TEAM & CANDIDATES HUB -->
         <section id="viewTeam" class="view-section">
           <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">🤝 Field Team, Coordinators & Personal Login Links</h3>
-              <button class="btn btn-sm btn-primary" onclick="openAddUserModal()">+ Add Staff Member</button>
+            <div class="card-header" style="flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
+              <div>
+                <h3 class="card-title" style="margin: 0; font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                  <span>🤝</span> परिचालन टिम, संयोजक तथा उम्मेदवार व्यवस्थापन (Team Hub)
+                </h3>
+                <div style="font-size: 12px; color: var(--slate-500); margin-top: 3px;">
+                  पालिका तथा वडा तहका उम्मेदवार, संयोजक, फिल्ड कार्यकर्ता र लगइन सुरक्षा नियन्त्रण
+                </div>
+              </div>
+              <div id="teamAdminActionButtons" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-sm" onclick="openAddCandidateModal()" style="font-weight: 800; background: #dc2626; color: white; border: none; box-shadow: 0 2px 6px rgba(220,38,38,0.25);">
+                  🎯 + नयाँ उम्मेदवार
+                </button>
+                <button class="btn btn-sm btn-primary" onclick="openAddUserModal()" style="font-weight: 800;">
+                  👥 + नयाँ स्टाफ / संयोजक
+                </button>
+              </div>
             </div>
+
+            <!-- Team Filters & Sub-Category Switcher -->
+            <div style="padding: 12px 18px; background: #f8fafc; border-bottom: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <!-- Role Sub-tabs -->
+              <div id="teamSubFilterPills" style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button class="btn btn-sm btn-primary team-subfilter active" data-subfilter="all" onclick="setTeamSubFilter('all')" style="font-weight: 700; font-size: 12px;">
+                  सबै (All) <span id="teamCountAll" style="opacity: 0.85;">(0)</span>
+                </button>
+                <button class="btn btn-sm btn-secondary team-subfilter" data-subfilter="candidate" onclick="setTeamSubFilter('candidate')" style="font-weight: 700; font-size: 12px;">
+                  🎯 उम्मेदवार <span id="teamCountCandidate" style="opacity: 0.85;">(0)</span>
+                </button>
+                <button class="btn btn-sm btn-secondary team-subfilter" data-subfilter="coordinator" onclick="setTeamSubFilter('coordinator')" style="font-weight: 700; font-size: 12px;">
+                  🏛️ संयोजक <span id="teamCountCoordinator" style="opacity: 0.85;">(0)</span>
+                </button>
+                <button class="btn btn-sm btn-secondary team-subfilter" data-subfilter="staff" onclick="setTeamSubFilter('staff')" style="font-weight: 700; font-size: 12px;">
+                  👥 फिल्ड स्टाफ <span id="teamCountStaff" style="opacity: 0.85;">(0)</span>
+                </button>
+              </div>
+
+              <!-- Search and Ward Filter -->
+              <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 1; max-width: 480px; justify-content: flex-end;">
+                <div style="position: relative; flex: 1; min-width: 170px;">
+                  <input type="text" id="teamSearchInput" class="form-control" placeholder="🔍 नाम वा फोन खोज्नुहोस्..." oninput="renderTeamList()" style="font-size: 12.5px; padding: 6px 10px;">
+                </div>
+                <select id="teamWardFilter" class="form-control" onchange="renderTeamList()" style="width: auto; min-width: 110px; font-size: 12.5px; padding: 6px 10px; font-weight: 700;">
+                  <option value="ALL">सबै वडा</option>
+                  <option value="All">पालिका तह</option>
+                  <option value="1">वडा १</option>
+                  <option value="2">वडा २</option>
+                  <option value="3">वडा ३</option>
+                  <option value="4">वडा ४</option>
+                  <option value="5">वडा ५</option>
+                  <option value="6">वडा ६</option>
+                  <option value="7">वडा ७</option>
+                  <option value="8">वडा ८</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Table on Desktop -->
             <div class="table-responsive">
-              <table>
+              <table style="width: 100%; border-collapse: collapse;">
                 <thead>
-                  <tr>
+                  <tr style="background: #f1f5f9; border-bottom: 2px solid var(--slate-300);">
                     <th style="width: 50px; text-align: center;">क्र.सं.</th>
-                    <th>Name</th>
-                    <th>Phone</th>
-                    <th>Role</th>
-                    <th>Assigned Ward</th>
-                    <th>Personal Access Link / QR</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>नाम र पद / दल</th>
+                    <th>भूमिका (Role)</th>
+                    <th>तोकिएको क्षेत्र</th>
+                    <th>सम्पर्क र लगइन PIN</th>
+                    <th style="text-align: right; padding-right: 16px;">कार्यहरू (Actions)</th>
                   </tr>
                 </thead>
                 <tbody id="teamTableRows"></tbody>
               </table>
             </div>
+
+            <!-- Responsive Cards for Mobile View -->
+            <div id="teamCardsContainer" class="cards-grid" style="display: none; padding: 14px; gap: 12px;"></div>
           </div>
         </section>
 
@@ -5089,7 +5144,7 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       // Auto cache purging if build changed
-      const CURRENT_APP_BUILD = '20261012-v8';
+      const CURRENT_APP_BUILD = '20261012-v9';
       const lastBuild = localStorage.getItem('election_app_build');
       if (lastBuild && lastBuild !== CURRENT_APP_BUILD) {
         localStorage.setItem('election_app_build', CURRENT_APP_BUILD);
@@ -8377,59 +8432,72 @@
               </div>
             </div>
 
-            <!-- Modern 1-Tap Action Buttons -->
-            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-              ${v.Phone ? `
-                <a href="tel:${cleanPhone(v.Phone)}" class="btn btn-sm" style="text-decoration: none; background: #059669; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(5,150,105,0.25);" title="सिधा फोन गर्नुहोस्">
-                  📞 फोन
-                </a>
-                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #25D366; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(37,211,102,0.25);" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">
-                  🟢 WhatsApp
-                </a>
-                <button class="btn btn-sm" onclick="openCustomMessageModal('${v.VoterID}')" style="background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px;" title="कस्टम सन्देश (SMS)">
-                  💬 सन्देश
+            <!-- Modern 2-Tier Action Buttons -->
+            <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+              <!-- Tier 1: Quick Contact Channels -->
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center; justify-content: flex-end;">
+                ${v.Phone ? `
+                  <a href="tel:${cleanPhone(v.Phone)}" class="btn btn-sm" style="text-decoration: none; background: #059669; color: white; font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(5,150,105,0.25);" title="सिधा फोन गर्नुहोस्">
+                    📞 फोन
+                  </a>
+                  <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #25D366; color: white; font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(37,211,102,0.25);" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">
+                    🟢 WhatsApp
+                  </a>
+                  <button class="btn btn-sm" onclick="openCustomMessageModal('${v.VoterID}')" style="background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 6px;" title="कस्टम सन्देश (SMS)">
+                    💬 सन्देश
+                  </button>
+                ` : ''}
+                ${v.FacebookUrl ? `
+                  <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #1877F2; color: white; font-size: 12px; font-weight: 800; padding: 6px 10px; border-radius: 6px; box-shadow: 0 2px 6px rgba(24,119,242,0.25); display: inline-flex; align-items: center; gap: 5px;" title="Facebook प्रोफाइल (${esc(v.FacebookUrl)})">
+                    ${getFacebookIconSvg(14)} <span>FB</span>
+                  </a>
+                ` : `
+                  <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 11.5px; font-weight: 700; padding: 6px 9px; opacity: 0.85; display: inline-flex; align-items: center; gap: 5px;" title="Facebook लिङ्क थप्नुहोस्">
+                    ${getFacebookIconSvg(14)} <span>+ FB</span>
+                  </button>
+                `}
+                ${v.TiktokUrl ? `
+                  <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #000000; color: white; font-size: 12px; font-weight: 800; padding: 6px 10px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.25); display: inline-flex; align-items: center; gap: 5px;" title="TikTok प्रोफाइल (${esc(v.TiktokUrl)})">
+                    ${getTiktokIconSvg(14)} <span>TikTok</span>
+                  </a>
+                ` : `
+                  <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 11.5px; font-weight: 700; padding: 6px 9px; opacity: 0.85; display: inline-flex; align-items: center; gap: 5px;" title="TikTok लिङ्क थप्नुहोस्">
+                    ${getTiktokIconSvg(14)} <span>+ TikTok</span>
+                  </button>
+                `}
+              </div>
+
+              <!-- Tier 2: Field Ops & Action Tools -->
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center; justify-content: flex-end;">
+                <button class="btn btn-sm" onclick="openRecordVisitModal('${v.VoterID}')" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; font-weight: 800; font-size: 12px; padding: 6px 12px; border-radius: 6px; border: none; box-shadow: 0 2px 8px rgba(16,185,129,0.3);" title="यस मतदाताको घरदैलो भेटघाट दर्ता गर्नुहोस्">
+                  🚶 घरदैलो भेट (+ Visit)
                 </button>
-              ` : ''}
-              ${v.FacebookUrl ? `
-                <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #1877F2; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(24,119,242,0.25); display: inline-flex; align-items: center; gap: 6px;" title="Facebook प्रोफाइल सिधा खोल्नुहोस् (${esc(v.FacebookUrl)})">
-                  ${getFacebookIconSvg(15)} <span>FB</span>
-                </a>
-              ` : `
-                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 11px; opacity: 0.85; display: inline-flex; align-items: center; gap: 6px;" title="Facebook लिङ्क थप्नुहोस्">
-                  ${getFacebookIconSvg(15)} <span>+ FB</span>
+                <button class="btn btn-sm btn-primary" onclick="printVoterSlip('${v.VoterID}')" style="font-weight: 800; font-size: 12px; padding: 6px 12px; background: #1e3a8a; border-color: #1e3a8a;" title="मतदाता परिचय पर्चा हेर्नुहोस् र प्रिन्ट गर्नुहोस्">
+                  🖨️ पर्चा (Slip)
                 </button>
-              `}
-              ${v.TiktokUrl ? `
-                <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #000000; color: white; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.25); display: inline-flex; align-items: center; gap: 6px;" title="TikTok प्रोफाइल सिधा खोल्नुहोस् (${esc(v.TiktokUrl)})">
-                  ${getTiktokIconSvg(15)} <span>TikTok</span>
-                </a>
-              ` : `
-                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 11px; opacity: 0.85; display: inline-flex; align-items: center; gap: 6px;" title="TikTok लिङ्क थप्नुहोस्">
-                  ${getTiktokIconSvg(15)} <span>+ TikTok</span>
+                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 6px 11px;">
+                  ✏️ सम्पादन
                 </button>
-              `}
-              <button class="btn btn-sm btn-primary" onclick="printVoterSlip('${v.VoterID}')" style="font-weight: 800; font-size: 12px; padding: 7px 12px; background: #1e3a8a; border-color: #1e3a8a;" title="मतदाता परिचय पर्चा हेर्नुहोस् र प्रिन्ट गर्नुहोस्">
-                🖨️ पर्चा
-              </button>
-              <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 7px 12px;">
-                ✏️ सम्पादन
-              </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- 4-TAB NAVIGATION STRIP -->
+        <!-- 5-TAB NAVIGATION STRIP -->
         <div style="display: flex; gap: 8px; border-bottom: 2px solid var(--slate-200); margin-bottom: 16px; overflow-x: auto; padding-bottom: 6px;">
-          <button class="btn btn-sm ${activeTab === 'overview' ? 'btn-primary' : 'btn-secondary'}" onclick="viewVoterProfile('${v.VoterID}', 'overview')" style="font-weight: 700;">
+          <button class="btn btn-sm ${activeTab === 'overview' ? 'btn-primary' : 'btn-secondary'}" onclick="viewVoterProfile('${v.VoterID}', 'overview')" style="font-weight: 700; white-space: nowrap;">
             📋 व्यक्तिगत विवरण (Bio)
           </button>
-          <button class="btn btn-sm ${activeTab === 'family' ? 'btn-primary' : 'btn-secondary'}" onclick="viewVoterProfile('${v.VoterID}', 'family')" style="font-weight: 700;">
+          <button class="btn btn-sm ${activeTab === 'family' ? 'btn-primary' : 'btn-secondary'}" onclick="viewVoterProfile('${v.VoterID}', 'family')" style="font-weight: 700; white-space: nowrap;">
             🌳 पारिवारिक संरचना (${familyMembers.length})
           </button>
-          <button class="btn btn-sm ${activeTab === 'timeline' ? 'btn-primary' : 'btn-secondary'}" onclick="viewVoterProfile('${v.VoterID}', 'timeline')" style="font-weight: 700;">
-            🕒 मतदाता टाइमलाइन (${visits.length + followups.length})
+          <button class="btn btn-sm ${activeTab === 'timeline' ? 'btn-primary' : 'btn-secondary'}" onclick="viewVoterProfile('${v.VoterID}', 'timeline')" style="font-weight: 700; white-space: nowrap;">
+            🕒 टाइमलाइन र टिप्पणी (${visits.length + followups.length + (v.AdminNotes ? v.AdminNotes.length : 0)})
           </button>
-          <button class="btn btn-sm ${activeTab === 'comm' ? 'btn-primary' : 'btn-secondary'}" onclick="viewVoterProfile('${v.VoterID}', 'comm')" style="font-weight: 700;">
+          <button class="btn btn-sm ${activeTab === 'influencer' ? 'btn-primary' : 'btn-secondary'}" onclick="viewVoterProfile('${v.VoterID}', 'influencer')" style="font-weight: 700; white-space: nowrap;">
+            🌟 प्रभावकारी व्यक्ति ${v.IsInfluencer ? '⭐' : ''}
+          </button>
+          <button class="btn btn-sm ${activeTab === 'comm' ? 'btn-primary' : 'btn-secondary'}" onclick="viewVoterProfile('${v.VoterID}', 'comm')" style="font-weight: 700; white-space: nowrap;">
             💬 सञ्चार र पर्चा (Outreach)
           </button>
         </div>
@@ -8834,7 +8902,54 @@
     // TAB 3: TIMELINE & VISITS
     function renderVoterTimelineTab(v, visits, followups) {
       const logs = state.activities.filter(a => a.Description && (a.Description.includes(v.Name) || a.Description.includes(v.VoterID)));
+      const adminNotes = v.AdminNotes || [];
+
       return `
+        <!-- ADMIN & FIELD CONFIDENTIAL NOTES -->
+        <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 16px;">🔒</span>
+              <b style="color: #0f172a; font-size: 13.5px;">व्यवस्थापक तथा फिल्ड गोप्य टिप्पणी (Confidential Notes)</b>
+            </div>
+            <span style="font-size: 11px; background: #e2e8f0; color: #334155; padding: 2px 8px; border-radius: 6px; font-weight: 700;">
+              आन्तरिक अभिलेख (${adminNotes.length})
+            </span>
+          </div>
+          <div style="font-size: 12px; color: #64748b; margin-bottom: 10px;">
+            यस मतदाताको विशेष चासो, आश्वासन, पारिवारिक समस्या वा गोप्य चुनावी धारणा यहाँ सुरक्षित गर्नुहोस्।
+          </div>
+
+          <!-- Notes List -->
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+            ${adminNotes.length ? adminNotes.map(n => `
+              <div style="background: white; border: 1px solid #e2e8f0; border-left: 3.5px solid #059669; border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                <div style="flex: 1;">
+                  <div style="font-size: 13px; color: #1e293b; font-weight: 600; line-height: 1.5;">${esc(n.text)}</div>
+                  <div style="font-size: 11px; color: #64748b; margin-top: 4px; display: flex; align-items: center; gap: 6px;">
+                    <span>✍️ <b>${esc(n.author || 'व्यवस्थापक')}</b> (${esc(n.role || 'Admin')})</span>
+                    <span>•</span>
+                    <span>📅 ${new Date(n.timestamp || Date.now()).toLocaleDateString('ne-NP')}</span>
+                  </div>
+                </div>
+                <button class="btn btn-sm btn-secondary" onclick="deleteVoterAdminNote('${v.VoterID}', '${n.id}')" style="font-size: 11px; padding: 2px 6px; color: #dc2626;" title="टिप्पणी मेटाउनुहोस्">✕</button>
+              </div>
+            `).join('') : `
+              <div style="padding: 10px; background: white; border-radius: 6px; border: 1px dashed #cbd5e1; font-size: 12px; color: #94a3b8; text-align: center;">
+                अहिलेसम्म कुनै आन्तरिक गोप्य टिप्पणी दर्ता गरिएको छैन। तलको बक्सबाट थप्न सक्नुहुन्छ।
+              </div>
+            `}
+          </div>
+
+          <!-- Add Note Form -->
+          <form onsubmit="addVoterAdminNote(event, '${v.VoterID}')" style="display: flex; gap: 8px; align-items: center;">
+            <input type="text" name="noteText" placeholder="🔒 नयाँ गोप्य टिप्पणी वा विशेष माग लेख्नुहोस्..." required class="form-control" style="font-size: 12.5px; padding: 7px 10px; background: white;">
+            <button type="submit" class="btn btn-sm btn-primary" style="white-space: nowrap; font-weight: 800; font-size: 12px; padding: 7px 14px; background: #059669; border-color: #047857;">
+              + टिप्पणी सेभ
+            </button>
+          </form>
+        </div>
+
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
           <h4 style="margin: 0; font-size: 15px;">🕒 मतदाता भेटघाट र अद्यावधिक इतिहास</h4>
           <button class="btn btn-sm btn-primary" onclick="openRecordVisitModal('${v.VoterID}')">+ नयाँ भेटघाट दर्ता गर्नुहोस्</button>
@@ -8874,13 +8989,49 @@
             </div>
           `).join('') : ''}
 
-          ${(!visits.length && !followups.length && !logs.length) ? `
+          ${(!visits.length && !followups.length && !logs.length && !adminNotes.length) ? `
             <div style="text-align: center; padding: 30px; color: var(--slate-500); background: var(--slate-50); border-radius: var(--radius-sm);">
               कुनै भेटघाट वा टाइमलाइन विवरण दर्ता भएको छैन। माथिको "+ नयाँ भेटघाट दर्ता गर्नुहोस्" बटन थिच्नुहोस्।
             </div>
           ` : ''}
         </div>
       `;
+    }
+
+    async function addVoterAdminNote(e, voterId) {
+      e.preventDefault();
+      const form = e.target;
+      const text = form.noteText.value.trim();
+      if (!text) return;
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+      if (!v.AdminNotes) v.AdminNotes = [];
+      const authorName = (currentUser && currentUser.Name) || 'व्यवस्थापक';
+      const authorRole = (currentUser && currentUser.Role) || 'Palika Admin';
+      const newNote = {
+        id: 'note_' + Date.now().toString(36),
+        text: text,
+        author: authorName,
+        role: authorRole,
+        timestamp: new Date().toISOString()
+      };
+      v.AdminNotes.unshift(newNote);
+      saveState();
+      if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
+      logActivity('admin_note', `${v.Name} को प्रोफाइलमा गोप्य टिप्पणी सुरक्षित गरियो: "${text.substring(0, 30)}..."`);
+      showToast('गोप्य टिप्पणी सुरक्षित भयो!', 'success');
+      viewVoterProfile(voterId, 'timeline');
+    }
+
+    async function deleteVoterAdminNote(voterId, noteId) {
+      if (!confirm('के तपाईं यो टिप्पणी मेटाउन चाहनुहुन्छ?')) return;
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v || !v.AdminNotes) return;
+      v.AdminNotes = v.AdminNotes.filter(n => n.id !== noteId);
+      saveState();
+      if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
+      showToast('टिप्पणी हटाइयो', 'info');
+      viewVoterProfile(voterId, 'timeline');
     }
 
     // TAB 4: SLIP & COMMUNICATION OUTREACH
@@ -10436,65 +10587,613 @@
     }
 
     // ==========================================
-    // 13. TEAM & WORKERS MODULE
+    // 13. TEAM & CANDIDATES HUB MODULE
     // ==========================================
+    function setTeamSubFilter(subfilter) {
+      state.teamSubFilter = subfilter;
+      document.querySelectorAll('.team-subfilter').forEach(btn => {
+        const isActive = btn.getAttribute('data-subfilter') === subfilter;
+        btn.classList.toggle('active', isActive);
+        if (isActive) {
+          btn.classList.remove('btn-secondary');
+          btn.classList.add('btn-primary');
+        } else {
+          btn.classList.remove('btn-primary');
+          btn.classList.add('btn-secondary');
+        }
+      });
+      renderTeamList();
+    }
+
     function renderTeamList() {
       const tbody = document.getElementById('teamTableRows');
+      const cardsContainer = document.getElementById('teamCardsContainer');
       if (!tbody) return;
+
+      const currentSubFilter = state.teamSubFilter || 'all';
+      const searchInput = document.getElementById('teamSearchInput');
+      const searchQuery = searchInput ? searchInput.value.trim().toLowerCase() : '';
+      const wardSelect = document.getElementById('teamWardFilter');
+      const wardFilter = wardSelect ? wardSelect.value : 'ALL';
 
       const isWardCoord = currentUser && currentUser.Role === 'Ward Coordinator';
       const myWard = currentUser ? currentUser.Ward : 'All';
+      const isAdmin = currentUser && (currentUser.Role === 'Palika Admin' || currentUser.Role === 'Super Admin');
 
-      let displayUsers = state.users;
-      if (isWardCoord && myWard !== 'All') {
-        displayUsers = state.users.filter(u => String(u.Ward) === String(myWard) || u.UserID === currentUser.UserID);
+      // Admin action buttons visibility
+      const adminBtnGroup = document.getElementById('teamAdminActionButtons');
+      if (adminBtnGroup) {
+        adminBtnGroup.style.display = (isAdmin || !currentUser) ? 'flex' : 'none';
       }
 
-      tbody.innerHTML = displayUsers.map((u, idx) => {
-        const pin = u.PIN || '1234';
-        return `
+      // Base Data Pools
+      let allCandidates = typeof getScopedCandidates === 'function' ? getScopedCandidates() : (state.candidates || []);
+      let allUsers = typeof getScopedUsers === 'function' ? getScopedUsers() : (state.users || []);
+
+      if (isWardCoord && myWard !== 'All') {
+        allCandidates = allCandidates.filter(c => c.Ward === 'All' || String(c.Ward) === String(myWard));
+        allUsers = allUsers.filter(u => u.Ward === 'All' || String(u.Ward) === String(myWard) || u.UserID === currentUser.UserID);
+      }
+
+      // Counts
+      const candCount = allCandidates.length;
+      const coordCount = allUsers.filter(u => (u.Role || '').includes('Coordinator')).length;
+      const staffCount = allUsers.filter(u => !(u.Role || '').includes('Coordinator') && !(u.Role || '').includes('Admin')).length;
+      const totalCount = candCount + allUsers.length;
+
+      const cntAll = document.getElementById('teamCountAll');
+      if (cntAll) cntAll.textContent = `(${totalCount})`;
+      const cntCand = document.getElementById('teamCountCandidate');
+      if (cntCand) cntCand.textContent = `(${candCount})`;
+      const cntCoord = document.getElementById('teamCountCoordinator');
+      if (cntCoord) cntCoord.textContent = `(${coordCount})`;
+      const cntStaff = document.getElementById('teamCountStaff');
+      if (cntStaff) cntStaff.textContent = `(${staffCount})`;
+
+      // Unified items array
+      let combined = [];
+
+      if (currentSubFilter === 'all' || currentSubFilter === 'candidate') {
+        allCandidates.forEach(c => {
+          combined.push({
+            type: 'candidate',
+            id: c.CandidateID,
+            name: c.Name,
+            postOrRole: c.Post || 'उम्मेदवार',
+            partyOrDesc: c.Party || '',
+            symbol: c.Symbol || '☀️',
+            ward: c.Ward || 'All',
+            phone: c.Phone || '-',
+            pin: c.PIN || '-',
+            active: true,
+            raw: c
+          });
+        });
+      }
+
+      if (currentSubFilter === 'all' || currentSubFilter === 'coordinator' || currentSubFilter === 'staff') {
+        allUsers.forEach(u => {
+          const isCoord = (u.Role || '').includes('Coordinator');
+          if (currentSubFilter === 'coordinator' && !isCoord) return;
+          if (currentSubFilter === 'staff' && (isCoord || (u.Role || '').includes('Admin'))) return;
+
+          combined.push({
+            type: isCoord ? 'coordinator' : ((u.Role || '').includes('Admin') ? 'admin' : 'staff'),
+            id: u.UserID,
+            name: u.Name,
+            postOrRole: u.Role,
+            partyOrDesc: u.Tole ? `टोल: ${u.Tole}` : '',
+            symbol: null,
+            ward: u.Ward || 'All',
+            phone: u.Phone || '-',
+            pin: u.PIN || '1234',
+            active: u.Active !== false,
+            raw: u
+          });
+        });
+      }
+
+      // Apply Search Filter
+      if (searchQuery) {
+        combined = combined.filter(item => {
+          return (item.name || '').toLowerCase().includes(searchQuery) ||
+                 (item.phone || '').toLowerCase().includes(searchQuery) ||
+                 (item.postOrRole || '').toLowerCase().includes(searchQuery) ||
+                 (item.partyOrDesc || '').toLowerCase().includes(searchQuery) ||
+                 (item.id || '').toLowerCase().includes(searchQuery);
+        });
+      }
+
+      // Apply Ward Filter
+      if (wardFilter !== 'ALL') {
+        combined = combined.filter(item => {
+          if (wardFilter === 'All') return item.ward === 'All';
+          return String(item.ward) === String(wardFilter);
+        });
+      }
+
+      if (combined.length === 0) {
+        tbody.innerHTML = `
           <tr>
+            <td colspan="6" style="text-align: center; padding: 32px 16px; color: var(--slate-500); background: #f8fafc;">
+              <div style="font-size: 28px; margin-bottom: 6px;">👥</div>
+              <div style="font-weight: 700; font-size: 14px; color: #334155;">कुनै टोली सदस्य वा उम्मेदवार फेला परेन</div>
+              <div style="font-size: 12px; color: #64748b; margin-top: 3px;">माथिको फिल्टर वा खोज सच्याउनुहोस्।</div>
+            </td>
+          </tr>
+        `;
+        if (cardsContainer) cardsContainer.innerHTML = '';
+        return;
+      }
+
+      // Render Desktop Rows (6 clean systematic columns)
+      tbody.innerHTML = combined.map((item, idx) => {
+        const isCand = item.type === 'candidate';
+        const initial = (item.name || 'T').trim().charAt(0).toUpperCase();
+
+        const badgeHtml = isCand 
+          ? `<span class="badge" style="background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; font-weight: 800;">🎯 उम्मेदवार</span>`
+          : (item.type === 'coordinator'
+            ? `<span class="badge" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; font-weight: 800;">🏛️ संयोजक</span>`
+            : (item.type === 'admin'
+              ? `<span class="badge" style="background: #faf5ff; color: #7e22ce; border: 1px solid #e9d5ff; font-weight: 800;">👑 व्यवस्थापक</span>`
+              : `<span class="badge" style="background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; font-weight: 800;">👥 फिल्ड स्टाफ</span>`
+            )
+          );
+
+        return `
+          <tr style="border-bottom: 1px solid #e2e8f0;">
             <td style="text-align: center; font-weight: 700; color: var(--slate-600);">${idx + 1}</td>
             <td>
               <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="width: 34px; height: 34px; border-radius: 50%; background: #4f46e5; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px;">
-                  ${u.Name.charAt(0).toUpperCase()}
+                <div style="width: 38px; height: 38px; border-radius: 50%; background: ${isCand ? 'linear-gradient(135deg, #dc2626 0%, #f97316 100%)' : 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)'}; color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: ${isCand ? '17px' : '15px'}; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+                  ${isCand ? (item.symbol || '☀️') : initial}
                 </div>
                 <div>
-                  <b style="color: #0f172a; font-size: 14px;">${esc(u.Name)}</b>
-                  <div style="font-size: 11px; color: var(--slate-500);">ID: ${esc(u.UserID)}</div>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <b style="color: #0f172a; font-size: 14px;">${esc(item.name)}</b>
+                    ${isCand ? `<span style="font-size: 11px; background: #fff1f2; color: #e11d48; font-weight: 800; padding: 1px 6px; border-radius: 4px; border: 1px solid #ffe4e6;">${esc(item.symbol)}</span>` : ''}
+                  </div>
+                  <div style="font-size: 11.5px; color: #475569; margin-top: 2px;">
+                    <b>${esc(item.postOrRole)}</b> ${item.partyOrDesc ? `• <span style="color: #64748b;">${esc(item.partyOrDesc)}</span>` : ''}
+                  </div>
                 </div>
               </div>
             </td>
-            <td><b>${esc(u.Phone || '-')}</b></td>
             <td>
-              <span class="badge ${u.Role === 'Super Admin' ? 'badge-solid' : (u.Role === 'Field Worker' ? 'badge-verified' : 'badge-contacted')}" style="font-weight: 700;">
-                ${esc(u.Role)}
+              ${badgeHtml}
+              <div style="font-size: 11px; color: #64748b; margin-top: 2px;">ID: ${esc(item.id)}</div>
+            </td>
+            <td>
+              <span class="badge" style="background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; font-weight: 700;">
+                ${item.ward === 'All' ? '🌐 पालिकाभरि' : `🏛️ वडा ${esc(item.ward)}`}
               </span>
-              <div style="font-size: 11px; color: var(--slate-500); margin-top: 3px;">
-                ${ROLE_PERMISSIONS[u.Role] ? ROLE_PERMISSIONS[u.Role].allowedViews.length + ' सेक्सन अनुमति' : 'फिल्ड पहुँच'}
+            </td>
+            <td>
+              <div style="display: flex; flex-direction: column; gap: 3px;">
+                <b style="font-size: 13px; color: #0f172a;">${esc(item.phone)}</b>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <span style="font-family: monospace; font-weight: 800; background: #f1f5f9; padding: 1px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 11.5px; color: #1e293b;" title="लगइन PIN कोड">PIN: ${esc(item.pin)}</span>
+                  <span class="badge ${item.active ? 'badge-verified' : 'badge-pending'}" style="font-size: 10px; padding: 1px 5px;">${item.active ? 'सक्रिय' : 'निष्क्रिय'}</span>
+                </div>
               </div>
             </td>
-            <td>वडा ${esc(u.Ward || 'All')}${u.Tole ? ' • ' + esc(u.Tole) : ''}</td>
-            <td>
-              <span style="font-family: monospace; font-weight: 800; background: #f1f5f9; padding: 2px 8px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 13px; color: #0f172a;">${pin}</span>
-            </td>
-            <td>
-              <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-                <button class="btn btn-sm btn-primary" onclick="openWorkerProfileModal('${u.UserID}')" title="कार्यकर्ता पूर्ण प्रोफाइल, कार्यसम्पादन र टाइमलाइन" style="font-weight: 700; background: #4f46e5; border-color: #4338ca;">👤 प्रोफाइल</button>
-                <button class="btn btn-sm btn-secondary" onclick="showStaffQr('${u.UserID}')" title="व्यक्तिगत QR र लगइन लिङ्क" style="font-weight: 700;">📱 QR</button>
-                <button class="btn btn-sm btn-secondary" onclick="openDirectNoticeToWorker('${u.UserID}')" title="यस कार्यकर्तालाई मात्र सूचना पठाउनुहोस्">📢 सूचना</button>
-              </div>
-            </td>
-            <td><span class="badge ${u.Active ? 'badge-verified' : 'badge-pending'}">${u.Active ? 'Active' : 'Disabled'}</span></td>
-            <td>
-              <div style="display: flex; gap: 6px;">
-                <button class="btn btn-sm btn-secondary" onclick="resetUserPinPrompt('${u.UserID}')">🔑 PIN फेर्नुहोस्</button>
+            <td style="text-align: right; padding-right: 14px;">
+              <div style="display: inline-flex; gap: 5px; align-items: center; justify-content: flex-end; flex-wrap: wrap;">
+                ${isCand ? `
+                  <button class="btn btn-sm" onclick="openCandidateProfileModal('${item.id}')" style="background: #1e3a8a; color: white; font-weight: 700; font-size: 11.5px; padding: 5px 10px;" title="उम्मेदवार पूर्ण प्रोफाइल र कमान्ड">
+                    👤 प्रोफाइल
+                  </button>
+                  <button class="btn btn-sm btn-secondary" onclick="openCandidateProfileModal('${item.id}'); setTimeout(() => switchCandidateTab('brochure'), 50);" style="font-weight: 700; font-size: 11.5px; padding: 5px 9px;" title="डिजिटल ब्रोसर तथा पर्चा">
+                    📄 ब्रोसर
+                  </button>
+                  ${isAdmin ? `
+                    <button class="btn btn-sm btn-secondary" onclick="openEditCandidateModal('${item.id}')" style="font-size: 11.5px; padding: 5px 8px;" title="उम्मेदवार विवरण सम्पादन">
+                      ✏️
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="deleteCandidatePrompt('${item.id}')" style="font-size: 11.5px; padding: 5px 8px; color: #dc2626;" title="उम्मेदवार मेटाउनुहोस्">
+                      🗑️
+                    </button>
+                  ` : ''}
+                ` : `
+                  <button class="btn btn-sm btn-primary" onclick="openWorkerProfileModal('${item.id}')" style="font-weight: 700; font-size: 11.5px; padding: 5px 10px;" title="कार्यकर्ता पूर्ण प्रोफाइल, स्कोरकार्ड र टाइमलाइन">
+                    👤 प्रोफाइल
+                  </button>
+                  <button class="btn btn-sm btn-secondary" onclick="showStaffQr('${item.id}')" style="font-weight: 700; font-size: 11.5px; padding: 5px 9px;" title="व्यक्तिगत लगइन QR र लिङ्क">
+                    📱 QR
+                  </button>
+                  ${isAdmin ? `
+                    <button class="btn btn-sm btn-secondary" onclick="openEditUserModal('${item.id}')" style="font-size: 11.5px; padding: 5px 8px;" title="कार्यकर्ता विवरण सम्पादन">
+                      ✏️
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="deleteUserPrompt('${item.id}')" style="font-size: 11.5px; padding: 5px 8px; color: #dc2626;" title="कार्यकर्ता मेटाउनुहोस्">
+                      🗑️
+                    </button>
+                  ` : ''}
+                `}
               </div>
             </td>
           </tr>
         `;
       }).join('');
+
+      // Render Mobile Cards
+      if (cardsContainer) {
+        cardsContainer.innerHTML = combined.map(item => {
+          const isCand = item.type === 'candidate';
+          const initial = (item.name || 'T').trim().charAt(0).toUpperCase();
+
+          return `
+            <div style="background: white; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 10px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div style="width: 44px; height: 44px; border-radius: 50%; background: ${isCand ? 'linear-gradient(135deg, #dc2626 0%, #f97316 100%)' : 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)'}; color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: ${isCand ? '19px' : '17px'}; flex-shrink: 0;">
+                    ${isCand ? (item.symbol || '☀️') : initial}
+                  </div>
+                  <div>
+                    <b style="font-size: 15px; color: #0f172a; display: block;">${esc(item.name)}</b>
+                    <div style="font-size: 12px; color: #475569; margin-top: 2px;">
+                      <b>${esc(item.postOrRole)}</b> ${item.partyOrDesc ? `• ${esc(item.partyOrDesc)}` : ''}
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <span class="badge ${item.active ? 'badge-verified' : 'badge-pending'}" style="font-size: 10.5px;">${item.active ? 'सक्रिय' : 'निष्क्रिय'}</span>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-radius: 8px; padding: 8px 12px; font-size: 12px;">
+                <div>
+                  <span style="color: #64748b;">क्षेत्र:</span> <b>${item.ward === 'All' ? 'समग्र पालिका' : 'वडा ' + esc(item.ward)}</b>
+                </div>
+                <div>
+                  <span style="color: #64748b;">फोन:</span> <b>${esc(item.phone)}</b>
+                </div>
+                <div>
+                  <span style="color: #64748b;">PIN:</span> <span style="font-family: monospace; font-weight: 800; background: #e2e8f0; padding: 1px 6px; border-radius: 4px;">${esc(item.pin)}</span>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; border-top: 1px dashed #e2e8f0; padding-top: 8px;">
+                ${isCand ? `
+                  <button class="btn btn-sm" onclick="openCandidateProfileModal('${item.id}')" style="background: #1e3a8a; color: white; font-weight: 800; font-size: 12px; padding: 6px 12px;">
+                    👤 प्रोफाइल
+                  </button>
+                  <button class="btn btn-sm btn-secondary" onclick="openCandidateProfileModal('${item.id}'); setTimeout(() => switchCandidateTab('brochure'), 50);" style="font-weight: 700; font-size: 12px; padding: 6px 10px;">
+                    📄 ब्रोसर
+                  </button>
+                  ${isAdmin ? `
+                    <button class="btn btn-sm btn-secondary" onclick="openEditCandidateModal('${item.id}')" style="font-size: 12px;">✏️ सम्पादन</button>
+                    <button class="btn btn-sm btn-secondary" onclick="deleteCandidatePrompt('${item.id}')" style="color: #dc2626; font-size: 12px;">🗑️</button>
+                  ` : ''}
+                ` : `
+                  <button class="btn btn-sm btn-primary" onclick="openWorkerProfileModal('${item.id}')" style="font-weight: 800; font-size: 12px; padding: 6px 12px;">
+                    👤 प्रोफाइल
+                  </button>
+                  <button class="btn btn-sm btn-secondary" onclick="showStaffQr('${item.id}')" style="font-weight: 700; font-size: 12px; padding: 6px 10px;">
+                    📱 QR
+                  </button>
+                  ${isAdmin ? `
+                    <button class="btn btn-sm btn-secondary" onclick="openEditUserModal('${item.id}')" style="font-size: 12px;">✏️ सम्पादन</button>
+                    <button class="btn btn-sm btn-secondary" onclick="deleteUserPrompt('${item.id}')" style="color: #dc2626; font-size: 12px;">🗑️</button>
+                  ` : ''}
+                `}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // ==========================================
+    // CANDIDATE CRUD MANAGEMENT (Admin Only)
+    // ==========================================
+    function openAddCandidateModal() {
+      const palette = getActivePartyPalette();
+      openModal(
+        '🎯 नयाँ उम्मेदवार दर्ता गर्नुहोस् (Add Candidate)',
+        `
+        <form id="addCandidateForm" onsubmit="saveNewCandidate(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">उम्मेदवारको पूरा नाम *</label>
+              <input type="text" name="Name" required class="form-control" placeholder="उदा: राम बहादुर लामा">
+            </div>
+            <div class="form-group">
+              <label class="form-label">उम्मेदवारी पद (Post) *</label>
+              <select name="Post" required class="form-control" style="font-weight: 700;">
+                <option value="पालिका प्रमुख / मेयर (Mayor)">पालिका प्रमुख / मेयर (Mayor)</option>
+                <option value="पालिका उपप्रमुख / उपमेयर (Deputy Mayor)">पालिका उपप्रमुख / उपमेयर (Deputy Mayor)</option>
+                <option value="वडा अध्यक्ष (Ward Chair)">वडा अध्यक्ष (Ward Chair)</option>
+                <option value="महिला वडा सदस्य (Ward Member)">महिला वडा सदस्य (Ward Member)</option>
+                <option value="दलित महिला वडा सदस्य (Ward Member)">दलित महिला वडा सदस्य (Ward Member)</option>
+                <option value="खुला वडा सदस्य (Ward Member)">खुला वडा सदस्य (Ward Member)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">राजनीतिक दल (Party) *</label>
+              <input type="text" name="Party" required class="form-control" value="${esc(palette.name)}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">चुनाव चिन्ह (Election Symbol) *</label>
+              <input type="text" name="Symbol" required class="form-control" value="${esc(palette.symbol)}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">निर्वाचन क्षेत्र / वडा *</label>
+              <select name="Ward" required class="form-control">
+                <option value="All">समग्र पालिका (All Wards)</option>
+                ${state.wards.map(w => `<option value="${w.WardNo}">वडा नं ${w.WardNo}</option>`).join('')}
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">सम्पर्क फोन नम्बर</label>
+              <input type="text" name="Phone" class="form-control" placeholder="उदा: 9851000000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">जित्न आवश्यक विजयी लक्ष्य मत (Target Votes) *</label>
+              <input type="number" name="TargetVotes" required class="form-control" value="4500" min="50">
+            </div>
+            <div class="form-group">
+              <label class="form-label">लगइन PIN कोड (४ अङ्क)</label>
+              <input type="text" name="PIN" class="form-control" maxlength="4" value="2084">
+            </div>
+          </div>
+          <div style="margin-top: 16px; display: flex; justify-content: flex-end; gap: 8px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">रद्द</button>
+            <button type="submit" class="btn btn-primary" style="background: #dc2626; border-color: #b91c1c; font-weight: 800;">
+              🎯 उम्मेदवार सुरक्षित गर्नुहोस्
+            </button>
+          </div>
+        </form>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">बन्द</button>`
+      );
+    }
+
+    function saveNewCandidate(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const activeTenant = (state.settings && state.settings.CURRENT_TENANT_ID) || 'TNT_HELAMBU';
+
+      const newCand = {
+        CandidateID: 'CND_' + Date.now().toString(36).toUpperCase(),
+        Name: formData.get('Name').trim(),
+        Post: formData.get('Post'),
+        Level: 'स्थानीय तह (Local Level)',
+        Ward: formData.get('Ward'),
+        Party: formData.get('Party').trim(),
+        Symbol: formData.get('Symbol').trim(),
+        Phone: formData.get('Phone').trim(),
+        TargetVotes: parseInt(formData.get('TargetVotes')) || 4500,
+        PIN: formData.get('PIN') || '2084',
+        TenantID: activeTenant,
+        events: [],
+        StrategyNotes: []
+      };
+
+      if (!state.candidates) state.candidates = [];
+      state.candidates.push(newCand);
+      saveState();
+
+      logActivity('candidate_manage', `🎯 नयाँ उम्मेदवार ${newCand.Name} (${newCand.Post}) दर्ता गरियो।`);
+      closeModal();
+      renderTeamList();
+      if (typeof populateWarRoomCandidateSelector === 'function') populateWarRoomCandidateSelector();
+      if (typeof renderCandidateWarRoom === 'function') renderCandidateWarRoom();
+      showToast(`${newCand.Name} उम्मेदवारको रूपमा दर्ता हुनुभयो!`, 'success');
+    }
+
+    function openEditCandidateModal(candId) {
+      const c = (state.candidates || []).find(x => x.CandidateID === candId);
+      if (!c) return showToast('उम्मेदवार फेला परेन', 'error');
+
+      openModal(
+        `✏️ उम्मेदवार विवरण सम्पादन: ${esc(c.Name)}`,
+        `
+        <form id="editCandidateForm" onsubmit="saveEditCandidate(event, '${c.CandidateID}')">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">उम्मेदवारको पूरा नाम *</label>
+              <input type="text" name="Name" required class="form-control" value="${esc(c.Name)}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">उम्मेदवारी पद (Post) *</label>
+              <select name="Post" required class="form-control" style="font-weight: 700;">
+                <option value="पालिका प्रमुख / मेयर (Mayor)" ${c.Post && c.Post.includes('प्रमुख') && !c.Post.includes('उप') ? 'selected' : ''}>पालिका प्रमुख / मेयर (Mayor)</option>
+                <option value="पालिका उपप्रमुख / उपमेयर (Deputy Mayor)" ${c.Post && c.Post.includes('उपप्रमुख') ? 'selected' : ''}>पालिका उपप्रमुख / उपमेयर (Deputy Mayor)</option>
+                <option value="वडा अध्यक्ष (Ward Chair)" ${c.Post && c.Post.includes('अध्यक्ष') && !c.Post.includes('पालिका') ? 'selected' : ''}>वडा अध्यक्ष (Ward Chair)</option>
+                <option value="महिला वडा सदस्य (Ward Member)" ${c.Post && c.Post.includes('महिला वडा सदस्य') ? 'selected' : ''}>महिला वडा सदस्य (Ward Member)</option>
+                <option value="दलित महिला वडा सदस्य (Ward Member)" ${c.Post && c.Post.includes('दलित') ? 'selected' : ''}>दलित महिला वडा सदस्य (Ward Member)</option>
+                <option value="खुला वडा सदस्य (Ward Member)" ${c.Post && c.Post.includes('खुला') ? 'selected' : ''}>खुला वडा सदस्य (Ward Member)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">राजनीतिक दल (Party) *</label>
+              <input type="text" name="Party" required class="form-control" value="${esc(c.Party || '')}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">चुनाव चिन्ह (Election Symbol) *</label>
+              <input type="text" name="Symbol" required class="form-control" value="${esc(c.Symbol || '')}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">निर्वाचन क्षेत्र / वडा *</label>
+              <select name="Ward" required class="form-control">
+                <option value="All" ${c.Ward === 'All' ? 'selected' : ''}>समग्र पालिका (All Wards)</option>
+                ${state.wards.map(w => `<option value="${w.WardNo}" ${String(c.Ward) === String(w.WardNo) ? 'selected' : ''}>वडा नं ${w.WardNo}</option>`).join('')}
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">सम्पर्क फोन नम्बर</label>
+              <input type="text" name="Phone" class="form-control" value="${esc(c.Phone || '')}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">जित्न आवश्यक विजयी लक्ष्य मत (Target Votes) *</label>
+              <input type="number" name="TargetVotes" required class="form-control" value="${c.TargetVotes || 4500}" min="50">
+            </div>
+            <div class="form-group">
+              <label class="form-label">लगइन PIN कोड (४ अङ्क)</label>
+              <input type="text" name="PIN" class="form-control" maxlength="4" value="${esc(c.PIN || '2084')}">
+            </div>
+          </div>
+          <div style="margin-top: 16px; display: flex; justify-content: flex-end; gap: 8px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">रद्द</button>
+            <button type="submit" class="btn btn-primary" style="background: #1e3a8a; font-weight: 800;">
+              💾 परिवर्तन सेभ गर्नुहोस्
+            </button>
+          </div>
+        </form>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">बन्द</button>`
+      );
+    }
+
+    function saveEditCandidate(e, candId) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const c = (state.candidates || []).find(x => x.CandidateID === candId);
+      if (!c) return;
+
+      c.Name = formData.get('Name').trim();
+      c.Post = formData.get('Post');
+      c.Party = formData.get('Party').trim();
+      c.Symbol = formData.get('Symbol').trim();
+      c.Ward = formData.get('Ward');
+      c.Phone = formData.get('Phone').trim();
+      c.TargetVotes = parseInt(formData.get('TargetVotes')) || 4500;
+      c.PIN = formData.get('PIN') || '2084';
+
+      saveState();
+      logActivity('candidate_manage', `✏️ उम्मेदवार ${c.Name} को विवरण सम्पादन गरियो।`);
+      closeModal();
+      renderTeamList();
+      if (typeof populateWarRoomCandidateSelector === 'function') populateWarRoomCandidateSelector();
+      if (typeof renderCandidateWarRoom === 'function') renderCandidateWarRoom();
+      showToast(`${c.Name} को विवरण सुरक्षित भयो!`, 'success');
+    }
+
+    function deleteCandidatePrompt(candId) {
+      const c = (state.candidates || []).find(x => x.CandidateID === candId);
+      if (!c) return;
+
+      if (!confirm(`के तपाईं उम्मेदवार "${c.Name}" लाई साँच्चै सूचीबाट हटाउन चाहनुहुन्छ?`)) return;
+
+      state.candidates = state.candidates.filter(x => x.CandidateID !== candId);
+      saveState();
+      logActivity('candidate_manage', `🗑️ उम्मेदवार ${c.Name} लाई हटाइयो।`);
+      renderTeamList();
+      if (typeof populateWarRoomCandidateSelector === 'function') populateWarRoomCandidateSelector();
+      if (typeof renderCandidateWarRoom === 'function') renderCandidateWarRoom();
+      showToast(`उम्मेदवार ${c.Name} हटाइयो।`, 'info');
+    }
+
+    // ==========================================
+    // USER / STAFF CRUD MANAGEMENT (Admin Only)
+    // ==========================================
+    function openEditUserModal(userId) {
+      const u = (state.users || []).find(x => x.UserID === userId);
+      if (!u) return showToast('प्रयोगकर्ता फेला परेन', 'error');
+
+      openModal(
+        `✏️ कार्यकर्ता / संयोजक सम्पादन: ${esc(u.Name)}`,
+        `
+        <form id="editUserForm" onsubmit="saveEditUser(event, '${u.UserID}')">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">पूरा नाम *</label>
+              <input type="text" name="Name" required class="form-control" value="${esc(u.Name)}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">सम्पर्क फोन *</label>
+              <input type="text" name="Phone" required class="form-control" value="${esc(u.Phone || '')}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">भूमिका (Role & Access Level) *</label>
+              <select name="Role" required class="form-control" onchange="updateRolePreviewHelp(this.value)" style="font-weight: 700;">
+                <option value="Field Worker" ${u.Role === 'Field Worker' ? 'selected' : ''}>🚶 फिल्ड कार्यकर्ता (Field Worker)</option>
+                <option value="Tole Coordinator" ${u.Role === 'Tole Coordinator' ? 'selected' : ''}>🏘️ टोल संयोजक (Tole Coordinator)</option>
+                <option value="Booth Coordinator" ${u.Role === 'Booth Coordinator' ? 'selected' : ''}>🗳️ मतदान केन्द्र संयोजक (Booth Coordinator)</option>
+                <option value="Ward Coordinator" ${u.Role === 'Ward Coordinator' ? 'selected' : ''}>📋 वडा संयोजक (Ward Coordinator)</option>
+                <option value="Candidate" ${u.Role === 'Candidate' ? 'selected' : ''}>🎯 उम्मेदवार (Candidate - War Room)</option>
+                <option value="Palika Admin" ${u.Role === 'Palika Admin' ? 'selected' : ''}>🏛️ पालिका एडमिन (Campaign Admin)</option>
+                <option value="Super Admin" ${u.Role === 'Super Admin' ? 'selected' : ''}>👑 सुपर एडमिन (Platform HQ)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">तोकिएको वडा</label>
+              <select name="Ward" class="form-control">
+                <option value="All" ${u.Ward === 'All' ? 'selected' : ''}>All Wards (समग्र पालिका)</option>
+                ${state.wards.map(w => `<option value="${w.WardNo}" ${String(u.Ward) === String(w.WardNo) ? 'selected' : ''}>Ward ${w.WardNo}</option>`).join('')}
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">टोल (यदि छ भने)</label>
+              <input type="text" name="Tole" class="form-control" value="${esc(u.Tole || '')}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">४-अङ्कको PIN कोड</label>
+              <input type="text" name="PIN" class="form-control" maxlength="4" value="${esc(u.PIN || '1234')}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">खाता स्थिति (Active Status)</label>
+              <select name="Active" class="form-control">
+                <option value="true" ${u.Active !== false ? 'selected' : ''}>सक्रिय (Active)</option>
+                <option value="false" ${u.Active === false ? 'selected' : ''}>निष्क्रिय (Disabled)</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top: 16px; display: flex; justify-content: flex-end; gap: 8px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">रद्द</button>
+            <button type="submit" class="btn btn-primary" style="font-weight: 800;">💾 सुरक्षित गर्नुहोस्</button>
+          </div>
+        </form>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">बन्द</button>`
+      );
+    }
+
+    function saveEditUser(e, userId) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const u = (state.users || []).find(x => x.UserID === userId);
+      if (!u) return;
+
+      u.Name = formData.get('Name').trim();
+      u.Phone = formData.get('Phone').trim();
+      u.Role = formData.get('Role');
+      u.Ward = formData.get('Ward');
+      u.Tole = formData.get('Tole') ? formData.get('Tole').trim() : '';
+      u.PIN = formData.get('PIN') || '1234';
+      u.Active = formData.get('Active') === 'true';
+
+      saveState();
+      if (typeof pushUserToSupabase === 'function') pushUserToSupabase(u);
+
+      logActivity('user_manage', `✏️ कार्यकर्ता ${u.Name} (${u.Role}) को विवरण सम्पादन गरियो।`);
+      closeModal();
+      renderTeamList();
+      populateLoginUserSelector();
+      showToast(`${u.Name} को खाता अद्यावधिक भयो!`, 'success');
+    }
+
+    function deleteUserPrompt(userId) {
+      if (currentUser && currentUser.UserID === userId) {
+        return alert('तपाईंले हाल लगइन भइरहेको आफ्नै खाता मेटाउन सक्नुहुन्न!');
+      }
+
+      const u = (state.users || []).find(x => x.UserID === userId);
+      if (!u) return;
+
+      if (!confirm(`के तपाईं "${u.Name}" (${u.Role}) को खाता मेटाउन चाहनुहुन्छ?`)) return;
+
+      state.users = state.users.filter(x => x.UserID !== userId);
+      saveState();
+      logActivity('user_manage', `🗑️ कार्यकर्ता ${u.Name} को खाता हटाइयो।`);
+      renderTeamList();
+      populateLoginUserSelector();
+      showToast(`${u.Name} को खाता हटाइयो।`, 'info');
     }
 
     
@@ -10929,7 +11628,7 @@
                 • <b>गोप्य लगइन PIN:</b> <span style="font-family: monospace; font-weight: 800; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">${esc(u.PIN || '1234')}</span><br>
                 • <b>फिल्ड स्थिति:</b> ${u.Active ? '<span style="color:#10b981; font-weight:700;">सक्रिय (Active)</span>' : '<span style="color:#ef4444; font-weight:700;">निष्क्रिय</span>'}
               </div>
-              <div style="margin-top: 12px; display: flex; gap: 8px;">
+              <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
                 <button class="btn btn-sm btn-primary" onclick="switchWorkerTab('timeline')" style="font-size: 12px; font-weight: 700;">
                   ⏱️ प्रत्यक्ष टाइमलाइन हेर्नुहोस्
                 </button>
@@ -10937,6 +11636,37 @@
                   🪪 परिचयपत्र डाउनलोड / प्रिन्ट
                 </button>
               </div>
+            </div>
+
+            <!-- Admin Evaluation & Internal Notes Box -->
+            <div style="margin-top: 14px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+                <b style="font-size: 13.5px; color: #0f172a; display: flex; align-items: center; gap: 6px;">
+                  🔒 व्यवस्थापक टिप्पणी तथा कार्यसम्पादन मूल्याङ्कन
+                </b>
+                <span style="font-size: 11px; background: #e2e8f0; color: #334155; padding: 2px 8px; border-radius: 4px; font-weight: 700;">
+                  आन्तरिक मूल्याङ्कन (${(u.AdminNotes || []).length})
+                </span>
+              </div>
+              <div style="font-size: 11.5px; color: #64748b; margin-bottom: 10px;">
+                कार्यकर्ताको फिल्ड सक्रियता, इमान्दारी र पार्टी अनुशासन सम्बन्धी व्यवस्थापकको गोप्य टिपोट:
+              </div>
+              <!-- Existing Notes -->
+              <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px;">
+                ${(u.AdminNotes && u.AdminNotes.length) ? u.AdminNotes.map(n => `
+                  <div style="background: white; border: 1px solid #e2e8f0; border-left: 3px solid #4f46e5; border-radius: 6px; padding: 8px 10px; font-size: 12px;">
+                    <div style="color: #1e293b; font-weight: 600;">${esc(n.text)}</div>
+                    <div style="font-size: 10.5px; color: #64748b; margin-top: 2px;">
+                      ✍️ <b>${esc(n.author || 'व्यवस्थापक')}</b> • 📅 ${new Date(n.timestamp || Date.now()).toLocaleDateString('ne-NP')}
+                    </div>
+                  </div>
+                `).join('') : '<div style="font-size: 11.5px; color: #94a3b8; font-style: italic; padding: 8px; background: white; border-radius: 6px; border: 1px dashed #cbd5e1; text-align: center;">कुनै आन्तरिक मूल्याङ्कन लेखिएको छैन। तलको बक्सबाट थप्नुहोस्।</div>'}
+              </div>
+              <!-- Add Note Form -->
+              <form onsubmit="addWorkerAdminNote(event, '${u.UserID}')" style="display: flex; gap: 6px; align-items: center;">
+                <input type="text" name="noteText" placeholder="नयाँ मूल्याङ्कन टिपोट लेख्नुहोस्..." required class="form-control" style="font-size: 12px; padding: 6px 10px; background: white;">
+                <button type="submit" class="btn btn-sm btn-primary" style="white-space: nowrap; font-size: 11.5px; font-weight: 800; background: #4f46e5;">+ सेभ</button>
+              </form>
             </div>
           </div>
 
@@ -11075,6 +11805,22 @@
                     QR कोड हेर्नुहोस्
                   </button>
                 </div>
+
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px;">
+                  <b style="font-size: 13px; color: #1e293b;">✏️ विवरण सम्पादन</b>
+                  <p style="font-size: 11.5px; color: #64748b; margin: 4px 0 10px 0;">कार्यकर्ताको नाम, फोन, वडा वा सक्रियता स्थिति बदल्नुहोस्।</p>
+                  <button class="btn btn-sm btn-primary" onclick="closeModal(); openEditUserModal('${u.UserID}')" style="font-weight: 700;">
+                    सम्पादन गर्नुहोस्
+                  </button>
+                </div>
+
+                <div style="background: #fff5f5; border: 1px solid #fecaca; border-radius: 10px; padding: 12px;">
+                  <b style="font-size: 13px; color: #dc2626;">🗑️ खाता मेटाउनुहोस्</b>
+                  <p style="font-size: 11.5px; color: #991b1b; margin: 4px 0 10px 0;">कार्यकर्तालाई टोलीबाट स्थायी रूपमा हटाउनुहोस्।</p>
+                  <button class="btn btn-sm btn-secondary" onclick="closeModal(); deleteUserPrompt('${u.UserID}')" style="color: #dc2626; font-weight: 700; border-color: #fca5a5;">
+                    खाता मेटाउनुहोस्
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -11093,6 +11839,27 @@
       `;
 
       openModal(modalTitle, modalBody, modalFooter, 'modal-lg');
+    }
+
+    async function addWorkerAdminNote(e, userId) {
+      e.preventDefault();
+      const form = e.target;
+      const text = form.noteText.value.trim();
+      if (!text) return;
+      const u = (state.users || []).find(x => x.UserID === userId);
+      if (!u) return;
+      if (!u.AdminNotes) u.AdminNotes = [];
+      const authorName = (currentUser && currentUser.Name) || 'व्यवस्थापक';
+      u.AdminNotes.unshift({
+        id: 'wnote_' + Date.now().toString(36),
+        text: text,
+        author: authorName,
+        timestamp: new Date().toISOString()
+      });
+      saveState();
+      logActivity('admin_note', `कार्यकर्ता ${u.Name} को मूल्याङ्कन टिप्पणी सुरक्षित गरियो: "${text.substring(0, 30)}..."`);
+      showToast('कार्यकर्ता मूल्याङ्कन टिप्पणी सुरक्षित भयो!', 'success');
+      openWorkerProfileModal(userId);
     }
 
     function renderWorkerProfileTimelineList(visits) {
@@ -11363,6 +12130,12 @@
                   <button class="btn btn-sm btn-secondary" onclick="copyFullBrochureText('${c.CandidateID}')" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); font-size: 11.5px; font-weight: 700;">
                     📋 विवरण कपी
                   </button>
+                  <button class="btn btn-sm btn-secondary" onclick="closeModal(); openEditCandidateModal('${c.CandidateID}')" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); font-size: 11.5px; font-weight: 700;">
+                    ✏️ सम्पादन
+                  </button>
+                  <button class="btn btn-sm btn-secondary" onclick="closeModal(); deleteCandidatePrompt('${c.CandidateID}')" style="background: rgba(220,38,38,0.7); color: white; border: 1px solid rgba(255,255,255,0.3); font-size: 11.5px; font-weight: 700;">
+                    🗑️ हटाउने
+                  </button>
                 </div>
               </div>
 
@@ -11398,7 +12171,41 @@
               </div>
             </div>
 
-            <div style="margin-top: 14px; display: flex; gap: 8px;">
+            <!-- Strategic Campaign & SWOT Notes Box -->
+            <div style="margin-top: 14px; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1.5px solid #fde68a; border-radius: 12px; padding: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+                <b style="font-size: 13.5px; color: #78350f; display: flex; align-items: center; gap: 6px;">
+                  🛡️ अभियान कमान्ड तथा रणनीतिक गोप्य टिप्पणी (Campaign Strategy)
+                </b>
+                <span style="font-size: 11px; background: #fef08a; color: #854d0e; padding: 2px 8px; border-radius: 4px; font-weight: 700;">
+                  गोप्य समीक्षा (${(c.StrategyNotes || []).length})
+                </span>
+              </div>
+              <div style="font-size: 11.5px; color: #92400e; margin-bottom: 10px;">
+                उम्मेदवारको बलियो पक्ष, विपक्षी चुनौती, वडागत चुनावी समीकरण तथा आवश्यक रणनीतिक कदम:
+              </div>
+              <!-- Existing Notes -->
+              <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px;">
+                ${(c.StrategyNotes && c.StrategyNotes.length) ? c.StrategyNotes.map(n => `
+                  <div style="background: white; border: 1px solid #fde68a; border-left: 3px solid #b45309; border-radius: 6px; padding: 8px 10px; font-size: 12px; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                    <div style="flex: 1;">
+                      <div style="color: #1e293b; font-weight: 600;">${esc(n.text)}</div>
+                      <div style="font-size: 10.5px; color: #64748b; margin-top: 2px;">
+                        ✍️ <b>${esc(n.author || 'कमान्डर')}</b> • 📅 ${new Date(n.timestamp || Date.now()).toLocaleDateString('ne-NP')}
+                      </div>
+                    </div>
+                    <button class="btn btn-sm btn-secondary" onclick="deleteCandidateStrategyNote('${c.CandidateID}', '${n.id}')" style="font-size: 10px; padding: 1px 5px; color: #dc2626;" title="मेटाउनुहोस्">✕</button>
+                  </div>
+                `).join('') : '<div style="font-size: 11.5px; color: #a16207; font-style: italic; padding: 8px; background: white; border-radius: 6px; border: 1px dashed #fde68a; text-align: center;">कुनै रणनीतिक टिप्पणी लेखिएको छैन। तलको बक्सबाट थप्नुहोस्।</div>'}
+              </div>
+              <!-- Add Note Form -->
+              <form onsubmit="addCandidateStrategyNote(event, '${c.CandidateID}')" style="display: flex; gap: 6px; align-items: center;">
+                <input type="text" name="noteText" placeholder="नयाँ रणनीतिक टिप्पणी वा वडागत सुझाव..." required class="form-control" style="font-size: 12px; padding: 6px 10px; background: white;">
+                <button type="submit" class="btn btn-sm btn-primary" style="white-space: nowrap; font-size: 11.5px; font-weight: 800; background: #b45309; border-color: #92400e;">+ सेभ</button>
+              </form>
+            </div>
+
+            <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
               <button class="btn btn-primary" onclick="switchCandidateTab('brochure')" style="background: #10b981; font-weight: 700;">
                 📄 डिजिटल ब्रोसर र घोषणापत्र हेर्नुहोस्
               </button>
@@ -11620,6 +12427,37 @@
       `;
 
       openModal(modalTitle, modalBody, modalFooter, 'modal-lg');
+    }
+
+    async function addCandidateStrategyNote(e, candId) {
+      e.preventDefault();
+      const form = e.target;
+      const text = form.noteText.value.trim();
+      if (!text) return;
+      const c = (state.candidates || []).find(x => x.CandidateID === candId);
+      if (!c) return;
+      if (!c.StrategyNotes) c.StrategyNotes = [];
+      const authorName = (currentUser && currentUser.Name) || 'कमान्डर';
+      c.StrategyNotes.unshift({
+        id: 'snote_' + Date.now().toString(36),
+        text: text,
+        author: authorName,
+        timestamp: new Date().toISOString()
+      });
+      saveState();
+      logActivity('admin_note', `उम्मेदवार ${c.Name} को रणनीतिक टिप्पणी सुरक्षित गरियो: "${text.substring(0, 30)}..."`);
+      showToast('रणनीतिक टिप्पणी सुरक्षित भयो!', 'success');
+      openCandidateProfileModal(candId);
+    }
+
+    async function deleteCandidateStrategyNote(candId, noteId) {
+      if (!confirm('के तपाईं यो रणनीतिक टिप्पणी मेटाउन चाहनुहुन्छ?')) return;
+      const c = (state.candidates || []).find(x => x.CandidateID === candId);
+      if (!c || !c.StrategyNotes) return;
+      c.StrategyNotes = c.StrategyNotes.filter(n => n.id !== noteId);
+      saveState();
+      showToast('टिप्पणी हटाइयो', 'info');
+      openCandidateProfileModal(candId);
     }
 
     function openAddCandidateEventPrompt(candId) {
