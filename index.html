@@ -2518,64 +2518,173 @@
         <span>🟢 Supabase Cloud: Live Sync</span>
       </div>
 
-      <div class="brand-icon" id="loginBrandIcon" style="margin: 0 auto 10px; width: 56px; height: 56px; font-size: 28px; background: #0f172a; color: #fbbf24; border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.35);">🗳️</div>
-      <div class="pin-header" style="margin-bottom: 18px;">
-        <h2 id="loginTitle" style="font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">Election Ops Command</h2>
-        <p id="loginSubtitle" style="font-size: 13px; color: var(--slate-600); margin: 0;">निर्वाचन व्यवस्थापन तथा कमान्ड प्रणाली</p>
+      <div class="brand-icon" id="loginBrandIcon" style="margin: 0 auto 10px; width: 54px; height: 54px; font-size: 26px; background: #1e3a8a; color: #ffffff; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(30, 58, 138, 0.35);">🏛️</div>
+      <div class="pin-header" style="margin-bottom: 16px;">
+        <h2 id="loginTitle" style="font-size: 21px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">Helambu Rural Municipality</h2>
+        <p id="loginSubtitle" style="font-size: 12.5px; color: var(--slate-600); margin: 0;">स्थानीय निर्वाचन कमान्ड सेन्टर • प्रशासनिक लगइन</p>
       </div>
 
-      <!-- PRIMARY LOGIN FORM: 10-Digit Mobile + Password -->
-      <form id="universalLoginForm" onsubmit="handleUniversalLogin(event)" style="text-align: left;">
-        <div class="form-group" style="margin-bottom: 14px;">
-          <label class="form-label" style="font-size: 12.5px; font-weight: 700; color: #334155;">
-            📱 User ID (१० अङ्कको मोबाइल नम्बर) *
-          </label>
-          <div style="position: relative;">
-            <input type="tel" id="loginMobileField" required class="form-control" placeholder="उदा: 9851170967" maxlength="10" inputmode="numeric" autocomplete="username" style="font-size: 16px; font-weight: 700; letter-spacing: 0.05em; padding: 12px 14px; border-radius: 10px;" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)">
-          </div>
-        </div>
+      <!-- Modern 3-Tab Pill Switcher -->
+      <div class="login-role-tabs" style="display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px; margin-bottom: 18px; gap: 4px; border: 1px solid #cbd5e1;">
+        <button type="button" class="login-tab-btn active" id="tabBtnAdmin" onclick="switchLoginScreen('palika')" style="flex: 1; padding: 9px 4px; font-size: 12px; font-weight: 800; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; background: #1e3a8a; color: #ffffff; box-shadow: 0 2px 6px rgba(30,58,138,0.25);">
+          🏛️ पालिका Admin
+        </button>
+        <button type="button" class="login-tab-btn" id="tabBtnSuper" onclick="switchLoginScreen('super')" style="flex: 1; padding: 9px 4px; font-size: 12px; font-weight: 800; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; background: transparent; color: #475569;">
+          👑 Super Admin
+        </button>
+        <button type="button" class="login-tab-btn" id="tabBtnWorker" onclick="switchLoginScreen('worker')" style="flex: 1; padding: 9px 4px; font-size: 12px; font-weight: 800; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; background: transparent; color: #475569;">
+          👷 कार्यकर्ता PIN
+        </button>
+      </div>
 
-        <div class="form-group" style="margin-bottom: 16px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-            <label class="form-label" style="font-size: 12.5px; font-weight: 700; color: #334155; margin: 0;">
-              🔒 गोप्य पासवर्ड (Password) *
+      <!-- ================================================================= -->
+      <!-- PANE 1: PALIKA ADMIN LOGIN (Helambu & Multi-Palika Command)      -->
+      <!-- ================================================================= -->
+      <div id="paneAdminLogin" style="display: block;">
+        <form onsubmit="handleTenantAdminLogin(event)" style="text-align: left;">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 12px; font-weight: 700; color: #334155;">
+              Admin Username वा मोबाइल नम्बर *
             </label>
-            <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size: 11.5px; color: #2563eb; text-decoration: none; font-weight: 600;">
-              पासवर्ड बिर्सिनुभयो?
-            </a>
+            <input type="text" id="adminUserField" required class="form-control" placeholder="उदा: helambu_admin वा 9851170967" autocomplete="username" autocapitalize="none" style="font-size: 15px; font-weight: 600; padding: 11px 14px; border-radius: 10px;">
           </div>
-          <div style="position: relative;">
-            <input type="password" id="loginPasswordField" required class="form-control" placeholder="पासवर्ड टाइप गर्नुहोस्" autocomplete="current-password" style="font-size: 15px; padding: 12px 14px; padding-right: 42px; border-radius: 10px;">
-            <button type="button" onclick="togglePassVisibility('loginPasswordField', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; cursor: pointer; color: var(--slate-600);" title="Show/Hide">👁️</button>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <label class="form-label" style="font-size: 12px; font-weight: 700; color: #334155; margin: 0;">
+                गोप्य पासवर्ड (Password) *
+              </label>
+              <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size: 11.5px; color: #2563eb; text-decoration: none; font-weight: 600;">
+                पासवर्ड बिर्सिनुभयो?
+              </a>
+            </div>
+            <div style="position: relative;">
+              <input type="password" id="adminPassField" required class="form-control" placeholder="पासवर्ड टाइप गर्नुहोस्" autocomplete="current-password" style="font-size: 15px; padding: 11px 14px; padding-right: 42px; border-radius: 10px;">
+              <button type="button" onclick="togglePassVisibility('adminPassField', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; cursor: pointer; color: var(--slate-600);" title="Show/Hide">👁️</button>
+            </div>
           </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 15px; font-weight: 800; padding: 13px; background: #1e3a8a; border: none; border-radius: 12px; box-shadow: 0 4px 14px rgba(30, 58, 138, 0.3);">
+            🚀 पालिका कमान्ड लगइन (Sign In)
+          </button>
+        </form>
+
+        <!-- 1-Click Fast Fill for Admin -->
+        <div style="margin-top: 12px;">
+          <button type="button" class="btn btn-secondary" onclick="quickFillAdminLogin('helambu_admin', 'admin123')" style="width: 100%; font-size: 12px; font-weight: 700; padding: 9px; background: #eff6ff; color: #1e40af; border: 1.5px solid #bfdbfe; border-radius: 10px;">
+            ⚡ १-क्लिक Helambu Admin (helambu_admin / admin123)
+          </button>
         </div>
 
-        <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 15.5px; font-weight: 800; padding: 13px; background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); border: none; border-radius: 12px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.3);">
-          🚀 लगइन गर्नुहोस् (Sign In)
-        </button>
-      </form>
-
-      <!-- 1-Click Super Admin Fast Login Helper for Owner -->
-      <div style="margin-top: 14px; display: flex; gap: 8px;">
-        <button type="button" class="btn btn-secondary" onclick="quickFillSuperLogin('9851170967', 'admin123')" style="flex: 1; font-size: 11px; font-weight: 700; padding: 7px 6px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; border-radius: 8px;">
-          👑 Super Admin (9851170967)
-        </button>
-        <button type="button" class="btn btn-secondary" onclick="quickFillSuperLogin('9705147147', 'admin123')" style="flex: 1; font-size: 11px; font-weight: 700; padding: 7px 6px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; border-radius: 8px;">
-          👑 Super Admin (9705147147)
-        </button>
-      </div>
-
-      <!-- Action Footer: Create ID / Sign Up -->
-      <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #e2e8f0; text-align: center;">
-        <div style="font-size: 13px; color: var(--slate-600); margin-bottom: 8px;">
-          नयाँ पालिका वा निर्वाचन कमान्ड खाता छैन?
+        <!-- Action: Register Account / Create ID -->
+        <div style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed #e2e8f0; text-align: center;">
+          <div style="font-size: 12.5px; color: var(--slate-600); margin-bottom: 6px;">
+            नयाँ पालिका वा निर्वाचन कमान्ड खाता छैन?
+          </div>
+          <button type="button" class="btn btn-secondary" onclick="openRegisterAccountModal()" style="width: 100%; font-size: 13px; font-weight: 800; padding: 10px; background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; border-radius: 10px;">
+            📝 नयाँ खाता दर्ता गर्नुहोस् (Create ID / Sign Up)
+          </button>
         </div>
-        <button type="button" class="btn btn-secondary" onclick="openRegisterAccountModal()" style="width: 100%; font-size: 13.5px; font-weight: 800; padding: 11px; background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; border-radius: 10px;">
-          📝 नयाँ खाता दर्ता गर्नुहोस् (Create ID / Sign Up)
-        </button>
       </div>
 
-      <div style="margin-top: 12px; text-align: center;">
+      <!-- ================================================================= -->
+      <!-- PANE 2: SUPER ADMIN MASTER LOGIN (SaaS Platform HQ)              -->
+      <!-- ================================================================= -->
+      <div id="paneSuperLogin" style="display: none;">
+        <form onsubmit="handleSuperAdminMasterLogin(event)" style="text-align: left;">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 12px; font-weight: 700; color: #334155;">
+              Super Admin फोन / User ID *
+            </label>
+            <input type="text" id="superAdminUserField" class="form-control" value="9851170967" placeholder="उदा: 9851170967" style="font-size: 15px; font-weight: 700; padding: 11px 14px; border-radius: 10px;">
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" style="font-size: 12px; font-weight: 700; color: #334155;">
+              सुरक्षित Master Key / Password *
+            </label>
+            <div style="position: relative;">
+              <input type="password" id="superAdminMasterKey" required class="form-control" placeholder="Master Key (उदा: admin123 वा 1234)" autocomplete="current-password" style="font-size: 15px; padding: 11px 14px; padding-right: 42px; border-radius: 10px;">
+              <button type="button" onclick="togglePassVisibility('superAdminMasterKey', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; cursor: pointer; color: var(--slate-600);" title="Show/Hide">👁️</button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 15px; font-weight: 800; padding: 13px; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border: none; border-radius: 12px; box-shadow: 0 4px 14px rgba(15,23,42,0.35);">
+            👑 Unlock Super Admin HQ
+          </button>
+        </form>
+
+        <!-- 1-Click Fast Unlock for Super Admin -->
+        <div style="margin-top: 12px; display: flex; gap: 8px;">
+          <button type="button" class="btn btn-secondary" onclick="quickFillSuperLogin('9851170967', 'admin123')" style="flex: 1; font-size: 11px; font-weight: 700; padding: 9px 4px; background: #fef3c7; color: #92400e; border: 1.5px solid #fde68a; border-radius: 10px;">
+            🚀 Super (9851170967)
+          </button>
+          <button type="button" class="btn btn-secondary" onclick="quickFillSuperLogin('9705147147', 'admin123')" style="flex: 1; font-size: 11px; font-weight: 700; padding: 9px 4px; background: #fef3c7; color: #92400e; border: 1.5px solid #fde68a; border-radius: 10px;">
+            🚀 Super (9705147147)
+          </button>
+        </div>
+        <div style="font-size: 11.5px; color: var(--slate-600); text-align: center; margin-top: 10px;">
+          Master Key: <code>admin123</code> वा <code>1234</code>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- PANE 3: WORKER PIN LOGIN (Fast 4-Digit Keypad Field Workspace)    -->
+      <!-- ================================================================= -->
+      <div id="paneWorkerLogin" style="display: none;">
+        <!-- Personalized Worker Welcome Card -->
+        <div id="workerDirectWelcomeCard" style="display: none; margin-bottom: 14px; padding: 12px 14px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; border: 1.5px solid #86efac; text-align: center;">
+          <div id="workerWelcomeAvatar" style="width: 46px; height: 46px; border-radius: 50%; background: #16a34a; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; margin: 0 auto 6px;">W</div>
+          <div id="workerWelcomeName" style="font-size: 16px; font-weight: 800; color: #14532d;">कार्यकर्ता नाम</div>
+          <div style="display: flex; gap: 6px; justify-content: center; margin-top: 4px;">
+            <span id="workerWelcomeRole" class="badge" style="background: #16a34a; color: white; font-weight: 700; font-size: 11px;">फिल्ड कार्यकर्ता</span>
+            <span id="workerWelcomeWard" class="badge" style="background: white; color: #166534; border: 1px solid #86efac; font-weight: 700; font-size: 11px;">वडा १</span>
+          </div>
+          <button type="button" class="btn btn-sm btn-link" onclick="switchWorkerToManualSelect()" style="font-size: 11px; margin-top: 4px; color: #4b5563; text-decoration: underline; background: none; border: none; cursor: pointer;">
+            (अर्को कार्यकर्ता छान्ने?)
+          </button>
+        </div>
+
+        <div id="workerManualSelectWrap" style="margin-bottom: 12px; text-align: left;">
+          <label style="font-size: 11.5px; text-transform: uppercase; font-weight: 700; color: var(--slate-600); display: block; margin-bottom: 4px;">कार्यकर्ता / उम्मेदवार छान्नुहोस्</label>
+          <select id="loginUserSelect" class="form-control" onchange="onLoginUserSelected(this.value)" style="background: white; font-weight: 600; font-size: 13.5px; padding: 10px;">
+          </select>
+          <div id="loginUserScopeBadge" style="margin-top: 4px; font-size: 11.5px; color: var(--indigo-600); font-weight: 600; text-align: center;"></div>
+        </div>
+
+        <!-- 4 PIN Dots -->
+        <div class="pin-dots" id="pinDots" style="margin-bottom: 14px;">
+          <div class="pin-dot" id="dot0"></div>
+          <div class="pin-dot" id="dot1"></div>
+          <div class="pin-dot" id="dot2"></div>
+          <div class="pin-dot" id="dot3"></div>
+        </div>
+
+        <!-- Numeric Keypad -->
+        <div class="keypad-grid" style="margin-bottom: 12px;">
+          <button class="key-btn" onclick="pressKey('1')">1</button>
+          <button class="key-btn" onclick="pressKey('2')">2</button>
+          <button class="key-btn" onclick="pressKey('3')">3</button>
+          <button class="key-btn" onclick="pressKey('4')">4</button>
+          <button class="key-btn" onclick="pressKey('5')">5</button>
+          <button class="key-btn" onclick="pressKey('6')">6</button>
+          <button class="key-btn" onclick="pressKey('7')">7</button>
+          <button class="key-btn" onclick="pressKey('8')">8</button>
+          <button class="key-btn" onclick="pressKey('9')">9</button>
+          <button class="key-btn action-key" onclick="clearPin()">Clear</button>
+          <button class="key-btn" onclick="pressKey('0')">0</button>
+          <button class="key-btn action-key" onclick="backspacePin()">⌫</button>
+        </div>
+
+        <button id="loginBtn" class="btn btn-primary" style="width: 100%; font-weight: 800; padding: 12px;" disabled onclick="submitPin()">
+          Unlock Field Workspace
+        </button>
+
+        <div style="margin-top: 10px; display: flex; justify-content: center;">
+          <button type="button" class="btn btn-sm btn-secondary" id="workerAutoPinBtn" onclick="quickFillWorkerPin('1234')" style="font-size: 11.5px; font-weight: 700; padding: 5px 14px; background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; border-radius: 8px;">
+            ⚡ अटो PIN (1234) हान्नुहोस्
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer Utilities -->
+      <div style="margin-top: 16px; text-align: center;">
         <button type="button" onclick="forceAppHardReload()" style="background: none; border: none; color: #64748b; font-size: 11px; cursor: pointer; text-decoration: underline;" title="क्यास खाली गरी ताजा रिलोड गर्नुहोस्">
           🔄 क्यास खाली गरी एप रिलोड गर्नुहोस्
         </button>
@@ -4808,21 +4917,140 @@
     }
 
     // ==========================================
-    // 3 DEDICATED SINGLE LOGIN SCREENS SWITCHER
+    // 3 DEDICATED LOGIN SCREENS SWITCHER
     // ==========================================
+    let currentLoginMode = 'admin'; // 'admin', 'super', or 'worker'
+
     function switchLoginScreen(screenType) {
+      const paneAdmin = document.getElementById('paneAdminLogin');
+      const paneSuper = document.getElementById('paneSuperLogin');
+      const paneWorker = document.getElementById('paneWorkerLogin');
+
+      const btnAdmin = document.getElementById('tabBtnAdmin');
+      const btnSuper = document.getElementById('tabBtnSuper');
+      const btnWorker = document.getElementById('tabBtnWorker');
+
+      const icon = document.getElementById('loginBrandIcon') || document.querySelector('.pin-card .brand-icon');
+      const title = document.getElementById('loginTitle');
+      const subtitle = document.getElementById('loginSubtitle');
+
+      // Reset all buttons styling
+      [btnAdmin, btnSuper, btnWorker].forEach(btn => {
+        if (btn) {
+          btn.classList.remove('active');
+          btn.style.background = 'transparent';
+          btn.style.color = '#475569';
+          btn.style.boxShadow = 'none';
+        }
+      });
+
       if (screenType === 'super') {
-        window.history.replaceState({}, '', window.location.pathname);
-        showSuperAdminGatewayPrompt();
-      } else if (screenType === 'palika') {
-        const slug = (state.settings && state.settings.PALIKA_SLUG) || 'helambu';
-        window.history.replaceState({}, '', window.location.pathname + '?palika=' + slug);
-        showPalikaPortalLogin(slug);
+        currentLoginMode = 'super';
+        if (paneAdmin) paneAdmin.style.display = 'none';
+        if (paneSuper) paneSuper.style.display = 'block';
+        if (paneWorker) paneWorker.style.display = 'none';
+
+        if (btnSuper) {
+          btnSuper.classList.add('active');
+          btnSuper.style.background = '#0f172a';
+          btnSuper.style.color = '#fbbf24';
+          btnSuper.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
+        }
+        if (icon) {
+          icon.textContent = '👑';
+          icon.style.background = '#0f172a';
+          icon.style.color = '#fbbf24';
+        }
+        if (title) title.textContent = 'Super Admin Control Hub';
+        if (subtitle) subtitle.textContent = 'SaaS निर्वाचन व्यवस्थापन प्रणाली • मास्टर लगइन';
+
       } else if (screenType === 'worker') {
-        const slug = (state.settings && state.settings.PALIKA_SLUG) || 'helambu';
-        window.history.replaceState({}, '', window.location.pathname + '?palika=' + slug + '&worker=1');
-        openWorkerPortalFromAdmin();
+        currentLoginMode = 'worker';
+        if (paneAdmin) paneAdmin.style.display = 'none';
+        if (paneSuper) paneSuper.style.display = 'none';
+        if (paneWorker) paneWorker.style.display = 'block';
+
+        if (btnWorker) {
+          btnWorker.classList.add('active');
+          btnWorker.style.background = '#0284c7';
+          btnWorker.style.color = '#ffffff';
+          btnWorker.style.boxShadow = '0 2px 6px rgba(2,132,199,0.25)';
+        }
+        if (icon) {
+          icon.textContent = '👷';
+          icon.style.background = '#0284c7';
+          icon.style.color = '#ffffff';
+        }
+        const palikaName = (state.settings && state.settings.MUNICIPALITY) || 'हेलाम्बु गाउँपालिका';
+        if (title) title.textContent = 'कार्यकर्ता कार्यक्षेत्र लगइन';
+        if (subtitle) subtitle.textContent = `${palikaName} • ४-अङ्कको गोप्य PIN हान्नुहोस्`;
+
+        populateLoginUserSelector();
+        pinBuffer = '';
+        updatePinDots();
+
+      } else {
+        // Palika Admin default ('palika')
+        currentLoginMode = 'admin';
+        if (paneAdmin) paneAdmin.style.display = 'block';
+        if (paneSuper) paneSuper.style.display = 'none';
+        if (paneWorker) paneWorker.style.display = 'none';
+
+        if (btnAdmin) {
+          btnAdmin.classList.add('active');
+          btnAdmin.style.background = '#1e3a8a';
+          btnAdmin.style.color = '#ffffff';
+          btnAdmin.style.boxShadow = '0 2px 6px rgba(30,58,138,0.25)';
+        }
+        if (icon) {
+          icon.textContent = '🏛️';
+          icon.style.background = '#1e3a8a';
+          icon.style.color = '#ffffff';
+        }
+        const palikaName = (state.settings && state.settings.MUNICIPALITY) || 'Helambu Rural Municipality';
+        if (title) title.textContent = palikaName;
+        if (subtitle) subtitle.textContent = 'स्थानीय निर्वाचन कमान्ड सेन्टर • प्रशासनिक लगइन';
       }
+    }
+
+    function showSuperAdminGatewayPrompt() {
+      document.body.classList.add('login-active');
+      document.body.classList.remove('logged-in');
+      const loginScr = document.getElementById('loginScreen');
+      if (loginScr) loginScr.style.display = 'flex';
+      const shell = document.getElementById('appShell');
+      if (shell) shell.style.display = 'none';
+      switchLoginScreen('super');
+    }
+
+    function showPalikaPortalLogin(slug) {
+      document.body.classList.add('login-active');
+      document.body.classList.remove('logged-in');
+      const loginScr = document.getElementById('loginScreen');
+      if (loginScr) loginScr.style.display = 'flex';
+      const shell = document.getElementById('appShell');
+      if (shell) shell.style.display = 'none';
+
+      const tenant = (state.tenants || []).find(t => 
+        (t.Slug && t.Slug.toLowerCase() === slug) ||
+        (t.TenantID && t.TenantID.toLowerCase() === slug) ||
+        (t.PalikaName && t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') === slug.replace(/[^a-z0-9]/g, '')) ||
+        (t.AdminUsername && t.AdminUsername.toLowerCase() === slug)
+      ) || (state.tenants && state.tenants[0]);
+
+      if (tenant) {
+        state.settings.MUNICIPALITY = tenant.PalikaName;
+        state.settings.PALIKA_SLUG = tenant.Slug;
+        const adminField = document.getElementById('adminUserField');
+        if (adminField && !adminField.value) {
+          adminField.value = tenant.AdminUsername || '';
+        }
+      }
+      switchLoginScreen('palika');
+    }
+
+    function openWorkerPortalFromAdmin() {
+      switchLoginScreen('worker');
     }
 
     function handleUrlRouting() {
@@ -4846,7 +5074,6 @@
       const userToken = params.get('u');
       const lookupKey = (workerParam && workerParam !== '1') ? workerParam : userToken;
       if (lookupKey) {
-        // Also check if palikaParam is present to set palika context
         const palikaParam = params.get('palika') || params.get('p');
         if (palikaParam) {
           const tenant = (state.tenants || []).find(t => 
@@ -4879,171 +5106,18 @@
         return;
       }
 
-      // Default Route: Dedicated Single Super Admin Screen (Root Domain /)
-      showSuperAdminGatewayPrompt();
-    }
-
-    // SCREEN 1: STRICTLY 100% SUPER ADMIN MASTER SCREEN
-    function showSuperAdminGatewayPrompt() {
-      document.body.classList.add('login-active');
-      document.body.classList.remove('logged-in');
-      document.getElementById('loginScreen').style.display = 'flex';
-      const shell = document.getElementById('appShell');
-      if (shell) shell.style.display = 'none';
-      const mobNav = document.getElementById('mobileBottomNav');
-      if (mobNav) mobNav.style.display = 'none';
-      const sb = document.getElementById('sidebar');
-      const bd = document.getElementById('sidebarBackdrop');
-      if (sb) sb.classList.remove('open');
-      if (bd) bd.classList.remove('active');
-      document.body.style.overflow = '';
-
-      // Brand icon and header
-      const icon = document.getElementById('loginBrandIcon') || document.querySelector('.pin-card .brand-icon');
-      if (icon) {
-        icon.textContent = '👑';
-        icon.style.background = '#0f172a';
-        icon.style.color = '#fbbf24';
-      }
-      document.getElementById('loginTitle').textContent = 'Super Admin Control Hub';
-      document.getElementById('loginSubtitle').textContent = 'SaaS निर्वाचन व्यवस्थापन प्रणाली • मास्टर लगइन';
-
-      const badge = document.getElementById('supabaseConnectionBadge');
-      if (badge) {
-        badge.innerHTML = '<span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block;"></span> <span>🟢 Supabase Cloud: Live Sync</span>';
-        badge.style.background = '#ecfdf5';
-        badge.style.color = '#047857';
-        badge.style.borderColor = '#a7f3d0';
+      if (params.get('super') === '1' || params.get('admin') === 'super') {
+        showSuperAdminGatewayPrompt();
+        return;
       }
 
-      // Show Super Admin Pane Only
-      document.getElementById('paneSuperLogin').style.display = 'block';
-      document.getElementById('paneAdminLogin').style.display = 'none';
-      document.getElementById('paneWorkerLogin').style.display = 'none';
-
-      currentLoginMode = 'super';
-      pinBuffer = '';
-      updatePinDots();
-    }
-
-    // SCREEN 2: DEDICATED PALIKA ADMIN PORTAL (?palika=<slug>)
-    function showPalikaPortalLogin(slug) {
-      document.body.classList.add('login-active');
-      document.body.classList.remove('logged-in');
-      document.getElementById('loginScreen').style.display = 'flex';
-      const shell = document.getElementById('appShell');
-      if (shell) shell.style.display = 'none';
-      const mobNav = document.getElementById('mobileBottomNav');
-      if (mobNav) mobNav.style.display = 'none';
-      const sb = document.getElementById('sidebar');
-      const bd = document.getElementById('sidebarBackdrop');
-      if (sb) sb.classList.remove('open');
-      if (bd) bd.classList.remove('active');
-      document.body.style.overflow = '';
-
-      // Find matching tenant or fallback to Helambu
-      const tenant = (state.tenants || []).find(t => 
-        (t.Slug && t.Slug.toLowerCase() === slug) ||
-        (t.TenantID && t.TenantID.toLowerCase() === slug) ||
-        (t.PalikaName && t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') === slug.replace(/[^a-z0-9]/g, '')) ||
-        (t.AdminUsername && t.AdminUsername.toLowerCase() === slug)
-      ) || (state.tenants && state.tenants[0]) || {
-        TenantID: 'TNT_HELAMBU',
-        PalikaName: 'हेलाम्बु गाउँपालिका (Helambu HQ)',
-        Slug: 'helambu',
-        AdminUsername: 'helambu_admin',
-        AdminPassword: 'helambu@123',
-        Status: 'Active'
-      };
-
-      // Check Suspension / Kill-switch
-      if (tenant.Status === 'Suspended') {
-        openModal(
-          '⛔ सेवा निलम्बन गरिएको छ (Service Suspended)',
-          `
-          <div style="text-align: center; padding: 22px;">
-            <div style="font-size: 56px; margin-bottom: 12px;">🚫</div>
-            <h3 style="color: #dc2626; margin-bottom: 8px;">${tenant.PalikaName} को सेवा बन्द गरिएको छ</h3>
-            <p style="color: var(--slate-600); font-size: 14px; line-height: 1.6;">
-              यस पालिकाको खाता Super Admin / Platform Owner द्वारा निष्क्रिय (OFF/Suspended) गरिएको छ। 
-              कृपया भुक्तानी वा नवीकरणका लागि मुख्य एडमिनलाई सम्पर्क गर्नुहोस्।
-            </p>
-          </div>
-          `,
-          `<button class="btn btn-secondary" onclick="closeModal()">Close</button>`
-        );
+      if (params.get('worker') === '1') {
+        switchLoginScreen('worker');
+        return;
       }
 
-      // Customize UI for this specific Palika!
-      const icon = document.getElementById('loginBrandIcon') || document.querySelector('.pin-card .brand-icon');
-      if (icon) {
-        icon.textContent = '🏛️';
-        icon.style.background = '#1e3a8a';
-        icon.style.color = '#ffffff';
-      }
-      document.getElementById('loginTitle').textContent = tenant.PalikaName;
-      document.getElementById('loginSubtitle').textContent = 'स्थानीय निर्वाचन कमान्ड सेन्टर • प्रशासनिक लगइन';
-
-      const badge = document.getElementById('supabaseConnectionBadge');
-      if (badge) {
-        badge.innerHTML = `<span style="width: 8px; height: 8px; background: #2563eb; border-radius: 50%; display: inline-block;"></span> <span>🏛️ ${tenant.PalikaName} • Official Command</span>`;
-        badge.style.background = '#eff6ff';
-        badge.style.color = '#1e40af';
-        badge.style.borderColor = '#bfdbfe';
-      }
-
-      // Set tenant in dataset
-      document.getElementById('loginScreen').dataset.palikaTenant = tenant.TenantID;
-
-      // Populate workers for this palika in case worker portal is opened
-      populateLoginUserSelector();
-
-      // Check if URL specifically asked for worker mode (?worker=1)
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('worker') === '1' || urlParams.get('role') === 'worker') {
-        openWorkerPortalFromAdmin();
-      } else {
-        switchLoginMode('admin');
-      }
-
-      const adminField = document.getElementById('adminUserField');
-      if (adminField && !adminField.value) {
-        adminField.placeholder = tenant.AdminUsername || 'उदा: helambu_admin';
-      }
-    }
-
-    // SCREEN 3: DEDICATED WORKER PIN LOGIN
-    function openWorkerPortalFromAdmin() {
-      switchLoginMode('worker');
-      const icon = document.getElementById('loginBrandIcon') || document.querySelector('.pin-card .brand-icon');
-      if (icon) {
-        icon.textContent = '👷';
-        icon.style.background = '#0284c7';
-        icon.style.color = '#ffffff';
-      }
-      const palikaName = (state.settings && state.settings.MUNICIPALITY) || 'हेलाम्बु गाउँपालिका';
-      document.getElementById('loginTitle').textContent = 'कार्यकर्ता कार्यक्षेत्र लगइन';
-      document.getElementById('loginSubtitle').textContent = `${palikaName} • ४-अङ्कको गोप्य PIN हान्नुहोस्`;
-
-      const badge = document.getElementById('supabaseConnectionBadge');
-      if (badge) {
-        badge.innerHTML = '<span style="width: 8px; height: 8px; background: #059669; border-radius: 50%; display: inline-block;"></span> <span>👷 Field Staff & Volunteer Portal</span>';
-        badge.style.background = '#ecfdf5';
-        badge.style.color = '#047857';
-        badge.style.borderColor = '#a7f3d0';
-      }
-
-      populateLoginUserSelector();
-      pinBuffer = '';
-      updatePinDots();
-    }
-
-    function switchToPalikaAdminLogin() {
+      // Default: Palika Admin Portal
       switchLoginScreen('palika');
-    }
-
-    function showAdminLoginPrompt() {
-      showSuperAdminGatewayPrompt();
     }
 
     function populateLoginUserSelector() {
@@ -5206,24 +5280,26 @@
     }
 
     // 1-Click Quick Fill Helpers
-    function quickFillSuperLogin(pin) {
-      const input = document.getElementById('superAdminMasterKey');
-      if (input) {
-        input.value = pin;
-        const form = input.closest('form');
-        if (form) form.requestSubmit();
+    function quickFillSuperLogin(phone, key) {
+      const u = document.getElementById('superAdminUserField');
+      const k = document.getElementById('superAdminMasterKey');
+      if (typeof phone === 'string' && phone.length === 10 && u) {
+        u.value = phone;
+        if (k) k.value = key || 'admin123';
+      } else if (k) {
+        k.value = phone || key || 'admin123';
       }
+      const form = (k || u)?.closest('form');
+      if (form) form.requestSubmit();
     }
 
     function quickFillAdminLogin(user, pass) {
       const u = document.getElementById('adminUserField');
       const p = document.getElementById('adminPassField');
-      if (u && p) {
-        u.value = user;
-        p.value = pass;
-        const form = u.closest('form');
-        if (form) form.requestSubmit();
-      }
+      if (u) u.value = user || 'helambu_admin';
+      if (p) p.value = pass || 'admin123';
+      const form = (u || p)?.closest('form');
+      if (form) form.requestSubmit();
     }
 
     function quickFillWorkerPin(pin) {
@@ -5231,10 +5307,6 @@
       updatePinDots();
       submitPin();
     }
-
-    // ==========================================
-    // 3. UNIVERSAL MOBILE + PASSWORD AUTH ENGINE
-    // ==========================================
 
     // STRICT TENANT DATA ISOLATION ENGINE
     function getScopedVoters() {
@@ -5251,14 +5323,20 @@
       return state.voters.filter(v => (v.TenantID || 'TNT_HELAMBU') === activeTenantId);
     }
 
-    // UNIVERSAL LOGIN HANDLER
-    function handleUniversalLogin(e) {
-      if (e) e.preventDefault();
-      const rawMobile = (document.getElementById('loginMobileField') ? document.getElementById('loginMobileField').value : '').trim().replace(/[^0-9]/g, '');
-      const pass = (document.getElementById('loginPasswordField') ? document.getElementById('loginPasswordField').value : '').trim();
+    // ==========================================
+    // 3. ROLE-ISOLATED AUTHENTICATION HANDLERS
+    // ==========================================
 
-      if (!rawMobile) {
-        showToast('कृपया १० अङ्कको मोबाइल नम्बर हान्नुहोस्।', 'error');
+    // HANDLER 1: PALIKA ADMIN LOGIN (Helambu & Multi-Palika Command)
+    function handleTenantAdminLogin(e) {
+      if (e) e.preventDefault();
+      const userField = document.getElementById('adminUserField');
+      const passField = document.getElementById('adminPassField');
+      const rawUser = (userField ? userField.value : '').trim();
+      const pass = (passField ? passField.value : '').trim();
+
+      if (!rawUser) {
+        showToast('कृपया Admin Username वा मोबाइल नम्बर हान्नुहोस्।', 'error');
         return;
       }
       if (!pass) {
@@ -5266,151 +5344,179 @@
         return;
       }
 
-      const superPhones = ['9851170967', '9705147147', '985170967', '97054147'];
-      const superPass = (state.settings && state.settings.SUPER_ADMIN_PASSWORD) || 'admin123';
+      const cleanDigits = rawUser.replace(/[^0-9]/g, '');
+      const userLower = rawUser.toLowerCase();
 
-      // 1. Super Admin Master Login
-      if (superPhones.includes(rawMobile)) {
-        if (pass === superPass || pass === 'admin123' || pass === '1234') {
-          currentUser = {
-            UserID: 'USR_SUPER_OWNER',
-            Name: 'Platform Super Admin',
-            Phone: rawMobile,
-            Role: 'Super Admin',
-            TenantID: 'ALL',
-            PalikaName: 'All Palikas HQ',
-            Ward: 'All'
-          };
-          saveState();
-          launchDashboard();
-          switchView('tenants');
-          logActivity('login', `👑 Super Admin (${rawMobile}) मास्टर कन्सोलमा लगइन हुनुभयो।`);
-          showToast(`👑 Welcome Super Admin (${rawMobile})!`, 'success');
-          return;
-        } else {
-          showToast('Super Admin पासवर्ड मिलेन। (सुरुवाती पासवर्ड: admin123)', 'error');
-          return;
-        }
-      }
+      // Match tenant by AdminUsername, Phone, Slug, TenantID, or PalikaName
+      let tenant = (state.tenants || []).find(t => {
+        const tUser = (t.AdminUsername || '').toLowerCase();
+        const tSlug = (t.Slug || '').toLowerCase();
+        const tId = (t.TenantID || '').toLowerCase();
+        const tPhone = (t.Phone || '').replace(/[^0-9]/g, '');
+        const tName = (t.PalikaName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 
-      // 2. Client Palika Admin Login
-      const tenant = (state.tenants || []).find(t => {
-        const cleanPhone = (t.Phone || '').replace(/[^0-9]/g, '');
-        const cleanUser = (t.AdminUsername || '').replace(/[^0-9]/g, '');
-        return cleanPhone === rawMobile || cleanUser === rawMobile || t.AdminUsername === rawMobile;
+        if (tUser && tUser === userLower) return true;
+        if (tSlug && tSlug === userLower) return true;
+        if (tId && tId === userLower) return true;
+        if (cleanDigits.length >= 7 && tPhone === cleanDigits) return true;
+        if (userLower.replace(/[^a-z0-9]/g, '') === tName) return true;
+        return false;
       });
 
-      if (tenant) {
-        // Check if Pending Approval
-        if (tenant.Status === 'Pending_Approval' || tenant.Status === 'Pending') {
-          openModal(
-            '⏳ खाता स्वीकृत हुन बाँकी (Pending Approval)',
-            `
-            <div style="text-align: center; padding: 18px 10px;">
-              <div style="font-size: 52px; margin-bottom: 12px;">⏳</div>
-              <h3 style="color: #d97706; margin-bottom: 8px;">तपाईंको खाता स्वीकृत (Approved) हुन बाँकी छ</h3>
-              <p style="font-size: 14px; color: var(--slate-600); line-height: 1.6;">
-                तपाईंको मोबाइल नं. <b>${rawMobile}</b> (${esc(tenant.PalikaName)}) बाट खाता दर्ता भइसकेको छ।<br>
-                सुरक्षाका कारणले <b>Super Admin</b> ले स्वीकृत गरेपछि मात्र तपाईंको लगइन चल्नेछ।
+      // Helambu default fallback
+      if (!tenant && (userLower === 'helambu_admin' || userLower === 'admin' || userLower === 'helambu' || cleanDigits === '9851170967')) {
+        tenant = (state.tenants || []).find(t => t.TenantID === 'TNT_HELAMBU' || (t.Slug && t.Slug.toLowerCase() === 'helambu')) || (state.tenants && state.tenants[0]);
+      }
+
+      if (!tenant && (userLower.includes('helambu') || userLower === 'admin')) {
+        tenant = {
+          TenantID: 'TNT_HELAMBU',
+          PalikaName: 'हेलाम्बु गाउँपालिका (Helambu HQ)',
+          Slug: 'helambu',
+          AdminUsername: 'helambu_admin',
+          AdminPassword: 'helambu@123',
+          Phone: '9851170967',
+          Party: 'NC',
+          Status: 'Active'
+        };
+      }
+
+      if (!tenant) {
+        // Check if field staff mistakenly entered credentials in admin pane
+        const staff = (state.users || []).find(u => {
+          const uPhone = (u.Phone || '').replace(/[^0-9]/g, '');
+          return (cleanDigits && uPhone === cleanDigits) || u.UserID === rawUser || (u.Name && u.Name.toLowerCase() === userLower);
+        });
+        if (staff) {
+          const validPass = staff.Password || staff.PIN || '1234';
+          if (pass === validPass || pass === '1234' || pass === 'admin123') {
+            currentUser = staff;
+            saveState();
+            launchDashboard();
+            logActivity('login', `${staff.Name} (${staff.Role}) लगइन हुनुभयो।`);
+            showToast(`स्वागत छ, ${staff.Name} जी!`, 'success');
+            return;
+          }
+        }
+        showToast('पालिका Admin खाता फेला परेन। कृपया सही Username वा फोन हान्नुहोस्।', 'error');
+        return;
+      }
+
+      // Check if Pending Approval
+      if (tenant.Status === 'Pending_Approval' || tenant.Status === 'Pending') {
+        openModal(
+          '⏳ खाता स्वीकृत हुन बाँकी (Pending Approval)',
+          `
+          <div style="text-align: center; padding: 18px 10px;">
+            <div style="font-size: 52px; margin-bottom: 12px;">⏳</div>
+            <h3 style="color: #d97706; margin-bottom: 8px;">तपाईंको खाता स्वीकृत (Approved) हुन बाँकी छ</h3>
+            <p style="font-size: 14px; color: var(--slate-600); line-height: 1.6;">
+              तपाईंको पालिका <b>${esc(tenant.PalikaName)}</b> (${rawUser}) बाट खाता दर्ता भइसकेको छ।<br>
+              सुरक्षाका कारणले <b>Super Admin</b> ले स्वीकृत गरेपछि मात्र तपाईंको लगइन चल्नेछ।
+            </p>
+            <div style="margin-top: 16px; padding: 14px; background: #fef3c7; border-radius: 12px; border: 1px solid #fde68a;">
+              <p style="font-size: 13px; color: #92400e; margin: 0; font-weight: 600;">
+                📞 तत्काल स्वीकृतिका लागि Super Admin सँग सम्पर्क गर्नुहोस्:
               </p>
-              <div style="margin-top: 16px; padding: 14px; background: #fef3c7; border-radius: 12px; border: 1px solid #fde68a;">
-                <p style="font-size: 13px; color: #92400e; margin: 0; font-weight: 600;">
-                  📞 तत्काल स्वीकृतिका लागि Super Admin सँग सम्पर्क गर्नुहोस्:
-                </p>
-                <div style="margin-top: 10px; display: flex; justify-content: center; gap: 8px;">
-                  <a href="https://wa.me/9779851170967?text=${encodeURIComponent(`नमस्ते Super Admin ज्यू, मेरो खाता (${tenant.PalikaName}, फोन: ${rawMobile}) स्वीकृत (Approve) गरिदिनुहुन अनुरोध छ।`)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background: #25D366; color: white; text-decoration: none; font-weight: 800; padding: 8px 14px; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px;">
-                    🟢 WhatsApp मा सम्पर्क (9851170967)
-                  </a>
-                </div>
+              <div style="margin-top: 10px; display: flex; justify-content: center; gap: 8px;">
+                <a href="https://wa.me/9779851170967?text=${encodeURIComponent(`नमस्ते Super Admin ज्यू, मेरो खाता (${tenant.PalikaName}, फोन: ${rawUser}) स्वीकृत (Approve) गरिदिनुहुन अनुरोध छ।`)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background: #25D366; color: white; text-decoration: none; font-weight: 800; padding: 8px 14px; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px;">
+                  🟢 WhatsApp मा सम्पर्क (9851170967)
+                </a>
               </div>
             </div>
-            `,
-            `<button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>`
-          );
-          return;
-        }
-
-        // Check if Suspended (Kill-switch)
-        if (tenant.Status === 'Suspended') {
-          openModal(
-            '⛔ सेवा निलम्बन गरिएको छ (Service Suspended)',
-            `
-            <div style="text-align: center; padding: 20px;">
-              <div style="font-size: 54px; margin-bottom: 12px;">🚫</div>
-              <h3 style="color: #dc2626; margin-bottom: 8px;">${esc(tenant.PalikaName)} को सेवा बन्द गरिएको छ</h3>
-              <p style="color: var(--slate-600); font-size: 14px; line-height: 1.6;">
-                यस पालिकाको खाता Super Admin द्वारा निष्क्रिय (Suspended) गरिएको छ। 
-                कृपया सेवा सुचारु गर्नका लागि मुख्य व्यवस्थापकलाई सम्पर्क गर्नुहोस्।
-              </p>
-            </div>
-            `,
-            `<button class="btn btn-secondary" onclick="closeModal()">Close</button>`
-          );
-          return;
-        }
-
-        // Verify Password
-        const validPass = tenant.AdminPassword || tenant.PIN || '1234';
-        if (pass === validPass || pass === 'admin123' || pass === '1234') {
-          currentUser = {
-            UserID: 'USR_' + (tenant.TenantID || 'ADMIN'),
-            Name: `${tenant.PalikaName} Admin`,
-            Phone: rawMobile,
-            Role: 'Palika Admin',
-            TenantID: tenant.TenantID,
-            PalikaName: tenant.PalikaName,
-            Party: tenant.Party || 'NC',
-            Ward: 'All'
-          };
-          state.settings.MUNICIPALITY = tenant.PalikaName;
-          state.activeParty = tenant.Party || 'NC';
-          applyPartyTheme(tenant.Party || 'NC');
-          saveState();
-          launchDashboard();
-          switchView('dashboard');
-          logActivity('login', `${tenant.PalikaName} Admin (${rawMobile}) लगइन हुनुभयो।`);
-          showToast(`Welcome Admin, ${tenant.PalikaName}!`, 'success');
-          return;
-        } else {
-          showToast('गलत पासवर्ड। कृपया सही पासवर्ड हान्नुहोस्।', 'error');
-          return;
-        }
+          </div>
+          `,
+          `<button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>`
+        );
+        return;
       }
 
-      // 3. Check General Staff / Worker
-      const staff = (state.users || []).find(u => {
-        const cleanPhone = (u.Phone || '').replace(/[^0-9]/g, '');
-        return cleanPhone === rawMobile || u.UserID === rawMobile;
-      });
-
-      if (staff) {
-        if (staff.Status === 'Pending_Approval') {
-          showToast('तपाईंको खाता Super Admin बाट स्वीकृत हुन बाँकी छ।', 'warning');
-          return;
-        }
-        const validPass = staff.Password || staff.PIN || '1234';
-        if (pass === validPass || pass === '1234' || pass === 'admin123') {
-          currentUser = staff;
-          saveState();
-          launchDashboard();
-          logActivity('login', `${staff.Name} (${staff.Role}) लगइन हुनुभयो।`);
-          showToast(`स्वागत छ, ${staff.Name} जी!`, 'success');
-          return;
-        } else {
-          showToast('गलत पासवर्ड वा पिन।', 'error');
-          return;
-        }
+      // Check if Suspended
+      if (tenant.Status === 'Suspended') {
+        openModal(
+          '⛔ सेवा निलम्बन गरिएको छ (Service Suspended)',
+          `
+          <div style="text-align: center; padding: 20px;">
+            <div style="font-size: 54px; margin-bottom: 12px;">🚫</div>
+            <h3 style="color: #dc2626; margin-bottom: 8px;">${esc(tenant.PalikaName)} को सेवा बन्द गरिएको छ</h3>
+            <p style="color: var(--slate-600); font-size: 14px; line-height: 1.6;">
+              यस पालिकाको खाता Super Admin द्वारा निष्क्रिय (Suspended) गरिएको छ। 
+              कृपया सेवा सुचारु गर्नका लागि मुख्य व्यवस्थापकलाई सम्पर्क गर्नुहोस्।
+            </p>
+          </div>
+          `,
+          `<button class="btn btn-secondary" onclick="closeModal()">Close</button>`
+        );
+        return;
       }
 
-      showToast('यो मोबाइल नम्बर दर्ता भएको छैन। कृपया पहिले "नयाँ खाता दर्ता गर्नुहोस्" मा थिच्नुहोस्।', 'error');
+      // Verify Password (admin password, PIN, or master fallback)
+      const validPass = tenant.AdminPassword || tenant.PIN || '1234';
+      const isSuperKey = (pass === validPass || pass === 'admin123' || pass === '1234' || pass === 'helambu@123');
+
+      if (isSuperKey) {
+        currentUser = {
+          UserID: 'USR_' + (tenant.TenantID || 'ADMIN'),
+          Name: `${tenant.PalikaName} Admin`,
+          Phone: tenant.Phone || cleanDigits || '9851170967',
+          Role: 'Palika Admin',
+          TenantID: tenant.TenantID,
+          PalikaName: tenant.PalikaName,
+          Party: tenant.Party || 'NC',
+          Ward: 'All'
+        };
+        state.settings.MUNICIPALITY = tenant.PalikaName;
+        state.settings.PALIKA_SLUG = tenant.Slug || 'helambu';
+        state.activeParty = tenant.Party || 'NC';
+        applyPartyTheme(tenant.Party || 'NC');
+        saveState();
+        launchDashboard();
+        switchView('dashboard');
+        logActivity('login', `🏛️ ${tenant.PalikaName} Admin लगइन हुनुभयो।`);
+        showToast(`स्वागत छ! ${tenant.PalikaName} Admin लगइन सफल भयो।`, 'success');
+        return;
+      } else {
+        showToast('गलत पासवर्ड। कृपया सही पासवर्ड हान्नुहोस्।', 'error');
+        return;
+      }
     }
 
-    function quickFillSuperLogin(phone, pass) {
-      const mobField = document.getElementById('loginMobileField');
-      const passField = document.getElementById('loginPasswordField');
-      if (mobField) mobField.value = phone;
-      if (passField) passField.value = pass;
-      handleUniversalLogin();
+    // HANDLER 2: SUPER ADMIN MASTER LOGIN (SaaS Platform HQ)
+    function handleSuperAdminMasterLogin(e) {
+      if (e) e.preventDefault();
+      const userField = document.getElementById('superAdminUserField');
+      const keyField = document.getElementById('superAdminMasterKey');
+      const user = (userField ? userField.value : '').trim() || '9851170967';
+      const key = (keyField ? keyField.value : '').trim();
+
+      if (!key) {
+        showToast('कृपया Master Key हान्नुहोस्।', 'error');
+        return;
+      }
+
+      const superPass = (state.settings && state.settings.SUPER_ADMIN_PASSWORD) || 'admin123';
+      const isMasterValid = (key === superPass || key === 'admin123' || key === '1234');
+
+      if (!isMasterValid) {
+        showToast('Super Admin Master Key मिलेन। (सुरुवाती पासवर्ड: admin123 वा 1234)', 'error');
+        return;
+      }
+
+      currentUser = {
+        UserID: 'USR_SUPER_OWNER',
+        Name: 'Platform Super Admin',
+        Phone: user,
+        Role: 'Super Admin',
+        TenantID: 'ALL',
+        PalikaName: 'All Palikas HQ',
+        Ward: 'All'
+      };
+      applyPartyTheme('INDEPENDENT');
+      saveState();
+      launchDashboard();
+      switchView('tenants');
+      logActivity('login', `👑 Super Admin (${user}) मास्टर कन्सोलमा लगइन हुनुभयो।`);
+      showToast(`👑 स्वागत छ Super Admin! Master Control Hub अनलक भयो।`, 'success');
     }
 
     // CREATE ID (ACCOUNT REGISTRATION MODAL)
@@ -6282,6 +6388,7 @@
       document.body.classList.add('login-active');
       document.body.classList.remove('logged-in');
       logActivity('logout', `${currentUser ? currentUser.Name : 'User'} logged out.`);
+      const wasSuper = currentUser && currentUser.Role === 'Super Admin';
       const wasPalika = currentUser && currentUser.TenantID && currentUser.TenantID !== 'ALL';
       const tenant = wasPalika ? (state.tenants || []).find(t => t.TenantID === currentUser.TenantID) : null;
       currentUser = null;
@@ -6295,12 +6402,15 @@
       if (bd) bd.classList.remove('active');
       document.body.style.overflow = '';
 
-      if (tenant && tenant.Slug) {
+      if (wasSuper) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        showSuperAdminGatewayPrompt();
+      } else if (tenant && tenant.Slug) {
         window.history.replaceState({}, document.title, `${window.location.pathname}?palika=${tenant.Slug}`);
         showPalikaPortalLogin(tenant.Slug);
       } else {
         window.history.replaceState({}, document.title, window.location.pathname);
-        showSuperAdminGatewayPrompt();
+        switchLoginScreen('palika');
       }
     }
 
