@@ -1,5 +1,5 @@
-// Service Worker for Offline & Installable App Experience (v11 - Native Mobile Bottom Sheet Filter)
-const CACHE_NAME = 'election-ops-v11';
+// Service Worker for Offline & Installable App Experience (v12 - Native Mobile Bottom Sheet Filter Fix)
+const CACHE_NAME = 'election-ops-v12';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

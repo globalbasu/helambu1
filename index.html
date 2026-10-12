@@ -1571,6 +1571,7 @@
       transition: opacity 0.2s ease;
     }
     .modal-overlay.active { display: flex; }
+    .voter-filter-bottom-sheet-overlay { display: none !important; }
 
     .modal-card {
       background: #ffffff;
@@ -2663,11 +2664,14 @@
         backdrop-filter: blur(4px) !important;
         -webkit-backdrop-filter: blur(4px) !important;
         z-index: 2200 !important;
-        display: flex !important;
+        display: none !important;
         align-items: flex-end !important;
         justify-content: center !important;
         padding: 0 !important;
         box-sizing: border-box !important;
+      }
+      .voter-filter-bottom-sheet-overlay.active {
+        display: flex !important;
       }
       .voter-filter-bottom-sheet-card {
         width: 100% !important;
@@ -3814,7 +3818,7 @@
             </div>
 
             <!-- VOTER FILTER MOBILE BOTTOM SHEET (Option 2 - Native Mobile App Modal) -->
-            <div id="voterFilterBottomSheet" class="voter-filter-bottom-sheet-overlay" onclick="closeVoterFilterBottomSheet()" style="display: none;">
+            <div id="voterFilterBottomSheet" class="voter-filter-bottom-sheet-overlay" onclick="closeVoterFilterBottomSheet()">
               <div class="voter-filter-bottom-sheet-card" onclick="event.stopPropagation()">
                 <div class="voter-bs-handle-bar"></div>
                 <div class="voter-bs-header">
@@ -3822,7 +3826,7 @@
                     <span style="font-size: 18px;">⚡</span>
                     <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: #0f172a;">मतदाता फिल्टर (Filter Voters)</h3>
                   </div>
-                  <button type="button" class="voter-bs-close-btn" onclick="closeVoterFilterBottomSheet()" title="बन्द गर्नुहोस्">✕</button>
+                  <button type="button" class="voter-bs-close-btn" onclick="event.stopPropagation(); closeVoterFilterBottomSheet();" title="बन्द गर्नुहोस्">✕</button>
                 </div>
                 <div class="voter-bs-body">
                   <div class="voter-bs-field">
@@ -3881,8 +3885,8 @@
                   </div>
                 </div>
                 <div class="voter-bs-footer">
-                  <button type="button" class="btn btn-secondary voter-bs-reset-btn" onclick="clearVoterFilters(); closeVoterFilterBottomSheet();">🔄 रिसेट (Reset)</button>
-                  <button type="button" class="btn btn-primary voter-bs-apply-btn" onclick="applyAndCloseVoterFilterBottomSheet()">✓ नतिजा हेर्नुहोस् (Apply)</button>
+                  <button type="button" class="btn btn-secondary voter-bs-reset-btn" onclick="event.stopPropagation(); clearVoterFilters(); closeVoterFilterBottomSheet();">🔄 रिसेट (Reset)</button>
+                  <button type="button" class="btn btn-primary voter-bs-apply-btn" onclick="event.stopPropagation(); applyAndCloseVoterFilterBottomSheet();">✓ नतिजा हेर्नुहोस् (Apply)</button>
                 </div>
               </div>
             </div>
@@ -5748,9 +5752,9 @@
 
       // Register Service Worker with cache-busting
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js?v=20261012-v11')
+        navigator.serviceWorker.register('sw.js?v=20261012-v12')
           .then((reg) => {
-            console.log('Election Ops PWA Service Worker Registered (v11.0.0)');
+            console.log('Election Ops PWA Service Worker Registered (v12.0.0)');
             reg.update();
           })
           .catch(err => console.log('SW registration error:', err));
@@ -7899,6 +7903,7 @@
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.mob-nav-btn').forEach(el => el.classList.remove('active'));
+      closeVoterFilterBottomSheet();
 
       const targetView = document.getElementById(`view${capitalize(viewName)}`);
       if (targetView) targetView.classList.add('active');
@@ -8282,7 +8287,7 @@
       syncVoterFiltersToMobile();
       const bs = document.getElementById('voterFilterBottomSheet');
       if (bs) {
-        bs.style.display = 'flex';
+        bs.classList.add('active');
         document.body.classList.add('modal-open');
       }
     }
@@ -8290,7 +8295,7 @@
     function closeVoterFilterBottomSheet() {
       const bs = document.getElementById('voterFilterBottomSheet');
       if (bs) {
-        bs.style.display = 'none';
+        bs.classList.remove('active');
         document.body.classList.remove('modal-open');
       }
     }
