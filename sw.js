@@ -1,5 +1,5 @@
-// Service Worker for Offline & Installable App Experience (v9 - Force Cache Purge)
-const CACHE_NAME = 'election-ops-v9';
+// Service Worker for Offline & Installable App Experience (v10 - Compact Mobile Voter Directory)
+const CACHE_NAME = 'election-ops-v10';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

@@ -1041,6 +1041,142 @@
     .badge-contacted { background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; }
     .badge-notcontacted { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
     .badge-urgent { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
+    /* Responsive Display Helpers */
+    .hide-on-mobile {
+      display: inline-flex;
+    }
+    .show-on-mobile-only {
+      display: none !important;
+    }
+
+    /* Keyframes */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Voter Header, Metrics & Collapsible Filter Drawer (Desktop base) */
+    .voter-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .voter-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .voter-more-tools-wrap {
+      position: relative;
+    }
+    .voter-more-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      right: 0;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+      z-index: 1050;
+      min-width: 195px;
+      padding: 6px 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .voter-more-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 9px 14px;
+      background: transparent;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .voter-more-item:hover, .voter-more-item:active {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .voter-live-metrics-wrap {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: white;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+    .voter-live-metrics-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .voter-live-metrics-stats {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .voter-metrics-title {
+      font-weight: 800;
+      color: #fbbf24;
+    }
+    .voter-metrics-sep {
+      opacity: 0.6;
+    }
+    .voter-metrics-chips {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .voter-metrics-toggle-btn {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .voter-search-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1 1 280px;
+    }
+    .voter-search-wrap {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .voter-filter-toggle-btn {
+      display: none;
+    }
+    .voter-filters-collapse {
+      display: grid;
+    }
 
     /* Voter Table 6-Column Layout & Quick Filter Pills */
     .voter-quick-pills-bar {
@@ -2272,7 +2408,18 @@
         overflow: hidden !important;
       }
 
-      /* On mobile, remove outer card padding from #viewVoters so voter cards take 100% full width with zero cutoff */
+      /* Responsive visibility helpers */
+      .hide-on-mobile {
+        display: none !important;
+      }
+      .show-on-mobile-only {
+        display: inline-flex !important;
+      }
+      div.show-on-mobile-only {
+        display: block !important;
+      }
+
+      /* On mobile, ultra-compact voter directory header & spacing */
       #viewVoters > .card {
         background: transparent !important;
         border: none !important;
@@ -2286,9 +2433,216 @@
       #viewVoters > .card > #voterTableLiveMetrics {
         background: #ffffff !important;
         border: 1px solid #e2e8f0 !important;
-        border-radius: 14px !important;
-        padding: 10px 12px !important;
-        margin-bottom: 10px !important;
+        border-radius: 12px !important;
+        padding: 8px 10px !important;
+        margin-bottom: 6px !important;
+      }
+
+      /* Compact 1-line mobile header */
+      #viewVoters .voter-card-header {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 6px !important;
+      }
+      #viewVoters .voter-header-title-box {
+        min-width: 0 !important;
+        flex: 1 1 auto !important;
+      }
+      #viewVoters .voter-header-title-box .card-title {
+        font-size: 13.5px !important;
+        line-height: 1.2 !important;
+        margin: 0 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      #viewVoters .voter-header-title-box .card-title .badge {
+        display: none !important;
+      }
+      #viewVoters #voterResultsCount {
+        font-size: 11px !important;
+        color: #64748b !important;
+        margin-top: 1px !important;
+      }
+      #viewVoters .voter-header-actions {
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        flex-shrink: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+      }
+      #viewVoters .voter-header-actions .btn {
+        padding: 5px 8px !important;
+        font-size: 11.5px !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        white-space: nowrap !important;
+      }
+
+      /* Live Metrics 1-Line Compact Mobile Bar */
+      .voter-live-metrics-wrap {
+        padding: 6px 10px !important;
+        margin-bottom: 0px !important;
+        border-radius: 10px !important;
+        display: block !important;
+      }
+      .voter-live-metrics-main {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 4px !important;
+      }
+      .voter-live-metrics-stats {
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        font-size: 11.5px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      .voter-metrics-chips {
+        display: none !important;
+        width: 100% !important;
+        margin-top: 6px !important;
+        padding-top: 6px !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+        gap: 4px !important;
+      }
+      .voter-metrics-chips.open {
+        display: flex !important;
+        flex-wrap: wrap !important;
+      }
+      .voter-metrics-toggle-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 2px !important;
+        font-size: 10.5px !important;
+        padding: 2px 6px !important;
+        border-radius: 6px !important;
+        background: rgba(255, 255, 255, 0.15) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        flex-shrink: 0 !important;
+      }
+
+      /* 1-Line Touch-Swipe Quick Filter Pills */
+      .voter-quick-pills-bar {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: nowrap !important;
+        gap: 6px !important;
+        padding: 5px 8px !important;
+        margin-bottom: 6px !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+      }
+      .voter-pill-group {
+        display: flex !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        gap: 5px !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+      }
+      .voter-pill-group::-webkit-scrollbar {
+        display: none !important;
+      }
+      .voter-pill-group .voter-pill-label {
+        display: none !important;
+      }
+      .voter-pill-btn {
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+        padding: 3.5px 8.5px !important;
+        font-size: 11px !important;
+        min-height: 28px !important;
+      }
+      .voter-pills-showing-tag {
+        display: none !important;
+      }
+
+      /* Collapsible Advanced Filters Drawer */
+      .voter-filter-bar {
+        gap: 0px !important;
+      }
+      .voter-search-row {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        width: 100% !important;
+      }
+      .voter-search-wrap {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+      }
+      .voter-filter-toggle-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 4px !important;
+        padding: 5px 9px !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        border-radius: 8px !important;
+        border: 1px solid #cbd5e1 !important;
+        background: #f8fafc !important;
+        color: #1e293b !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+      }
+      .voter-filter-toggle-btn.has-active-filters {
+        background: #ecfdf5 !important;
+        border-color: #10b981 !important;
+        color: #047857 !important;
+        font-weight: 800 !important;
+      }
+      .voter-active-filter-badge {
+        background: #059669;
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 800;
+        min-width: 16px;
+        height: 16px;
+        line-height: 16px;
+        text-align: center;
+        border-radius: 999px;
+        padding: 0 4px;
+        display: inline-block;
+      }
+      .voter-filters-collapse {
+        display: none !important;
+        width: 100% !important;
+        margin-top: 8px !important;
+        padding: 10px !important;
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 6px !important;
+      }
+      .voter-filters-collapse.open {
+        display: grid !important;
+        animation: fadeInDown 0.18s ease-out !important;
+      }
+      .voter-reset-filter-btn {
+        grid-column: 1 / -1 !important;
+        padding: 8px !important;
+        font-weight: 700 !important;
+        margin-top: 2px !important;
       }
 
       /* Table responsive horizontal scroll */
@@ -3230,18 +3584,29 @@
         <!-- 2. VOTERS & CONTACTS MASTER -->
         <section id="viewVoters" class="view-section">
           <div class="card">
-            <div class="card-header">
-              <div>
-                <h3 class="card-title">👥 Voter & Contact Directory (मतदाता निर्देशिका) <span class="badge" style="background: #ecfdf5; color: #047857; font-size: 11px;">Live Field Sync</span></h3>
-                <div style="font-size: 13px; color: var(--slate-600); margin-top: 4px;" id="voterResultsCount">Loading...</div>
+            <div class="card-header voter-card-header">
+              <div class="voter-header-title-box">
+                <h3 class="card-title">👥 Voter Directory (मतदाता निर्देशिका) <span class="badge" style="background: #ecfdf5; color: #047857; font-size: 11px;">Live Field Sync</span></h3>
+                <div style="font-size: 12px; color: var(--slate-600); margin-top: 2px;" id="voterResultsCount">Loading...</div>
               </div>
-              <div class="card-header-actions">
-                <button class="btn btn-sm btn-primary" style="background: #25D366; border-color: #25D366;" onclick="openBroadcastModal()">📢 Broadcast / SMS</button>
+              <div class="card-header-actions voter-header-actions">
                 <button class="btn btn-sm btn-secondary" id="toggleViewBtn" onclick="toggleVoterViewMode()">🔲 Card View</button>
-                <button class="btn btn-sm btn-secondary" id="voterDensityBtn" onclick="toggleVoterDensity()" title="कम्प्याक्ट वा सामान्य रो उचाइ">📑 कम्प्याक्ट</button>
-                <button class="btn btn-sm btn-secondary" onclick="exportVotersCsv()" title="फिल्टर गरिएका मतदाता Excel मा डाउनलोड">📥 Export CSV</button>
-                <button class="btn btn-sm btn-secondary" onclick="printFilteredBatchSlips()" title="फिल्टर गरिएका सबै मतदाताको पर्चा प्रिन्ट">🖨️ ब्याच पर्चा</button>
                 <button class="btn btn-sm btn-primary" onclick="openAddVoterModal()">+ नयाँ मतदाता</button>
+                <button class="btn btn-sm btn-primary hide-on-mobile" style="background: #25D366; border-color: #25D366;" onclick="openBroadcastModal()">📢 Broadcast / SMS</button>
+                <button class="btn btn-sm btn-secondary hide-on-mobile" id="voterDensityBtn" onclick="toggleVoterDensity()" title="कम्प्याक्ट वा सामान्य रो उचाइ">📑 कम्प्याक्ट</button>
+                <button class="btn btn-sm btn-secondary hide-on-mobile" onclick="exportVotersCsv()" title="फिल्टर गरिएका मतदाता Excel मा डाउनलोड">📥 Export CSV</button>
+                <button class="btn btn-sm btn-secondary hide-on-mobile" onclick="printFilteredBatchSlips()" title="फिल्टर गरिएका सबै मतदाताको पर्चा प्रिन्ट">🖨️ ब्याच पर्चा</button>
+                <div class="voter-more-tools-wrap show-on-mobile-only">
+                  <button type="button" class="btn btn-sm btn-secondary" id="voterMoreToolsBtn" onclick="toggleVoterMoreTools(event)" title="थप टुलहरू" style="padding: 5px 9px; font-weight: 700;">
+                    ⋮ थप
+                  </button>
+                  <div id="voterMoreToolsDropdown" class="voter-more-dropdown" style="display: none;">
+                    <button type="button" class="voter-more-item" onclick="openBroadcastModal(); closeVoterMoreTools();">📢 Broadcast / SMS</button>
+                    <button type="button" class="voter-more-item" onclick="toggleVoterDensity(); closeVoterMoreTools();">📑 कम्प्याक्ट / सामान्य</button>
+                    <button type="button" class="voter-more-item" onclick="exportVotersCsv(); closeVoterMoreTools();">📥 Export CSV</button>
+                    <button type="button" class="voter-more-item" onclick="printFilteredBatchSlips(); closeVoterMoreTools();">🖨️ ब्याच पर्चा प्रिन्ट</button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -3268,32 +3633,39 @@
                   ⭐ VIP (<span id="pillCountVip">0</span>)
                 </button>
               </div>
-              <div style="font-size: 12px; font-weight: 700; color: var(--slate-600);">
+              <div class="voter-pills-showing-tag" style="font-size: 12px; font-weight: 700; color: var(--slate-600); white-space: nowrap; flex-shrink: 0;">
                 देखाउँदै: <span id="voterPillsShowingCount" style="color: var(--primary, #059669); font-weight: 800;">0 जना</span>
               </div>
             </div>
 
-            <div class="filter-bar">
-              <div class="search-input-wrap">
-                <span class="search-icon">🔍</span>
-                <input type="search" id="voterSearch" class="search-input" name="voterSearchQuery" placeholder="Search by name, phone, serial, tole, household..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" oninput="debounceRenderVoters()">
+            <div class="filter-bar voter-filter-bar">
+              <div class="voter-search-row">
+                <div class="search-input-wrap voter-search-wrap">
+                  <span class="search-icon">🔍</span>
+                  <input type="search" id="voterSearch" class="search-input" name="voterSearchQuery" placeholder="Search by name, phone, serial, tole, household..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" oninput="debounceRenderVoters()">
+                </div>
+                <button type="button" id="voterFilterToggleBtn" class="btn btn-secondary voter-filter-toggle-btn show-on-mobile-only" onclick="toggleVoterFilterDrawer()">
+                  <span>⚡ फिल्टर</span>
+                  <span id="voterActiveFilterBadge" class="voter-active-filter-badge" style="display: none;">0</span>
+                  <span id="voterFilterToggleArrow" style="font-size: 11px;">▾</span>
+                </button>
               </div>
-              <div class="filter-bar-selects">
-                <select id="voterWardFilter" class="filter-select" onchange="renderVotersList()">
+              <div id="voterFilterDrawer" class="filter-bar-selects voter-filters-collapse">
+                <select id="voterWardFilter" class="filter-select" onchange="onVoterFilterChange()">
                   <option value="">सबै वडा (All Wards)</option>
                 </select>
-                <select id="voterContactFilter" class="filter-select" onchange="renderVotersList()">
+                <select id="voterContactFilter" class="filter-select" onchange="onVoterFilterChange()">
                   <option value="">Contact Status: All</option>
                   <option value="Contacted">Contacted</option>
                   <option value="Not Contacted">Not Contacted</option>
                 </select>
-                <select id="voterVerifyFilter" class="filter-select" onchange="renderVotersList()">
+                <select id="voterVerifyFilter" class="filter-select" onchange="onVoterFilterChange()">
                   <option value="">Verification: All</option>
                   <option value="Verified">Verified</option>
                   <option value="Pending">Pending</option>
                   <option value="Correction Required">Correction Required</option>
                 </select>
-                <select id="voterSupportFilter" class="filter-select" onchange="renderVotersList()" style="font-weight: 700; color: #047857;">
+                <select id="voterSupportFilter" class="filter-select" onchange="onVoterFilterChange()" style="font-weight: 700; color: #047857;">
                   <option value="">समर्थन अवस्था: सबै</option>
                   <option value="solid">🟢 पक्का समर्थक</option>
                   <option value="lean">🟩 सकारात्मक</option>
@@ -3301,11 +3673,11 @@
                   <option value="opponent_lean">🟠 विपक्षी झुकाव</option>
                   <option value="hard_opponent">🔴 कडा विरोधी</option>
                 </select>
-                <select id="voterInfluencerFilter" class="filter-select" onchange="renderVotersList()" style="font-weight: 700; color: #7c2d12;">
+                <select id="voterInfluencerFilter" class="filter-select" onchange="onVoterFilterChange()" style="font-weight: 700; color: #7c2d12;">
                   <option value="">प्रभावकारी: सबै</option>
                   <option value="yes">🌟 प्रभावकारी मात्र</option>
                 </select>
-                <select id="voterPartyFilter" class="filter-select" onchange="renderVotersList()">
+                <select id="voterPartyFilter" class="filter-select" onchange="onVoterFilterChange()">
                   <option value="">पार्टी झुकाव: सबै</option>
                   <option value="UML">नेकपा (एमाले)</option>
                   <option value="Congress">नेपाली कांग्रेस</option>
@@ -3315,7 +3687,7 @@
                   <option value="Independent">स्वतन्त्र / अन्य</option>
                   <option value="Undecided">दोधार / अनिर्णित</option>
                 </select>
-                <button class="btn btn-sm btn-secondary" onclick="clearVoterFilters()" style="grid-column: 1 / -1;">🔄 फिल्टर रिसेट (Reset Filters)</button>
+                <button type="button" class="btn btn-sm btn-secondary voter-reset-filter-btn" onclick="clearVoterFilters()">🔄 फिल्टर रिसेट (Reset Filters)</button>
               </div>
             </div>
 
@@ -4802,7 +5174,9 @@
     let currentUser = null;
     let pinBuffer = '';
     let isSubmitting = false;
-    let currentVoterViewMode = 'table'; // 'table' or 'card'
+    let currentVoterViewMode = (typeof window !== 'undefined' && window.innerWidth <= 880) ? 'card' : 'table';
+    let isVoterFilterDrawerOpen = false;
+    let isVoterMetricsExpanded = false;
 
     // In-memory Master Data (Real Helambu Operations)
     let state = {
@@ -5178,9 +5552,9 @@
 
       // Register Service Worker with cache-busting
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js?v=6.0.0')
+        navigator.serviceWorker.register('sw.js?v=20261012-v10')
           .then((reg) => {
-            console.log('Election Ops PWA Service Worker Registered (v4.0.0)');
+            console.log('Election Ops PWA Service Worker Registered (v10.0.0)');
             reg.update();
           })
           .catch(err => console.log('SW registration error:', err));
@@ -7518,6 +7892,23 @@
       showToast(isVoterTableCompact ? 'कम्प्याक्ट भ्यू सक्रिय' : 'सामान्य भ्यू सक्रिय', 'info');
     }
 
+    function toggleVoterMetricsExpanded(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      isVoterMetricsExpanded = !isVoterMetricsExpanded;
+      const chips = document.getElementById('voterMetricsPartyChips');
+      const icon = document.getElementById('voterMetricsToggleIcon');
+      if (chips) {
+        if (isVoterMetricsExpanded) chips.classList.add('open');
+        else chips.classList.remove('open');
+      }
+      if (icon) {
+        icon.textContent = isVoterMetricsExpanded ? '▴ बन्द' : '▾ पार्टी';
+      }
+    }
+
     function renderVoterLiveMetrics(filtered) {
       const container = document.getElementById('voterTableLiveMetrics');
       if (!container) return;
@@ -7538,16 +7929,26 @@
       const rpp = filtered.filter(v => v.PartyLeaning === 'RPP').length;
       const ind = filtered.filter(v => v.PartyLeaning === 'Independent').length;
       const und = filtered.filter(v => !v.PartyLeaning || v.PartyLeaning === 'Undecided').length;
+      const hasPartyData = (uml + cong + rsp + mao + rpp + ind + und) > 0;
 
       container.innerHTML = `
-        <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12px; box-shadow: var(--shadow-sm);">
-          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <span style="font-weight: 800; color: #fbbf24;">📊 लाइभ मेट्रिक्स:</span>
-            <span>👥 जम्मा: <b>${total} जना</b></span>
-            <span>• ✓ प्रमाणित: <b>${verified} (${vPct}%)</b></span>
-            <span>• 📞 सम्पर्क: <b>${contacted} (${cPct}%)</b></span>
+        <div class="voter-live-metrics-wrap">
+          <div class="voter-live-metrics-main">
+            <div class="voter-live-metrics-stats">
+              <span class="voter-metrics-title">📊 लाइभ:</span>
+              <span class="voter-metrics-item">👥 <b>${total}</b> जना</span>
+              <span class="voter-metrics-sep">•</span>
+              <span class="voter-metrics-item">✓ <b>${verified}</b> (${vPct}%)</span>
+              <span class="voter-metrics-sep">•</span>
+              <span class="voter-metrics-item">📞 <b>${contacted}</b> (${cPct}%)</span>
+            </div>
+            ${hasPartyData ? `
+            <button type="button" class="voter-metrics-toggle-btn show-on-mobile-only" onclick="toggleVoterMetricsExpanded(event)" title="पार्टी विवरण देखाउनुहोस् / लुकाउनुहोस्">
+              <span id="voterMetricsToggleIcon">${isVoterMetricsExpanded ? '▴ बन्द' : '▾ पार्टी'}</span>
+            </button>
+            ` : ''}
           </div>
-          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+          <div id="voterMetricsPartyChips" class="voter-metrics-chips ${isVoterMetricsExpanded ? 'open' : ''}">
             ${uml ? `<span class="badge" style="background: rgba(220, 38, 38, 0.25); color: #fca5a5; border: 1px solid rgba(220, 38, 38, 0.4); font-size: 11px;">🔴 एमाले: ${uml}</span>` : ''}
             ${cong ? `<span class="badge" style="background: rgba(37, 99, 235, 0.25); color: #93c5fd; border: 1px solid rgba(37, 99, 235, 0.4); font-size: 11px;">🔵 कांग्रेस: ${cong}</span>` : ''}
             ${rsp ? `<span class="badge" style="background: rgba(2, 132, 199, 0.25); color: #7dd3fc; border: 1px solid rgba(2, 132, 199, 0.4); font-size: 11px;">🔔 रास्वपा: ${rsp}</span>` : ''}
@@ -7665,6 +8066,77 @@
       }
     }
 
+    function toggleVoterMoreTools(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const dd = document.getElementById('voterMoreToolsDropdown');
+      if (!dd) return;
+      const isShown = dd.style.display === 'block';
+      dd.style.display = isShown ? 'none' : 'block';
+    }
+
+    function closeVoterMoreTools() {
+      const dd = document.getElementById('voterMoreToolsDropdown');
+      if (dd) dd.style.display = 'none';
+    }
+
+    function toggleVoterFilterDrawer() {
+      const drawer = document.getElementById('voterFilterDrawer');
+      const arrow = document.getElementById('voterFilterToggleArrow');
+      if (!drawer) return;
+      isVoterFilterDrawerOpen = !isVoterFilterDrawerOpen;
+      if (isVoterFilterDrawerOpen) {
+        drawer.classList.add('open');
+        if (arrow) arrow.textContent = '▴';
+      } else {
+        drawer.classList.remove('open');
+        if (arrow) arrow.textContent = '▾';
+      }
+    }
+
+    function updateActiveFilterBadge() {
+      let count = 0;
+      const w = document.getElementById('voterWardFilter');
+      const isWardLocked = currentUser && currentUser.Role !== 'Super Admin' && currentUser.Role !== 'Palika Admin' && currentUser.Ward && currentUser.Ward !== 'All';
+      if (w && w.value && !isWardLocked) count++;
+
+      const c = document.getElementById('voterContactFilter');
+      if (c && c.value) count++;
+
+      const v = document.getElementById('voterVerifyFilter');
+      if (v && v.value) count++;
+
+      const sup = document.getElementById('voterSupportFilter');
+      if (sup && sup.value) count++;
+
+      const inf = document.getElementById('voterInfluencerFilter');
+      if (inf && inf.value) count++;
+
+      const p = document.getElementById('voterPartyFilter');
+      if (p && p.value) count++;
+
+      const badge = document.getElementById('voterActiveFilterBadge');
+      const btn = document.getElementById('voterFilterToggleBtn');
+      if (badge) {
+        if (count > 0) {
+          badge.textContent = count;
+          badge.style.display = 'inline-block';
+          if (btn) btn.classList.add('has-active-filters');
+        } else {
+          badge.textContent = '0';
+          badge.style.display = 'none';
+          if (btn) btn.classList.remove('has-active-filters');
+        }
+      }
+    }
+
+    function onVoterFilterChange() {
+      updateActiveFilterBadge();
+      renderVotersList();
+    }
+
     function closeAllVoterActionDropdowns() {
       document.querySelectorAll('.voter-action-menu').forEach(m => {
         m.style.display = 'none';
@@ -7675,10 +8147,16 @@
       if (!e.target.closest('.voter-action-wrap')) {
         closeAllVoterActionDropdowns();
       }
+      if (!e.target.closest('.voter-more-tools-wrap')) {
+        closeVoterMoreTools();
+      }
     });
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeAllVoterActionDropdowns();
+      if (e.key === 'Escape') {
+        closeAllVoterActionDropdowns();
+        closeVoterMoreTools();
+      }
     });
 
     function getFilteredVoters() {
@@ -7810,8 +8288,13 @@
         if (el) el.textContent = sortIcons[id];
       });
 
-      const isMobileScreen = window.innerWidth <= 880;
-      const effectiveMode = isMobileScreen ? 'card' : currentVoterViewMode;
+      updateActiveFilterBadge();
+
+      const effectiveMode = currentVoterViewMode;
+      const toggleBtn = document.getElementById('toggleViewBtn');
+      if (toggleBtn) {
+        toggleBtn.textContent = effectiveMode === 'table' ? '🔲 Card View' : '📋 Table View';
+      }
 
       if (effectiveMode === 'table') {
         document.getElementById('voterTableContainer').style.display = 'block';
@@ -7826,7 +8309,10 @@
 
     function toggleVoterViewMode() {
       currentVoterViewMode = currentVoterViewMode === 'table' ? 'card' : 'table';
-      document.getElementById('toggleViewBtn').textContent = currentVoterViewMode === 'table' ? '🔲 Card View' : '📋 Table View';
+      const toggleBtn = document.getElementById('toggleViewBtn');
+      if (toggleBtn) {
+        toggleBtn.textContent = currentVoterViewMode === 'table' ? '🔲 Card View' : '📋 Table View';
+      }
       renderVotersList();
     }
 
@@ -8222,7 +8708,7 @@
       const s = document.getElementById('voterSearch');
       if (s) s.value = '';
       const w = document.getElementById('voterWardFilter');
-      if (w) w.value = '';
+      if (w && !w.disabled) w.value = '';
       const c = document.getElementById('voterContactFilter');
       if (c) c.value = '';
       const v = document.getElementById('voterVerifyFilter');
@@ -8234,6 +8720,7 @@
       const inf = document.getElementById('voterInfluencerFilter');
       if (inf) inf.value = '';
       setVoterQuickPill('all');
+      updateActiveFilterBadge();
     }
 
     // ==========================================
@@ -8244,6 +8731,7 @@
       const sel = document.getElementById('voterWardFilter');
       if (sel) {
         sel.value = String(wardNo);
+        updateActiveFilterBadge();
         renderVotersList();
         showToast(`वडा ${wardNo} का मतदाताहरू फिल्टर गरियो।`, 'info');
       }
