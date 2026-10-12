@@ -309,41 +309,72 @@
     }
 
     .sidebar-footer {
-      padding: 14px 16px;
+      padding: 12px 14px;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .sidebar-footer-top {
+      display: flex;
       align-items: center;
-      gap: 12px;
-      background: rgba(0, 0, 0, 0.25);
+      gap: 10px;
+      width: 100%;
     }
 
     .user-avatar {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: linear-gradient(135deg, #4f46e5, #06b6d4);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 14px;
+      font-size: 13.5px;
       color: white;
       box-shadow: 0 2px 8px rgba(79, 70, 229, 0.4);
       border: 1.5px solid rgba(255, 255, 255, 0.2);
+      flex-shrink: 0;
     }
 
-    .user-meta { flex: 1; min-width: 0; }
+    .user-meta {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
     .user-meta .name {
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: 800;
       color: #fff;
       line-height: 1.25;
-      word-break: break-word;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .user-meta .role {
       font-size: 11px;
-      color: #38bdf8;
-      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      width: 100%;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+    .sidebar-footer-bottom .footer-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     /* Main Content Area */
@@ -2647,13 +2678,20 @@
       </div>
 
       <div class="sidebar-footer">
-        <div class="user-avatar" id="sbAvatar">A</div>
-        <div class="user-meta">
-          <div class="name" id="sbUserName">System Admin</div>
-          <div class="role" id="sbUserRole">Super Admin</div>
+        <div class="sidebar-footer-top">
+          <div class="user-avatar" id="sbAvatar">A</div>
+          <div class="user-meta">
+            <div class="name" id="sbUserName">System Admin</div>
+            <div class="role" id="sbUserRole">Super Admin</div>
+          </div>
         </div>
-        <button class="btn btn-sm btn-secondary" onclick="openChangePasswordModal()" title="पासवर्ड परिवर्तन (Change Password)" style="padding: 6px 8px; margin-right: 4px; font-size: 13px;">🔑</button>
-        <button class="btn btn-sm btn-secondary" onclick="logout()" title="Logout" style="padding: 6px 10px;">🚪</button>
+        <div class="sidebar-footer-bottom">
+          <div id="userAccessScopePill"></div>
+          <div class="footer-actions">
+            <button class="btn btn-sm btn-secondary" onclick="openChangePasswordModal()" title="पासवर्ड परिवर्तन (Change Password)" style="padding: 5px 8px; font-size: 12px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff;">🔑</button>
+            <button class="btn btn-sm btn-secondary" onclick="logout()" title="Logout" style="padding: 5px 9px; font-size: 12px; border-radius: 6px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5;">🚪</button>
+          </div>
+        </div>
       </div>
     </aside>
 
@@ -2671,27 +2709,36 @@
         <div class="topbar-left">
           <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle Navigation Drawer">☰</button>
           <div class="topbar-title" id="pageTitle">Dashboard Overview</div>
-          <span class="badge-mode" id="electionModeBadge">🟢 Normal Field Mode</span>
-          <!-- 🎯 Candidate Switcher Dropdown (विकल्प १) -->
+          <span class="badge-mode palika-only" id="electionModeBadge">🟢 Normal Field Mode</span>
+          <!-- 🎯 Candidate Switcher Dropdown (Palika View Only) -->
           <div id="topbarCandidateSwitcherContainer" class="palika-only" style="display: none; align-items: center; gap: 6px;">
             <label style="font-size: 11px; font-weight: 700; color: #4338ca; white-space: nowrap;">🎯 उम्मेदवार:</label>
             <select id="topbarCandidateSelect" class="filter-select" onchange="onCandidateSwitched(this.value)" style="padding: 3px 8px; font-size: 12px; font-weight: 700; background: #eef2ff; color: #3730a3; border: 1.5px solid #c7d2fe; border-radius: 6px;">
               <option value="ALL">🏛️ समग्र पालिका (समस्त उम्मेदवार)</option>
             </select>
           </div>
+          <!-- 👑 Super Admin Platform HQ Live Badge -->
+          <span id="superTopbarLiveBadge" class="super-admin-only badge-mode" style="display: none; background: #0f172a; color: #fbbf24; border: 1px solid #334155; font-size: 11.5px; font-weight: 800; align-items: center; gap: 6px;">
+            <span style="width: 7px; height: 7px; background: #10b981; border-radius: 50%; display: inline-block; box-shadow: 0 0 6px #10b981;"></span>
+            <span>Platform HQ</span>
+          </span>
         </div>
         <div class="topbar-right">
-          <!-- 🎨 Dynamic Party Theme Badge & Switcher -->
-          <button id="topbarPartyBadge" class="btn btn-sm" onclick="openPartySwitcherModal()" style="display: flex; align-items: center; gap: 6px; background: var(--mui-accent-bg, #eff6ff); color: var(--mui-primary, #1d4ed8); border: 1.5px solid var(--mui-card-border, #bfdbfe); font-weight: 700; border-radius: 8px; padding: 4px 10px;" title="पार्टी ब्रान्डिङ तथा थिम छान्नुहोस्">
+          <!-- 👑 Super Admin Quick Add Tenant Button -->
+          <button id="superTopbarAddTenantBtn" class="btn btn-sm btn-primary super-admin-only" onclick="openCreateTenantModal()" style="display: none; font-weight: 800; background: #0f172a; color: #fbbf24; border-color: #334155; border-radius: 8px;">
+            + नयाँ पालिका Admin
+          </button>
+          <!-- 🎨 Locked Party Badge (Client Palika Admins Only) -->
+          <div id="topbarPartyBadge" class="palika-only" style="display: none; align-items: center; gap: 6px; background: var(--mui-accent-bg, #eff6ff); color: var(--mui-primary, #1d4ed8); border: 1.5px solid var(--mui-card-border, #bfdbfe); font-weight: 700; border-radius: 8px; padding: 4px 10px;" title="आधिकारिक दल">
             <span id="topbarPartySymbol" style="font-size: 16px;">🌳</span>
             <span id="topbarPartyName" class="btn-text-mobile-hide">नेपाली काँग्रेस</span>
-          </button>
+          </div>
           <button id="topbarSupabaseSyncBtn" class="btn btn-sm btn-secondary" onclick="syncSupabaseData(true)" style="display: flex; align-items: center; gap: 5px; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; font-weight: 600;" title="Supabase Cloud Database Sync">
             <span>🟢</span> <span class="sync-label btn-text-mobile-hide">Cloud Sync</span>
           </button>
-          <button id="pwaInstallBtn" class="btn btn-sm btn-primary" style="display: none; background: #059669; border-color: #059669;" onclick="triggerPwaInstall()">📲 <span class="btn-text-mobile-hide">Install App</span></button>
-          <button class="btn btn-sm btn-secondary" onclick="openQrModal()">📱 <span class="btn-text-mobile-hide">QR</span></button>
-          <button class="btn btn-sm btn-primary" onclick="openQuickActionModal()" title="Quick Field Action">⚡ <span class="btn-text-mobile-hide">Quick Action</span></button>
+          <button id="pwaInstallBtn" class="btn btn-sm btn-primary palika-only" style="display: none; background: #059669; border-color: #059669;" onclick="triggerPwaInstall()">📲 <span class="btn-text-mobile-hide">Install App</span></button>
+          <button id="topbarQrBtn" class="btn btn-sm btn-secondary palika-only" onclick="openQrModal()">📱 <span class="btn-text-mobile-hide">QR</span></button>
+          <button id="topbarQuickActionBtn" class="btn btn-sm btn-primary palika-only" onclick="openQuickActionModal()" title="Quick Field Action">⚡ <span class="btn-text-mobile-hide">Quick Action</span></button>
         </div>
       </header>
 
@@ -4032,19 +4079,16 @@
               <span style="font-size: 12px; color: var(--slate-600); font-weight: 500;">👁️ Login as Admin, 🧾 Invoice, ⚙️ Features, 🗄️ Vault, ⛔ Kill-Switch समावेश</span>
             </h4>
 
-            <div class="table-responsive">
-              <table>
+            <div class="table-responsive" style="border-radius: 10px; overflow: hidden; border: 1px solid var(--slate-200); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+              <table style="margin: 0; font-size: 13px;">
                 <thead>
-                  <tr>
-                    <th style="width: 45px; text-align: center;">क्र.सं.</th>
-                    <th>पालिका (Palika / Unit)</th>
-                    <th>Admin Username & Password</th>
-                    <th>सम्पर्क व्यक्ति / फोन</th>
-                    <th>SMS कोटा (Credits)</th>
-                    <th>प्लान & मासिक शुल्क</th>
-                    <th>सक्रिय मोड्युल (Features)</th>
-                    <th>सिस्टम स्थिति (Kill-Switch)</th>
-                    <th style="text-align: center;">सुपर एडमिन कार्यहरू (Super Actions)</th>
+                  <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                    <th style="width: 45px; text-align: center; padding: 10px 8px;">#</th>
+                    <th style="padding: 10px 12px;">पालिका तथा दल (Palika & Party)</th>
+                    <th style="padding: 10px 12px;">एडमिन तथा सम्पर्क (Admin & Contact)</th>
+                    <th style="padding: 10px 12px;">एसएमएस & प्लान (SMS & Plan)</th>
+                    <th style="padding: 10px 12px;">अवस्था (Status)</th>
+                    <th style="text-align: center; width: 160px; padding: 10px 12px;">कार्य (Actions)</th>
                   </tr>
                 </thead>
                 <tbody id="tenantsTableRows"></tbody>
@@ -4258,12 +4302,26 @@
     };
 
     function getActivePartyPalette() {
+      if (currentUser && currentUser.Role === 'Super Admin') {
+        return PARTY_PALETTES.INDEPENDENT;
+      }
+      if (currentUser && currentUser.Party) {
+        return PARTY_PALETTES[String(currentUser.Party).toUpperCase()] || PARTY_PALETTES.NC;
+      }
       const code = (state && state.activeParty) || localStorage.getItem('election_active_party') || 'NC';
       return PARTY_PALETTES[String(code).toUpperCase()] || PARTY_PALETTES.NC;
     }
 
     function applyPartyTheme(partyCode) {
-      if (!partyCode) partyCode = (state && state.activeParty) || localStorage.getItem('election_active_party') || 'NC';
+      if (!partyCode) {
+        if (currentUser && currentUser.Role === 'Super Admin') {
+          partyCode = 'INDEPENDENT';
+        } else if (currentUser && currentUser.Party) {
+          partyCode = currentUser.Party;
+        } else {
+          partyCode = (state && state.activeParty) || localStorage.getItem('election_active_party') || 'NC';
+        }
+      }
       const key = String(partyCode).toUpperCase();
       const p = PARTY_PALETTES[key] || PARTY_PALETTES.NC;
 
@@ -4291,13 +4349,7 @@
         badge.style.background = p.accentBg;
         badge.style.color = p.primary;
         badge.style.borderColor = p.border;
-        if (currentUser && currentUser.Role !== 'Super Admin') {
-          badge.title = `${p.name} (${p.symbol}) - पालिकामा आधिकारिक रूपमा लक गरिएको दल`;
-          badge.style.cursor = 'default';
-        } else {
-          badge.title = 'पार्टी थिम स्विच गर्नुहोस् (Super Admin)';
-          badge.style.cursor = 'pointer';
-        }
+        badge.title = `${p.name} (${p.symbol}) - पालिकाको आधिकारिक दल`;
       }
     }
 
@@ -6385,7 +6437,7 @@
     // =========================================================================
     const ROLE_PERMISSIONS = {
       'Super Admin': {
-        label: 'सुपर एडमिन (SaaS Platform HQ)',
+        label: '👑 सुपर एडमिन',
         badgeColor: '#fbbf24',
         badgeBg: '#0f172a',
         badgeBorder: '#334155',
@@ -6508,20 +6560,33 @@
       }
       if (nameEl) nameEl.textContent = user.Name;
       if (roleEl) {
-        roleEl.innerHTML = `<span class="badge" style="background: ${perm.badgeBg}; color: ${perm.badgeColor}; border: 1px solid ${perm.badgeBorder}; font-weight: 800; font-size: 11px; padding: 2px 8px;">${perm.icon} ${perm.label}</span>`;
+        roleEl.innerHTML = `<span class="badge" style="background: ${perm.badgeBg}; color: ${perm.badgeColor}; border: 1px solid ${perm.badgeBorder}; font-weight: 800; font-size: 11px; padding: 2px 7px; border-radius: 6px; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px;">${perm.label}</span>`;
       }
+
+      // 1b. Role-Scoped Topbar Controls Visibility
+      const isSuper = (role === 'Super Admin');
+      document.querySelectorAll('.super-admin-only').forEach(el => {
+        el.style.display = isSuper ? (el.tagName === 'BUTTON' || el.tagName === 'SPAN' || el.tagName === 'DIV' ? 'inline-flex' : 'block') : 'none';
+      });
+      document.querySelectorAll('.palika-only').forEach(el => {
+        if (isSuper) {
+          el.style.display = 'none';
+        } else {
+          if (el.id === 'topbarCandidateSwitcherContainer') {
+            el.style.display = (role === 'Palika Admin' || role === 'Candidate') ? 'inline-flex' : 'none';
+          } else if (el.id === 'pwaInstallBtn') {
+            // Handled dynamically by PWA beforeinstallprompt
+          } else {
+            el.style.display = 'inline-flex';
+          }
+        }
+      });
 
       // Update Topbar Party Badge State
       const partyBadge = document.getElementById('topbarPartyBadge');
       if (partyBadge) {
         const curParty = getActivePartyPalette();
-        if (role === 'Super Admin') {
-          partyBadge.title = 'पार्टी थिम स्विच गर्नुहोस् (Super Admin)';
-          partyBadge.style.cursor = 'pointer';
-        } else {
-          partyBadge.title = `${curParty.name} (${curParty.symbol}) - पालिकामा लक गरिएको दल`;
-          partyBadge.style.cursor = 'default';
-        }
+        partyBadge.title = `${curParty.name} (${curParty.symbol}) - पालिकाको आधिकारिक दल`;
       }
 
       // 2. Update Muni Workspace Title
@@ -13858,116 +13923,531 @@
         const isActive = t.Status === 'Active';
         const isPaid = t.BillingStatus === 'Paid';
         const slug = t.Slug || (t.PalikaName ? t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') : t.TenantID.toLowerCase());
-        const portalUrl = `${window.location.origin}${window.location.pathname}?palika=${slug}`;
-        if (!t.Features) t.Features = { sms: true, familyTree: true, reports: true, voterSlips: true };
-
-        const featBadges = [
-          t.Features.sms !== false ? '<span style="background:#ecfdf5;color:#047857;padding:2px 5px;border-radius:3px;font-size:10.5px;font-weight:700;">📲 SMS</span>' : '<span style="background:#fee2e2;color:#b91c1c;padding:2px 5px;border-radius:3px;font-size:10.5px;text-decoration:line-through;" title="Disabled">SMS</span>',
-          t.Features.familyTree !== false ? '<span style="background:#eff6ff;color:#1e40af;padding:2px 5px;border-radius:3px;font-size:10.5px;font-weight:700;">🌳 Tree</span>' : '<span style="background:#fee2e2;color:#b91c1c;padding:2px 5px;border-radius:3px;font-size:10.5px;text-decoration:line-through;" title="Disabled">Tree</span>',
-          t.Features.reports !== false ? '<span style="background:#fef3c7;color:#92400e;padding:2px 5px;border-radius:3px;font-size:10.5px;font-weight:700;">📊 AI</span>' : '<span style="background:#fee2e2;color:#b91c1c;padding:2px 5px;border-radius:3px;font-size:10.5px;text-decoration:line-through;" title="Disabled">AI</span>'
-        ].join(' ');
+        const pCode = t.Party || 'NC';
+        const pInfo = PARTY_PALETTES[pCode] || PARTY_PALETTES.NC;
 
         return `
-          <tr style="${!isActive ? 'background: #fff1f2;' : ''}">
-            <td style="text-align: center; font-weight: 700; color: var(--slate-600);">${idx + 1}</td>
-            <td>
-              ${(() => {
-                const pCode = t.Party || 'NC';
-                const pInfo = PARTY_PALETTES[pCode] || PARTY_PALETTES.NC;
-                return `<div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                  <span style="font-weight: 800; font-size: 14.5px; color: var(--navy-900);">${esc(t.PalikaName)}</span>
-                  <span style="background: ${pInfo.accentBg}; color: ${pInfo.primary}; border: 1px solid ${pInfo.border}; padding: 2px 7px; border-radius: 6px; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">
-                    <span>${pInfo.symbol}</span> <span>${pInfo.name}</span>
-                  </span>
-                </div>`;
-              })()}
-              <div style="margin-top: 6px; font-size: 11.5px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                <span style="background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 11.5px; font-weight: 700; letter-spacing: 0.02em; display: inline-flex; align-items: center; gap: 4px;">
-                  🔗 ?palika=${slug}
+          <tr style="cursor: pointer; transition: background 0.15s; ${!isActive ? 'background: #fff1f2;' : ''}" onclick="openTenantDossierModal('${t.TenantID}')" class="tenant-row-item" title="क्लिक गरी सम्पूर्ण प्रोफाइल र सेटिङ्स खोल्नुहोस्">
+            <td style="text-align: center; font-weight: 700; color: var(--slate-600); padding: 12px 8px;">${idx + 1}</td>
+            <td style="padding: 12px;">
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <span style="font-weight: 800; font-size: 14px; color: var(--navy-900);">${esc(t.PalikaName)}</span>
+                <span style="background: ${pInfo.accentBg}; color: ${pInfo.primary}; border: 1px solid ${pInfo.border}; padding: 2px 7px; border-radius: 6px; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">
+                  <span>${pInfo.symbol}</span> <span>${pInfo.name}</span>
                 </span>
-                <button class="btn btn-sm btn-secondary" onclick="copyPortalLink('${slug}')" style="padding: 3px 8px; font-size: 11px; font-weight: 700;" title="Copy Private Portal Link">
+              </div>
+              <div style="margin-top: 4px; font-size: 11.5px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                <code style="background: #f1f5f9; color: #475569; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700;">?palika=${slug}</code>
+                <button class="btn btn-sm" onclick="event.stopPropagation(); copyPortalLink('${slug}')" style="padding: 2px 6px; font-size: 11px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; font-weight: 700; border-radius: 4px;" title="Copy Private Portal Link">
                   📋 लिङ्क
                 </button>
-                <button class="btn btn-sm btn-secondary" onclick="sendWhatsAppPortalInvite('${t.TenantID}')" style="padding: 3px 8px; font-size: 11px; background: #ecfdf5; color: #047857; border-color: #a7f3d0; font-weight: 700;" title="Send WhatsApp Invite">
+                <button class="btn btn-sm" onclick="event.stopPropagation(); sendWhatsAppPortalInvite('${t.TenantID}')" style="padding: 2px 6px; font-size: 11px; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; font-weight: 700; border-radius: 4px;" title="Send WhatsApp Invite">
                   💬 WA
                 </button>
               </div>
             </td>
-            <td>
-              <div style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 700; color: #1e40af;">
-                👤 ${esc(t.AdminUsername)}
+            <td style="padding: 12px;">
+              <div style="font-size: 13px; font-weight: 700; color: #0f172a;">${esc(t.ContactPerson || '-')}</div>
+              <div style="font-size: 12px; color: #64748b; margin-top: 2px; display: flex; align-items: center; gap: 6px;">
+                <span>📞 ${esc(t.Phone || '-')}</span>
+                <span style="color: #cbd5e1;">•</span>
+                <span style="font-family: monospace; color: #3b82f6; font-weight: 600;">👤 ${esc(t.AdminUsername)}</span>
               </div>
-              <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #dc2626; margin-top: 2px;">
-                🔑 ${esc(t.AdminPassword)}
+            </td>
+            <td style="padding: 12px;">
+              <div style="display: flex; align-items: baseline; gap: 6px;">
+                <span style="font-weight: 800; color: #059669; font-size: 13.5px;">${(t.SmsCredits || 0).toLocaleString()} SMS</span>
+                <span style="font-size: 11px; color: #64748b;">(खर्च: ${(t.SmsUsed || 0).toLocaleString()})</span>
+              </div>
+              <div style="font-size: 11.5px; color: #475569; margin-top: 2px;">
+                <span style="font-weight: 600;">${esc(t.PlanType || 'Full Suite')}</span> • <span style="font-weight: 700; color: #16a34a;">${esc(t.FeeMonthly || 'Rs. 25,000')}</span>
               </div>
             </td>
-            <td>
-              <div style="font-size: 13px;"><b>${esc(t.ContactPerson)}</b></div>
-              <div style="font-size: 12px; color: var(--slate-600);">${esc(t.Phone)}</div>
-            </td>
-            <td>
-              <div style="font-weight: 800; color: #059669; font-size: 13.5px;">${(t.SmsCredits || 0).toLocaleString()} SMS</div>
-              <div style="font-size: 11px; color: var(--slate-600);">खर्च: ${(t.SmsUsed || 0).toLocaleString()} SMS</div>
-              <button class="btn btn-sm btn-secondary" onclick="openAllocateSmsModal('${t.TenantID}')" style="margin-top: 4px; padding: 2px 7px; font-size: 11px; font-weight: 700; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
-                + Top-up
-              </button>
-            </td>
-            <td>
-              <div style="font-weight: 600; color: #0284c7; font-size: 12.5px;">${esc(t.PlanType)}</div>
-              <div style="font-size: 12.5px; font-weight: 700; color: #16a34a;">${esc(t.FeeMonthly)}</div>
-              <div style="margin-top: 3px;">
-                <span class="badge ${isPaid ? 'badge-verified' : 'badge-urgent'}" style="font-size: 10.5px; padding: 2px 6px;">
+            <td style="padding: 12px;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="badge ${isActive ? 'badge-verified' : 'badge-urgent'}" style="font-size: 11px; font-weight: 800; padding: 3px 7px;">
+                  ${isActive ? '🟢 ACTIVE' : '🔴 SUSPENDED'}
+                </span>
+                <span class="badge" style="font-size: 10px; font-weight: 700; background: ${isPaid ? '#ecfdf5' : '#fffbeb'}; color: ${isPaid ? '#047857' : '#b45309'}; border: 1px solid ${isPaid ? '#a7f3d0' : '#fde68a'};">
                   ${isPaid ? 'PAID' : 'PENDING'}
                 </span>
               </div>
+              <div style="font-size: 11px; color: #64748b; margin-top: 3px;">म्याद: ${esc(t.ExpiresAt ? t.ExpiresAt.slice(0,10) : 'Unlimited')}</div>
             </td>
-            <td>
-              <div style="display: flex; gap: 3px; flex-wrap: wrap;">${featBadges}</div>
-              <button class="btn btn-sm btn-secondary" onclick="openTenantFeaturesModal('${t.TenantID}')" style="margin-top: 4px; padding: 2px 7px; font-size: 10.5px; font-weight: 700;">
-                ⚙️ Features
-              </button>
-            </td>
-            <td>
-              <span class="badge ${isActive ? 'badge-verified' : 'badge-urgent'}" style="font-size: 11.5px; padding: 5px 8px;">
-                ${isActive ? '🟢 ACTIVE' : '🔴 SUSPENDED'}
-              </span>
-              <div style="font-size: 11px; color: var(--slate-600); margin-top: 3px;">म्याद: ${esc(t.ExpiresAt ? t.ExpiresAt.slice(0,10) : 'Unlimited')}</div>
-            </td>
-            <td style="text-align: center;">
-              <div style="display: flex; flex-direction: column; gap: 5px; width: 100%; max-width: 250px; margin: 0 auto;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;">
-                  <button class="btn btn-sm" onclick="loginAsTenantAdmin('${t.TenantID}')" style="background: #4f46e5; color: white; border: none; font-weight: 700; padding: 5px 4px; font-size: 11px; border-radius: 6px;" title="सपोर्ट मोडमा पालिका एडमिनका रूपमा सिधै लगइन">
-                    👁️ Login
-                  </button>
-                  <button class="btn btn-sm btn-secondary" onclick="openTenantInvoiceModal('${t.TenantID}')" style="padding: 5px 4px; font-size: 11px; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; font-weight: 700; border-radius: 6px;" title="आधिकारिक कर इनभ्वाइस">
-                    🧾 Bill
-                  </button>
-                  <button class="btn btn-sm btn-secondary" onclick="exportTenantDataVault('${t.TenantID}')" style="padding: 5px 4px; font-size: 11px; font-weight: 700; border-radius: 6px;" title="डाटा भल्ट ब्याकअप">
-                    🗄️ Vault
-                  </button>
-                </div>
-                <div style="display: grid; grid-template-columns: 1.2fr 0.9fr 0.9fr 0.9fr; gap: 3px;">
-                  <button class="btn btn-sm ${isActive ? 'btn-danger' : 'btn-success'}" 
-                          onclick="toggleTenantStatus('${t.TenantID}')" 
-                          style="padding: 5px 3px; font-size: 10.5px; font-weight: 700; border-radius: 6px;"
-                          title="Turn System ON / OFF">
-                    ${isActive ? '⛔ OFF' : '✅ ON'}
-                  </button>
-                  <button class="btn btn-sm btn-secondary" onclick="openSuperAdminResetUserPasswordModal('${t.TenantID}')" style="padding: 5px 3px; font-size: 10.5px; border-radius: 6px; background: #fffbeb; color: #92400e; border: 1px solid #fde68a; font-weight: 700;" title="पासवर्ड रिसेट गर्नुहोस्">
-                    🔑 Pass
-                  </button>
-                  <button class="btn btn-sm btn-secondary" onclick="copyTenantCredentials('${t.TenantID}')" style="padding: 5px 3px; font-size: 10.5px; border-radius: 6px;" title="Copy Credentials">
-                    📋 कपी
-                  </button>
-                  <button class="btn btn-sm btn-secondary" onclick="deleteTenant('${t.TenantID}')" style="color: #dc2626; border-color: #fecdd3; background: #fff1f2; padding: 5px 3px; font-size: 10.5px; border-radius: 6px;" title="Delete Tenant">
-                    🗑️ डिलिट
-                  </button>
-                </div>
+            <td style="text-align: center; padding: 12px 8px;">
+              <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
+                <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); openTenantDossierModal('${t.TenantID}')" style="background: #0f172a; color: #fbbf24; border: 1px solid #334155; font-weight: 800; font-size: 11.5px; padding: 5px 9px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" title="सम्पूर्ण विवरण र सेटिङ्स कन्ट्रोल खोल्नुहोस्">
+                  👁️ विवरण/सेटिङ
+                </button>
+                <button class="btn btn-sm" onclick="event.stopPropagation(); loginAsTenantAdmin('${t.TenantID}')" style="background: #4f46e5; color: white; border: none; font-weight: 700; font-size: 11.5px; padding: 5px 8px; border-radius: 6px;" title="सपोर्ट मोडमा सिधै लगइन">
+                  🚀 Login
+                </button>
               </div>
             </td>
           </tr>
         `;
       }).join('');
+    }
+
+    // =========================================================================
+    // 👑 COMPREHENSIVE TENANT PROFILE & SETTINGS CONTROL DOSSIER (MODAL DIALOG)
+    // =========================================================================
+    function openTenantDossierModal(tenantId) {
+      const t = (state.tenants || []).find(x => x.TenantID === tenantId);
+      if (!t) return;
+      if (!t.Features) t.Features = { sms: true, familyTree: true, reports: true, voterSlips: true };
+
+      const pCode = t.Party || 'NC';
+      const pInfo = PARTY_PALETTES[pCode] || PARTY_PALETTES.NC;
+      const isActive = t.Status === 'Active';
+      const slug = t.Slug || (t.PalikaName ? t.PalikaName.toLowerCase().replace(/[^a-z0-9]/g, '') : t.TenantID.toLowerCase());
+      const portalUrl = `${window.location.origin}${window.location.pathname}?palika=${slug}`;
+      const masterPool = state.settings.MASTER_SMS_CREDITS || 50000;
+
+      const bodyHtml = `
+        <div style="padding: 4px;">
+          <!-- Dossier Hero Header Card -->
+          <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; box-shadow: 0 4px 14px rgba(0,0,0,0.15);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 52px; height: 52px; border-radius: 12px; background: ${pInfo.gradient}; color: white; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 3px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2);">
+                  ${pInfo.symbol}
+                </div>
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <h3 style="margin: 0; color: #fff; font-size: 18px; font-weight: 800;">${esc(t.PalikaName)}</h3>
+                    <span class="badge" style="background: ${isActive ? '#10b981' : '#ef4444'}; color: #fff; font-size: 11px; font-weight: 800; padding: 2px 8px;">
+                      ${isActive ? '🟢 Active' : '🔴 Suspended'}
+                    </span>
+                  </div>
+                  <div style="font-size: 12px; color: #94a3b8; margin-top: 3px; display: flex; align-items: center; gap: 8px;">
+                    <span>दल: <b style="color: #f8fafc;">${pInfo.name} (${pCode})</b></span>
+                    <span>•</span>
+                    <span>सम्पर्क: <b style="color: #f8fafc;">${esc(t.ContactPerson || '-')}</b> (${esc(t.Phone || '-')})</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Link and Share Actions -->
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-sm" onclick="copyPortalLink('${slug}')" style="background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25); font-weight: 700; border-radius: 6px; padding: 6px 12px; font-size: 12px;">
+                  📋 पोर्टल लिङ्क प्रतिलिपि
+                </button>
+                <button class="btn btn-sm" onclick="sendWhatsAppPortalInvite('${t.TenantID}')" style="background: #25D366; color: white; border: none; font-weight: 800; border-radius: 6px; padding: 6px 12px; font-size: 12px;">
+                  💬 WhatsApp मा पठाउनुहोस्
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dossier Navigation Tabs -->
+          <div style="display: flex; gap: 6px; border-bottom: 2px solid #e2e8f0; margin-bottom: 18px; overflow-x: auto; padding-bottom: 2px;">
+            <button type="button" class="dossier-tab-btn active" id="tabBtn_general" onclick="switchDossierTab('general')" style="padding: 9px 14px; font-size: 13px; font-weight: 700; border: none; background: none; border-bottom: 3px solid #0f172a; color: #0f172a; cursor: pointer; white-space: nowrap;">
+              📋 प्रोफाइल तथा लगइन
+            </button>
+            <button type="button" class="dossier-tab-btn" id="tabBtn_sms" onclick="switchDossierTab('sms')" style="padding: 9px 14px; font-size: 13px; font-weight: 700; border: none; background: none; border-bottom: 3px solid transparent; color: #64748b; cursor: pointer; white-space: nowrap;">
+              📲 एसएमएस कोटा & टप-अप
+            </button>
+            <button type="button" class="dossier-tab-btn" id="tabBtn_features" onclick="switchDossierTab('features')" style="padding: 9px 14px; font-size: 13px; font-weight: 700; border: none; background: none; border-bottom: 3px solid transparent; color: #64748b; cursor: pointer; white-space: nowrap;">
+              🧩 मोड्युल & फिचर्स
+            </button>
+            <button type="button" class="dossier-tab-btn" id="tabBtn_billing" onclick="switchDossierTab('billing')" style="padding: 9px 14px; font-size: 13px; font-weight: 700; border: none; background: none; border-bottom: 3px solid transparent; color: #64748b; cursor: pointer; white-space: nowrap;">
+              💳 बिलिङ & इनभ्वाइस
+            </button>
+            <button type="button" class="dossier-tab-btn" id="tabBtn_security" onclick="switchDossierTab('security')" style="padding: 9px 14px; font-size: 13px; font-weight: 700; border: none; background: none; border-bottom: 3px solid transparent; color: #64748b; cursor: pointer; white-space: nowrap;">
+              🔒 सुरक्षा & किल-स्विच
+            </button>
+          </div>
+
+          <!-- TAB 1: GENERAL & AUTH -->
+          <div id="dossierTab_general" class="dossier-tab-content" style="display: block;">
+            <div class="form-grid">
+              <div class="form-group full">
+                <label class="form-label" style="font-weight: 800; color: #1e3a8a;">आधिकारिक राजनीतिक दल (Party Branding) *</label>
+                <select id="dossierParty" class="form-control" style="font-weight: 700; font-size: 13.5px; border: 1.5px solid #93c5fd; background: #eff6ff;">
+                  <option value="NC" ${t.Party === 'NC' ? 'selected' : ''}>🌳 नेपाली काँग्रेस (Nepali Congress)</option>
+                  <option value="UML" ${t.Party === 'UML' ? 'selected' : ''}>☀️ नेकपा (एमाले) (CPN UML)</option>
+                  <option value="RSP" ${t.Party === 'RSP' ? 'selected' : ''}>🔔 राष्ट्रिय स्वतन्त्र पार्टी (RSP)</option>
+                  <option value="MAOIST" ${t.Party === 'MAOIST' ? 'selected' : ''}>☭ नेकपा (माओवादी केन्द्र) (Maoist Centre)</option>
+                  <option value="RPP" ${t.Party === 'RPP' ? 'selected' : ''}>🌾 राष्ट्रिय प्रजातन्त्र पार्टी (RPP)</option>
+                  <option value="INDEPENDENT" ${t.Party === 'INDEPENDENT' ? 'selected' : ''}>⚖️ स्वतन्त्र / साझा कमाण्ड (Independent)</option>
+                </select>
+                <span style="font-size: 11px; color: var(--slate-600);">यस पालिकाका Admin र कार्यकर्ताहरूले लगइन गर्दा सम्पूर्ण प्रणाली यही दलको आधिकारिक रङ र चुनाव चिन्हमा खुल्नेछ।</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">पालिकाको पूरा नाम (Palika / Unit Name) *</label>
+                <input type="text" id="dossierPalikaName" class="form-control" value="${esc(t.PalikaName)}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Dedicated URL Slug (लिङ्क कोड) *</label>
+                <input type="text" id="dossierSlug" class="form-control" value="${esc(slug)}" oninput="this.value = this.value.toLowerCase().replace(/[^a-z0-9]/g, '')">
+                <span style="font-size: 11px; color: var(--slate-600);">URL: <code>domain.com/?palika=<b>${slug}</b></code></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">सम्पर्क व्यक्तिको नाम (Contact Person)</label>
+                <input type="text" id="dossierContactPerson" class="form-control" value="${esc(t.ContactPerson || '')}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">सम्पर्क मोबाइल नं. (User ID / Phone) *</label>
+                <input type="text" id="dossierPhone" class="form-control" value="${esc(t.Phone || '')}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Admin Username *</label>
+                <input type="text" id="dossierAdminUsername" class="form-control" value="${esc(t.AdminUsername || '')}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Admin Password *</label>
+                <div style="display: flex; gap: 6px;">
+                  <input type="text" id="dossierAdminPassword" class="form-control" value="${esc(t.AdminPassword || '')}" style="font-family: monospace; font-weight: 700; color: #dc2626;">
+                  <button type="button" class="btn btn-secondary" onclick="generateDossierRandomPassword()" title="Generate Random Password" style="font-size: 12px; white-space: nowrap;">⚡ नयाँ</button>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top: 14px; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <span style="font-size: 12px; color: #64748b;">दर्ता मिति: <b>${esc(t.CreatedAt || '2026-01-01')}</b> | Tenant ID: <code>${esc(t.TenantID)}</code></span>
+              <button type="button" class="btn btn-sm btn-secondary" onclick="copyTenantCredentials('${t.TenantID}')" style="font-size: 11.5px; font-weight: 700;">
+                📋 लगइन विवरण कपी गर्नुहोस्
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 2: SMS QUOTA & TOP-UP -->
+          <div id="dossierTab_sms" class="dossier-tab-content" style="display: none;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px;">
+              <div style="background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 10px; padding: 16px;">
+                <div style="font-size: 11.5px; font-weight: 700; color: #166534; text-transform: uppercase;">हालको एसएमएस ब्यालेन्स</div>
+                <div style="font-size: 24px; font-weight: 900; color: #15803d; margin-top: 4px;" id="dossierSmsBalDisplay">
+                  ${(t.SmsCredits || 0).toLocaleString()} <span style="font-size: 14px;">SMS</span>
+                </div>
+                <div style="font-size: 11px; color: #16a34a; margin-top: 2px;">सक्रिय र पठाउन मिल्ने</div>
+              </div>
+              <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+                <div style="font-size: 11.5px; font-weight: 700; color: #475569; text-transform: uppercase;">खर्च भएको एसएमएस</div>
+                <div style="font-size: 24px; font-weight: 900; color: #334155; margin-top: 4px;">
+                  ${(t.SmsUsed || 0).toLocaleString()} <span style="font-size: 14px;">SMS</span>
+                </div>
+                <div style="font-size: 11px; color: #64748b; margin-top: 2px;">सफलतापूर्वक डेलिभर भएको</div>
+              </div>
+              <div style="background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 10px; padding: 16px;">
+                <div style="font-size: 11.5px; font-weight: 700; color: #1e40af; text-transform: uppercase;">प्लेटफर्म मास्टर पूल</div>
+                <div style="font-size: 24px; font-weight: 900; color: #1d4ed8; margin-top: 4px;">
+                  ${masterPool.toLocaleString()} <span style="font-size: 14px;">SMS</span>
+                </div>
+                <div style="font-size: 11px; color: #3b82f6; margin-top: 2px;">Aakash SMS केन्द्रीय पूल बाँकी</div>
+              </div>
+            </div>
+
+            <div style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 18px;">
+              <h4 style="margin: 0 0 12px; font-size: 15px; font-weight: 800; color: #0f172a;">
+                ➕ मास्टर पूलबाट तत्काल SMS कोटा थप्नुहोस् (Instant Top-up)
+              </h4>
+              <p style="font-size: 12.5px; color: #64748b; margin: 0 0 14px;">
+                पालिकालाई तुरुन्तै एसएमएस पठाउन मिल्ने गरी मास्टर कोटाबाट क्रेडिट थप गर्नुहोस्:
+              </p>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setDossierSmsTopupAmount(500)">+500 SMS</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setDossierSmsTopupAmount(1000)">+1,000 SMS</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setDossierSmsTopupAmount(2500)">+2,500 SMS</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setDossierSmsTopupAmount(5000)">+5,000 SMS</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="setDossierSmsTopupAmount(10000)">+10,000 SMS</button>
+              </div>
+              <div style="display: flex; gap: 10px; align-items: center; max-width: 480px;">
+                <input type="number" id="dossierAddSmsInput" class="form-control" value="2500" min="100" step="100" placeholder="थप्ने SMS संख्या...">
+                <button type="button" class="btn btn-primary" onclick="executeDossierSmsTopup('${t.TenantID}')" style="background: #059669; border-color: #059669; font-weight: 800; white-space: nowrap; padding: 8px 16px;">
+                  ⚡ थप गर्नुहोस् (Top-up)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: FEATURES & MODULES -->
+          <div id="dossierTab_features" class="dossier-tab-content" style="display: none;">
+            <p style="font-size: 13px; color: #64748b; margin: 0 0 16px;">
+              यस पालिकाको सदस्यता प्याकेज अनुसार फिचरहरू सक्रिय (ON) वा बन्द (OFF) गर्नुहोस्:
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <label style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #f8fafc; cursor: pointer;">
+                <div>
+                  <div style="font-weight: 800; font-size: 14px; color: #0f172a;">📲 Aakash SMS क्याम्पेन हब</div>
+                  <div style="font-size: 12px; color: #64748b; margin-top: 2px;">बल्क एसएमएस, १-क्लिक टेम्प्लेट, र आज जन्मदिन अटोमेसन</div>
+                </div>
+                <input type="checkbox" id="dossierFeatSms" ${t.Features.sms !== false ? 'checked' : ''} style="width: 22px; height: 22px; cursor: pointer;">
+              </label>
+
+              <label style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #f8fafc; cursor: pointer;">
+                <div>
+                  <div style="font-weight: 800; font-size: 14px; color: #0f172a;">🌳 Family Tree र पारिवारिक नक्सांकन</div>
+                  <div style="font-size: 12px; color: #64748b; margin-top: 2px;">पारिवारिक नाता, घरमुली र परिवार वृक्ष सम्बन्ध म्यापिङ</div>
+                </div>
+                <input type="checkbox" id="dossierFeatFamilyTree" ${t.Features.familyTree !== false ? 'checked' : ''} style="width: 22px; height: 22px; cursor: pointer;">
+              </label>
+
+              <label style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #f8fafc; cursor: pointer;">
+                <div>
+                  <div style="font-weight: 800; font-size: 14px; color: #0f172a;">📊 एआई र विश्लेषणात्मक रिपोर्ट (Winning Intelligence)</div>
+                  <div style="font-size: 12px; color: #64748b; margin-top: 2px;">वडागत चुनावी झुकाव प्रक्षेपण, सम्भावित जित-हार विश्लेषण</div>
+                </div>
+                <input type="checkbox" id="dossierFeatReports" ${t.Features.reports !== false ? 'checked' : ''} style="width: 22px; height: 22px; cursor: pointer;">
+              </label>
+
+              <label style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #f8fafc; cursor: pointer;">
+                <div>
+                  <div style="font-weight: 800; font-size: 14px; color: #0f172a;">🪪 १-क्लिक मतदाता पर्ची र QR स्क्यानर</div>
+                  <div style="font-size: 12px; color: #64748b; margin-top: 2px;">मतदान पर्ची, बुथ स्लिप, डिजिटल ब्रोसर र मतदाता परिचय कार्ड प्रिन्ट</div>
+                </div>
+                <input type="checkbox" id="dossierFeatVoterSlips" ${t.Features.voterSlips !== false ? 'checked' : ''} style="width: 22px; height: 22px; cursor: pointer;">
+              </label>
+            </div>
+          </div>
+
+          <!-- TAB 4: BILLING & INVOICE -->
+          <div id="dossierTab_billing" class="dossier-tab-content" style="display: none;">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">प्लान प्रकार (Subscription Plan)</label>
+                <select id="dossierPlanType" class="form-control">
+                  <option value="Full Palika Suite" ${t.PlanType === 'Full Palika Suite' ? 'selected' : ''}>Full Palika Suite (समग्र पालिका)</option>
+                  <option value="Enterprise War Room" ${t.PlanType === 'Enterprise War Room' ? 'selected' : ''}>Enterprise War Room (विशेष कमाण्ड)</option>
+                  <option value="Basic Ward Edition" ${t.PlanType === 'Basic Ward Edition' ? 'selected' : ''}>Basic Ward Edition (सिमित वडा)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">मासिक / सम्झौता शुल्क</label>
+                <input type="text" id="dossierFeeMonthly" class="form-control" value="${esc(t.FeeMonthly || 'Rs. 25,000')}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">भुक्तानी अवस्था (Payment Status)</label>
+                <select id="dossierBillingStatus" class="form-control">
+                  <option value="Paid" ${t.BillingStatus === 'Paid' ? 'selected' : ''}>🟢 Paid (भुक्तानी सम्पन्न)</option>
+                  <option value="Pending" ${t.BillingStatus === 'Pending' ? 'selected' : ''}>🟡 Pending (भुक्तानी बाँकी)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">सक्रिय म्याद (Service Expiry Date)</label>
+                <input type="date" id="dossierExpiresAt" class="form-control" value="${t.ExpiresAt ? t.ExpiresAt.slice(0,10) : ''}">
+              </div>
+            </div>
+            <div style="margin-top: 18px; padding: 16px; background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+              <div>
+                <h5 style="margin: 0; color: #065f46; font-size: 14px; font-weight: 800;">🧾 आधिकारिक कर इनभ्वाइस (Tax Invoice)</h5>
+                <p style="margin: 2px 0 0; font-size: 12px; color: #047857;">कर बिल हेर्नुहोस् वा प्रिन्ट गरी ग्राहक पालिकालाई पठाउनुहोस्।</p>
+              </div>
+              <button type="button" class="btn btn-sm" onclick="openTenantInvoiceModal('${t.TenantID}')" style="background: #059669; color: white; border: none; font-weight: 800; padding: 8px 14px; border-radius: 6px;">
+                🧾 इनभ्वाइस हेर्नुहोस् (View Invoice)
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 5: SECURITY & KILL-SWITCH -->
+          <div id="dossierTab_security" class="dossier-tab-content" style="display: none;">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <!-- Kill Switch Card -->
+              <div style="background: ${isActive ? '#fef2f2' : '#f0fdf4'}; border: 1.5px solid ${isActive ? '#fca5a5' : '#86efac'}; border-radius: 10px; padding: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                  <div>
+                    <h4 style="margin: 0; color: ${isActive ? '#991b1b' : '#166534'}; font-size: 15px; font-weight: 800;">
+                      ${isActive ? '⛔ Kill-Switch: पालिका सेवा बन्द गर्नुहोस् (Turn OFF)' : '✅ Turn ON: पालिका सेवा पुनः सुरु गर्नुहोस्'}
+                    </h4>
+                    <p style="margin: 4px 0 0; font-size: 12.5px; color: ${isActive ? '#b91c1c' : '#15803d'};">
+                      ${isActive ? 'सेवा बन्द गर्दा यस पालिकाका एडमिन र सबै कार्यकर्ताहरूको लगइन तत्काल रोकिनेछ।' : 'सेवा पुनः सुचारु गर्दा सबै प्रयोगकर्ताहरूले सामान्य रूपमा काम गर्न पाउनेछन्।'}
+                    </p>
+                  </div>
+                  <button type="button" class="btn ${isActive ? 'btn-danger' : 'btn-success'}" onclick="toggleTenantStatus('${t.TenantID}'); openTenantDossierModal('${t.TenantID}');" style="font-weight: 800; padding: 8px 16px; border-radius: 8px;">
+                    ${isActive ? '⛔ Turn System OFF' : '✅ Turn System ON'}
+                  </button>
+                </div>
+              </div>
+
+              <!-- Support Mode Impersonation -->
+              <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                  <div>
+                    <h4 style="margin: 0; color: #0f172a; font-size: 15px; font-weight: 800;">
+                      👁️ सपोर्ट लगइन (Support Impersonation)
+                    </h4>
+                    <p style="margin: 4px 0 0; font-size: 12.5px; color: #64748b;">
+                      यस पालिकाको Admin का रूपमा प्रत्यक्ष लगइन गरी प्राविधिक समस्या समाधान वा डाटा निरीक्षण गर्नुहोस्।
+                    </p>
+                  </div>
+                  <button type="button" class="btn" onclick="closeModal(); loginAsTenantAdmin('${t.TenantID}');" style="background: #4f46e5; color: white; border: none; font-weight: 800; padding: 8px 16px; border-radius: 8px;">
+                    🚀 Support Login
+                  </button>
+                </div>
+              </div>
+
+              <!-- Data Vault Export -->
+              <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                  <div>
+                    <h4 style="margin: 0; color: #0f172a; font-size: 15px; font-weight: 800;">
+                      🗄️ डेटा भल्ट ब्याकअप (Data Vault Export)
+                    </h4>
+                    <p style="margin: 4px 0 0; font-size: 12.5px; color: #64748b;">
+                      यस पालिकाको सम्पूर्ण मतदाता, घरधुरी, भेटघाट र कार्यकर्ता डाटा सुरक्षित JSON फाइलमा डाउनलोड गर्नुहोस्।
+                    </p>
+                  </div>
+                  <button type="button" class="btn btn-secondary" onclick="exportTenantDataVault('${t.TenantID}')" style="font-weight: 700; padding: 8px 16px; border-radius: 8px;">
+                    🗄️ Download Vault
+                  </button>
+                </div>
+              </div>
+
+              <!-- Danger Zone Delete -->
+              <div style="background: #fff1f2; border: 1px dashed #f43f5e; border-radius: 10px; padding: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                  <div>
+                    <h4 style="margin: 0; color: #e11d48; font-size: 14.5px; font-weight: 800;">
+                      🗑️ खाता हटाउनुहोस् (Delete Account)
+                    </h4>
+                    <p style="margin: 4px 0 0; font-size: 12px; color: #be123c;">
+                      यस पालिकाको खाता र सम्बन्धित कन्फिगरेसन पूर्ण रूपमा मेटाउनुहोस्। यो कार्य फिर्ता गर्न सकिँदैन।
+                    </p>
+                  </div>
+                  <button type="button" class="btn btn-danger" onclick="closeModal(); deleteTenant('${t.TenantID}');" style="font-weight: 700; padding: 7px 14px; border-radius: 8px;">
+                    🗑️ Delete Palika
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const footerHtml = `
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 8px;">
+          <span style="font-size: 12px; color: #64748b;">
+            💡 परिवर्तनहरू सुरक्षित गर्न दायाँपट्टिको सेभ बटन थिच्नुहोस्।
+          </span>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>
+            <button type="button" class="btn btn-primary" onclick="saveTenantDossier('${t.TenantID}')" style="background: #0f172a; border-color: #0f172a; font-weight: 800; padding: 8px 18px;">
+              💾 परिवर्तनहरू सेभ गर्नुहोस् (Save Settings)
+            </button>
+          </div>
+        </div>
+      `;
+
+      openModal(`🏛️ ${t.PalikaName} — प्रोफाइल तथा कन्ट्रोल सेन्टर`, bodyHtml, footerHtml, 'modal-xl');
+    }
+
+    function switchDossierTab(tabId) {
+      document.querySelectorAll('.dossier-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.color = '#64748b';
+        btn.style.borderBottom = '3px solid transparent';
+      });
+      document.querySelectorAll('.dossier-tab-content').forEach(c => {
+        c.style.display = 'none';
+      });
+
+      const activeBtn = document.getElementById('tabBtn_' + tabId);
+      const activeContent = document.getElementById('dossierTab_' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.style.color = '#0f172a';
+        activeBtn.style.borderBottom = '3px solid #0f172a';
+      }
+      if (activeContent) activeContent.style.display = 'block';
+    }
+
+    function generateDossierRandomPassword() {
+      const pass = 'palika@' + Math.floor(1000 + Math.random() * 9000);
+      const input = document.getElementById('dossierAdminPassword');
+      if (input) input.value = pass;
+    }
+
+    function setDossierSmsTopupAmount(amt) {
+      const input = document.getElementById('dossierAddSmsInput');
+      if (input) input.value = amt;
+    }
+
+    function executeDossierSmsTopup(tenantId) {
+      const input = document.getElementById('dossierAddSmsInput');
+      const amt = Number(input ? input.value : 0) || 0;
+      if (amt <= 0) return showToast('कृपया सही SMS संख्या हाल्नुहोस्।', 'error');
+
+      const t = (state.tenants || []).find(x => x.TenantID === tenantId);
+      if (!t) return;
+
+      const masterPool = state.settings.MASTER_SMS_CREDITS || 50000;
+      if (amt > masterPool) {
+        return showToast(`मास्टर पूलमा जम्मा ${masterPool} SMS मात्र बाँकी छ।`, 'error');
+      }
+
+      state.settings.MASTER_SMS_CREDITS = masterPool - amt;
+      t.SmsCredits = (t.SmsCredits || 0) + amt;
+      saveState();
+
+      const disp = document.getElementById('dossierSmsBalDisplay');
+      if (disp) disp.innerHTML = `${(t.SmsCredits).toLocaleString()} <span style="font-size: 14px;">SMS</span>`;
+
+      renderTenantsManagement();
+      showToast(`✅ ${t.PalikaName} लाई ${amt.toLocaleString()} SMS थप गरियो! (नयाँ ब्यालेन्स: ${(t.SmsCredits).toLocaleString()})`, 'success');
+    }
+
+    function saveTenantDossier(tenantId) {
+      const t = (state.tenants || []).find(x => x.TenantID === tenantId);
+      if (!t) return;
+
+      const palikaName = (document.getElementById('dossierPalikaName')?.value || '').trim();
+      const slug = (document.getElementById('dossierSlug')?.value || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+      const party = document.getElementById('dossierParty')?.value || 'NC';
+      const contactPerson = (document.getElementById('dossierContactPerson')?.value || '').trim();
+      const phone = (document.getElementById('dossierPhone')?.value || '').trim();
+      const adminUsername = (document.getElementById('dossierAdminUsername')?.value || '').trim().toLowerCase();
+      const adminPassword = (document.getElementById('dossierAdminPassword')?.value || '').trim();
+
+      const featSms = document.getElementById('dossierFeatSms')?.checked;
+      const featTree = document.getElementById('dossierFeatFamilyTree')?.checked;
+      const featRep = document.getElementById('dossierFeatReports')?.checked;
+      const featSlips = document.getElementById('dossierFeatVoterSlips')?.checked;
+
+      const planType = document.getElementById('dossierPlanType')?.value || 'Full Palika Suite';
+      const feeMonthly = (document.getElementById('dossierFeeMonthly')?.value || '').trim();
+      const billingStatus = document.getElementById('dossierBillingStatus')?.value || 'Paid';
+      const expiresAt = document.getElementById('dossierExpiresAt')?.value || '';
+
+      if (!palikaName) return showToast('कृपया पालिकाको नाम हाल्नुहोस्।', 'error');
+      if (!phone) return showToast('कृपया सम्पर्क फोन नम्बर हाल्नुहोस्।', 'error');
+
+      t.PalikaName = palikaName;
+      t.Slug = slug;
+      t.Party = party;
+      t.ContactPerson = contactPerson;
+      t.Phone = phone;
+      t.AdminUsername = adminUsername;
+      t.AdminPassword = adminPassword;
+
+      t.Features = {
+        sms: featSms,
+        familyTree: featTree,
+        reports: featRep,
+        voterSlips: featSlips
+      };
+
+      t.PlanType = planType;
+      t.FeeMonthly = feeMonthly;
+      t.BillingStatus = billingStatus;
+      t.ExpiresAt = expiresAt;
+
+      saveState();
+
+      // Push updated credentials to Supabase
+      pushUserToSupabase({
+        UserID: 'USR_' + t.TenantID,
+        Name: `${t.PalikaName} Admin`,
+        Phone: t.Phone,
+        Role: 'Palika Admin',
+        PIN: t.AdminPassword || '1234',
+        Ward: 'All',
+        Active: t.Status === 'Active',
+        notes: JSON.stringify({ party: t.Party, slug: t.Slug })
+      });
+
+      logActivity('user_manage', `👑 Super Admin ले ${t.PalikaName} को प्रोफाइल र सेटिङ्स अद्यावधिक गर्नुभयो।`);
+      closeModal();
+      renderTenantsManagement();
+      showToast(`🎉 ${t.PalikaName} को प्रोफाइल तथा सेटिङ्स सफलतापूर्वक सेभ भयो!`, 'success');
     }
 
     function copyPortalLink(slug) {
@@ -14695,7 +15175,7 @@
 
       // Show/hide topbar candidate switcher depending on user role
       if (topContainer) {
-        const isPalikaOrCand = currentUser && (currentUser.Role === 'Palika Admin' || currentUser.Role === 'Super Admin' || currentUser.Role === 'Candidate');
+        const isPalikaOrCand = currentUser && (currentUser.Role === 'Palika Admin' || currentUser.Role === 'Candidate');
         topContainer.style.display = isPalikaOrCand ? 'flex' : 'none';
       }
     }
