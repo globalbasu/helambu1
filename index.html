@@ -807,6 +807,36 @@
       gap: 10px;
     }
 
+    /* ==========================================================
+       SUPER ADMIN & SAAS TENANT CONTROL ACCESS PROTECTION (STRICT RBAC CSS)
+       ========================================================== */
+    .super-admin-only,
+    .saas-only {
+      display: none !important;
+    }
+
+    body.role-super-admin .super-admin-only {
+      display: inline-flex !important;
+    }
+
+    body.role-super-admin span.super-admin-only {
+      display: inline-flex !important;
+    }
+
+    body.role-super-admin .saas-only {
+      display: flex !important;
+    }
+
+    body.role-super-admin .saas-only.nav-group-title {
+      display: block !important;
+    }
+
+    /* Fallback protection: Non-super admins never see tenant creation controls */
+    body:not(.role-super-admin) #superTopbarAddTenantBtn,
+    body:not(.role-super-admin) #superTopbarLiveBadge {
+      display: none !important;
+    }
+
     /* Main Body Content Container (Full Width Responsive Flow) */
     .content-container {
       padding: 16px 20px;
@@ -2571,14 +2601,17 @@
           </button>
         </div>
 
-        <!-- Action: Register Account / Create ID -->
+        <!-- Action: Contact Super Admin for New Palika Onboarding -->
         <div style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed #e2e8f0; text-align: center;">
-          <div style="font-size: 12.5px; color: var(--slate-600); margin-bottom: 6px;">
-            नयाँ पालिका वा निर्वाचन कमान्ड खाता छैन?
+          <div style="font-size: 12px; color: var(--slate-600); margin-bottom: 6px;">
+            नयाँ पालिका वा निर्वाचन कमान्ड खाता आवश्यक छ?
           </div>
-          <button type="button" class="btn btn-secondary" onclick="openRegisterAccountModal()" style="width: 100%; font-size: 13px; font-weight: 800; padding: 10px; background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; border-radius: 10px;">
-            📝 नयाँ खाता दर्ता गर्नुहोस् (Create ID / Sign Up)
-          </button>
+          <div style="font-size: 11.5px; color: var(--slate-500); line-height: 1.5; margin-bottom: 10px;">
+            ℹ️ नयाँ पालिका दर्ता केवल <b>Super Admin</b> मार्फत मात्र स्वीकृत र सक्रिय गरिन्छ।
+          </div>
+          <a href="https://wa.me/9779851170967?text=%E0%A4%A8%E0%A4%AE%E0%A4%B8%E0%A5%8D%E0%A4%A4%E0%A5%87%20Super%20Admin%20%E0%A4%9C%E0%A5%8D%E0%A4%AF%E0%A5%82,%20%E0%A4%AE%E0%A4%B2%E0%A4%BE%E0%A4%88%20%E0%A4%A8%E0%A4%AF%E0%A4%BE%E0%A4%81%20%E0%A4%AA%E0%A4%BE%E0%A4%B2%E0%A4%BF%E0%A4%95%E0%A4%BE%20%E0%A4%96%E0%A4%BE%E0%A4%A4%E0%A4%BE%20%E0%A4%86%E0%A4%B5%E0%A4%B6%E0%A5%8D%E0%A4%AF%E0%A4%95%20%E0%A4%9B%E0%A5%A4" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="width: 100%; font-size: 12.5px; font-weight: 700; padding: 9px 12px; background: #f8fafc; color: #334155; border: 1.5px solid #cbd5e1; border-radius: 10px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+            💬 Super Admin सँग सम्पर्क (9851170967)
+          </a>
         </div>
       </div>
 
@@ -4938,10 +4971,14 @@
       if (!currentUser) {
         document.body.classList.add('login-active');
         document.body.classList.remove('logged-in');
+        document.body.classList.remove('role-super-admin');
         const mobNav = document.getElementById('mobileBottomNav');
         if (mobNav) mobNav.style.display = 'none';
         const shell = document.getElementById('appShell');
         if (shell) shell.style.display = 'none';
+        document.querySelectorAll('.super-admin-only').forEach(el => el.style.display = 'none');
+      } else {
+        applyRoleBasedNavigation(currentUser);
       }
 
       // Register Service Worker with cache-busting
@@ -5579,8 +5616,30 @@
       showToast(`👑 स्वागत छ Super Admin! Master Control Hub अनलक भयो।`, 'success');
     }
 
-    // CREATE ID (ACCOUNT REGISTRATION MODAL)
+    // CREATE ID (ACCOUNT REGISTRATION MODAL) - RESTRICTED TO SUPER ADMIN ONLY
     function openRegisterAccountModal() {
+      if (!currentUser || currentUser.Role !== 'Super Admin') {
+        openModal(
+          '🔒 अनधिकृत पहुँच (Restricted Access)',
+          `
+          <div style="text-align: center; padding: 20px;">
+            <div style="font-size: 48px; margin-bottom: 12px;">🛡️</div>
+            <h3 style="color: #0f172a; margin-bottom: 8px;">नयाँ पालिका दर्ता सुरक्षित छ</h3>
+            <p style="font-size: 13.5px; color: var(--slate-600); line-height: 1.6;">
+              नयाँ पालिका वा निर्वाचन कमान्ड खाता सिर्जना गर्ने अधिकार केवल <b>Super Admin</b> लाई मात्र छ।<br>
+              कृपया खाता दर्ता वा सक्रिय गर्नका लागि मुख्य प्लेटफर्म व्यवस्थापकसँग सम्पर्क गर्नुहोस्।
+            </p>
+            <div style="margin-top: 16px;">
+              <a href="https://wa.me/9779851170967" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                🟢 WhatsApp मा सम्पर्क गर्नुहोस् (9851170967)
+              </a>
+            </div>
+          </div>
+          `,
+          `<button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>`
+        );
+        return;
+      }
       openModal(
         '📝 नयाँ Admin खाता दर्ता (Sign Up)',
         `
@@ -6450,6 +6509,8 @@
     function logout() {
       document.body.classList.add('login-active');
       document.body.classList.remove('logged-in');
+      document.body.classList.remove('role-super-admin');
+      document.querySelectorAll('.super-admin-only').forEach(el => el.style.display = 'none');
       logActivity('logout', `${currentUser ? currentUser.Name : 'User'} logged out.`);
       const wasSuper = currentUser && currentUser.Role === 'Super Admin';
       const wasPalika = currentUser && currentUser.TenantID && currentUser.TenantID !== 'ALL';
@@ -6738,6 +6799,7 @@
 
       // 1b. Role-Scoped Topbar Controls Visibility
       const isSuper = (role === 'Super Admin');
+      document.body.classList.toggle('role-super-admin', isSuper);
       document.querySelectorAll('.super-admin-only').forEach(el => {
         el.style.display = isSuper ? (el.tagName === 'BUTTON' || el.tagName === 'SPAN' || el.tagName === 'DIV' ? 'inline-flex' : 'block') : 'none';
       });
@@ -7004,6 +7066,13 @@
 
     function switchView(viewName) {
       if (!currentUser) return;
+
+      // 0. Hard Guard for Tenants View (Super Admin Only)
+      if (viewName === 'tenants' && currentUser.Role !== 'Super Admin') {
+        showToast('🔒 नयाँ पालिका तथा टेनेन्ट व्यवस्थापन केवल मुख्य Super Admin को लागि मात्र सुरक्षित छ।', 'warning');
+        switchView('dashboard');
+        return;
+      }
 
       // 1. Strict Centralized RBAC Security Gatekeeper
       if (!canRoleAccessView(currentUser.Role, viewName)) {
@@ -14562,6 +14631,10 @@
     }
 
     function saveTenantDossier(tenantId) {
+      if (!currentUser || currentUser.Role !== 'Super Admin') {
+        showToast('🔒 अनधिकृत: यो कार्य केवल मुख्य Super Admin ले मात्र गर्न सक्नुहुन्छ।', 'error');
+        return;
+      }
       const t = (state.tenants || []).find(x => x.TenantID === tenantId);
       if (!t) return;
 
@@ -14686,6 +14759,10 @@
     }
 
     function openCreateTenantModal() {
+      if (!currentUser || currentUser.Role !== 'Super Admin') {
+        showToast('🔒 नयाँ पालिका सिर्जना गर्ने अधिकार केवल मुख्य Super Admin लाई मात्र छ।', 'error');
+        return;
+      }
       openModal(
         '👑 नयाँ पालिका Admin खाता बनाउनुहोस् (Create Client)',
         `
@@ -14758,7 +14835,11 @@
     }
 
     function saveTenant(e) {
-      e.preventDefault();
+      if (e) e.preventDefault();
+      if (!currentUser || currentUser.Role !== 'Super Admin') {
+        showToast('🔒 अनधिकृत: नयाँ पालिका Admin दर्ता गर्न केवल Super Admin लाई अनुमति छ।', 'error');
+        return;
+      }
       const form = e.target;
       const formData = new FormData(form);
 
@@ -15109,6 +15190,10 @@
     }
 
     function saveTenantFeatures(tenantId) {
+      if (!currentUser || currentUser.Role !== 'Super Admin') {
+        showToast('🔒 अनधिकृत: यो कार्य केवल मुख्य Super Admin ले मात्र गर्न सक्नुहुन्छ।', 'error');
+        return;
+      }
       const t = (state.tenants || []).find(x => x.TenantID === tenantId);
       if (!t) return;
       t.Features = {
