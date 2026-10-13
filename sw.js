@@ -1,5 +1,5 @@
-// Service Worker for Offline & Installable App Experience (v14 - Voter Directory View Mode Isolation Fix)
-const CACHE_NAME = 'election-ops-v14';
+// Service Worker for Offline & Installable App Experience (v15 - Super Admin Mobile UI Polish)
+const CACHE_NAME = 'election-ops-v15';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

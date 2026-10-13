@@ -2678,6 +2678,7 @@
         flex-wrap: nowrap !important;
         min-width: 0 !important;
       }
+      #superTopbarAddTenantBtn,
       .topbar-right .online-badge,
       .topbar-right .sync-label,
       .topbar-right button[onclick="openQrModal()"],
@@ -2685,7 +2686,7 @@
       .hide-mobile, .btn-text-mobile-hide {
         display: none !important;
       }
-      .topbar-right .btn-sm,
+      .topbar-right .btn-sm:not(#superTopbarAddTenantBtn),
       #topbarSupabaseSyncBtn,
       .topbar-right button[onclick="openQuickActionModal()"] {
         font-size: 15px !important;
@@ -2704,6 +2705,17 @@
       #topbarSupabaseSyncBtn {
         border: 1px solid #bbf7d0 !important;
         background: #f0fdf4 !important;
+      }
+      .sms-topup-btn {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+        min-height: 42px !important;
+        margin-top: 6px !important;
+        font-size: 13.5px !important;
+        font-weight: 800 !important;
       }
 
       /* Content Area compact padding & mobile container flow */
@@ -3745,8 +3757,8 @@
           </span>
         </div>
         <div class="topbar-right">
-          <!-- 👑 Super Admin Quick Add Tenant Button -->
-          <button id="superTopbarAddTenantBtn" class="btn btn-sm btn-primary super-admin-only" onclick="openCreateTenantModal()" style="display: none; font-weight: 800; background: #0f172a; color: #fbbf24; border-color: #334155; border-radius: 8px;">
+          <!-- 👑 Super Admin Quick Add Tenant Button (Desktop only; on mobile it is in the page header below) -->
+          <button id="superTopbarAddTenantBtn" class="btn btn-sm btn-primary super-admin-only hide-on-mobile" onclick="openCreateTenantModal()" style="display: none; font-weight: 800; background: #0f172a; color: #fbbf24; border-color: #334155; border-radius: 8px;">
             + नयाँ पालिका Admin
           </button>
           <!-- 🎨 Locked Party Badge (Client Palika Admins Only) -->
@@ -5171,8 +5183,8 @@
                     </p>
                   </div>
                 </div>
-                <button class="btn btn-sm btn-primary" onclick="openAllocateSmsModal()" style="background: #059669; border-color: #059669; font-weight: 700;">
-                  + पालिकालाई SMS कोटा थप्नुहोस् (Top-up Quota)
+                <button class="btn btn-sm btn-primary sms-topup-btn" onclick="openAllocateSmsModal()" style="background: #059669; border-color: #059669; font-weight: 800; padding: 8px 16px; border-radius: 8px;">
+                  + पालिकालाई SMS कोटा थप्नुहोस्
                 </button>
               </div>
 
@@ -6111,9 +6123,9 @@
 
       // Register Service Worker with cache-busting
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js?v=20261013-v14')
+        navigator.serviceWorker.register('sw.js?v=20261013-v15')
           .then((reg) => {
-            console.log('Election Ops PWA Service Worker Registered (v14.0.0)');
+            console.log('Election Ops PWA Service Worker Registered (v15.0.0)');
             reg.update();
           })
           .catch(err => console.log('SW registration error:', err));
