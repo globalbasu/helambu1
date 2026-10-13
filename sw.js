@@ -1,5 +1,5 @@
-// Service Worker for Offline & Installable App Experience (v12 - Native Mobile Bottom Sheet Filter Fix)
-const CACHE_NAME = 'election-ops-v12';
+// Service Worker for Offline & Installable App Experience (v13 - Modern Image 2 Voter Profile Dossier)
+const CACHE_NAME = 'election-ops-v13';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

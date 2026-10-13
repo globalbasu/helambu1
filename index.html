@@ -2168,6 +2168,358 @@
       display: none !important;
     }
 
+    /* ==========================================================================
+       MODERN VOTER DOSSIER HERO CARD (Target Image 2 Specification)
+       ========================================================================== */
+    .voter-dossier-card {
+      background: #ffffff;
+      border-radius: 20px;
+      border: 1.5px solid #e2e8f0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      margin-bottom: 18px;
+      position: relative;
+      overflow: visible;
+      padding: 18px 16px 16px;
+      box-sizing: border-box;
+    }
+    .voter-dossier-top-accent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      border-radius: 20px 20px 0 0;
+      background: linear-gradient(90deg, #2563eb, #8b5cf6, #ec4899, #f59e0b);
+    }
+    .voter-dossier-profile-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 4px;
+      margin-bottom: 16px;
+    }
+    .voter-dossier-avatar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      flex: 1;
+    }
+    .voter-dossier-avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 900;
+      border: 3px solid #ffffff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+      flex-shrink: 0;
+    }
+    .voter-dossier-identity {
+      min-width: 0;
+      flex: 1;
+    }
+    .voter-dossier-name {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .voter-dossier-id-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: monospace;
+      padding: 3px 10px;
+      border-radius: 8px;
+      margin-top: 5px;
+      cursor: pointer;
+      border: 1px solid #e2e8f0;
+      transition: background 0.15s ease;
+      user-select: none;
+    }
+    .voter-dossier-id-pill:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+    .voter-dossier-more-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      color: #475569;
+      font-size: 20px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+      line-height: 1;
+    }
+    .voter-dossier-more-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+    .voter-header-more-menu {
+      position: absolute;
+      top: 44px;
+      right: 0;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      padding: 6px;
+      z-index: 100;
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .voter-header-more-menu button {
+      background: transparent;
+      border: none;
+      padding: 8px 12px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+    .voter-header-more-menu button:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    /* 4 Micro-Metric Cards Grid */
+    .voter-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .voter-metric-card {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 8px 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-sizing: border-box;
+      min-width: 0;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .voter-metric-card.is-clickable {
+      cursor: pointer;
+    }
+    .voter-metric-card.is-clickable:hover {
+      border-color: #94a3b8;
+      background: #f1f5f9;
+    }
+    .voter-metric-icon {
+      font-size: 18px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .voter-metric-hash {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: #e0e7ff;
+      color: #4338ca;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .voter-metric-content {
+      min-width: 0;
+      line-height: 1.2;
+    }
+    .voter-metric-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #64748b;
+      white-space: nowrap;
+    }
+    .voter-metric-val {
+      font-size: 13.5px;
+      font-weight: 900;
+      color: #0f172a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    /* 2 Status Switchers Grid */
+    .voter-status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .voter-status-pill {
+      border-radius: 12px;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      box-sizing: border-box;
+      font-size: 13px;
+      font-weight: 800;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .voter-status-pill:hover {
+      filter: brightness(0.97);
+    }
+    .voter-status-pill-party {
+      background: #fffbeb;
+      border: 1.5px solid #fed7aa;
+      color: #9a3412;
+    }
+    .voter-status-pill-verify {
+      background: #f0fdf4;
+      border: 1.5px solid #bbf7d0;
+      color: #166534;
+    }
+
+    /* Action Tiles Grids */
+    .voter-actions-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .voter-actions-row-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .voter-actions-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .voter-action-tile {
+      height: 44px;
+      min-height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none !important;
+      border: none;
+      cursor: pointer;
+      box-sizing: border-box;
+      transition: transform 0.12s ease, filter 0.12s ease;
+      white-space: nowrap;
+      padding: 0 8px;
+    }
+    .voter-action-tile:active {
+      transform: scale(0.98);
+    }
+    .tile-phone {
+      background: #059669;
+      color: #ffffff !important;
+      box-shadow: 0 3px 10px rgba(5, 150, 105, 0.25);
+    }
+    .tile-whatsapp {
+      background: #10b981;
+      color: #ffffff !important;
+      box-shadow: 0 3px 10px rgba(16, 185, 129, 0.25);
+    }
+    .tile-sms {
+      background: #eef2ff;
+      color: #4338ca !important;
+      border: 1.5px solid #c7d2fe;
+    }
+    .tile-facebook {
+      background: #1877f2;
+      color: #ffffff !important;
+      box-shadow: 0 3px 10px rgba(24, 119, 242, 0.25);
+    }
+    .tile-tiktok {
+      background: #000000;
+      color: #ffffff !important;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    }
+    .tile-visit {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      color: #ffffff !important;
+      box-shadow: 0 3px 10px rgba(16, 185, 129, 0.25);
+    }
+    .tile-slip {
+      background: #1e3a8a;
+      color: #ffffff !important;
+      box-shadow: 0 3px 10px rgba(30, 58, 138, 0.25);
+    }
+    .tile-edit {
+      background: #ffffff;
+      color: #1e293b !important;
+      border: 1.5px solid #cbd5e1;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    @media (max-width: 480px) {
+      .voter-metric-card {
+        padding: 6px 4px;
+        gap: 4px;
+      }
+      .voter-metric-icon {
+        font-size: 15px;
+      }
+      .voter-metric-label {
+        font-size: 9.5px;
+      }
+      .voter-metric-val {
+        font-size: 12px;
+      }
+      .voter-action-tile {
+        font-size: 12px;
+        gap: 4px;
+        padding: 0 4px;
+      }
+    }
+    @media (max-width: 360px) {
+      .voter-metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .voter-action-tile {
+        font-size: 11px;
+      }
+    }
+
     /* --- Tablet & Mobile Media Queries (<= 880px) --- */
     @media (max-width: 880px) {
       body.logged-in .app-shell,
@@ -5752,9 +6104,9 @@
 
       // Register Service Worker with cache-busting
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js?v=20261012-v12')
+        navigator.serviceWorker.register('sw.js?v=20261013-v13')
           .then((reg) => {
-            console.log('Election Ops PWA Service Worker Registered (v12.0.0)');
+            console.log('Election Ops PWA Service Worker Registered (v13.0.0)');
             reg.update();
           })
           .catch(err => console.log('SW registration error:', err));
@@ -8388,12 +8740,35 @@
       });
     }
 
+    function toggleVoterHeaderMoreMenu(voterId, e) {
+      if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      const m = document.getElementById('voterHeaderMoreMenu_' + voterId);
+      if (!m) return;
+      const isShown = m.style.display === 'flex';
+      closeVoterHeaderMoreMenu();
+      if (!isShown) {
+        m.style.display = 'flex';
+      }
+    }
+
+    function closeVoterHeaderMoreMenu() {
+      document.querySelectorAll('.voter-header-more-menu').forEach(el => {
+        el.style.display = 'none';
+      });
+    }
+
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.voter-action-wrap')) {
         closeAllVoterActionDropdowns();
       }
       if (!e.target.closest('.voter-more-tools-wrap')) {
         closeVoterMoreTools();
+      }
+      if (!e.target.closest('.voter-header-more-menu') && !e.target.closest('.voter-dossier-more-btn')) {
+        closeVoterHeaderMoreMenu();
       }
     });
 
@@ -8402,6 +8777,7 @@
         closeAllVoterActionDropdowns();
         closeVoterMoreTools();
         closeVoterFilterBottomSheet();
+        closeVoterHeaderMoreMenu();
       }
     });
 
@@ -9137,97 +9513,158 @@
       openModal(
         `मतदाता प्रोफाइल: ${v.Name}`,
         `
-        <!-- TOP PROFILE HEADER CARD (Material 3 Intelligence Dossier) -->
-        <div style="background: #ffffff; border-radius: var(--radius-md); padding: 18px 20px; margin-bottom: 16px; border: 1.5px solid var(--slate-200); box-shadow: 0 4px 16px rgba(0,0,0,0.05); position: relative; overflow: hidden;">
-          <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #1e3a8a, #dc2626, #fbbf24);"></div>
-          
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; flex-wrap: wrap;">
-            <div style="display: flex; gap: 14px; align-items: center;">
-              <div style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; box-shadow: 0 4px 14px rgba(30, 58, 138, 0.3); border: 2px solid white; flex-shrink: 0;">
+        <!-- TOP PROFILE HEADER CARD (Material 3 Intelligence Dossier - Image 2 Target Layout) -->
+        <div class="voter-dossier-card">
+          <div class="voter-dossier-top-accent"></div>
+
+          <!-- Profile Row: Avatar + Name & ID + More Options Menu -->
+          <div class="voter-dossier-profile-row">
+            <div class="voter-dossier-avatar-wrap">
+              <div class="voter-dossier-avatar">
                 ${initial}
               </div>
-              <div>
-                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                  <h2 style="margin: 0; font-size: 20px; font-weight: 900; color: #0f172a; letter-spacing: -0.01em;">${esc(v.Name)}</h2>
-                  <span style="font-size: 12px; color: #64748b; font-weight: 700; font-family: monospace; background: #f1f5f9; padding: 2px 8px; border-radius: 6px;">${esc(v.VoterID)}</span>
+              <div class="voter-dossier-identity">
+                <h2 class="voter-dossier-name" title="${esc(v.Name)}">${esc(v.Name)}</h2>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+                  <div class="voter-dossier-id-pill" onclick="copyTextToClipboard('${v.VoterID}')" title="मतदाता ID कपी गर्न क्लिक गर्नुहोस्">
+                    <span>${esc(v.VoterID)}</span>
+                    <span style="font-size: 13px; opacity: 0.75;">📋</span>
+                  </div>
                   ${bdayBadge}
-                </div>
-                
-                <!-- Clean Grouped Identity & Status Badges -->
-                <div style="display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
-                  <!-- Clickable Ward Badge -->
-                  <span class="badge" style="cursor: pointer; background: #eff6ff; color: #1d4ed8; font-weight: 800; border: 1px solid #bfdbfe;" onclick="closeModal(); filterByWard(${v.Ward});" title="वडा ${v.Ward} का मतदाता फिल्टर गर्न क्लिक गर्नुहोस्">
-                    🏛️ वडा ${v.Ward}
-                  </span>
-                  <!-- Clickable Tole Badge -->
-                  ${v.Tole ? `
-                    <span class="badge" style="cursor: pointer; background: #f8fafc; color: #334155; font-weight: 700; border: 1px solid #cbd5e1;" onclick="closeModal(); filterByTole('${esc(v.Tole)}');" title="टोल खोज्न क्लिक गर्नुहोस्">
-                      📍 ${esc(v.Tole)}
-                    </span>
-                  ` : ''}
-                  <!-- Booth & Serial -->
-                  <span class="badge" style="background: #fefce8; border: 1px solid #fef08a; color: #854d0e; font-weight: 800;">
-                    🗳️ बुथ ${esc(v.BoothNo || '-')} • क्र.सं. #${esc(v.VoterSerial || '-')}
-                  </span>
-                  <!-- Clickable Party Leaning Badge -->
-                  <span class="badge" style="cursor: pointer; background: white; border: 1.5px solid #94a3b8; font-weight: 800;" onclick="quickCycleParty('${v.VoterID}', '${activeTab}');" title="क्लिक गरी पार्टी झुकाव परिवर्तन गर्नुहोस्">
-                    ${getPartyLabel(v.PartyLeaning)} 🔄
-                  </span>
-                  <!-- Clickable Verification Badge -->
-                  <span class="badge ${v.VerificationStatus === 'Verified' ? 'badge-verified' : 'badge-pending'}" style="cursor: pointer; font-weight: 800;" onclick="toggleVoterVerification('${v.VoterID}'); viewVoterProfile('${v.VoterID}', '${activeTab}');" title="क्लिक गरी स्थिति बदल्नुहोस्">
-                    ${v.VerificationStatus === 'Verified' ? '✓ प्रमाणित (Verified)' : '⏳ बाँकी (Pending)'} 🔄
-                  </span>
                 </div>
               </div>
             </div>
 
-            <!-- Modern 2-Tier Action Buttons -->
-            <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
-              <!-- Tier 1: Quick Contact Channels -->
-              <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center; justify-content: flex-end;">
-                ${v.Phone ? `
-                  <a href="tel:${cleanPhone(v.Phone)}" class="btn btn-sm" style="text-decoration: none; background: #059669; color: white; font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(5,150,105,0.25);" title="सिधा फोन गर्नुहोस्">
-                    📞 फोन
-                  </a>
-                  <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #25D366; color: white; font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 6px; box-shadow: 0 2px 6px rgba(37,211,102,0.25);" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')">
-                    🟢 WhatsApp
-                  </a>
-                  <button class="btn btn-sm" onclick="openCustomMessageModal('${v.VoterID}')" style="background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 6px;" title="कस्टम सन्देश (SMS)">
-                    💬 सन्देश
-                  </button>
-                ` : ''}
-                ${v.FacebookUrl ? `
-                  <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #1877F2; color: white; font-size: 12px; font-weight: 800; padding: 6px 10px; border-radius: 6px; box-shadow: 0 2px 6px rgba(24,119,242,0.25); display: inline-flex; align-items: center; gap: 5px;" title="Facebook प्रोफाइल (${esc(v.FacebookUrl)})">
-                    ${getFacebookIconSvg(14)} <span>FB</span>
-                  </a>
-                ` : `
-                  <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 11.5px; font-weight: 700; padding: 6px 9px; opacity: 0.85; display: inline-flex; align-items: center; gap: 5px;" title="Facebook लिङ्क थप्नुहोस्">
-                    ${getFacebookIconSvg(14)} <span>+ FB</span>
-                  </button>
-                `}
-                ${v.TiktokUrl ? `
-                  <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration: none; background: #000000; color: white; font-size: 12px; font-weight: 800; padding: 6px 10px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.25); display: inline-flex; align-items: center; gap: 5px;" title="TikTok प्रोफाइल (${esc(v.TiktokUrl)})">
-                    ${getTiktokIconSvg(14)} <span>TikTok</span>
-                  </a>
-                ` : `
-                  <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 11.5px; font-weight: 700; padding: 6px 9px; opacity: 0.85; display: inline-flex; align-items: center; gap: 5px;" title="TikTok लिङ्क थप्नुहोस्">
-                    ${getTiktokIconSvg(14)} <span>+ TikTok</span>
-                  </button>
-                `}
+            <!-- More Options 3-Dots Button -->
+            <div style="position: relative;">
+              <button type="button" class="voter-dossier-more-btn" onclick="toggleVoterHeaderMoreMenu('${v.VoterID}', event)" title="थप विकल्पहरू">⋮</button>
+              <div id="voterHeaderMoreMenu_${v.VoterID}" class="voter-header-more-menu" style="display: none;" onclick="event.stopPropagation()">
+                <button type="button" onclick="copyTextToClipboard('${v.VoterID}'); closeVoterHeaderMoreMenu();">📋 मतदाता ID कपी</button>
+                <button type="button" onclick="printVoterSlip('${v.VoterID}'); closeVoterHeaderMoreMenu();">🖨️ परिचय पर्चा (Slip)</button>
+                ${daysToBday !== null && daysToBday <= 7 ? `<button type="button" onclick="openBirthdayWishModal('${v.VoterID}'); closeVoterHeaderMoreMenu();">🎂 जन्मदिन शुभकामना</button>` : ''}
+                <button type="button" onclick="openLinkFamilyModal('${v.VoterID}'); closeVoterHeaderMoreMenu();">🌳 घरधुरी तथा परिवार जोड्नुहोस्</button>
+                <button type="button" onclick="openEditVoterModal('${v.VoterID}'); closeVoterHeaderMoreMenu();">✏️ पूर्ण सम्पादन (Edit)</button>
               </div>
+            </div>
+          </div>
 
-              <!-- Tier 2: Field Ops & Action Tools -->
-              <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center; justify-content: flex-end;">
-                <button class="btn btn-sm" onclick="openRecordVisitModal('${v.VoterID}')" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; font-weight: 800; font-size: 12px; padding: 6px 12px; border-radius: 6px; border: none; box-shadow: 0 2px 8px rgba(16,185,129,0.3);" title="यस मतदाताको घरदैलो भेटघाट दर्ता गर्नुहोस्">
-                  🚶 घरदैलो भेट (+ Visit)
-                </button>
-                <button class="btn btn-sm btn-primary" onclick="printVoterSlip('${v.VoterID}')" style="font-weight: 800; font-size: 12px; padding: 6px 12px; background: #1e3a8a; border-color: #1e3a8a;" title="मतदाता परिचय पर्चा हेर्नुहोस् र प्रिन्ट गर्नुहोस्">
-                  🖨️ पर्चा (Slip)
-                </button>
-                <button class="btn btn-sm btn-secondary" onclick="openEditVoterModal('${v.VoterID}')" style="font-size: 12px; font-weight: 700; padding: 6px 11px;">
-                  ✏️ सम्पादन
-                </button>
+          <!-- 4 Micro-Metric Cards (Row 1) -->
+          <div class="voter-metrics-grid">
+            <!-- Box 1: Ward -->
+            <div class="voter-metric-card is-clickable" onclick="closeModal(); filterByWard(${v.Ward});" title="वडा ${v.Ward} का मतदाता फिल्टर गर्न क्लिक गर्नुहोस्">
+              <span class="voter-metric-icon">🏛️</span>
+              <div class="voter-metric-content">
+                <div class="voter-metric-label">वडा नं.</div>
+                <div class="voter-metric-val" style="color: #1e3a8a;">${v.Ward}</div>
               </div>
+            </div>
+
+            <!-- Box 2: Location (Tole) -->
+            <div class="voter-metric-card ${v.Tole ? 'is-clickable' : ''}" ${v.Tole ? `onclick="closeModal(); filterByTole('${esc(v.Tole)}');" title="टोल '${esc(v.Tole)}' का मतदाता खोज्नुहोस्"` : ''}>
+              <span class="voter-metric-icon" style="color: #dc2626;">📍</span>
+              <div class="voter-metric-content">
+                <div class="voter-metric-label">स्थान</div>
+                <div class="voter-metric-val" title="${esc(v.Tole || 'केन्द्र')}">${esc(v.Tole || 'केन्द्र')}</div>
+              </div>
+            </div>
+
+            <!-- Box 3: Booth No -->
+            <div class="voter-metric-card" title="मतदान बुथ नम्बर">
+              <span class="voter-metric-icon">🗳️</span>
+              <div class="voter-metric-content">
+                <div class="voter-metric-label">बुथ नं.</div>
+                <div class="voter-metric-val" style="color: #1d4ed8;">${esc(v.BoothNo || '०१')}</div>
+              </div>
+            </div>
+
+            <!-- Box 4: Serial No -->
+            <div class="voter-metric-card" title="मतदाता क्रम संख्या">
+              <span class="voter-metric-hash">#</span>
+              <div class="voter-metric-content">
+                <div class="voter-metric-label">क्रम सं.</div>
+                <div class="voter-metric-val" style="color: #4338ca; font-family: monospace;">${esc(v.VoterSerial || '-')}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dual Status Switcher Pills (Row 2 - 2 Columns) -->
+          <div class="voter-status-grid">
+            <!-- Party / Support Switcher -->
+            <div class="voter-status-pill voter-status-pill-party" onclick="quickCycleParty('${v.VoterID}', '${activeTab}');" title="क्लिक गरी पार्टी झुकाव परिवर्तन गर्नुहोस्">
+              <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+                <span style="font-size: 16px;">${getPartyIcon(v.PartyLeaning)}</span>
+                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${getPartyLabel(v.PartyLeaning)}</span>
+              </div>
+              <span style="font-size: 14px; opacity: 0.8; margin-left: 6px; flex-shrink: 0;">🔄</span>
+            </div>
+
+            <!-- Verification Switcher -->
+            <div class="voter-status-pill voter-status-pill-verify" onclick="toggleVoterVerification('${v.VoterID}'); viewVoterProfile('${v.VoterID}', '${activeTab}');" title="क्लिक गरी प्रमाणीकरण बदल्नुहोस्">
+              <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+                <span style="font-size: 15px; font-weight: 900;">${v.VerificationStatus === 'Verified' ? '✓' : '⏳'}</span>
+                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${v.VerificationStatus === 'Verified' ? 'प्रमाणित (Verified)' : 'बाँकी (Pending)'}</span>
+              </div>
+              <span style="font-size: 14px; opacity: 0.8; margin-left: 6px; flex-shrink: 0;">🔄</span>
+            </div>
+          </div>
+
+          <!-- Structured Action Tiles Grid (Rows 3, 4, 5) -->
+          <div class="voter-actions-grid">
+            <!-- Row 3: Direct Communications (3 Columns) -->
+            <div class="voter-actions-row-3">
+              ${v.Phone ? `
+                <a href="tel:${cleanPhone(v.Phone)}" class="voter-action-tile tile-phone" title="सिधा फोन गर्नुहोस्">
+                  <span>📞</span> <span>फोन</span>
+                </a>
+                <a href="https://wa.me/977${cleanPhone(v.Phone)}?text=${encodeURIComponent(getWhatsAppTemplate(v))}" target="_blank" rel="noopener noreferrer" class="voter-action-tile tile-whatsapp" onclick="logActivity('message', '${esc(v.Name)} लाई WhatsApp पठाइयो')" title="WhatsApp सन्देश पठाउनुहोस्">
+                  <span>💬</span> <span>WhatsApp</span>
+                </a>
+              ` : `
+                <button type="button" class="voter-action-tile tile-phone" onclick="openEditVoterModal('${v.VoterID}')" title="फोन नम्बर थप्नुहोस्">
+                  <span>📞</span> <span>फोन</span>
+                </button>
+                <button type="button" class="voter-action-tile tile-whatsapp" onclick="openEditVoterModal('${v.VoterID}')" title="नम्बर थपेर WhatsApp पठाउनुहोस्">
+                  <span>💬</span> <span>WhatsApp</span>
+                </button>
+              `}
+              <button type="button" class="voter-action-tile tile-sms" onclick="openCustomMessageModal('${v.VoterID}')" title="कस्टम सन्देश (SMS)">
+                <span>💬</span> <span>सन्देश</span>
+              </button>
+            </div>
+
+            <!-- Row 4: Social & Field Ops (3 Columns) -->
+            <div class="voter-actions-row-3">
+              ${v.FacebookUrl ? `
+                <a href="${formatSocialUrl(v.FacebookUrl, 'facebook')}" target="_blank" rel="noopener noreferrer" class="voter-action-tile tile-facebook" title="Facebook प्रोफाइल सिधा खोल्नुहोस्">
+                  <span style="font-weight: 900; font-family: sans-serif; font-size: 15px;">f</span> <span>Facebook</span>
+                </a>
+              ` : `
+                <button type="button" class="voter-action-tile tile-facebook" onclick="openEditVoterModal('${v.VoterID}')" title="Facebook लिङ्क थप्नुहोस्">
+                  <span style="font-weight: 900; font-family: sans-serif; font-size: 15px;">f</span> <span>Facebook</span>
+                </button>
+              `}
+              ${v.TiktokUrl ? `
+                <a href="${formatSocialUrl(v.TiktokUrl, 'tiktok')}" target="_blank" rel="noopener noreferrer" class="voter-action-tile tile-tiktok" title="TikTok प्रोफाइल सिधा खोल्नुहोस्">
+                  <span>♪</span> <span>TikTok</span>
+                </a>
+              ` : `
+                <button type="button" class="voter-action-tile tile-tiktok" onclick="openEditVoterModal('${v.VoterID}')" title="TikTok लिङ्क थप्नुहोस्">
+                  <span>♪</span> <span>TikTok</span>
+                </button>
+              `}
+              <button type="button" class="voter-action-tile tile-visit" onclick="openRecordVisitModal('${v.VoterID}')" title="घरदैलो भेटघाट दर्ता गर्नुहोस्">
+                <span>🚶</span> <span>घरदैलो भेट <small>(+ Visit)</small></span>
+              </button>
+            </div>
+
+            <!-- Row 5: Documentation & Edit (2 Columns - 50% / 50%) -->
+            <div class="voter-actions-row-2">
+              <button type="button" class="voter-action-tile tile-slip" onclick="printVoterSlip('${v.VoterID}')" title="मतदाता परिचय पर्चा हेर्नुहोस् र प्रिन्ट गर्नुहोस्">
+                <span>🖨️</span> <span>पर्चा (Slip)</span>
+              </button>
+              <button type="button" class="voter-action-tile tile-edit" onclick="openEditVoterModal('${v.VoterID}')" title="मतदाता विवरण सम्पादन गर्नुहोस्">
+                <span>✏️</span> <span>सम्पादन</span>
+              </button>
             </div>
           </div>
         </div>
@@ -14786,6 +15223,12 @@
       if (!code) return '<span style="color: var(--slate-600);">-</span>';
       const p = PARTY_META[code];
       return p ? `<span style="font-weight: 700; color: ${p.color};">${p.icon} ${p.name}</span>` : esc(code);
+    }
+
+    function getPartyIcon(code) {
+      if (!code) return '❓';
+      const p = PARTY_META[code];
+      return p ? p.icon : '❓';
     }
 
     // 18.1 PALIKA OVERALL PROJECTION ENGINE (100% REAL MULTI-PARTY DATA)
