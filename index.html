@@ -3663,6 +3663,10 @@
         <button class="nav-item palika-only" data-view="households" onclick="switchView('households')">
           <span class="icon">🏠</span> <span>Households</span>
         </button>
+        <button class="nav-item palika-only" data-view="community" onclick="switchView('community')">
+          <span class="icon">🏛️</span> <span>सामुदायिक संस्था</span>
+          <span class="nav-badge" id="communityCountBadge" style="background: #1e3a8a; color: #fff;">0</span>
+        </button>
         <button class="nav-item palika-only" id="navItemDayBook" data-view="dayBook" onclick="switchView('dayBook')">
           <span class="icon">📖</span> <span>DayBook</span>
         </button>
@@ -4174,6 +4178,16 @@
                   <option value="">प्रभावकारी: सबै</option>
                   <option value="yes">🌟 प्रभावकारी मात्र</option>
                 </select>
+                <select id="voterCommunityFilter" class="filter-select" onchange="onVoterFilterChange()" style="font-weight: 700; color: #1e3a8a;">
+                  <option value="">सामुदायिक संस्था: सबै</option>
+                  <option value="any">👑 पद भएका पदाधिकारी मात्र</option>
+                  <option value="tole_committee">🏘️ टोल सुधार समिति</option>
+                  <option value="aama_samuha">🌸 महिला / आमा समूह</option>
+                  <option value="youth_club">⚽ युवा क्लब</option>
+                  <option value="forest_ug">🌲 वन उपभोक्ता समिति</option>
+                  <option value="water_wusc">💧 खानेपानी समिति</option>
+                  <option value="coop">💰 सहकारी संस्था</option>
+                </select>
                 <select id="voterPartyFilter" class="filter-select" onchange="onVoterFilterChange()">
                   <option value="">पार्टी झुकाव: सबै</option>
                   <option value="UML">नेकपा (एमाले)</option>
@@ -4242,6 +4256,19 @@
                     </select>
                   </div>
                   <div class="voter-bs-field">
+                    <label class="voter-bs-label">🏛️ सामुदायिक संस्था (Community Role)</label>
+                    <select id="voterCommunityFilterMobile" onchange="syncVoterFiltersFromMobile()" style="font-weight: 700; color: #1e3a8a;">
+                      <option value="">सबै (All)</option>
+                      <option value="any">👑 पद भएका पदाधिकारी मात्र</option>
+                      <option value="tole_committee">🏘️ टोल सुधार समिति</option>
+                      <option value="aama_samuha">🌸 महिला / आमा समूह</option>
+                      <option value="youth_club">⚽ युवा क्लब</option>
+                      <option value="forest_ug">🌲 वन उपभोक्ता समिति</option>
+                      <option value="water_wusc">💧 खानेपानी समिति</option>
+                      <option value="coop">💰 सहकारी संस्था</option>
+                    </select>
+                  </div>
+                  <div class="voter-bs-field">
                     <label class="voter-bs-label">🚩 पार्टी रुझान (Party)</label>
                     <select id="voterPartyFilterMobile" onchange="syncVoterFiltersFromMobile()">
                       <option value="">सबै पार्टी (All)</option>
@@ -4306,6 +4333,140 @@
                 <tbody id="householdsTableRows"></tbody>
               </table>
             </div>
+          </div>
+        </section>
+
+        <!-- 3B. COMMUNITY GROUPS & LEADERSHIP NETWORKS (सामुदायिक संघ-संस्था तथा समूह) -->
+        <section id="viewCommunity" class="view-section">
+          <!-- Top Header Banner & Actions -->
+          <div class="card" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border: 1.5px solid #334155; border-radius: var(--radius-md); padding: 18px 20px; margin-bottom: 20px; box-shadow: 0 4px 16px rgba(15, 23, 42, 0.25);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35); flex-shrink: 0;">
+                  🏛️
+                </div>
+                <div>
+                  <h2 style="margin: 0; font-size: 20px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    सामुदायिक संघ-संस्था तथा नेतृत्व सञ्जाल
+                    <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid #3b82f6; font-size: 11px;">CBOs & Leadership</span>
+                  </h2>
+                  <p style="margin: 4px 0 0; font-size: 13px; color: #cbd5e1; line-height: 1.4;">
+                    टोल सुधार समिति, आमा समूह, युवा क्लब, सहकारी, खानेपानी तथा वन उपभोक्ता समितिहरूको नेतृत्व र झुकाव म्यापिङ
+                  </p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-sm btn-secondary" onclick="exportCommunityGroupsToCsv()" style="background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25); font-weight: 700;">
+                  📥 Excel / CSV Export
+                </button>
+                <button class="btn btn-sm btn-primary" onclick="openCreateCommunityGroupModal()" style="font-weight: 800; background: #2563eb; border-color: #1d4ed8;">
+                  ➕ नयाँ संस्था दर्ता (+ New Group)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 KPI Summary Cards -->
+          <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 20px;">
+            <div class="card" style="padding: 16px; border-left: 4px solid #3b82f6; background: #ffffff;">
+              <div style="font-size: 12px; color: var(--slate-500); font-weight: 700; text-transform: uppercase;">कुल संघ-संस्था</div>
+              <div id="kpiCommTotalGroups" style="font-size: 26px; font-weight: 900; color: #1e293b; margin-top: 4px;">0</div>
+              <div style="font-size: 11.5px; color: #64748b; margin-top: 2px;">टोल, आमा समूह, क्लब, सहकारी</div>
+            </div>
+            <div class="card" style="padding: 16px; border-left: 4px solid #8b5cf6; background: #ffffff;">
+              <div style="font-size: 12px; color: var(--slate-500); font-weight: 700; text-transform: uppercase;">कुल कार्यसमिति पदाधिकारी</div>
+              <div id="kpiCommTotalLeaders" style="font-size: 26px; font-weight: 900; color: #5b21b6; margin-top: 4px;">0 जना</div>
+              <div style="font-size: 11.5px; color: #64748b; margin-top: 2px;">मतदातासँग जोडिएका नेतृत्व</div>
+            </div>
+            <div class="card" style="padding: 16px; border-left: 4px solid #10b981; background: #ffffff;">
+              <div style="font-size: 12px; color: var(--slate-500); font-weight: 700; text-transform: uppercase;">हाम्रो पक्षमा पकड (Our Hold)</div>
+              <div id="kpiCommOurHold" style="font-size: 26px; font-weight: 900; color: #047857; margin-top: 4px;">0%</div>
+              <div id="kpiCommOurHoldSub" style="font-size: 11.5px; color: #059669; margin-top: 2px;">० जना पक्का समर्थक</div>
+            </div>
+            <div class="card" style="padding: 16px; border-left: 4px solid #f59e0b; background: #ffffff;">
+              <div style="font-size: 12px; color: var(--slate-500); font-weight: 700; text-transform: uppercase;">दोधार नेतृत्व (Swing Leaders)</div>
+              <div id="kpiCommSwingLeaders" style="font-size: 26px; font-weight: 900; color: #b45309; margin-top: 4px;">0 जना</div>
+              <div style="font-size: 11.5px; color: #d97706; margin-top: 2px;">तत्काल भेटघाट आवश्यक</div>
+            </div>
+          </div>
+
+          <!-- Controls, Search & Filter Bar -->
+          <div class="card" style="margin-bottom: 20px; padding: 16px;">
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+              <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; flex: 1; min-width: 260px;">
+                <input type="text" id="commSearchInput" class="form-control" placeholder="🔍 संस्था वा पदाधिकारीको नाम खोज्नुहोस्..." oninput="onCommunityFilterChange()" style="max-width: 320px; font-size: 13.5px;">
+                <select id="commWardFilter" class="form-control" onchange="onCommunityFilterChange()" style="max-width: 150px; font-weight: 600;">
+                  <option value="">वडा: सबै</option>
+                  <option value="1">वडा नं १</option>
+                  <option value="2">वडा नं २</option>
+                  <option value="3">वडा नं ३</option>
+                  <option value="4">वडा नं ४</option>
+                  <option value="5">वडा नं ५</option>
+                  <option value="6">वडा नं ६</option>
+                  <option value="7">वडा नं ७</option>
+                </select>
+                <select id="commCategoryFilter" class="form-control" onchange="onCommunityFilterChange()" style="max-width: 210px; font-weight: 600;">
+                  <option value="">वर्ग: सबै संस्थाहरू</option>
+                  <option value="tole_committee">🏘️ टोल सुधार समिति</option>
+                  <option value="aama_samuha">🌸 महिला / आमा समूह</option>
+                  <option value="youth_club">⚽ युवा क्लब / खेलकुद</option>
+                  <option value="forest_ug">🌲 वन उपभोक्ता समिति</option>
+                  <option value="water_wusc">💧 खानेपानी तथा सरसफाइ</option>
+                  <option value="coop">💰 बचत तथा ऋण सहकारी</option>
+                  <option value="smc">🏫 विद्यालय विव्यस / PTA</option>
+                  <option value="religious">🙏 मन्दिर / गुम्बा समिति</option>
+                  <option value="other">👥 अन्य संघ-संस्था</option>
+                </select>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <button type="button" class="btn btn-sm btn-secondary" onclick="resetCommunityFilters()" style="font-size: 12px;">🔄 रिसेट</button>
+              </div>
+            </div>
+
+            <!-- Sub-Tabs Navigation Strip -->
+            <div style="display: flex; gap: 8px; border-bottom: 2px solid var(--slate-200); margin-top: 16px; padding-bottom: 6px; overflow-x: auto;">
+              <button id="commTabBtnCards" class="btn btn-sm btn-primary" onclick="switchCommunityTab('cards')" style="font-weight: 800; white-space: nowrap;">
+                🏛️ संस्थाहरूको कार्ड (<span id="commTabCountCards">0</span>)
+              </button>
+              <button id="commTabBtnLeaders" class="btn btn-sm btn-secondary" onclick="switchCommunityTab('leaders')" style="font-weight: 800; white-space: nowrap;">
+                👥 पदाधिकारी निर्देशिका (<span id="commTabCountLeaders">0</span>)
+              </button>
+              <button id="commTabBtnDemands" class="btn btn-sm btn-secondary" onclick="switchCommunityTab('demands')" style="font-weight: 800; white-space: nowrap;">
+                📝 संस्थागत माग तथा प्रतिवद्धता (<span id="commTabCountDemands">0</span>)
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 1: GROUPS CARDS GRID -->
+          <div id="commTabPaneCards" class="comm-tab-pane">
+            <div id="commGroupsCardsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;"></div>
+          </div>
+
+          <!-- TAB 2: LEADERS DIRECTORY TABLE -->
+          <div id="commTabPaneLeaders" class="comm-tab-pane" style="display: none;">
+            <div class="card" style="padding: 0; overflow: hidden;">
+              <div class="table-responsive">
+                <table style="width: 100%; border-collapse: collapse;">
+                  <thead>
+                    <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                      <th style="width: 48px; text-align: center; padding: 10px;">#</th>
+                      <th style="padding: 10px;">पदाधिकारी नाम तथा सम्पर्क</th>
+                      <th style="padding: 10px;">संस्था तथा समूह</th>
+                      <th style="padding: 10px;">पद / भूमिका</th>
+                      <th style="padding: 10px;">क्षेत्र / वडा</th>
+                      <th style="padding: 10px;">भोटिङ झुकाव</th>
+                      <th style="width: 140px; text-align: center; padding: 10px;">कार्य (Action)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="commLeadersTableRows"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: DEMANDS & PLEDGES GRID -->
+          <div id="commTabPaneDemands" class="comm-tab-pane" style="display: none;">
+            <div id="commDemandsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;"></div>
           </div>
         </section>
 
@@ -6012,6 +6173,113 @@
               }
             });
           }
+
+          // Initialize Community Groups if missing or empty
+          if (!state.communityGroups || !Array.isArray(state.communityGroups) || !state.communityGroups.length) {
+            state.communityGroups = [
+              {
+                GroupID: 'GRP_001',
+                Name: 'गैरीटोल सुधार समिति',
+                Category: 'tole_committee',
+                CategoryName: 'टोल सुधार समिति',
+                Ward: 2,
+                Tole: 'गैरीटोल',
+                EstHouseholds: 42,
+                EstVotes: 165,
+                KeyDemands: 'सडक ढलान, नाली व्यवस्थापन र टोल बत्ती',
+                ContactPerson: 'अध्यक्ष',
+                Notes: 'टोलको मुख्य अगुवा संस्था, ५५% झुकाव'
+              },
+              {
+                GroupID: 'GRP_002',
+                Name: 'कालिका आमा समूह',
+                Category: 'aama_samuha',
+                CategoryName: 'महिला / आमा समूह',
+                Ward: 2,
+                Tole: 'गैरीटोल',
+                EstHouseholds: 38,
+                EstVotes: 140,
+                KeyDemands: 'आमा समूह भवन मर्मत र सांस्कृतिक भाँडाकुँडा खरिद',
+                ContactPerson: 'अध्यक्ष',
+                Notes: 'महिला मतदाता परिचालनमा अत्यन्त प्रभावकारी'
+              },
+              {
+                GroupID: 'GRP_003',
+                Name: 'हिमशिखर युवा क्लब',
+                Category: 'youth_club',
+                CategoryName: 'युवा क्लब / खेलकुद',
+                Ward: 1,
+                Tole: 'चाँचे',
+                EstHouseholds: 65,
+                EstVotes: 210,
+                KeyDemands: 'स्थानीय खेलमैदान निर्माण र खेलकुद सामग्री',
+                ContactPerson: 'अध्यक्ष',
+                Notes: 'बुथ सुरक्षा र युवा परिचालनका लागि मुख्य संस्था'
+              },
+              {
+                GroupID: 'GRP_004',
+                Name: 'मेलम्चीघ्याङ सामुदायिक वन उपभोक्ता समिति',
+                Category: 'forest_ug',
+                CategoryName: 'सामुदायिक वन उपभोक्ता समिति',
+                Ward: 1,
+                Tole: 'मेलम्चीघ्याङ',
+                EstHouseholds: 85,
+                EstVotes: 320,
+                KeyDemands: 'काठ दाउरा वितरण नीति र पर्यापर्यटन पदमार्ग',
+                ContactPerson: 'अध्यक्ष',
+                Notes: 'गाउँकै ठूलो उपभोक्ता समूह'
+              },
+              {
+                GroupID: 'GRP_005',
+                Name: 'हेलम्बु खानेपानी तथा सरसफाइ उपभोक्ता समिति',
+                Category: 'water_wusc',
+                CategoryName: 'खानेपानी तथा सरसफाइ समिति',
+                Ward: 3,
+                Tole: 'सेर्माथाङ',
+                EstHouseholds: 70,
+                EstVotes: 250,
+                KeyDemands: 'खानेपानी मुहान संरक्षण र मुख्य पाइपलाइन मर्मत',
+                ContactPerson: 'अध्यक्ष',
+                Notes: 'प्रत्येक घरधुरीसँग प्रत्यक्ष जोडिएको'
+              },
+              {
+                GroupID: 'GRP_006',
+                Name: 'सिद्धिगणेश बचत तथा ऋण सहकारी संस्था',
+                Category: 'coop',
+                CategoryName: 'बचत तथा ऋण सहकारी',
+                Ward: 2,
+                Tole: 'किउल',
+                EstHouseholds: 120,
+                EstVotes: 450,
+                KeyDemands: 'कृषि ऋण सहुलियत र स्थानीय बजार व्यवस्थापन',
+                ContactPerson: 'अध्यक्ष',
+                Notes: 'आर्थिक कारोबार र स्थानीय कृषकहरू आबद्ध'
+              }
+            ];
+          }
+
+          // Link sample voters to groups if voters have no CommunityRoles yet
+          if (state.voters && state.voters.length > 0) {
+            const hasAnyRoles = state.voters.some(v => v.CommunityRoles && v.CommunityRoles.length > 0);
+            if (!hasAnyRoles && state.voters.length >= 3) {
+              if (state.voters[0]) {
+                state.voters[0].CommunityRoles = [
+                  { id: 'ROLE_001', groupId: 'GRP_001', groupName: 'गैरीटोल सुधार समिति', category: 'tole_committee', role: 'अध्यक्ष', status: 'बहालवाला' },
+                  { id: 'ROLE_002', groupId: 'GRP_006', groupName: 'सिद्धिगणेश बचत तथा ऋण सहकारी संस्था', category: 'coop', role: 'उपाध्यक्ष', status: 'बहालवाला' }
+                ];
+              }
+              if (state.voters[1]) {
+                state.voters[1].CommunityRoles = [
+                  { id: 'ROLE_003', groupId: 'GRP_002', groupName: 'कालिका आमा समूह', category: 'aama_samuha', role: 'अध्यक्ष', status: 'बहालवाला' }
+                ];
+              }
+              if (state.voters[2]) {
+                state.voters[2].CommunityRoles = [
+                  { id: 'ROLE_004', groupId: 'GRP_003', groupName: 'हिमशिखर युवा क्लब', category: 'youth_club', role: 'सचिव', status: 'बहालवाला' }
+                ];
+              }
+            }
+          }
         } catch (e) { 
           console.error('Error loading state:', e); 
         }
@@ -6123,9 +6391,9 @@
 
       // Register Service Worker with cache-busting
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js?v=20261013-v15')
+        navigator.serviceWorker.register('sw.js?v=20261013-v16')
           .then((reg) => {
-            console.log('Election Ops PWA Service Worker Registered (v15.0.0)');
+            console.log('Election Ops PWA Service Worker Registered (v16.0.0)');
             reg.update();
           })
           .catch(err => console.log('SW registration error:', err));
@@ -7309,10 +7577,14 @@
                 HouseNo: cloudVoter.address ? cloudVoter.address.replace(/^घर नं:\s*/, '').trim() : (parsedNotes.house_no || ''),
                 FacebookUrl: cloudVoter.facebook_url || parsedNotes.facebook_url || '',
                 TiktokUrl: cloudVoter.tiktok_url || parsedNotes.tiktok_url || '',
+                CommunityRoles: Array.isArray(parsedNotes.community_roles) ? parsedNotes.community_roles : [],
                 Active: true
               };
               const idx = state.voters.findIndex(x => x.VoterID === mappedVoter.VoterID);
               if (idx >= 0) {
+                if ((!mappedVoter.CommunityRoles || !mappedVoter.CommunityRoles.length) && state.voters[idx].CommunityRoles) {
+                  mappedVoter.CommunityRoles = state.voters[idx].CommunityRoles;
+                }
                 state.voters[idx] = { ...state.voters[idx], ...mappedVoter };
               } else {
                 state.voters.push(mappedVoter);
@@ -7427,7 +7699,8 @@
           gender: v.Gender || 'Other',
           age_group: v.AgeGroup || '',
           facebook_url: v.FacebookUrl || '',
-          tiktok_url: v.TiktokUrl || ''
+          tiktok_url: v.TiktokUrl || '',
+          community_roles: v.CommunityRoles || []
         });
 
         const houseAddress = v.HouseNo ? (String(v.HouseNo).startsWith('घर नं:') ? String(v.HouseNo) : 'घर नं: ' + String(v.HouseNo)) : (v.Address || '');
@@ -7648,6 +7921,7 @@
       refreshDashboardMetrics();
       renderVotersList();
       renderHouseholdsList();
+      renderCommunityGroupsView();
       renderVisitsList();
       renderFollowupsList();
       renderAreasMaster();
@@ -7856,7 +8130,7 @@
         icon: '🏛️',
         defaultView: 'dashboard',
         allowedViews: [
-          'dashboard', 'warRoom', 'voters', 'households', 'visits', 
+          'dashboard', 'warRoom', 'voters', 'households', 'community', 'visits', 
           'followups', 'areas', 'team', 'issues', 'publicSubs', 
           'electionDay', 'notices', 'messages', 'timeline', 'reports'
         ],
@@ -7870,7 +8144,7 @@
         icon: '🏛️',
         defaultView: 'dashboard',
         allowedViews: [
-          'dashboard', 'warRoom', 'voters', 'households', 'visits', 
+          'dashboard', 'warRoom', 'voters', 'households', 'community', 'visits', 
           'followups', 'areas', 'team', 'issues', 'publicSubs', 
           'electionDay', 'notices', 'messages', 'timeline', 'reports'
         ],
@@ -7884,7 +8158,7 @@
         icon: '🎯',
         defaultView: 'warRoom',
         allowedViews: [
-          'warRoom', 'dashboard', 'voters', 'reports', 'notices', 'issues', 'electionDay'
+          'warRoom', 'dashboard', 'voters', 'community', 'reports', 'notices', 'issues', 'electionDay'
         ],
         description: 'उम्मेदवार जित-हार प्रक्षेपण, मतदाता रुझान, गुप्त रणनीति र निर्वाचन प्रतिवेदन।'
       },
@@ -7896,7 +8170,7 @@
         icon: '📋',
         defaultView: 'dashboard',
         allowedViews: [
-          'dashboard', 'voters', 'households', 'visits', 
+          'dashboard', 'voters', 'households', 'community', 'visits', 
           'followups', 'team', 'notices', 'issues', 'electionDay'
         ],
         description: 'तोकिएको वडाको सम्पूर्ण निर्वाचन व्यवस्थापन, मतदाता सम्पर्क र वडा टोली परिचालन।'
@@ -7909,7 +8183,7 @@
         icon: '🗳️',
         defaultView: 'voters',
         allowedViews: [
-          'voters', 'visits', 'notices', 'issues', 'electionDay'
+          'voters', 'community', 'visits', 'notices', 'issues', 'electionDay'
         ],
         description: 'तोकिएको मतदान केन्द्रको मतदाता परिचालन र मतदान दिन अनुगमन।'
       },
@@ -7921,7 +8195,7 @@
         icon: '🏘️',
         defaultView: 'dayBook',
         allowedViews: [
-          'dayBook', 'voters', 'households', 'visits', 'notices', 'issues'
+          'dayBook', 'voters', 'households', 'community', 'visits', 'notices', 'issues'
         ],
         description: 'टोल स्तरको घरदैलो, मतदाता भेटघाट र समस्या संकलन।'
       },
@@ -7933,7 +8207,7 @@
         icon: '🚶',
         defaultView: 'dayBook',
         allowedViews: [
-          'dayBook', 'voters', 'visits', 'notices', 'issues'
+          'dayBook', 'voters', 'community', 'visits', 'notices', 'issues'
         ],
         description: 'स्थलगत घरदैलो, मतदाता विवरण संकलन र दैनिक कार्य डायरी।'
       }
@@ -8157,6 +8431,7 @@
         'dayBook': '📖 दैनिक कार्य डायरी (Day-Book)',
         'voters': '👥 मतदाता सूची तथा सम्पर्क विवरण',
         'households': '🏠 घरधुरी तह तथा पारिवारिक नक्सांकन',
+        'community': '🏛️ सामुदायिक संघ-संस्था तथा नेतृत्व',
         'visits': '🚶 स्थलगत घरदैलो भेटघाट',
         'followups': '📅 फलो-अप तथा रिमाइन्डर',
         'areas': '🗺️ क्षेत्र, टोल तथा मतदान केन्द्र',
@@ -8305,6 +8580,8 @@
         refreshSmsHubMetrics();
       } else if (viewName === 'warRoom') {
         renderCandidateWarRoom();
+      } else if (viewName === 'community') {
+        renderCommunityGroupsView();
       }
 
       // Update mobile bottom nav active state
@@ -8685,6 +8962,7 @@
         ['voterVerifyFilter', 'voterVerifyFilterMobile'],
         ['voterSupportFilter', 'voterSupportFilterMobile'],
         ['voterInfluencerFilter', 'voterInfluencerFilterMobile'],
+        ['voterCommunityFilter', 'voterCommunityFilterMobile'],
         ['voterPartyFilter', 'voterPartyFilterMobile']
       ];
       pairs.forEach(([dId, mId]) => {
@@ -8701,6 +8979,7 @@
         ['voterVerifyFilter', 'voterVerifyFilterMobile'],
         ['voterSupportFilter', 'voterSupportFilterMobile'],
         ['voterInfluencerFilter', 'voterInfluencerFilterMobile'],
+        ['voterCommunityFilter', 'voterCommunityFilterMobile'],
         ['voterPartyFilter', 'voterPartyFilterMobile']
       ];
       pairs.forEach(([dId, mId]) => {
@@ -8731,6 +9010,7 @@
       if (getVal('voterVerifyFilter', 'voterVerifyFilterMobile')) count++;
       if (getVal('voterSupportFilter', 'voterSupportFilterMobile')) count++;
       if (getVal('voterInfluencerFilter', 'voterInfluencerFilterMobile')) count++;
+      if (getVal('voterCommunityFilter', 'voterCommunityFilterMobile')) count++;
       if (getVal('voterPartyFilter', 'voterPartyFilterMobile')) count++;
 
       const badge = document.getElementById('voterActiveFilterBadge');
@@ -8818,6 +9098,7 @@
       const party = getVal('voterPartyFilter', 'voterPartyFilterMobile');
       const supportFilter = getVal('voterSupportFilter', 'voterSupportFilterMobile');
       const influencerFilter = getVal('voterInfluencerFilter', 'voterInfluencerFilterMobile');
+      const commFilter = getVal('voterCommunityFilter', 'voterCommunityFilterMobile');
 
       const list = getScopedVoters().filter(v => {
         // Workspace Scope: If logged in as scoped staff (not Super Admin), auto-restrict to their ward
@@ -8846,8 +9127,20 @@
         if (party && v.PartyLeaning !== party) return false;
         if (supportFilter && getSupportTier(v).key !== supportFilter) return false;
         if (influencerFilter === 'yes' && !v.IsInfluencer) return false;
+
+        // Community Group Filter
+        if (commFilter) {
+          const roles = v.CommunityRoles || [];
+          if (commFilter === 'any') {
+            if (!roles || !roles.length) return false;
+          } else {
+            if (!roles || !roles.some(r => r.category === commFilter)) return false;
+          }
+        }
+
         if (q) {
-          const haystack = [v.Name, v.Phone, v.VoterSerial, v.Tole, v.HouseNo, v.PartyLeaning || ''].join(' ').toLowerCase();
+          const rolesText = (v.CommunityRoles || []).map(r => (r.role || '') + ' ' + (r.groupName || '')).join(' ');
+          const haystack = [v.Name, v.Phone, v.VoterSerial, v.Tole, v.HouseNo, v.PartyLeaning || '', rolesText].join(' ').toLowerCase();
           if (!haystack.includes(q)) return false;
         }
         return true;
@@ -9066,6 +9359,11 @@
                 <span>${tier.shortLabel || tier.label}</span>
               </span>
               ${v.IsInfluencer ? '<span class="badge" style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; font-weight: 800; font-size: 10.5px; padding: 2px 6px;" title="टोलको प्रभावकारी व्यक्ति">⭐ VIP</span>' : ''}
+              ${(v.CommunityRoles && v.CommunityRoles.length) ? `
+                <span class="badge" style="background: #eff6ff; color: #1e3a8a; border: 1px solid #bfdbfe; font-weight: 800; font-size: 10.5px; padding: 2px 6px; cursor: pointer;" onclick="event.stopPropagation(); viewVoterProfile('${v.VoterID}', 'influencer')" title="${esc(v.CommunityRoles.map(r => r.role + ': ' + r.groupName).join(', '))}">
+                  🏛️ ${esc(v.CommunityRoles[0].role)} <small style="opacity: 0.85;">(${esc(v.CommunityRoles[0].groupName)})</small>${v.CommunityRoles.length > 1 ? ` +${v.CommunityRoles.length - 1}` : ''}
+                </span>
+              ` : ''}
             </div>
           </td>
 
@@ -9196,6 +9494,11 @@
                   </span>
                   ${isSureVote ? '<span style="width: 6.5px; height: 6.5px; border-radius: 50%; background: #22c55e; display: inline-block; flex-shrink: 0;"></span>' : ''}
                   ${v.IsInfluencer ? '<span title="VIP Influencer" style="font-size: 11px; flex-shrink: 0;">🌟</span>' : ''}
+                  ${(v.CommunityRoles && v.CommunityRoles.length) ? `
+                    <span class="badge" style="background: #eff6ff; color: #1e3a8a; border: 1px solid #bfdbfe; font-size: 9.5px; font-weight: 800; padding: 1px 5px; border-radius: 4px; flex-shrink: 0;" title="${esc(v.CommunityRoles.map(r => r.role + ': ' + r.groupName).join(', '))}">
+                      🏛️ ${esc(v.CommunityRoles[0].role)}
+                    </span>
+                  ` : ''}
                   ${isTodayBirthday(v.DOB) ? `<span title="आज जन्मदिन! (${calculateAge(v.DOB)} वर्ष)" style="font-size: 12px; cursor: pointer; flex-shrink: 0;" onclick="event.stopPropagation(); openBirthdayWishModal('${v.VoterID}')">🎂</span>` : ''}
                 </div>
                 ${hasPhone ? `
@@ -9381,7 +9684,8 @@
         ['voterVerifyFilter', 'voterVerifyFilterMobile'],
         ['voterPartyFilter', 'voterPartyFilterMobile'],
         ['voterSupportFilter', 'voterSupportFilterMobile'],
-        ['voterInfluencerFilter', 'voterInfluencerFilterMobile']
+        ['voterInfluencerFilter', 'voterInfluencerFilterMobile'],
+        ['voterCommunityFilter', 'voterCommunityFilterMobile']
       ];
       pairs.forEach(([dId, mId]) => {
         const d = document.getElementById(dId);
@@ -9737,7 +10041,7 @@
     }
 
     
-    // TAB: COMMUNITY INFLUENCER INTELLIGENCE & VIP MANAGEMENT
+    // TAB: COMMUNITY INFLUENCER INTELLIGENCE & COMMUNITY GROUPS
     function renderVoterInfluencerTab(v) {
       const isInf = !!v.IsInfluencer;
       const sphere = v.InfluencerSphere || 'टोल सुधार / सामुदायिक अगुवा';
@@ -9745,8 +10049,56 @@
       const handler = v.InfluencerHandler || 'उम्मेदवार आफैं';
       const demands = v.InfluencerDemands || 'विकास बजेट र पूर्वाधार';
       const stance = v.InfluencerStance || 'सकारात्मक';
+      const commRoles = v.CommunityRoles || [];
 
       return `
+        <!-- 1. COMMUNITY GROUPS & LEADERSHIP AFFILIATIONS -->
+        <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1.5px solid #bfdbfe; border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
+            <div>
+              <h3 style="margin: 0; color: #1e3a8a; font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                🏛️ सामुदायिक संघ-संस्था तथा पद (Community Roles)
+              </h3>
+              <p style="margin: 4px 0 0; color: #1e40af; font-size: 13px;">
+                टोल सुधार समिति, आमा समूह, युवा क्लब, सहकारी, खानेपानी वा वन समितिमा यस मतदाताको आबद्धता
+              </p>
+            </div>
+            <div>
+              <button type="button" class="btn btn-sm btn-primary" onclick="openAddGroupRoleToVoterModal('${v.VoterID}')" style="font-weight: 800; font-size: 13px; background: #2563eb; border-color: #1d4ed8;">
+                ➕ नयाँ संस्था वा पद जोड्नुहोस्
+              </button>
+            </div>
+          </div>
+
+          ${commRoles.length > 0 ? `
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px;">
+              ${commRoles.map(r => `
+                <div style="background: white; border: 1.5px solid #bfdbfe; border-radius: var(--radius-sm); padding: 14px; display: flex; justify-content: space-between; align-items: flex-start; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                      <span class="badge" style="background: #e0f2fe; color: #0369a1; font-weight: 800; font-size: 11px;">${esc(r.categoryName || getCategoryLabel(r.category))}</span>
+                      <span class="badge" style="background: #f1f5f9; color: #475569; font-size: 10.5px;">${esc(r.status || 'बहालवाला')}</span>
+                    </div>
+                    <div style="font-size: 14.5px; font-weight: 800; color: #0f172a;">${esc(r.groupName || '')}</div>
+                    <div style="font-size: 13px; font-weight: 700; color: #2563eb; margin-top: 3px;">
+                      👑 पद: ${esc(r.role || '')}
+                    </div>
+                  </div>
+                  <div>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="removeGroupRoleFromVoter('${v.VoterID}', '${r.id}')" title="यो भूमिका हटाउनुहोस्" style="padding: 3px 8px; font-size: 11px;">✕</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : `
+            <div style="text-align: center; padding: 18px; background: white; border-radius: var(--radius-sm); border: 1px dashed #cbd5e1; color: var(--slate-600); font-size: 13px;">
+              ℹ️ हालसम्म कुनै सामुदायिक संघ-संस्था वा समितिमा पद जोडिएको छैन।<br>
+              यदि यिनी टोल समिति, आमा समूह, क्लब वा सहकारीका पदाधिकारी हुन् भने माथिको <b>'+ नयाँ संस्था वा पद जोड्नुहोस्'</b> बटन थिच्नुहोस्।
+            </div>
+          `}
+        </div>
+
+        <!-- 2. VIP / INFLUENCER DETAILS -->
         <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1.5px solid #fde68a; border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
             <div>
@@ -11379,6 +11731,1023 @@
         refreshDashboardMetrics();
         showToast('Visit record deleted', 'info');
       }
+    }
+
+    // ==========================================
+    // 9B. COMMUNITY GROUPS & CBO LEADERSHIP ENGINE
+    // (सामुदायिक संघ-संस्था तथा नेतृत्व सञ्जाल)
+    // ==========================================
+    let activeCommunityTab = 'cards'; // 'cards', 'leaders', 'demands'
+
+    const COMMUNITY_CATEGORIES = {
+      'tole_committee': { label: 'टोल सुधार समिति', icon: '🏘️', color: '#0284c7' },
+      'aama_samuha': { label: 'महिला / आमा समूह', icon: '🌸', color: '#db2777' },
+      'youth_club': { label: 'युवा क्लब / खेलकुद', icon: '⚽', color: '#16a34a' },
+      'forest_ug': { label: 'सामुदायिक वन उपभोक्ता समिति', icon: '🌲', color: '#15803d' },
+      'water_wusc': { label: 'खानेपानी तथा सरसफाइ समिति', icon: '💧', color: '#0284c7' },
+      'coop': { label: 'बचत तथा ऋण सहकारी', icon: '💰', color: '#d97706' },
+      'smc': { label: 'विद्यालय विव्यस / PTA', icon: '🏫', color: '#7c3aed' },
+      'religious': { label: 'मन्दिर / गुम्बा व्यवस्थापन', icon: '🙏', color: '#ea580c' },
+      'other': { label: 'अन्य संघ-संस्था', icon: '👥', color: '#64748b' }
+    };
+
+    function getCategoryLabel(key) {
+      return (COMMUNITY_CATEGORIES[key] && COMMUNITY_CATEGORIES[key].label) || 'अन्य संघ-संस्था';
+    }
+
+    function getCategoryIcon(key) {
+      return (COMMUNITY_CATEGORIES[key] && COMMUNITY_CATEGORIES[key].icon) || '🏛️';
+    }
+
+    function switchCommunityTab(tabName) {
+      activeCommunityTab = tabName;
+      ['cards', 'leaders', 'demands'].forEach(t => {
+        const btn = document.getElementById('commTabBtn' + capitalize(t));
+        const pane = document.getElementById('commTabPane' + capitalize(t));
+        if (btn) {
+          if (t === tabName) {
+            btn.classList.remove('btn-secondary');
+            btn.classList.add('btn-primary');
+          } else {
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-secondary');
+          }
+        }
+        if (pane) {
+          pane.style.display = t === tabName ? 'block' : 'none';
+        }
+      });
+      renderCommunityGroupsView();
+    }
+
+    function onCommunityFilterChange() {
+      renderCommunityGroupsView();
+    }
+
+    function resetCommunityFilters() {
+      const s = document.getElementById('commSearchInput');
+      const w = document.getElementById('commWardFilter');
+      const c = document.getElementById('commCategoryFilter');
+      if (s) s.value = '';
+      if (w) w.value = '';
+      if (c) c.value = '';
+      renderCommunityGroupsView();
+    }
+
+    const ROLE_HIERARCHY = {
+      'अध्यक्ष': 1,
+      'उपाध्यक्ष': 2,
+      'सचिव': 3,
+      'सह-सचिव': 4,
+      'कोषाध्यक्ष': 5,
+      'सदस्य': 6,
+      'सल्लाहकार': 7,
+      'पूर्व पदाधिकारी': 8,
+      'अन्य': 9
+    };
+
+    function getGroupMembers(groupId) {
+      const members = [];
+      (state.voters || []).forEach(v => {
+        if (v.CommunityRoles && Array.isArray(v.CommunityRoles)) {
+          v.CommunityRoles.forEach(r => {
+            if (r.groupId === groupId) {
+              members.push({
+                voter: v,
+                role: r.role || 'सदस्य',
+                status: r.status || 'बहालवाला',
+                roleId: r.id
+              });
+            }
+          });
+        }
+      });
+
+      members.sort((a, b) => {
+        const rankA = ROLE_HIERARCHY[a.role] || 99;
+        const rankB = ROLE_HIERARCHY[b.role] || 99;
+        return rankA - rankB;
+      });
+
+      return members;
+    }
+
+    function getGroupHoldStats(members) {
+      const total = members.length;
+      if (!total) return { total: 0, solid: 0, swing: 0, opponent: 0, holdPct: 0 };
+
+      let solid = 0;
+      let swing = 0;
+      let opponent = 0;
+
+      members.forEach(m => {
+        const tier = (typeof getSupportTier === 'function') ? getSupportTier(m.voter).key : (m.voter.SupportTier || 'swing');
+        if (tier === 'solid' || tier === 'lean') solid++;
+        else if (tier === 'opponent_lean' || tier === 'hard_opponent') opponent++;
+        else swing++;
+      });
+
+      const holdPct = Math.round((solid / total) * 100);
+      return { total, solid, swing, opponent, holdPct };
+    }
+
+    function renderCommunityGroupsView() {
+      if (!state.communityGroups) state.communityGroups = [];
+
+      const totalGroups = state.communityGroups.length;
+      const badge = document.getElementById('communityCountBadge');
+      if (badge) badge.textContent = totalGroups;
+
+      // Overall calculations
+      let totalLeadersCount = 0;
+      let totalSolidLeaders = 0;
+      let totalSwingLeaders = 0;
+      const countedVoterIds = new Set();
+
+      (state.voters || []).forEach(v => {
+        if (v.CommunityRoles && v.CommunityRoles.length > 0) {
+          if (!countedVoterIds.has(v.VoterID)) {
+            countedVoterIds.add(v.VoterID);
+            totalLeadersCount++;
+            const tier = (typeof getSupportTier === 'function') ? getSupportTier(v).key : (v.SupportTier || 'swing');
+            if (tier === 'solid' || tier === 'lean') totalSolidLeaders++;
+            else if (tier === 'swing') totalSwingLeaders++;
+          }
+        }
+      });
+
+      const overallHoldPct = totalLeadersCount > 0 ? Math.round((totalSolidLeaders / totalLeadersCount) * 100) : 0;
+
+      const elTot = document.getElementById('kpiCommTotalGroups');
+      const elLead = document.getElementById('kpiCommTotalLeaders');
+      const elHold = document.getElementById('kpiCommOurHold');
+      const elHoldSub = document.getElementById('kpiCommOurHoldSub');
+      const elSwing = document.getElementById('kpiCommSwingLeaders');
+
+      if (elTot) elTot.textContent = `${totalGroups} वटा`;
+      if (elLead) elLead.textContent = `${totalLeadersCount} जना`;
+      if (elHold) elHold.textContent = `${overallHoldPct}%`;
+      if (elHoldSub) elHoldSub.textContent = `${totalSolidLeaders} जना पक्का समर्थक`;
+      if (elSwing) elSwing.textContent = `${totalSwingLeaders} जना`;
+
+      // Filter groups
+      const q = (document.getElementById('commSearchInput') ? document.getElementById('commSearchInput').value : '').toLowerCase().trim();
+      const wardFilter = document.getElementById('commWardFilter') ? document.getElementById('commWardFilter').value : '';
+      const catFilter = document.getElementById('commCategoryFilter') ? document.getElementById('commCategoryFilter').value : '';
+
+      const filtered = state.communityGroups.filter(g => {
+        if (wardFilter && String(g.Ward) !== String(wardFilter)) return false;
+        if (catFilter && g.Category !== catFilter) return false;
+        if (q) {
+          const members = getGroupMembers(g.GroupID);
+          const membersText = members.map(m => m.voter.Name + ' ' + (m.voter.Phone || '')).join(' ').toLowerCase();
+          const haystack = [g.Name, g.Tole || '', g.KeyDemands || '', membersText].join(' ').toLowerCase();
+          if (!haystack.includes(q)) return false;
+        }
+        return true;
+      });
+
+      // Update Tab Counts
+      const cntCards = document.getElementById('commTabCountCards');
+      const cntLeaders = document.getElementById('commTabCountLeaders');
+      const cntDemands = document.getElementById('commTabCountDemands');
+      if (cntCards) cntCards.textContent = filtered.length;
+      if (cntLeaders) cntLeaders.textContent = countedVoterIds.size;
+      const demandsCount = filtered.filter(g => g.KeyDemands && g.KeyDemands.trim()).length;
+      if (cntDemands) cntDemands.textContent = demandsCount;
+
+      renderCommunityGroupsCards(filtered);
+      renderCommunityLeadersTable(filtered);
+      renderCommunityDemands(filtered);
+    }
+
+    function renderCommunityGroupsCards(filtered) {
+      const grid = document.getElementById('commGroupsCardsGrid');
+      if (!grid) return;
+
+      if (!filtered.length) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; background: white; border-radius: 12px; border: 1.5px dashed #cbd5e1;">
+            <div style="font-size: 38px; margin-bottom: 10px;">🏛️</div>
+            <h4 style="margin: 0 0 6px; color: #1e293b; font-size: 16px;">कुनै संघ-संस्था भेटिएन</h4>
+            <p style="margin: 0 0 16px; color: #64748b; font-size: 13.5px;">माथिको फिल्टर परिवर्तन गर्नुहोस् वा नयाँ संस्था दर्ता गर्नुहोस्।</p>
+            <button class="btn btn-primary btn-sm" onclick="openCreateCommunityGroupModal()">+ नयाँ संस्था दर्ता गर्नुहोस्</button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(g => {
+        const members = getGroupMembers(g.GroupID);
+        const stats = getGroupHoldStats(members);
+        const catInfo = COMMUNITY_CATEGORIES[g.Category] || COMMUNITY_CATEGORIES['other'];
+        const presMember = members.find(m => m.role.includes('अध्यक्ष')) || members[0];
+
+        return `
+          <div class="card" style="padding: 18px; border: 1.5px solid #e2e8f0; border-radius: 12px; transition: transform 0.15s, box-shadow 0.15s; background: white; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <!-- Header Category & Ward Badge -->
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
+                <span class="badge" style="background: #f1f5f9; color: ${catInfo.color}; border: 1px solid #cbd5e1; font-weight: 800; font-size: 11px;">
+                  ${catInfo.icon} ${esc(catInfo.label)}
+                </span>
+                <span class="badge" style="background: #e0e7ff; color: #3730a3; font-weight: 700; font-size: 11px;">
+                  वडा ${g.Ward}${g.Tole ? ' • ' + esc(g.Tole) : ''}
+                </span>
+              </div>
+
+              <!-- Group Title -->
+              <h3 style="margin: 0 0 8px; font-size: 16.5px; font-weight: 800; color: #0f172a; line-height: 1.35;">
+                ${esc(g.Name)}
+              </h3>
+
+              <!-- Leadership Head -->
+              <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 12.5px;">
+                <div style="color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase;">मुख्य नेतृत्व / सम्पर्क:</div>
+                ${presMember ? `
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+                    <div>
+                      <b style="color: #0f172a; cursor: pointer; text-decoration: underline;" onclick="viewVoterProfile('${presMember.voter.VoterID}')">${esc(presMember.voter.Name)}</b>
+                      <span class="badge" style="background: #fef3c7; color: #92400e; font-weight: 700; font-size: 10px; margin-left: 4px;">${esc(presMember.role)}</span>
+                    </div>
+                    ${presMember.voter.Phone ? `
+                      <a href="tel:${cleanPhone(presMember.voter.Phone)}" style="text-decoration: none; font-size: 14px;" title="कल गर्नुहोस्">📞</a>
+                    ` : ''}
+                  </div>
+                ` : `
+                  <div style="color: #94a3b8; font-style: italic; margin-top: 2px;">हाल कुनै पदाधिकारी जोडिएको छैन</div>
+                `}
+              </div>
+
+              <!-- Committee Size & Hold Breakdown -->
+              <div style="margin-bottom: 14px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; margin-bottom: 6px;">
+                  <span style="font-weight: 700; color: #334155;">👥 कार्यसमिति: <b>${members.length} जना</b></span>
+                  <span style="font-weight: 800; color: #047857;">हाम्रो पकड: ${stats.holdPct}%</span>
+                </div>
+                <!-- Visual Hold Bar -->
+                <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; display: flex;">
+                  <div style="width: ${stats.holdPct}%; background: #10b981;" title="समर्थक: ${stats.solid} जना"></div>
+                  <div style="width: ${members.length ? Math.round((stats.swing/members.length)*100) : 0}%; background: #f59e0b;" title="दोधार: ${stats.swing} जना"></div>
+                  <div style="width: ${members.length ? Math.round((stats.opponent/members.length)*100) : 0}%; background: #ef4444;" title="विपक्षी: ${stats.opponent} जना"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; color: #64748b; margin-top: 4px;">
+                  <span>🟢 ${stats.solid} समर्थक</span>
+                  <span>🟡 ${stats.swing} दोधार</span>
+                  <span>🔴 ${stats.opponent} विपक्षी</span>
+                </div>
+              </div>
+
+              <!-- Key Demands / Notes -->
+              ${g.KeyDemands ? `
+                <div style="font-size: 12px; color: #475569; background: #fffbeb; border: 1px solid #fde68a; padding: 8px 10px; border-radius: 6px; margin-bottom: 14px;">
+                  📝 <b>माग:</b> ${esc(g.KeyDemands)}
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Card Bottom Action Buttons -->
+            <div style="display: flex; gap: 6px; margin-top: 10px; border-top: 1px solid #f1f5f9; padding-top: 12px;">
+              <button class="btn btn-sm btn-primary" onclick="openViewGroupCommitteeModal('${g.GroupID}')" style="flex: 1.5; font-weight: 800; font-size: 12.5px; padding: 7px 8px;">
+                👁️ कार्यसमिति (${members.length})
+              </button>
+              <button class="btn btn-sm btn-secondary" onclick="openAddMemberToGroupModal('${g.GroupID}')" title="मतदातालाई पद दिएर जोड्नुहोस्" style="font-weight: 700; font-size: 12px; padding: 7px 10px;">
+                ➕ पद दिनुहोस्
+              </button>
+              <button class="btn btn-sm btn-secondary" onclick="openCreateCommunityGroupModal('${g.GroupID}')" title="संस्था सम्पादन गर्नुहोस्" style="padding: 7px 9px;">
+                ✏️
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderCommunityLeadersTable(filteredGroups) {
+      const tbody = document.getElementById('commLeadersTableRows');
+      if (!tbody) return;
+
+      const groupIds = new Set(filteredGroups.map(g => g.GroupID));
+      const leaderEntries = [];
+
+      (state.voters || []).forEach(v => {
+        if (v.CommunityRoles && Array.isArray(v.CommunityRoles)) {
+          v.CommunityRoles.forEach(r => {
+            if (groupIds.has(r.groupId)) {
+              leaderEntries.push({
+                voter: v,
+                role: r.role || 'सदस्य',
+                status: r.status || 'बहालवाला',
+                groupName: r.groupName || '',
+                groupId: r.groupId,
+                category: r.category || 'other',
+                roleId: r.id
+              });
+            }
+          });
+        }
+      });
+
+      // Sort by hierarchy then name
+      leaderEntries.sort((a, b) => {
+        const rankA = ROLE_HIERARCHY[a.role] || 99;
+        const rankB = ROLE_HIERARCHY[b.role] || 99;
+        if (rankA !== rankB) return rankA - rankB;
+        return (a.voter.Name || '').localeCompare(b.voter.Name || '');
+      });
+
+      if (!leaderEntries.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 32px; color: var(--slate-600);">यस फिल्टर अनुसार कुनै पदाधिकारी फेला परेन।</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = leaderEntries.map((item, idx) => {
+        const v = item.voter;
+        const tier = (typeof getSupportTier === 'function') ? getSupportTier(v) : { label: 'दोधार', color: '#b45309', bg: '#fef3c7', border: '#fde68a' };
+        const catInfo = COMMUNITY_CATEGORIES[item.category] || COMMUNITY_CATEGORIES['other'];
+
+        return `
+          <tr style="border-bottom: 1px solid #f1f5f9;">
+            <td style="text-align: center; font-weight: 700; color: #64748b; font-size: 12px; padding: 10px;">${idx + 1}</td>
+            <td style="padding: 10px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: #2563eb; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0;">
+                  ${(v.Name || 'V').charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <div style="font-weight: 800; font-size: 14px; color: #0f172a; cursor: pointer;" onclick="viewVoterProfile('${v.VoterID}')">
+                    ${esc(v.Name)}
+                  </div>
+                  <div style="font-size: 11.5px; color: #64748b; font-family: monospace;">
+                    ${esc(v.Phone || 'सम्पर्क छैन')} • ID: ${esc(v.VoterID)}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td style="padding: 10px;">
+              <div style="font-weight: 700; font-size: 13.5px; color: #1e293b;">${esc(item.groupName)}</div>
+              <span class="badge" style="background: #f1f5f9; color: ${catInfo.color}; font-size: 10.5px; margin-top: 2px;">
+                ${catInfo.icon} ${esc(catInfo.label)}
+              </span>
+            </td>
+            <td style="padding: 10px;">
+              <span class="badge" style="background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; font-weight: 800; font-size: 12px; padding: 3px 8px;">
+                👑 ${esc(item.role)}
+              </span>
+              <span class="badge" style="background: #f8fafc; color: #475569; font-size: 10.5px;">${esc(item.status)}</span>
+            </td>
+            <td style="padding: 10px; font-size: 13px; color: #334155;">
+              वडा नं ${v.Ward}${v.Tole ? ' • ' + esc(v.Tole) : ''}
+            </td>
+            <td style="padding: 10px;">
+              <span class="badge" style="background: ${tier.bg}; color: ${tier.color}; border: 1px solid ${tier.border}; font-weight: 800; font-size: 11.5px; padding: 2px 7px;">
+                ${tier.icon || '🎯'} ${tier.label}
+              </span>
+            </td>
+            <td style="text-align: center; padding: 10px;">
+              <div style="display: flex; gap: 4px; justify-content: center;">
+                <button type="button" class="btn btn-sm btn-secondary" onclick="viewVoterProfile('${v.VoterID}')" title="प्रोफाइल हेर्नुहोस्" style="padding: 4px 8px; font-size: 12px;">👁️</button>
+                ${v.Phone ? `
+                  <a href="tel:${cleanPhone(v.Phone)}" class="btn btn-sm btn-secondary" style="padding: 4px 8px; font-size: 12px; text-decoration: none;" title="कल गर्नुहोस्">📞</a>
+                ` : ''}
+                <button type="button" class="btn btn-sm btn-danger" onclick="removeMemberFromGroup('${v.VoterID}', '${item.roleId}')" title="यो भूमिका हटाउनुहोस्" style="padding: 4px 7px; font-size: 11px;">✕</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderCommunityDemands(filteredGroups) {
+      const grid = document.getElementById('commDemandsGrid');
+      if (!grid) return;
+
+      const demandingGroups = filteredGroups.filter(g => g.KeyDemands && g.KeyDemands.trim());
+
+      if (!demandingGroups.length) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 36px 20px; background: white; border-radius: 12px; border: 1.5px dashed #cbd5e1;">
+            <div style="font-size: 34px; margin-bottom: 8px;">📝</div>
+            <h4 style="margin: 0 0 6px; color: #1e293b;">कुनै संस्थागत माग दर्ता भएको छैन</h4>
+            <p style="margin: 0; color: #64748b; font-size: 13px;">संस्था सम्पादन गरी मुख्य माग तथा जनचासो इन्ट्री गर्नुहोस्।</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = demandingGroups.map(g => {
+        const catInfo = COMMUNITY_CATEGORIES[g.Category] || COMMUNITY_CATEGORIES['other'];
+        const members = getGroupMembers(g.GroupID);
+
+        return `
+          <div class="card" style="padding: 16px; border: 1.5px solid #fde68a; border-radius: 12px; background: #fffbeb;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+              <span class="badge" style="background: white; color: #92400e; border: 1px solid #fde68a; font-weight: 800; font-size: 11px;">
+                ${catInfo.icon} ${esc(g.Name)}
+              </span>
+              <span class="badge" style="background: #fef3c7; color: #78350f; font-weight: 700; font-size: 11px;">
+                वडा ${g.Ward}
+              </span>
+            </div>
+            <h4 style="margin: 0 0 8px; font-size: 15px; font-weight: 800; color: #78350f; line-height: 1.4;">
+              📝 "${esc(g.KeyDemands)}"
+            </h4>
+            <div style="font-size: 12px; color: #92400e; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border-top: 1px dashed #fde68a; padding-top: 8px;">
+              <span>प्रभाव: <b>${g.EstHouseholds || '-'} घरधुरी / ${g.EstVotes || '-'} मत</b></span>
+              <button class="btn btn-sm btn-secondary" onclick="openCreateCommunityGroupModal('${g.GroupID}')" style="font-size: 11px; padding: 3px 8px; background: white;">✏️ माग सम्पादन</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // MODAL: CREATE / EDIT COMMUNITY GROUP
+    function openCreateCommunityGroupModal(groupId = null) {
+      const g = groupId ? state.communityGroups.find(x => x.GroupID === groupId) : null;
+      const isEdit = !!g;
+
+      openModal(
+        isEdit ? `संस्था सम्पादन: ${g.Name}` : `➕ नयाँ सामुदायिक संघ-संस्था दर्ता`,
+        `
+        <form id="createCommunityGroupForm" onsubmit="saveCommunityGroup(event, '${groupId || ''}')">
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label">संस्था / समूहको पूरा नाम *</label>
+              <input type="text" name="Name" required class="form-control" placeholder="उदा: गैरीटोल सुधार समिति / कालिका आमा समूह" value="${g ? esc(g.Name) : ''}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">समूहको प्रकार (Category) *</label>
+              <select name="Category" required class="form-control" style="font-weight: 600;">
+                <option value="tole_committee" ${g && g.Category === 'tole_committee' ? 'selected' : ''}>🏘️ टोल सुधार समिति</option>
+                <option value="aama_samuha" ${g && g.Category === 'aama_samuha' ? 'selected' : ''}>🌸 महिला / आमा समूह</option>
+                <option value="youth_club" ${g && g.Category === 'youth_club' ? 'selected' : ''}>⚽ युवा क्लब / खेलकुद</option>
+                <option value="forest_ug" ${g && g.Category === 'forest_ug' ? 'selected' : ''}>🌲 सामुदायिक वन उपभोक्ता समिति</option>
+                <option value="water_wusc" ${g && g.Category === 'water_wusc' ? 'selected' : ''}>💧 खानेपानी तथा सरसफाइ समिति</option>
+                <option value="coop" ${g && g.Category === 'coop' ? 'selected' : ''}>💰 बचत तथा ऋण सहकारी</option>
+                <option value="smc" ${g && g.Category === 'smc' ? 'selected' : ''}>🏫 विद्यालय विव्यस / PTA</option>
+                <option value="religious" ${g && g.Category === 'religious' ? 'selected' : ''}>🙏 मन्दिर / गुम्बा व्यवस्थापन</option>
+                <option value="other" ${g && g.Category === 'other' ? 'selected' : ''}>👥 अन्य संघ-संस्था</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">वडा नं. *</label>
+              <select name="Ward" required class="form-control">
+                ${state.wards.map(w => `<option value="${w.WardNo}" ${g && Number(g.Ward) === Number(w.WardNo) ? 'selected' : ''}>वडा नं ${w.WardNo}</option>`).join('')}
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">टोल / बस्ती</label>
+              <input type="text" name="Tole" class="form-control" placeholder="उदा: गैरीटोल / सेर्माथाङ" value="${g ? esc(g.Tole || '') : ''}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">अनुमानित घरधुरी संख्या</label>
+              <input type="number" name="EstHouseholds" class="form-control" placeholder="उदा: 40" value="${g ? (g.EstHouseholds || '') : ''}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">अनुमानित कुल मत संख्या</label>
+              <input type="number" name="EstVotes" class="form-control" placeholder="उदा: 150" value="${g ? (g.EstVotes || '') : ''}">
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label">मुख्य माग तथा स्थानीय चासो (Key Demands)</label>
+              <textarea name="KeyDemands" class="form-control" rows="2" placeholder="उदा: टोल सडक ढलान, आमा समूह भवन मर्मत, खेलमैदान विस्तार...">${g ? esc(g.KeyDemands || '') : ''}</textarea>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label">टिप्पणी / रणनीतिक नोट</label>
+              <input type="text" name="Notes" class="form-control" placeholder="उदा: ५५% हाम्रो पक्षमा, अध्यक्षसँग नियमित सम्पर्क छ" value="${g ? esc(g.Notes || '') : ''}">
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;">
+            ${isEdit ? `
+              <button type="button" class="btn btn-danger" onclick="deleteCommunityGroup('${g.GroupID}')" style="margin-right: auto;">🗑️ संस्था मेटाउनुहोस्</button>
+            ` : ''}
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">रद्द गर्नुहोस्</button>
+            <button type="submit" class="btn btn-primary" style="font-weight: 800;">
+              💾 ${isEdit ? 'विवरण सुरक्षित गर्नुहोस्' : '✓ नयाँ संस्था दर्ता गर्नुहोस्'}
+            </button>
+          </div>
+        </form>
+        `,
+        null,
+        'modal-lg'
+      );
+    }
+
+    function saveCommunityGroup(e, groupId) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const name = (formData.get('Name') || '').trim();
+      if (!name) {
+        showToast('कृपया संस्थाको नाम भर्नुहोस्।', 'error');
+        return;
+      }
+
+      const catKey = formData.get('Category') || 'other';
+
+      if (groupId) {
+        const idx = state.communityGroups.findIndex(x => x.GroupID === groupId);
+        if (idx >= 0) {
+          state.communityGroups[idx] = {
+            ...state.communityGroups[idx],
+            Name: name,
+            Category: catKey,
+            CategoryName: getCategoryLabel(catKey),
+            Ward: Number(formData.get('Ward')) || 1,
+            Tole: (formData.get('Tole') || '').trim(),
+            EstHouseholds: Number(formData.get('EstHouseholds')) || 0,
+            EstVotes: Number(formData.get('EstVotes')) || 0,
+            KeyDemands: (formData.get('KeyDemands') || '').trim(),
+            Notes: (formData.get('Notes') || '').trim()
+          };
+          showToast(`'${name}' संस्था अद्यावधिक गरियो!`, 'success');
+        }
+      } else {
+        const newGroup = {
+          GroupID: 'GRP_' + Date.now().toString(36).toUpperCase(),
+          Name: name,
+          Category: catKey,
+          CategoryName: getCategoryLabel(catKey),
+          Ward: Number(formData.get('Ward')) || 1,
+          Tole: (formData.get('Tole') || '').trim(),
+          EstHouseholds: Number(formData.get('EstHouseholds')) || 0,
+          EstVotes: Number(formData.get('EstVotes')) || 0,
+          KeyDemands: (formData.get('KeyDemands') || '').trim(),
+          Notes: (formData.get('Notes') || '').trim()
+        };
+        state.communityGroups.push(newGroup);
+        showToast(`नयाँ संस्था '${name}' सफलतापूर्वक दर्ता भयो!`, 'success');
+      }
+
+      saveState();
+      closeModal();
+      renderCommunityGroupsView();
+    }
+
+    function deleteCommunityGroup(groupId) {
+      const g = state.communityGroups.find(x => x.GroupID === groupId);
+      if (!g) return;
+      if (confirm(`के तपाईं '${g.Name}' संस्था साँच्चै मेटाउन चाहनुहुन्छ? (यस संस्थासँग जोडिएका सदस्यहरूको भूमिका पनि हट्नेछ)`)) {
+        state.communityGroups = state.communityGroups.filter(x => x.GroupID !== groupId);
+        // Clean roles from voters
+        (state.voters || []).forEach(v => {
+          if (v.CommunityRoles) {
+            v.CommunityRoles = v.CommunityRoles.filter(r => r.groupId !== groupId);
+          }
+        });
+        saveState();
+        closeModal();
+        renderCommunityGroupsView();
+        showToast('संस्था सफलतापूर्वक मेटाइयो।', 'info');
+      }
+    }
+
+    // MODAL: VIEW GROUP COMMITTEE (BOTTOM SHEET / FULL MODAL)
+    function openViewGroupCommitteeModal(groupId) {
+      const g = state.communityGroups.find(x => x.GroupID === groupId);
+      if (!g) return;
+
+      const members = getGroupMembers(groupId);
+      const stats = getGroupHoldStats(members);
+      const catInfo = COMMUNITY_CATEGORIES[g.Category] || COMMUNITY_CATEGORIES['other'];
+
+      openModal(
+        `${catInfo.icon} ${g.Name} - कार्यसमिति`,
+        `
+        <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <span class="badge" style="background: #e0f2fe; color: #0369a1; font-weight: 800;">${catInfo.icon} ${esc(catInfo.label)}</span>
+                <span class="badge" style="background: #e0e7ff; color: #3730a3; font-weight: 700;">वडा ${g.Ward}${g.Tole ? ' • ' + esc(g.Tole) : ''}</span>
+              </div>
+              <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #0f172a;">${esc(g.Name)}</h3>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="openAddMemberToGroupModal('${g.GroupID}')" style="font-weight: 800; background: #2563eb; border-color: #1d4ed8;">
+              ➕ नयाँ पदाधिकारी थप्नुहोस्
+            </button>
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-top: 14px; padding-top: 12px; border-top: 1px solid #e2e8f0; font-size: 13px; flex-wrap: wrap;">
+            <span>👥 कार्यसमिति: <b>${members.length} जना</b></span>
+            <span>🟢 हाम्रो पकड: <b>${stats.holdPct}% (${stats.solid} जना)</b></span>
+            <span>🟡 दोधार: <b>${stats.swing} जना</b></span>
+            <span>🔴 विपक्षी: <b>${stats.opponent} जना</b></span>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <h4 style="margin: 0 0 10px; font-size: 14px; font-weight: 800; color: #334155; text-transform: uppercase;">
+            📋 कार्यसमिति पदाधिकारीहरूको विवरण:
+          </h4>
+          ${members.length > 0 ? `
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              ${members.map((m, idx) => {
+                const v = m.voter;
+                const tier = (typeof getSupportTier === 'function') ? getSupportTier(v) : { label: 'दोधार', color: '#b45309', bg: '#fef3c7', border: '#fde68a' };
+
+                return `
+                  <div style="background: white; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <div style="width: 38px; height: 38px; border-radius: 50%; background: #1e40af; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px;">
+                        ${(v.Name || 'V').charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                          <b style="font-size: 15px; color: #0f172a; cursor: pointer;" onclick="closeModal(); viewVoterProfile('${v.VoterID}')">${esc(v.Name)}</b>
+                          <span class="badge" style="background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; font-weight: 800; font-size: 11px;">
+                            👑 ${esc(m.role)}
+                          </span>
+                          <span class="badge" style="background: #f1f5f9; color: #475569; font-size: 10px;">${esc(m.status)}</span>
+                        </div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 2px;">
+                          ${v.Phone ? `📱 ${esc(v.Phone)}` : 'सम्पर्क छैन'} • वडा ${v.Ward}${v.Tole ? ' • ' + esc(v.Tole) : ''}
+                        </div>
+                      </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span class="badge" style="background: ${tier.bg}; color: ${tier.color}; border: 1px solid ${tier.border}; font-weight: 800; font-size: 11px; padding: 3px 8px;">
+                        ${tier.icon || '🎯'} ${tier.label}
+                      </span>
+                      ${v.Phone ? `
+                        <a href="tel:${cleanPhone(v.Phone)}" class="btn btn-sm btn-secondary" style="padding: 4px 8px; font-size: 13px; text-decoration: none;" title="कल">📞</a>
+                      ` : ''}
+                      <button type="button" class="btn btn-sm btn-secondary" onclick="closeModal(); viewVoterProfile('${v.VoterID}')" style="font-size: 11.5px; padding: 4px 8px;">विवरण</button>
+                      <button type="button" class="btn btn-sm btn-danger" onclick="removeMemberFromGroup('${v.VoterID}', '${m.roleId}', '${g.GroupID}')" title="हटाउनुहोस्" style="font-size: 11px; padding: 4px 7px;">✕</button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          ` : `
+            <div style="text-align: center; padding: 28px; background: white; border-radius: 10px; border: 1.5px dashed #cbd5e1; color: #64748b;">
+              हालसम्म यस संस्थामा कुनै पदाधिकारी जोडिएको छैन।<br>
+              मतदाता खोजेर पद दिन माथिको <b>'+ नयाँ पदाधिकारी थप्नुहोस्'</b> बटन थिच्नुहोस्।
+            </div>
+          `}
+        </div>
+        `,
+        `<button class="btn btn-secondary" onclick="closeModal()">बन्द गर्नुहोस्</button>`,
+        'modal-lg'
+      );
+    }
+
+    // MODAL: ADD MEMBER TO A COMMUNITY GROUP
+    function openAddMemberToGroupModal(groupId) {
+      const g = state.communityGroups.find(x => x.GroupID === groupId);
+      if (!g) return;
+
+      const scopedVoters = (state.voters || []).filter(v => {
+        if (currentUser && currentUser.Role !== 'Super Admin' && currentUser.Ward && currentUser.Ward !== 'All') {
+          return String(v.Ward) === String(currentUser.Ward);
+        }
+        return true;
+      });
+
+      openModal(
+        `➕ पदाधिकारी थप्नुहोस्: ${g.Name}`,
+        `
+        <form id="addMemberToGroupForm" onsubmit="saveMemberToGroup(event, '${g.GroupID}')">
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label">मतदाता खोज्नुहोस् र छान्नुहोस् *</label>
+            <input type="text" id="memberSearchHelper" class="form-control" placeholder="🔍 नाम वा फोन टाइप गरी खोज्नुहोस्..." oninput="filterMemberVoterSelect()" style="margin-bottom: 6px;">
+            <select id="memberVoterSelect" name="VoterID" required class="form-control" size="6" style="height: auto; max-height: 180px; font-size: 13.5px;">
+              ${scopedVoters.map(v => `
+                <option value="${v.VoterID}">
+                  ${esc(v.Name)} (वडा ${v.Ward}${v.Tole ? ' • ' + esc(v.Tole) : ''}) ${v.Phone ? '• ' + esc(v.Phone) : ''}
+                </option>
+              `).join('')}
+            </select>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">पद / भूमिका (Designation) *</label>
+              <select name="Role" required class="form-control" style="font-weight: 700;">
+                <option value="अध्यक्ष">👑 अध्यक्ष (President)</option>
+                <option value="उपाध्यक्ष">🎖️ उपाध्यक्ष (Vice President)</option>
+                <option value="सचिव">📝 सचिव (Secretary)</option>
+                <option value="सह-सचिव">📋 सह-सचिव (Joint Secretary)</option>
+                <option value="कोषाध्यक्ष">💰 कोषाध्यक्ष (Treasurer)</option>
+                <option value="सदस्य" selected>🤝 कार्यसमिति सदस्य (Member)</option>
+                <option value="सल्लाहकार">💡 सल्लाहकार (Advisor)</option>
+                <option value="पूर्व पदाधिकारी">🏛️ पूर्व पदाधिकारी (Past Executive)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">अवस्था (Status) *</label>
+              <select name="Status" required class="form-control">
+                <option value="बहालवाला" selected>बहालवाला (Current / Active)</option>
+                <option value="पूर्व">पूर्व (Past)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">रद्द</button>
+            <button type="submit" class="btn btn-primary" style="font-weight: 800;">✓ पदाधिकारी जोड्नुहोस्</button>
+          </div>
+        </form>
+        `,
+        null,
+        'modal-md'
+      );
+    }
+
+    function filterMemberVoterSelect() {
+      const q = (document.getElementById('memberSearchHelper') ? document.getElementById('memberSearchHelper').value : '').toLowerCase().trim();
+      const select = document.getElementById('memberVoterSelect');
+      if (!select) return;
+
+      const scopedVoters = (state.voters || []).filter(v => {
+        if (currentUser && currentUser.Role !== 'Super Admin' && currentUser.Ward && currentUser.Ward !== 'All') {
+          return String(v.Ward) === String(currentUser.Ward);
+        }
+        return true;
+      });
+
+      const filtered = scopedVoters.filter(v => {
+        if (!q) return true;
+        const text = [v.Name, v.Phone || '', v.VoterSerial || '', v.Tole || ''].join(' ').toLowerCase();
+        return text.includes(q);
+      });
+
+      select.innerHTML = filtered.map(v => `
+        <option value="${v.VoterID}">
+          ${esc(v.Name)} (वडा ${v.Ward}${v.Tole ? ' • ' + esc(v.Tole) : ''}) ${v.Phone ? '• ' + esc(v.Phone) : ''}
+        </option>
+      `).join('');
+
+      if (filtered.length > 0) select.selectedIndex = 0;
+    }
+
+    async function saveMemberToGroup(e, groupId) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const voterId = formData.get('VoterID');
+      const role = formData.get('Role');
+      const status = formData.get('Status') || 'बहालवाला';
+
+      const v = state.voters.find(x => x.VoterID === voterId);
+      const g = state.communityGroups.find(x => x.GroupID === groupId);
+
+      if (!v || !g) {
+        showToast('मतदाता वा संस्था फेला परेन।', 'error');
+        return;
+      }
+
+      if (!v.CommunityRoles) v.CommunityRoles = [];
+
+      // Check if already in this group
+      const existingIdx = v.CommunityRoles.findIndex(r => r.groupId === groupId);
+      if (existingIdx >= 0) {
+        v.CommunityRoles[existingIdx].role = role;
+        v.CommunityRoles[existingIdx].status = status;
+      } else {
+        v.CommunityRoles.push({
+          id: 'ROLE_' + Date.now().toString(36).toUpperCase(),
+          groupId: g.GroupID,
+          groupName: g.Name,
+          category: g.Category,
+          categoryName: getCategoryLabel(g.Category),
+          role: role,
+          status: status
+        });
+      }
+
+      saveState();
+      if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
+
+      closeModal();
+      showToast(`${v.Name} लाई '${g.Name}' मा ${role} पद तोकियो!`, 'success');
+      renderCommunityGroupsView();
+      renderVotersList();
+      openViewGroupCommitteeModal(groupId);
+    }
+
+    async function removeMemberFromGroup(voterId, roleId, reopenGroupId = null) {
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v || !v.CommunityRoles) return;
+
+      v.CommunityRoles = v.CommunityRoles.filter(r => r.id !== roleId);
+      saveState();
+      if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
+
+      showToast(`${v.Name} को समूह भूमिका हटाइयो।`, 'info');
+      renderCommunityGroupsView();
+      renderVotersList();
+
+      if (reopenGroupId) {
+        openViewGroupCommitteeModal(reopenGroupId);
+      }
+    }
+
+    // MODAL: ADD GROUP ROLE DIRECTLY FROM VOTER PROFILE
+    function openAddGroupRoleToVoterModal(voterId) {
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+
+      const groups = state.communityGroups || [];
+
+      openModal(
+        `🏛️ संस्था वा पद जोड्नुहोस्: ${v.Name}`,
+        `
+        <form id="addRoleToVoterForm" onsubmit="saveGroupRoleToVoter(event, '${v.VoterID}')">
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label">संस्था / समूह छान्नुहोस् वा नयाँ टाइप गर्नुहोस् *</label>
+            <input type="text" id="groupNameDatalistInput" list="communityGroupsList" name="GroupName" required class="form-control" placeholder="उदा: गैरीटोल सुधार समिति / कालिका आमा समूह" style="font-size: 14px; font-weight: 700;">
+            <datalist id="communityGroupsList">
+              ${groups.map(g => `<option value="${esc(g.Name)}">वडा ${g.Ward} • ${esc(getCategoryLabel(g.Category))}</option>`).join('')}
+            </datalist>
+            <small style="color: #64748b; margin-top: 3px; display: block;">
+              💡 सूचीमा भएको संस्था छान्नुहोस् वा नयाँ भए नाम सिधै टाइप गर्नुहोस् (स्वतः दर्ता हुनेछ)।
+            </small>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">पद / भूमिका *</label>
+              <select name="Role" required class="form-control" style="font-weight: 700;">
+                <option value="अध्यक्ष" selected>👑 अध्यक्ष (President)</option>
+                <option value="उपाध्यक्ष">🎖️ उपाध्यक्ष (Vice President)</option>
+                <option value="सचिव">📝 सचिव (Secretary)</option>
+                <option value="सह-सचिव">📋 सह-सचिव (Joint Secretary)</option>
+                <option value="कोषाध्यक्ष">💰 कोषाध्यक्ष (Treasurer)</option>
+                <option value="सदस्य">🤝 कार्यसमिति सदस्य (Member)</option>
+                <option value="सल्लाहकार">💡 सल्लाहकार (Advisor)</option>
+                <option value="पूर्व पदाधिकारी">🏛️ पूर्व पदाधिकारी (Past Executive)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">संस्थाको प्रकार (यदि नयाँ भए) *</label>
+              <select name="Category" required class="form-control">
+                <option value="tole_committee">🏘️ टोल सुधार समिति</option>
+                <option value="aama_samuha">🌸 महिला / आमा समूह</option>
+                <option value="youth_club">⚽ युवा क्लब / खेलकुद</option>
+                <option value="forest_ug">🌲 वन उपभोक्ता समिति</option>
+                <option value="water_wusc">💧 खानेपानी तथा सरसफाइ</option>
+                <option value="coop">💰 बचत तथा ऋण सहकारी</option>
+                <option value="smc">🏫 विद्यालय विव्यस / PTA</option>
+                <option value="religious">🙏 मन्दिर / गुम्बा व्यवस्थापन</option>
+                <option value="other">👥 अन्य संघ-संस्था</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">अवस्था (Status) *</label>
+              <select name="Status" required class="form-control">
+                <option value="बहालवाला" selected>बहालवाला (Current / Active)</option>
+                <option value="पूर्व">पूर्व (Past)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">रद्द</button>
+            <button type="submit" class="btn btn-primary" style="font-weight: 800;">✓ भूमिका सुरक्षित गर्नुहोस्</button>
+          </div>
+        </form>
+        `,
+        null,
+        'modal-md'
+      );
+    }
+
+    async function saveGroupRoleToVoter(e, voterId) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v) return;
+
+      const groupName = (formData.get('GroupName') || '').trim();
+      const role = formData.get('Role');
+      const category = formData.get('Category');
+      const status = formData.get('Status') || 'बहालवाला';
+
+      if (!groupName) {
+        showToast('कृपया संस्थाको नाम भर्नुहोस्।', 'error');
+        return;
+      }
+
+      // Find or create group
+      let g = (state.communityGroups || []).find(x => x.Name.toLowerCase() === groupName.toLowerCase());
+      if (!g) {
+        g = {
+          GroupID: 'GRP_' + Date.now().toString(36).toUpperCase(),
+          Name: groupName,
+          Category: category,
+          CategoryName: getCategoryLabel(category),
+          Ward: v.Ward || 1,
+          Tole: v.Tole || '',
+          EstHouseholds: 30,
+          EstVotes: 100,
+          KeyDemands: '',
+          Notes: ''
+        };
+        state.communityGroups.push(g);
+      }
+
+      if (!v.CommunityRoles) v.CommunityRoles = [];
+      const existingIdx = v.CommunityRoles.findIndex(r => r.groupId === g.GroupID);
+      if (existingIdx >= 0) {
+        v.CommunityRoles[existingIdx].role = role;
+        v.CommunityRoles[existingIdx].status = status;
+      } else {
+        v.CommunityRoles.push({
+          id: 'ROLE_' + Date.now().toString(36).toUpperCase(),
+          groupId: g.GroupID,
+          groupName: g.Name,
+          category: g.Category,
+          categoryName: getCategoryLabel(g.Category),
+          role: role,
+          status: status
+        });
+      }
+
+      saveState();
+      if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
+
+      closeModal();
+      showToast(`${v.Name} लाई '${g.Name}' मा ${role} पद सुरक्षित भयो!`, 'success');
+      viewVoterProfile(voterId, 'influencer');
+      renderVotersList();
+      renderCommunityGroupsView();
+    }
+
+    async function removeGroupRoleFromVoter(voterId, roleId) {
+      const v = state.voters.find(x => x.VoterID === voterId);
+      if (!v || !v.CommunityRoles) return;
+
+      v.CommunityRoles = v.CommunityRoles.filter(r => r.id !== roleId);
+      saveState();
+      if (typeof pushVoterToSupabase === 'function') await pushVoterToSupabase(v);
+
+      showToast('भूमिका हटाइयो।', 'info');
+      viewVoterProfile(voterId, 'influencer');
+      renderVotersList();
+      renderCommunityGroupsView();
+    }
+
+    function exportCommunityGroupsToCsv() {
+      if (!state.communityGroups || !state.communityGroups.length) {
+        showToast('एक्सपोर्ट गर्न कुनै संस्था छैन।', 'info');
+        return;
+      }
+
+      const rows = [
+        ['क्र.सं.', 'संस्थाको नाम', 'प्रकार', 'वडा', 'टोल', 'पदाधिकारी नाम', 'पद', 'फोन नम्बर', 'भोटिङ झुकाव', 'माग / चासो']
+      ];
+
+      let count = 0;
+      state.communityGroups.forEach(g => {
+        const members = getGroupMembers(g.GroupID);
+        if (members.length > 0) {
+          members.forEach(m => {
+            count++;
+            const v = m.voter;
+            rows.push([
+              count,
+              `"${g.Name}"`,
+              `"${getCategoryLabel(g.Category)}"`,
+              g.Ward,
+              `"${g.Tole || '-'}"`,
+              `"${v.Name}"`,
+              `"${m.role}"`,
+              `"${v.Phone || '-'}"`,
+              `"${v.PartyLeaning || 'तटस्थ'}"`,
+              `"${g.KeyDemands || '-'}"`
+            ]);
+          });
+        } else {
+          count++;
+          rows.push([
+            count,
+            `"${g.Name}"`,
+            `"${getCategoryLabel(g.Category)}"`,
+            g.Ward,
+            `"${g.Tole || '-'}"`,
+            '-',
+            '-',
+            '-',
+            '-',
+            `"${g.KeyDemands || '-'}"`
+          ]);
+        }
+      });
+
+      const csvContent = '\uFEFF' + rows.map(e => e.join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Helambu_Community_Groups_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast('सामुदायिक संस्था तथा पदाधिकारी सूची डाउनलोड भयो!', 'success');
     }
 
     // ==========================================
