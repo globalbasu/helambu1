@@ -3124,7 +3124,7 @@
 
       /* Table responsive horizontal scroll */
       .table-responsive, .table-wrap, .data-table-container {
-        display: block !important;
+        display: block;
         width: 100% !important;
         max-width: 100% !important;
         min-width: 0 !important;
@@ -3133,6 +3133,13 @@
         margin-bottom: 12px !important;
         border-radius: 10px !important;
         box-sizing: border-box !important;
+      }
+
+      /* Voter directory view switcher guards (prevents table & card collision) */
+      #voterTableContainer.hidden-view,
+      #voterCardsContainer.hidden-view,
+      .hidden-view {
+        display: none !important;
       }
       table {
         min-width: 580px !important;
@@ -6104,9 +6111,9 @@
 
       // Register Service Worker with cache-busting
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js?v=20261013-v13')
+        navigator.serviceWorker.register('sw.js?v=20261013-v14')
           .then((reg) => {
-            console.log('Election Ops PWA Service Worker Registered (v13.0.0)');
+            console.log('Election Ops PWA Service Worker Registered (v14.0.0)');
             reg.update();
           })
           .catch(err => console.log('SW registration error:', err));
@@ -8930,13 +8937,28 @@
         toggleBtn.textContent = effectiveMode === 'table' ? '🔲 Card View' : '📋 Table View';
       }
 
+      const tableContainer = document.getElementById('voterTableContainer');
+      const cardsContainer = document.getElementById('voterCardsContainer');
+
       if (effectiveMode === 'table') {
-        document.getElementById('voterTableContainer').style.display = 'block';
-        document.getElementById('voterCardsContainer').style.display = 'none';
+        if (tableContainer) {
+          tableContainer.classList.remove('hidden-view');
+          tableContainer.style.setProperty('display', 'block', 'important');
+        }
+        if (cardsContainer) {
+          cardsContainer.classList.add('hidden-view');
+          cardsContainer.style.setProperty('display', 'none', 'important');
+        }
         renderVotersTable(filtered);
       } else {
-        document.getElementById('voterTableContainer').style.display = 'none';
-        document.getElementById('voterCardsContainer').style.display = 'grid';
+        if (tableContainer) {
+          tableContainer.classList.add('hidden-view');
+          tableContainer.style.setProperty('display', 'none', 'important');
+        }
+        if (cardsContainer) {
+          cardsContainer.classList.remove('hidden-view');
+          cardsContainer.style.setProperty('display', 'grid', 'important');
+        }
         renderVotersCards(filtered);
       }
     }
